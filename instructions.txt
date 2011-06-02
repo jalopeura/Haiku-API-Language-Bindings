@@ -1,0 +1,9 @@
+Currently, the generator is a perl script.
+
+To generate, cd to generator.perl and run 'perl generator.pl'. This will create a folder called generated/perl in the base folder (the svn trunk). In that folder, each kit will have a subfolder.
+
+To compile the bindings for a kit, cd to that kit's folder and run 'perl Makefile.PL', followed by 'make'.
+
+In the base folder there is also a test folder, in which there is a perl subfolder. There is currently a single test file, test.pl, in it. To run this test, cd to this subfolder and run 'perl test.pl'.
+
+That's it for now. It's unfortunately heavily dependant on running things from the folder they're located in; I hope to make it a bit more flexible in the future.
