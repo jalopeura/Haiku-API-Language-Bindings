@@ -284,27 +284,6 @@ END
 	open MPL, ">$self->{folder}/Makefile.PL" or die "Unable to create Makefile.PL: $!";
 	print MPL <<MAKE;
 use ExtUtils::MakeMaker;
-require ExtUtils::Liblist;
-
-my (
-	\$extralibs,
-	\$bsloadlibs,
-	\$ldloadlibs,
-	\$ld_run_path,
-	\$filenames,
-) = ExtUtils::Liblist->ext('$libs', 1, 1);
-
-\$filenames = join(' ', \@\$filenames);
-
-print <<OUT;
-\$extralibs
-\$bsloadlibs
-\$ldloadlibs
-\$ld_run_path
-\$filenames
-
-
-OUT
 
 WriteMakefile(
 	'NAME'     => '$name',
@@ -316,18 +295,9 @@ WriteMakefile(
 	'C'        => [$c_files],
 	'H'        => [$h_files],
 	'OBJECT'   => '$o_files',
-#	'LDLOADLIBS' => '$libs',
 	'BSLOADLIBS' => '$libs',
 );
 MAKE
-	
-#	'CCFLAGS'  => '',	# String that will be included in the compiler call command line between the arguments INC and OPTIMIZE.
-#	'CONFIG'   => [],	# Arrayref. E.g. [qw(archname manext)] defines ARCHNAME & MANEXT from config.sh. MakeMaker will add to CONFIG the following values anyway: ar cc cccdlflags ccdlflags dlext dlsrc ld lddlflags ldflags libc lib_ext obj_ext ranlib sitelibexp sitearchexp so
-#	'DEFINE'   => '',	# Something like "-DHAVE_UNISTD_H"
-#	'INC'      => '',	# Include file dirs eg: "-I/usr/5include -I/path/to/inc"
-#	'LDFROM'   => '',	# Defaults to "$(OBJECT)" and is used in the ld command to specify what files to link/load from (also see dynamic_lib below for how to specify ld flags)
-#	'LIBS'     => [],	# An anonymous array of alternative library specifications to be searched for (in order) until at least one library is found. E.g.
-#	'MYEXTLIB' => '',	# If the extension links to a library that it builds set this to the name of the library (see SDBM_File)
 	
 	# a loading test
 	unless (-e "$self->{folder}/t") {

@@ -15,7 +15,8 @@ sub write_utility_h_file {
 
 #include "$self->{master_include}"
 
-SV* create_perl_object(IV cpp_obj_address, const char* perl_class_name, bool must_not_delete = false);
+SV* create_perl_object(IV cpp_obj_address, const char* perl_class_name, bool must_not_delete = false);HV* get_hidden_hash(SV* perl_obj);
+HV* get_hidden_hash(SV* perl_obj);
 void delete_perl_object(SV* perl_obj);
 void update_must_not_delete(SV* perl_obj, bool must_not_delete);
 IV extract_cpp_object(SV* perl_obj);

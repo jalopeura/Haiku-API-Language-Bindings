@@ -80,6 +80,20 @@ sub cpp_params {
 	return $self->{cache}{cpp_params};
 }
 
+sub cpp_inputs {
+	my ($self) = @_;
+	unless ($self->{cache}{cpp_inputs}) {
+		my $ret;
+		for my $p (@{ $self->{data_aref} }) {
+			next if $p->{return};
+			$ret .= "$p->{name}, ";
+		}
+		$ret=~s/, $//;
+		$self->{cache}{cpp_inputs} = $ret;
+	}
+	return $self->{cache}{cpp_inputs};
+}
+
 sub xs_inputs {
 	my ($self) = @_;
 	unless ($self->{cache}{xs_inputs}) {
@@ -120,7 +134,8 @@ sub xs_error_defs {
 		my $ret;
 		for my $p (@{ $self->{data_aref} }) {
 			if ($p->{action} eq 'error') {
-				$ret .= "\t\t$p->{type} $p->{name}";
+				(my $type = $p->{type})=~s/\*\s*$//;	# for a pointer type, emit a non-pointer type
+				$ret .= "\t\t$type $p->{name}";
 				if ($p->{default}) {
 					$ret .= " = $p->{default}";
 				}
@@ -139,6 +154,12 @@ sub xs_cpp_inputs {
 		my $ret;
 		for my $p (@{ $self->{data_aref} }) {
 			next if $p->{return};
+			
+			if ($p->{action} eq 'error' or $p->{action} eq 'output') {
+				if ($p->{type}=~/\*\s*$/) {	# for a pointer type, emit a non-pointer type
+					$ret .= '&';
+				}
+			}
 			$ret .= "$p->{name}, ";
 		}
 		$ret=~s/, $//;
@@ -153,7 +174,10 @@ sub xs_output_list {
 		my $ret = [];
 		for my $p (@{ $self->{data_aref} }) {
 			if ($p->{action} eq 'output') {
-				push @$ret, $p;
+				my $prm = { %$p };
+#				$prm->{type}=~s/\*\s*$// and
+#					$prm->{type} = "&$prm->{type}";
+				push @$ret, $prm;
 			}
 		}
 		$self->{cache}{xs_output_list} = $ret;
@@ -167,7 +191,10 @@ sub xs_error_list {
 		my $ret = [];
 		for my $p (@{ $self->{data_aref} }) {
 			if ($p->{action} eq 'error') {
-				push @$ret, $p;
+				my $prm = { %$p };
+#				$prm->{type}=~s/\*\s*$// and
+#					$prm->{type} = "&$prm->{type}";
+				push @$ret, $prm;
 			}
 		}
 		$self->{cache}{xs_error_list} = $ret;

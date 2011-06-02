@@ -72,7 +72,13 @@
 			<!-- IsModal -->
 			<!-- LastMouseMovedView -->
 			<!-- MoveBy -->
-			<!-- MoveTo -->
+			<method cpp="MoveTo">
+				<params>
+					<param name="x" type="float" action="input" />
+					<param name="y" type="float" action="input" />
+				</params>
+				<return type="void" />
+			</method>
 			<!-- NeedsUpdate -->
 			<!-- OpenViewTransaction -->
 			<!-- CommitViewTransaction -->
@@ -81,7 +87,13 @@
 				<return type="void" />
 			</method>
 			<!-- ResizeBy -->
-			<!-- ResizeTo -->
+			<method cpp="ResizeTo">
+				<params>
+					<param name="width" type="float" action="input" />
+					<param name="height" type="float" action="input" />
+				</params>
+				<return type="void" />
+			</method>
 			<!-- ResolveSpecifier -->
 			<!-- SendBehind -->
 			<!-- SetDefaultButton -->
@@ -107,8 +119,14 @@
 			<!-- GetWindowAlignment -->
 			<!-- SetWorkspaces -->
 			<!-- Workspaces -->
-			<!-- Show -->
-			<!-- Hide -->
+			<method cpp="Show">
+				<params />
+				<return type="void" />
+			</method>
+			<method cpp="Hide">
+				<params />
+				<return type="void" />
+			</method>
 			<!-- IsHidden -->
 			<!-- Minimize -->
 			<!-- IsMinimized -->

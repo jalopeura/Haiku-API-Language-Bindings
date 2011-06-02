@@ -48,7 +48,7 @@ sub write_responder_cpp_constructor {
 	my ($self, $fh, $constructor, $class_name, $parent_class_name) = @_;
 	
 	my $cpp_params = $constructor->{params}->cpp_params;
-	my $parent_params = $constructor->{params}->xs_cpp_inputs;
+	my $parent_params = $constructor->{params}->cpp_inputs;
 	print $fh <<CONSTRUCTOR;
 ${class_name}::$class_name($cpp_params)
 	: $parent_class_name($parent_params) {}

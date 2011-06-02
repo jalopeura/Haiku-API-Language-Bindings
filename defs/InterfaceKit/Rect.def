@@ -31,7 +31,10 @@
 			<!-- OffsetToSelf -->
 			<!-- OffsetToCopy -->
 			<!-- IsValid -->
-			<!-- PrintToStream -->
+			<method cpp="PrintToStream">
+				<params />
+				<return type="void" />
+			</method>
 			<!-- Set -->
 			<!-- SetLeftTop -->
 			<!-- SetLeftBottom -->

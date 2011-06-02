@@ -91,6 +91,7 @@ CONSTRUCTOR
 	my $body = <<CONSTRUCTOR;
 	CODE:
 		RETVAL = new $class_name($xs_cpp_inputs);
+		RETVAL->perl_obj = create_perl_object((IV)RETVAL, CLASS, false);
 CONSTRUCTOR
 	
 	$self->xs_method_body($fh, $body, $xs_input_defs, $xs_error_defs, $xs_error_list);
@@ -151,13 +152,13 @@ METHOD
 	if ($rettype eq 'void') {
 		$body = <<METHOD;
 	CODE:
-		(($parent_class_name*)THIS)->$event->{def}{cpp}($xs_cpp_inputs);
+		THIS->${parent_class_name}::$event->{def}{cpp}($xs_cpp_inputs);
 METHOD
 	}
 	else {
 		$body = <<METHOD;
 	CODE:
-	RETVAL = (($parent_class_name*)THIS)->$event->{def}{cpp}($xs_cpp_inputs);
+	RETVAL = THIS->${parent_class_name}::$event->{def}{cpp}($xs_cpp_inputs);
 METHOD
 	}
 	

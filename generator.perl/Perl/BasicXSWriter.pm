@@ -221,11 +221,72 @@ RETURN
 sub write_basic_xs_property {
 	my ($self, $fh, $property, $class_name) = @_;
 	
+	my $prop_name = $property->{name};
+	my $type = $self->{def}{generator}{types}->get_perl_type($property->{type});
+	my $svgetter = "Sv$type";
+	my $svsetter = 'sv_set' . lc($type);
+	
+	# this needs to create a new tied scalar
+	
 	print $fh <<PROPERTY;
+MODULE = $self->{module}	PACKAGE = $self->{def}{target}::$prop_name
+
+SV*
+FETCH(tie_obj)
+		SV* tie_obj;
+	INIT:
+		SV* cpp_obj_sv;
+		$class_name* cpp_obj;
+	CODE:
+		RETVAL = newSV(0);
+		cpp_obj_sv = SvRV(tie_obj);
+		cpp_obj = ($class_name*)SvIV(cpp_obj_sv);
+		$svsetter(RETVAL, cpp_obj->$prop_name);
+	OUTPUT:
+		RETVAL
+
+void
+STORE(tie_obj, value)
+		SV* tie_obj;
+		SV* value;
+	INIT:
+		SV* cpp_obj_sv;
+		$class_name* cpp_obj;
+	CODE:
+		cpp_obj_sv = SvRV(tie_obj);
+		cpp_obj = ($class_name*)SvIV(cpp_obj_sv);
+		cpp_obj->$prop_name = ($property->{type})$svgetter(value);
+
+PROPERTY
+	
+	my $classlen = length("$self->{def}{target}::$prop_name");
+	
+	print $fh <<PROPERTY;
+MODULE = $self->{module}	PACKAGE = $self->{def}{target}
+
 SV*
 ${class_name}::$property->{name}()
-	PPCODE:
-		RETVAL = create_${class_name}_$property->{name}(THIS);
+	INIT:
+		SV* cpp_obj_sv;
+		SV* tie_obj;
+		HV* tie_obj_stash;
+	CODE:
+		RETVAL = newSV(0);
+		// make our object into an SV* and make a reference to it
+		cpp_obj_sv = newSViv((IV)THIS);	// do I need to make this mortal?
+		tie_obj = newRV_noinc(cpp_obj_sv);
+		
+		// bless the reference into the proper class
+		tie_obj_stash = gv_stashpv("$self->{def}{target}::$prop_name", TRUE);
+		sv_bless(tie_obj, tie_obj_stash);
+		
+		// tie the blessed object to the RETVAL scalar
+		sv_magic(RETVAL, tie_obj, PERL_MAGIC_tiedscalar, NULL, 0);
+	OUTPUT:
+		RETVAL
+
+BOOT:
+	CvFLAGS(get_cv("$self->{def}{target}::$prop_name", TRUE)) |= CVf_LVALUE;
 
 PROPERTY
 }
@@ -237,8 +298,7 @@ sub write_basic_xs_constant {
 SV*
 $constant->{name}()
 	CODE:
-		RETVAL = sv_newmortal();
-		sv_setiv(RETVAL, $constant->{name});
+		RETVAL = newSViv($constant->{name});
 	OUTPUT:
 		RETVAL
 
@@ -273,6 +333,10 @@ sub xs_error_check {
 ERROR
 	}
 }
+
+#   errsv = get_sv("@", TRUE);
+#   sv_setsv(errsv, exception_object);
+#   croak(Nullch);
 
 1;
 

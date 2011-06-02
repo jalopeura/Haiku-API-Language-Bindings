@@ -20,4 +20,101 @@ types in this section.
 	<import file="Window.def" />
 	<import file="Rect.def" />
 	<import file="Button.def" />
+	<binding cpp="InterfaceKit" target="Haiku::InterfaceKit">
+		<constants>
+			<!-- alignment constants -->
+			<constant name="B_ALIGN_LEFT" />
+			<constant name="B_ALIGN_RIGHT" />
+			<constant name="B_ALIGN_CENTER" />
+			<constant name="B_PLAIN_BORDER" />
+			<constant name="B_FANCY_BORDER" />
+			<constant name="B_NO_BORDER" />
+			<!-- character constants -->
+			<!-- color space constants -->
+			<!-- control value constants -->
+			<constant name="B_CONTROL_ON" />
+			<constant name="B_CONTROL_OFF" />
+			<!-- cursor transit constants -->
+			<!-- dead-key mapping constants -->
+			<!-- drawing mode constants -->
+			<!-- function key constants -->
+			<!-- interface message constants -->
+			<!-- list view type constants -->
+			<!-- main screen constants -->
+			<!-- <constant name="B_MAIN_SCREEN_ID" /> -->
+			<!-- menu bar border constants -->
+			<!-- menu layout constants -->
+			<!-- modifier state constants -->
+			<!-- mouse button constants -->
+			<!-- orientation constants -->
+			<!-- pattern constants -->
+			<!-- resizing mode constants -->
+			<constant name="B_FOLLOW_LEFT" />
+			<constant name="B_FOLLOW_RIGHT" />
+			<constant name="B_FOLLOW_LEFT_RIGHT" />
+			<constant name="B_FOLLOW_H_CENTER" />
+			<constant name="B_FOLLOW_TOP" />
+			<constant name="B_FOLLOW_BOTTOM" />
+			<constant name="B_FOLLOW_TOP_BOTTOM" />
+			<constant name="B_FOLLOW_V_CENTER" />
+			<constant name="B_FOLLOW_ALL_SIDES" />
+			<constant name="B_FOLLOW_ALL" />
+			<constant name="B_FOLLOW_NONE" />
+			<!-- screen space constants -->
+			<!-- scrollbar constants -->
+			<!-- string truncation constants -->
+			<!-- tint_color constants -->
+			<!-- transparency constants -->
+			<!-- color_which constants -->
+			<!-- view flags constants -->
+			<constant name="B_FULL_UPDATE_ON_RESIZE" />
+			<constant name="B_WILL_DRAW" />
+			<constant name="B_PULSE_NEEDED" />
+			<constant name="B_FRAME_EVENTS" />
+			<constant name="B_NAVIGABLE" />
+			<constant name="B_NAVIGABLE_JUMP" />
+			<constant name="B_SUBPIXEL_PRECISE" />
+			<!-- window flags constants -->
+			<constant name="B_NOT_MOVABLE" />
+			<constant name="B_NOT_CLOSABLE" />
+			<constant name="B_NOT_ZOOMABLE" />
+			<constant name="B_NOT_MINIMIZABLE" />
+			<constant name="B_NOT_H_RESIZABLE" />
+			<constant name="B_NOT_V_RESIZABLE" />
+			<constant name="B_NOT_RESIZABLE" />
+			<constant name="B_OUTLINE_RESIZE" />
+			<constant name="B_WILL_ACCEPT_FIRST_CLICK" />
+			<constant name="B_AVOID_FRONT" />
+			<constant name="B_AVOID_FOCUS" />
+			<constant name="B_NO_WORKSPACE_ACTIVATION" />
+			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" />
+			<constant name="B_ASYNCHRONOUS_CONTROLS" />
+			<constant name="B_QUIT_ON_WINDOW_CLOSE" />
+			<!-- window look constants -->
+			<constant name="B_DOCUMENT_WINDOW_LOOK" />
+			<constant name="B_TITLED_WINDOW_LOOK" />
+			<constant name="B_FLOATING_WINDOW_LOOK" />
+			<constant name="B_MODAL_WINDOW_LOOK" />
+			<constant name="B_BORDERED_WINDOW_LOOK" />
+			<constant name="B_NO_BORDER_WINDOW_LOOK" />
+			<!-- window feel constants -->
+			<constant name="B_NORMAL_WINDOW_FEEL" />
+			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" />
+			<constant name="B_MODAL_APP_WINDOW_FEEL" />
+			<constant name="B_MODAL_ALL_WINDOW_FEEL" />
+			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" />
+			<constant name="B_FLOATING_APP_WINDOW_FEEL" />
+			<constant name="B_FLOATING_ALL_WINDOW_FEEL" />
+			<!-- window type constants -->
+			<constant name="B_TITLED_WINDOW" />
+			<constant name="B_DOCUMENT_WINDOW" />
+			<constant name="B_MODAL_WINDOW" />
+			<constant name="B_FLOATING_WINDOW" />
+			<constant name="B_BORDERED_WINDOW" />
+			<constant name="B_UNTYPED_WINDOW" />
+			<!-- workspace constants -->
+			<constant name="B_CURRENT_WORKSPACE" />
+			<constant name="B_ALL_WORKSPACES" />
+		</constants>
+	</binding>
 </bindings>

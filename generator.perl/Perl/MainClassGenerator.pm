@@ -64,6 +64,12 @@ MOD
 		print OUT "\n";
 	}
 	
+	# force main package again, since the last import may have overwritten it
+	print OUT <<MOD;
+MODULE = $self->{module}	PACKAGE = $self->{def}{target}
+
+MOD
+	
 	$self->write_basic_xs_code(\*OUT);
 	
 	close OUT;

@@ -138,10 +138,10 @@ RESP_OBJ_PTR
 	sv_setsv(\$arg, \$var->perl_obj);
 
 NORM_OBJ
-	sv_setsv(\$arg, create_perl_object((IV)\$var, CLASS, 1));
+	sv_setsv(\$arg, create_perl_object((IV)&\$var, CLASS, 1));
 
 NORM_OBJ_PTR
-	sv_setsv(\$arg, create_perl_object((IV)&\$var, CLASS, 1));
+	sv_setsv(\$arg, create_perl_object((IV)\$var, CLASS, 1));
 
 INPUT
 
