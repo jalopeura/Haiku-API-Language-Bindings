@@ -1,0 +1,39 @@
+<bindings bundle="Haiku::ApplicationKit">
+	<include files="Application.h, Message.h" />
+	<link files="libbe" />
+	<types>
+		<type name="uint32"     builtin="unsigned long" />
+		<type name="int32"      builtin="long" />
+		<type name="thread_id"  builtin="long" />
+<!--
+Objects defined by this interface automatically have pointer types created
+for them. If you need the objects themselves rather than pointers, or if
+you need objects not defined in this interface, you need to define the
+types in this section.
+-->
+		<type name="BWindow*"  builtin="object_ptr" target="Haiku::Window" />
+		<type name="BMessage"  builtin="object"     target="Haiku::Message" />
+	</types>
+	<import file="Application.def" />
+	<import file="Message.def" />
+	<binding cpp="ApplicationKit" target="Haiku::ApplicationKit">
+		<constants>
+			<constant name="B_DUPLICATE_REPLY" />
+			<constant name="B_BAD_REPLY" />
+			<constant name="B_BAD_HANDLER" />
+			<constant name="B_MESSAGE_TO_SELF" />
+			<constant name="B_ALREADY_RUNNING" />
+			<constant name="B_LAUNCH_FAILED" />
+			<constant name="B_AMBIGUOUS_APP_LAUNCH" />
+			<constant name="B_UNKNOWN_MIME_TYPE" />
+			<constant name="B_BAD_SCRIPT_SYNTAX" />
+			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" />
+			<constant name="B_LAUNCH_FAILED_EXECUTABLE" />
+			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" />
+			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" />
+			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" />
+			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" />
+			<constant name="B_BAD_MIME_SNIFFER_RULE" />
+		</constants>
+	</binding>
+</bindings>

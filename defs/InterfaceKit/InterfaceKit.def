@@ -1,0 +1,23 @@
+<bindings bundle="Haiku::InterfaceKit">
+	<include files="Window.h, Button.h, Rect.h" />
+	<link files="libbe" />
+	<types>
+		<type name="uint32"     builtin="unsigned long" />
+		<type name="int32"      builtin="long" />
+		<type name="window_type" builtin="int" />
+		<type name="window_look" builtin="int" />
+		<type name="window_feel" builtin="int" />
+<!--
+Objects defined by this interface automatically have pointer types created
+for them. If you need the objects themselves rather than pointers, or if
+you need objects not defined in this interface, you need to define the
+types in this section.
+-->
+		<type name="BMessage*" builtin="object_ptr" target="Haiku::Message" />
+		<type name="BView*"    builtin="object_ptr" target="Haiku::View" />
+		<type name="BRect"     builtin="object"     target="Haiku::Rect" />
+	</types>
+	<import file="Window.def" />
+	<import file="Rect.def" />
+	<import file="Button.def" />
+</bindings>

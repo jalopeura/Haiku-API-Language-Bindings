@@ -1,0 +1,138 @@
+<bindings>
+	<binding cpp="BWindow" cpp-inherits="BLooper" target="Haiku::Window">
+		<methods>
+			<constructor>
+				<params>
+					<param name="frame" type="BRect" action="input" />
+					<param name="title" type="const char*" action="input" />
+					<param name="type" type="window_type" action="input" />
+					<param name="flags" type="uint32" action="input" />
+					<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE" />
+				</params>
+			</constructor>
+			<constructor overload-name="ByLookAndFeel">
+				<params>
+					<param name="frame" type="BRect" action="input" />
+					<param name="title" type="const char*" action="input" />
+					<param name="look" type="window_look" action="input" />
+					<param name="feel" type="window_feel" action="input" />
+					<param name="flags" type="uint32" action="input" />
+					<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE" />
+				</params>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<params>
+					<param name="archive" type="BMessage*" action="input" />
+				</params>
+			</constructor>
+			<destructor />
+			<!-- Activate -->
+			<!-- IsActive -->
+			<method cpp="AddChild">
+				<params>
+					<param name="view" type="BView*" action="input" />
+					<param name="sibling" type="BView*" action="input" default="NULL" />
+				</params>
+				<return type="void" />
+			</method>
+			<method cpp="RemoveChild">
+				<params>
+					<param name="view" type="BView*" action="input" />
+				</params>
+				<return type="bool" action="output" />
+			</method>
+			<method cpp="ChildAt">
+				<params>
+					<param name="index" type="int32" action="input" />
+				</params>
+				<return type="BView*" action="output" />
+			</method>
+			<method cpp="CountChildren">
+				<params />
+				<return type="int32" action="output" />
+			</method>
+			<!-- AddShortcut -->
+			<!-- RemoveShortcut -->
+			<!-- AddToSubset -->
+			<!-- RemoveFromSubset -->
+			<!-- Archive -->
+			<!-- Bounds -->
+			<!-- Frame -->
+			<!-- ConvertToScreen -->
+			<!-- ConvertFromScreen -->
+			<!-- CurrentFocus -->
+			<!-- DisableUpdates -->
+			<!-- EnableUpdates -->
+			<!-- FindView -->
+			<!-- Flush -->
+			<!-- Sync -->
+			<!-- GetSupportedSuites -->
+			<!-- IsFront -->
+			<!-- IsFloating -->
+			<!-- IsModal -->
+			<!-- LastMouseMovedView -->
+			<!-- MoveBy -->
+			<!-- MoveTo -->
+			<!-- NeedsUpdate -->
+			<!-- OpenViewTransaction -->
+			<!-- CommitViewTransaction -->
+			<method cpp="Quit">
+				<params />
+				<return type="void" />
+			</method>
+			<!-- ResizeBy -->
+			<!-- ResizeTo -->
+			<!-- ResolveSpecifier -->
+			<!-- SendBehind -->
+			<!-- SetDefaultButton -->
+			<!-- DefaultButton -->
+			<!-- SetFeel -->
+			<!-- Feel -->
+			<!-- SetFlags -->
+			<!-- Flags -->
+			<!-- SetKeyMenuBar -->
+			<!-- KeyMenuBar -->
+			<!-- SetLook -->
+			<!-- Look -->
+			<!-- SetPulseRate -->
+			<!-- PulseRate -->
+			<!-- SetSizeLimits -->
+			<!-- GetSizeLimits -->
+			<!-- SetZoomLimits -->
+			<!-- SetTitle -->
+			<!-- Title -->
+			<!-- SetType -->
+			<!-- Type -->
+			<!-- SetWindowAlignment -->
+			<!-- GetWindowAlignment -->
+			<!-- SetWorkspaces -->
+			<!-- Workspaces -->
+			<!-- Show -->
+			<!-- Hide -->
+			<!-- IsHidden -->
+			<!-- Minimize -->
+			<!-- IsMinimized -->
+			<!-- UpdateIfNeeded -->
+		</methods>
+		<events>
+			<!-- FrameMoved -->
+			<!-- FrameResized -->
+			<!-- MenusBeginning -->
+			<!-- MenusEnded -->
+			<event cpp="MessageReceived">
+				<params>
+					<param name="message" type="BMessage*" passback="Haiku::Message" action="input" />
+				</params>
+				<return type="void" />
+			</event>
+			<!-- ScreenChanged -->
+			<!-- WindowActivated -->
+			<!-- WorkspaceActivated -->
+			<!-- WorkspacesChanged -->
+			<!-- Zoom -->
+		</events>
+		<constants>
+			<!-- <constant name="" value="" /> -->
+		</constants>
+	</binding>
+</bindings>

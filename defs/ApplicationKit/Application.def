@@ -1,0 +1,114 @@
+<bindings>
+	<binding cpp="BApplication" target="Haiku::Application">
+		<methods>
+			<constructor>
+				<params>
+					<param name="signature" type="const char*" action="input" />
+					<param name="error" type="status_t*" action="error" success="B_OK" />
+				</params>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<params>
+					<param name="archive" type="BMessage*" action="input" />
+				</params>
+			</constructor>
+			<destructor />
+			<!-- InitCheck -->
+			<!-- Archive -->
+			<!-- GetAppInfo -->
+			<!-- GetSupportedSuites -->
+			<!-- ResolveSpecifier -->
+			<method cpp="IsLaunching">
+				<params />
+				<return type="bool" action="output" />
+			</method>
+			<method cpp="Run">
+				<params />
+				<return type="thread_id" action="output" />
+			</method>
+			<method cpp="Quit">
+				<params />
+				<return type="void" />
+			</method>
+			<!-- SetCursor -->
+			<!-- HideCursor -->
+			<!-- ShowCursor -->
+			<!-- ObscureCursor -->
+			<!-- IsCursorHidden -->
+<!--
+			<method cpp="SetPulseRate">
+				<params>
+					<param name="rate" type="bigtime_t" action="input" />
+				</params>
+				<return type="void" />
+			</method>
+-->
+			<method cpp="WindowAt">
+				<params>
+					<param name="index" type="int32" action="input" />
+				</params>
+				<return type="BWindow*" action="output" />
+			</method>
+			<method cpp="CountWindows">
+				<params />
+				<return type="int32" action="output" />
+			</method>
+		</methods>
+		<events>
+<!--
+			<event cpp="AboutRequested">
+				<params/>
+				<return type="void" />
+			</event>
+			<event cpp="AppActivated">
+				<params>
+					<param name="active" type="bool" action="input" />
+				</params>
+				<return type="void" />
+			</event>
+			<event cpp="ArgvReceived">
+				<params>
+					<param name="argc" type="int32" action="count[argv]" />
+					<param name="argv" type="char**" action="input" />
+				</params>
+				<return type="void" />
+			</event>
+			<event cpp="Pulse">
+				<params/>
+				<return type="void" />
+			</event>
+			<event cpp="QuitRequested">
+				<params/>
+				<return type="bool" />
+			</event>
+			<event cpp="ReadyToRun">
+				<params/>
+				<return type="void" />
+			</event>
+			<event cpp="RefsReceived">
+				<params>
+					<param name="message" type="BMessage*" action="input" />
+				</params>
+				<return type="void" />
+			</event>
+-->
+			<!-- inherited from BLooper -->
+<!--
+			<event cpp="DispatchMessage">
+				<params>
+					<param name="message" type="BMessage*" action="input" />
+					<param name="target" type="BHandler*" action="input" />
+				</params>
+				<return type="void" />
+			</event>
+-->
+			<!-- inherited from BHandler -->
+			<event cpp="MessageReceived">
+				<params>
+					<param name="message" type="BMessage*" action="input" passback="Haiku::Message" must-not-delete="true" />
+				</params>
+				<return type="void" />
+			</event>
+		</events>
+	</binding>
+</bindings>

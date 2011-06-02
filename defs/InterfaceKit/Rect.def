@@ -1,0 +1,46 @@
+<bindings>
+	<binding cpp="BRect" target="Haiku::Rect">
+		<properties>
+			<property name="left" type="float"></property>
+			<property name="top" type="float"></property>
+			<property name="right" type="float"></property>
+			<property name="bottom" type="float"></property>
+		</properties>
+		<methods>
+			<constructor>
+				<params>
+					<param name="left" type="float" action="input" />
+					<param name="top" type="float" action="input" />
+					<param name="right" type="float" action="input" />
+					<param name="bottom" type="float" action="input" />
+				</params>
+			</constructor>
+			<constructor overload-name="Empty">
+				<params />
+			</constructor>
+			<destructor />
+			<!-- Contains -->
+			<!-- Intersects -->
+			<!-- InsetBy -->
+			<!-- InsetBySelf -->
+			<!-- InsetByCopy -->
+			<!-- OffsetBy -->
+			<!-- OffsetBySelf -->
+			<!-- OffsetByCopy -->
+			<!-- OffsetTo -->
+			<!-- OffsetToSelf -->
+			<!-- OffsetToCopy -->
+			<!-- IsValid -->
+			<!-- PrintToStream -->
+			<!-- Set -->
+			<!-- SetLeftTop -->
+			<!-- SetLeftBottom -->
+			<!-- SetRightTop -->
+			<!-- SetRightBottom -->
+			<!-- Width -->
+			<!-- IntegerWidth -->
+			<!-- Height -->
+			<!-- IntegerHeight -->
+		</methods>
+	</binding>
+</bindings>

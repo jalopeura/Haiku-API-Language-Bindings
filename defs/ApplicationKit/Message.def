@@ -1,0 +1,106 @@
+<bindings>
+	<binding cpp="BMessage" target="Haiku::Message">
+		<properties>
+			<property name="what" type="uint32" />
+		</properties>
+		<methods>
+			<constructor>
+				<params>
+					<param name="command" type="uint32" action="input" />
+				</params>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<params>
+					<param name="message" type="BMessage&" action="input" />
+				</params>
+			</constructor>
+			<constructor overload-name="Empty">
+				<params />
+			</constructor>
+			<destructor />
+			<!-- AddData -->
+			<!-- AddBool -->
+			<!-- AddInt8 -->
+			<!-- AddInt16 -->
+			<!-- AddInt32 -->
+			<!-- AddInt64 -->
+			<!-- AddFloat -->
+			<!-- AddDouble -->
+			<!-- AddString -->
+			<!-- AddPoint -->
+			<!-- AddRect -->
+			<!-- AddRef -->
+			<!-- AddMessage -->
+			<!-- AddMessenger -->
+			<!-- AddPointer -->
+			<!-- AddFlat -->
+			<!-- AddSpecifier -->
+			<!-- CountNames -->
+			<!-- FindData -->
+			<!-- FindBool -->
+			<!-- FindInt8 -->
+			<!-- FindInt16 -->
+			<!-- FindInt32 -->
+			<!-- FindInt64 -->
+			<!-- FindFloat -->
+			<!-- FindDouble -->
+			<!-- FindString -->
+			<!-- FindPoint -->
+			<!-- FindRect -->
+			<!-- FindRef -->
+			<!-- FindMessage -->
+			<!-- FindMessenger -->
+			<!-- FindPointer -->
+			<!-- FindFlat -->
+			<!-- Flatten -->
+			<!-- Unflatten -->
+			<!-- FlattenedSize -->
+			<!-- GetCurrentSpecifier -->
+			<!-- PopSpecifier -->
+			<!-- GetInfo -->
+			<!-- HasSpecifiers -->
+			<!-- IsSystem -->
+			<!-- MakeEmpty -->
+			<!-- IsEmpty -->
+			<!-- PrintToStream -->
+			<!-- RemoveName -->
+			<!-- RemoveData -->
+			<!-- ReplaceData -->
+			<!-- ReplaceBool -->
+			<!-- ReplaceInt8 -->
+			<!-- ReplaceInt16 -->
+			<!-- ReplaceInt32 -->
+			<!-- ReplaceInt64 -->
+			<!-- ReplaceFloat -->
+			<!-- ReplaceDouble -->
+			<!-- ReplaceString -->
+			<!-- ReplacePoint -->
+			<!-- ReplaceRect -->
+			<!-- ReplaceRef -->
+			<!-- ReplaceMessage -->
+			<!-- ReplaceMessenger -->
+			<!-- ReplacePointer -->
+			<!-- ReplaceFlat -->
+			<!-- ReturnAddress -->
+			<!-- SendReply -->
+			<!-- WasDelivered -->
+			<!-- IsSourceRemote -->
+			<!-- IsSourceWaiting -->
+			<!-- IsReply -->
+			<!-- Previous -->
+			<!-- WasDropped -->
+			<!-- DropPoint -->
+		</methods>
+		<constants>
+			<constant name="B_NO_SPECIFIER" />
+			<constant name="B_DIRECT_SPECIFIER" />
+			<constant name="B_INDEX_SPECIFIER" />
+			<constant name="B_REVERSE_INDEX_SPECIFIER" />
+			<constant name="B_RANGE_SPECIFIER" />
+			<constant name="B_REVERSE_RANGE_SPECIFIER" />
+			<constant name="B_NAME_SPECIFIER" />
+			<constant name="B_ID_SPECIFIER" />
+			<constant name="B_SPECIFIERS_END" />
+		</constants>
+	</binding>
+</bindings>
