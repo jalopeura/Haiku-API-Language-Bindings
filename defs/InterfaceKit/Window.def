@@ -1,6 +1,6 @@
-<bindings>
-	<binding cpp="BWindow" cpp-inherits="BLooper" target="Haiku::Window">
-		<methods>
+<bindings name="Haiku::Window">
+	<binding source="BWindow" source-inherits="BLooper" target="Haiku::Window"  must-not-delete="true">
+		<functions>
 			<constructor>
 				<params>
 					<param name="frame" type="BRect" action="input" />
@@ -9,6 +9,7 @@
 					<param name="flags" type="uint32" action="input" />
 					<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE" />
 				</params>
+				<return />
 			</constructor>
 			<constructor overload-name="ByLookAndFeel">
 				<params>
@@ -28,26 +29,26 @@
 			<destructor />
 			<!-- Activate -->
 			<!-- IsActive -->
-			<method cpp="AddChild">
+			<method name="AddChild">
 				<params>
 					<param name="view" type="BView*" action="input" />
 					<param name="sibling" type="BView*" action="input" default="NULL" />
 				</params>
 				<return type="void" />
 			</method>
-			<method cpp="RemoveChild">
+			<method name="RemoveChild">
 				<params>
 					<param name="view" type="BView*" action="input" />
 				</params>
 				<return type="bool" action="output" />
 			</method>
-			<method cpp="ChildAt">
+			<method name="ChildAt">
 				<params>
 					<param name="index" type="int32" action="input" />
 				</params>
 				<return type="BView*" action="output" />
 			</method>
-			<method cpp="CountChildren">
+			<method name="CountChildren">
 				<params />
 				<return type="int32" action="output" />
 			</method>
@@ -72,7 +73,7 @@
 			<!-- IsModal -->
 			<!-- LastMouseMovedView -->
 			<!-- MoveBy -->
-			<method cpp="MoveTo">
+			<method name="MoveTo">
 				<params>
 					<param name="x" type="float" action="input" />
 					<param name="y" type="float" action="input" />
@@ -82,12 +83,12 @@
 			<!-- NeedsUpdate -->
 			<!-- OpenViewTransaction -->
 			<!-- CommitViewTransaction -->
-			<method cpp="Quit">
+			<method name="Quit">
 				<params />
 				<return type="void" />
 			</method>
 			<!-- ResizeBy -->
-			<method cpp="ResizeTo">
+			<method name="ResizeTo">
 				<params>
 					<param name="width" type="float" action="input" />
 					<param name="height" type="float" action="input" />
@@ -119,11 +120,11 @@
 			<!-- GetWindowAlignment -->
 			<!-- SetWorkspaces -->
 			<!-- Workspaces -->
-			<method cpp="Show">
+			<method name="Show">
 				<params />
 				<return type="void" />
 			</method>
-			<method cpp="Hide">
+			<method name="Hide">
 				<params />
 				<return type="void" />
 			</method>
@@ -131,15 +132,13 @@
 			<!-- Minimize -->
 			<!-- IsMinimized -->
 			<!-- UpdateIfNeeded -->
-		</methods>
-		<events>
 			<!-- FrameMoved -->
 			<!-- FrameResized -->
 			<!-- MenusBeginning -->
 			<!-- MenusEnded -->
-			<event cpp="MessageReceived">
+			<event name="MessageReceived">
 				<params>
-					<param name="message" type="BMessage*" passback="Haiku::Message" action="input" />
+					<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				</params>
 				<return type="void" />
 			</event>
@@ -148,7 +147,7 @@
 			<!-- WorkspaceActivated -->
 			<!-- WorkspacesChanged -->
 			<!-- Zoom -->
-		</events>
+		</functions>
 		<constants>
 			<!-- <constant name="" value="" /> -->
 		</constants>

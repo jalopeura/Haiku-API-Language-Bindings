@@ -1,12 +1,12 @@
-<bindings>
-	<binding cpp="BRect" target="Haiku::Rect">
+<bindings name="Haiku::Rect">
+	<binding source="BRect" target="Haiku::Rect">
 		<properties>
 			<property name="left" type="float"></property>
 			<property name="top" type="float"></property>
 			<property name="right" type="float"></property>
 			<property name="bottom" type="float"></property>
 		</properties>
-		<methods>
+		<functions>
 			<constructor>
 				<params>
 					<param name="left" type="float" action="input" />
@@ -31,7 +31,7 @@
 			<!-- OffsetToSelf -->
 			<!-- OffsetToCopy -->
 			<!-- IsValid -->
-			<method cpp="PrintToStream">
+			<method name="PrintToStream">
 				<params />
 				<return type="void" />
 			</method>
@@ -44,6 +44,6 @@
 			<!-- IntegerWidth -->
 			<!-- Height -->
 			<!-- IntegerHeight -->
-		</methods>
+		</functions>
 	</binding>
 </bindings>

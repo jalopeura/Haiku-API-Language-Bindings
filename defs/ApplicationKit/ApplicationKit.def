@@ -1,6 +1,11 @@
-<bindings bundle="Haiku::ApplicationKit">
-	<include files="Application.h, Message.h" />
-	<link files="libbe" />
+<bindings name="Haiku::ApplicationKit">
+	<includes>
+		<include file="Application.h" />
+		<include file="Message.h" />
+	</includes>
+	<links>
+		<link lib="libbe" />
+	</links>
 	<types>
 		<type name="uint32"     builtin="unsigned long" />
 		<type name="int32"      builtin="long" />
@@ -14,8 +19,10 @@ types in this section.
 		<type name="BWindow*"  builtin="object_ptr" target="Haiku::Window" />
 		<type name="BMessage"  builtin="object"     target="Haiku::Message" />
 	</types>
-	<import file="Application.def" />
-	<import file="Message.def" />
+	<imports>
+		<import file="Application.def" />
+		<import file="Message.def" />
+	</imports>
 	<binding cpp="ApplicationKit" target="Haiku::ApplicationKit">
 		<constants>
 			<constant name="B_DUPLICATE_REPLY" />

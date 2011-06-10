@@ -1,7 +1,7 @@
 # for testing before installation
 BEGIN {
-	my $folder = '../../generated/perl/';
-	for my $kit (qw(ApplicationKit InterfaceKit)) {
+	my $folder = '../../generated.new/perl/';
+	for my $kit (qw(HaikuKits)) {
 		push @INC, "$folder$kit/blib/lib";
 		push @INC, "$folder$kit/blib/arch";
 	}
@@ -21,25 +21,31 @@ use Haiku::CustomApplication;
 use strict;
 our @ISA = qw(Haiku::CustomApplication);
 
+sub ArgvReceived {
+	my ($self, $args) = @_;
+warn "\ArgvReceived($self, ", join(', ', @$args), ")\n\n";
+	$self->SUPER::ArgvReceived($args);
+}
+
 sub AppActivated {
 	my ($self, $active) = @_;
-warn "AppActivated ($active)";
+warn "\nAppActivated($self, $active)\n\n";
 }
 
 sub QuitRequested {
 	my ($self) = @_;
-warn "QuitRequested";
+warn "\nQuitRequested ($self)\n\n";
 	return $self->SUPER::QuitRequested();
 }
 
 sub ReadyToRun {
 	my ($self) = @_;
-warn "ReadyToRun";
+warn "\nReadyToRun($self)\n\n";
 }
 
 sub MessageReceived {
 	my ($self, $message) = @_;
-warn $message;
+warn "\nMessageReceived($self, $message)\n\n";
 	$self->SUPER::MessageReceived($message);
 }
 
@@ -49,16 +55,20 @@ use strict;
 our @ISA = qw(Haiku::CustomWindow);
 
 my $click_count;
+my $message_count;
 
 sub MessageReceived {
 	my ($self, $message) = @_;
-	my $what = $message->what;
+#print "$self, $message\n";
+	$message_count++;
+#print tied($message->what()),"\n";
+	my $what = $message->what();
 	my $text = unpack('A*', pack('L', $what));
 #print "$what => $text\n";
 	if ($what == 0x12345678) {
 		$click_count++;
-warn $click_count;
-		$main::TestButton->SetLabel("Clicks: $click_count");
+#warn $click_count;
+		$main::TestButton->SetLabel("$click_count of $message_count");
 		return;
 	}
 	$self->SUPER::MessageReceived($message);
@@ -67,13 +77,16 @@ warn $click_count;
 package main;
 use strict;
 
+$Haiku::ApplicationKit::DEBUG = 0;
+$Haiku::InterfaceKit::DEBUG = 0;
+
 $TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 
-#print $TestApp,"\n";
+print "\nTestApp: ", $TestApp+0,"\n\n";
 
 my $wrect = new Haiku::Rect(50,50,250,250);
 
-#print $wrect,"\n";
+print "\nwrect: ", $wrect+0,"\n\n";
 
 # simple get
 #my $l = $wrect->left;
@@ -90,8 +103,24 @@ $TestWindow = new MyWindow(
 	"Test Window",	# title
 	B_TITLED_WINDOW,	# type
 	B_QUIT_ON_WINDOW_CLOSE,	# flags
-	B_CURRENT_WORKSPACE,	# workspace
 );
+
+print "\nTestWindow: ", $TestWindow, "\n\n";
+
+{
+	my $win = new MyWindow(
+		$wrect,	# frame
+		"Test Window",	# title
+		B_TITLED_WINDOW,	# type
+		B_QUIT_ON_WINDOW_CLOSE,	# flags
+	);
+	
+	print "\nwin: ", $win, "\n\n";
+	
+	#$win->UNLINK;
+}
+
+#=pod
 
 $TestButton = new Haiku::Button(
 	new Haiku::Rect(10,10,110,100),	# frame
@@ -102,14 +131,22 @@ $TestButton = new Haiku::Button(
 	B_WILL_DRAW | B_NAVIGABLE,	# flags
 );
 
+print "\nTestButton: ", $TestButton,"\n\n";
+
 $TestWindow->AddChild(
 	$TestButton,	# view
 	0,	# sibling
 );
 
+#=cut
+
 $TestWindow->Show;
 
 $TestApp->Run;
 
+undef $wrect;
+undef $TestButton;
+undef $TestWindow;
+undef $TestApp;
 
-
+print "\nEnd of file\n\n";

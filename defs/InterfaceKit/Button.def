@@ -1,6 +1,6 @@
-<bindings>
-	<binding cpp="BButton" cpp-inherits="BControl" target="Haiku::Button">
-		<methods>
+<bindings name="Haiku::Button">
+	<binding source="BButton" source-inherits="BControl" target="Haiku::Button">
+		<functions>
 			<constructor>
 				<params>
 					<param name="frame" type="BRect" action="input" />
@@ -21,18 +21,16 @@
 			<!-- Draw -->
 			<!-- GetPreferredSize -->
 			<!-- IsDefault -->
-			<method cpp="SetLabel">
+			<method name="SetLabel">
 				<params>
 					<param name="string" type="const char*" action="input" />
 				</params>
 				<return type="void" />
 			</method>
-		</methods>
-		<events>
 			<!-- AttachedToWindow -->
 			<!-- KeyDown -->
 			<!-- MakeDefault -->
 			<!-- MouseDown -->
-		</events>
+		</functions>
 	</binding>
 </bindings>

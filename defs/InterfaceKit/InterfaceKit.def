@@ -1,6 +1,12 @@
-<bindings bundle="Haiku::InterfaceKit">
-	<include files="Window.h, Button.h, Rect.h" />
-	<link files="libbe" />
+<bindings name="Haiku::InterfaceKit">
+	<includes>
+		<include file="Window.h" />
+		<include file="Button.h" />
+		<include file="Rect.h" />
+	</includes>
+	<links>
+		<link lib="libbe" />
+	</links>
 	<types>
 		<type name="uint32"     builtin="unsigned long" />
 		<type name="int32"      builtin="long" />
@@ -17,10 +23,12 @@ types in this section.
 		<type name="BView*"    builtin="object_ptr" target="Haiku::View" />
 		<type name="BRect"     builtin="object"     target="Haiku::Rect" />
 	</types>
-	<import file="Window.def" />
-	<import file="Rect.def" />
-	<import file="Button.def" />
-	<binding cpp="InterfaceKit" target="Haiku::InterfaceKit">
+	<imports>
+		<import file="Window.def" />
+		<import file="Rect.def" />
+		<import file="Button.def" />
+	</imports>
+	<binding name="InterfaceKit" target="Haiku::InterfaceKit">
 		<constants>
 			<!-- alignment constants -->
 			<constant name="B_ALIGN_LEFT" />

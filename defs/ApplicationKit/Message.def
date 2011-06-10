@@ -1,9 +1,9 @@
-<bindings>
-	<binding cpp="BMessage" target="Haiku::Message">
+<bindings name="Haiku::Message">
+	<binding source="BMessage" target="Haiku::Message">
 		<properties>
 			<property name="what" type="uint32" />
 		</properties>
-		<methods>
+		<functions>
 			<constructor>
 				<params>
 					<param name="command" type="uint32" action="input" />
@@ -90,7 +90,7 @@
 			<!-- Previous -->
 			<!-- WasDropped -->
 			<!-- DropPoint -->
-		</methods>
+		</functions>
 		<constants>
 			<constant name="B_NO_SPECIFIER" />
 			<constant name="B_DIRECT_SPECIFIER" />
