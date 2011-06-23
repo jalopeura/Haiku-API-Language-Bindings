@@ -1,67 +1,41 @@
 package Bundle;
 use strict;
+our @ISA = qw(BaseObject);
 
+our $content_as = '';
+our @allowed_attrs = qw();
+our %allowed_children = (
+	bindings => {
+		key => 'bindings_collection',
+		class => 'BundledBindings',
+	},
+);
+
+package BundledBindings;
+use strict;
 our @ISA = qw(Bindings);
 
+our ($content_as, @allowed_attrs, %allowed_children, %child_handlers);
+
+*content_as = \$Bindings::content_as;
+*allowed_attrs = \@Bindings::allowed_attrs;
+*allowed_children = \%Bindings::allowed_children;
+*child_handlers = \%Bindings::child_handlers;
+
 sub new {
-	my ($class, $element, $folder) = @_;
+	my ($class, $parent, $element) = @_;
 	
 #print <<INFO;
 #Creating bundle from $element->{attrs}{file}
 #INFO
 	
-	my $source = File::Spec->catfile($folder, $element->attr('file'));
+	my $source = File::Spec->catfile($parent->_folder, $element->attr('file'));
 	
 	my $self = $class->SUPER::new(
 		source => $source,
 	);
 	
 	return $self;
-}
-
-package Bundles;
-use strict;
-
-sub new {
-	my ($class, $folder, @elements) = @_;
-	my $self = bless {
-		folder => $folder,
-		children => [],
-	}, $class;
-	
-	$self->add(@elements);
-	
-	return $self;
-}
-
-sub add {
-	my ($self, @elements) = @_;
-	
-	# bundles element can have the following child elements:
-	# bundle
-	for my $element (@elements) {
-		for my $child (@{ $element->children }) {
-			# bundles has no content, so Content elements are just whitespace
-			next if $child->isa('SGML::Content');
-			
-			# ignore comments
-			next if $child->isa('SGML::Comment');
-			
-			my $cn = $child->name;
-			
-			if ($cn eq 'bundle') {
-				push @{ $self->{children} }, new Bundle($child, $self->{folder});
-				next;
-			}
-			
-			die "Unsupported child of bundles element: $cn";
-		}
-	}
-}
-
-sub bundles {
-	my ($self) = @_;
-	return $self->{children};
 }
 
 1;

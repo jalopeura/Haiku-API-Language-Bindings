@@ -22,6 +22,7 @@
 			<!-- GetPreferredSize -->
 			<!-- IsDefault -->
 			<method name="SetLabel">
+				<doc>Sets the button's label.</doc>
 				<params>
 					<param name="string" type="const char*" action="input" />
 				</params>

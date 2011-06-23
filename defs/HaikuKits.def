@@ -1,6 +1,6 @@
 <bindings name="HaikuKits">
-	<bundles>
-		<bundle file="ApplicationKit/ApplicationKit.def" />
-		<bundle file="InterfaceKit/InterfaceKit.def" />
-	</bundles>
+	<bundle>
+		<bindings file="ApplicationKit/ApplicationKit.def" />
+		<bindings file="InterfaceKit/InterfaceKit.def" />
+	</bundle>
 </bindings>

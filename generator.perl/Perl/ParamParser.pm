@@ -1,24 +1,33 @@
-package Perl::Generator;
+package Perl::Package;
 use strict;
 
 sub parse_params {
-	my ($self, @params) = @_;
+	my ($self, $function) = @_;
+	
+	my @params;
+	for my $params ($function->params_collection) {
+		push @params, $params->params;
+	}
+	push @params, $function->returns;
 	
 	my (@cpp_inputs, $cpp_output, %xs_params, $xs_retval, @xs_inputs, @xs_outputs, @xs_errors);
 	
 	for my $param (@params) {
 		my $name = $param->{name};
 		my $type = $param->{type};
-		my $perltype = "PERLTYPE($param->{type})";	# placeholder
+#		my $perltype = "PERLTYPE($param->{type})";	# placeholder
 		my $default = $param->{default};
 		my $action = $param->{action};
 		
 		if ($param->isa('Return')) {
+			$name ||= 'retval';
+			
 			$cpp_output = {
+				name => $name,
 				type => $type,
+				must_not_delete => $param->{must_not_delete},
 			};
 			
-			$name ||= 'retval';
 			$xs_params{$name} ||= {};
 			$xs_params{$name}{name} = $name;
 			$xs_params{$name}{type} = $type;

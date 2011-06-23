@@ -30,6 +30,7 @@
 			<!-- Activate -->
 			<!-- IsActive -->
 			<method name="AddChild">
+				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
 				<params>
 					<param name="view" type="BView*" action="input" />
 					<param name="sibling" type="BView*" action="input" default="NULL" />
@@ -37,18 +38,21 @@
 				<return type="void" />
 			</method>
 			<method name="RemoveChild">
+				<doc>Removes [code]view[/code] from the window's view list.</doc>
 				<params>
 					<param name="view" type="BView*" action="input" />
 				</params>
 				<return type="bool" action="output" />
 			</method>
 			<method name="ChildAt">
+				<doc>Returns the [code]index[/code]th view from the window's view list.</doc>
 				<params>
 					<param name="index" type="int32" action="input" />
 				</params>
 				<return type="BView*" action="output" />
 			</method>
 			<method name="CountChildren">
+				<doc>Returns the number of views in the window's view list.</doc>
 				<params />
 				<return type="int32" action="output" />
 			</method>
@@ -74,6 +78,7 @@
 			<!-- LastMouseMovedView -->
 			<!-- MoveBy -->
 			<method name="MoveTo">
+				<doc>Moves the window to the given coordinates.</doc>
 				<params>
 					<param name="x" type="float" action="input" />
 					<param name="y" type="float" action="input" />
@@ -84,11 +89,13 @@
 			<!-- OpenViewTransaction -->
 			<!-- CommitViewTransaction -->
 			<method name="Quit">
+				<doc>Ends the window's message loop.</doc>
 				<params />
 				<return type="void" />
 			</method>
 			<!-- ResizeBy -->
 			<method name="ResizeTo">
+				<doc>Changes the window's size to the given dimensions.</doc>
 				<params>
 					<param name="width" type="float" action="input" />
 					<param name="height" type="float" action="input" />
@@ -121,10 +128,12 @@
 			<!-- SetWorkspaces -->
 			<!-- Workspaces -->
 			<method name="Show">
+				<doc>Shows the window. A window is not automatically shown when created; the first call to [code]Show[/code] also begins the window's message loop.</doc>
 				<params />
 				<return type="void" />
 			</method>
 			<method name="Hide">
+				<doc>Hides the window.</doc>
 				<params />
 				<return type="void" />
 			</method>
@@ -137,6 +146,7 @@
 			<!-- MenusBeginning -->
 			<!-- MenusEnded -->
 			<event name="MessageReceived">
+				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
 				<params>
 					<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				</params>

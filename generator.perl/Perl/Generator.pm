@@ -1,8 +1,7 @@
 package Perl::Generator;
 use File::Spec;
 use File::Path;
-use Perl::Types;
-require Perl::ClassGenerator;
+use Perl::Module;
 use strict;
 
 my $class_folder = 'ext';
@@ -26,82 +25,21 @@ print "Generating $target\n";
 	
 	# if the binding has any bundles, generate them
 	my @bundledirs;
-	if (my $bundles = $bindings->bundles) {
-		for my $bundle (@{ $bundles->bundles }) {
+	for my $bundle ($bindings->bundles) {
+		for my $bundled_bindings ($bundle->bindings_collection) {
 			$self->generate(
-				bindings => $bundle,
+				bindings => $bundled_bindings,
 				target => $target,
 			);
-			my @q = split /::/, $bundle->name;
+			my @q = split /::/, $bundled_bindings->name;
 			push @bundledirs, $q[-1];
 		}
 	}
 	
-	$self->{types} = new Perl::Types;
-	if (my $types = $bindings->types) {
-		for my $type ($types->types) {
-			$self->{types}->register_type(
-				$type->name,
-				$type->builtin,
-				$type->target,
-			);
-		}
-	}
-	
-	# this repeats some of the code from the ClassGenerator,
-	# but we need these types available before we generate classes
-	if ($bindings->bindings) {
-		for my $binding (@{ $bindings->bindings }) {
-			my $cpp_class_name = $binding->source;
-			my $perl_class_name = $binding->target;
-			
-			if ($cpp_class_name) {
-				$self->{types}->register_type(
-					"$cpp_class_name*",
-					'object_ptr',
-					$perl_class_name,
-				);
-			}
-			
-			if ($binding->events) {
-				my $cpp_responder_name = 'Custom_' . $cpp_class_name;
-				
-				my @pc = split /::/, $perl_class_name;
-				$pc[-1] = 'Custom' . $pc[-1];
-				my $perl_responder_name = join('::', @pc);
-				
-				$self->{types}->register_type(
-					"$cpp_responder_name*",
-					'responder_ptr',
-					$perl_responder_name,
-				);
-			}
-		}
-	}
-	
-	my (@xs_files, @h_files, @cpp_files);
-	
-	# create all our individual classes
-	if ($bindings->bindings) {
-		# prepare folders
-		my $xs_folder = File::Spec->catdir($target, $class_folder);
-		mkpath($xs_folder);
-		my $pm_folder = File::Spec->catdir($target, $lib_folder);
-		mkpath($pm_folder);
-		
-		# generate bindings
-		for my $binding (@{ $bindings->bindings }) {
-			my %files = $self->generate_class($bindings, $binding, $target, $class_folder, $lib_folder);
-		}
-	}
-	
-	if ($self->{types}->registered_type_count) {
-		my $typemap_file = File::Spec->catfile($target, 'typemap');
-		$self->{types}->write_typemap_file($typemap_file);
-	}
-	
-	# create our makefile
-		# links
+	# create and generate the module (main package)
+	# (it will create any additional packages)
+	my $module = new Perl::Module($bindings);
+	$module->generate($target, $lib_folder, $class_folder);
 	
 	# Makefile.PL
 	my $name = $bindings->{name};
@@ -121,7 +59,7 @@ print "Generating $target\n";
 	);
 	
 	my @libs;
-	if (my $links = $bindings->links) {
+	for my $links ($bindings->links_collection) {
 		for my $link ($links->links) {
 			push @libs, $link->lib;
 		}
@@ -166,9 +104,6 @@ OUT
 
 __END__
 
-Verify that xsubbpp works
-Verify that bundling works
-Verify that everything compiles
-
-Make timetrack merge
+# allow keyword-style entry (eventually)
+# alter ParamParser into Params (???)
 

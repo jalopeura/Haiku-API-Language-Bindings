@@ -54,7 +54,7 @@ our %perltypes = (
 our %input_converters = (
 	'T_CHAR'   => '$var = ($type)*SvPV_nolen($arg);',
 	'T_IV'     => '$var = ($type)SvIV($arg);',
-	'T_BOOL'   => '$var = ($type)SvTRUE($arg);',
+	'T_BOOL'   => '$var = SvTRUE($arg);',
 	
 	'T_U_CHAR' => '$var = ($type)SvUV($arg);',
 	'T_UV'     => '$var = ($type)SvUV($arg);',
@@ -107,6 +107,7 @@ sub new {
 
 sub register_type {
 	my ($self, $type, $builtin, $target) = @_;
+#print "Registering type $type/$builtin/$target\n";
 	
 #	$type=~s/([^\s*])*/$1 */;	# xsubpp wants this space in the typemap
 	

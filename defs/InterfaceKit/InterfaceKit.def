@@ -28,7 +28,7 @@ types in this section.
 		<import file="Rect.def" />
 		<import file="Button.def" />
 	</imports>
-	<binding name="InterfaceKit" target="Haiku::InterfaceKit">
+	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
 		<constants>
 			<!-- alignment constants -->
 			<constant name="B_ALIGN_LEFT" />

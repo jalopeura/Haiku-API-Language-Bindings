@@ -1,9 +1,25 @@
-package Perl::Generator;
+package Perl::Package;
 use strict;
+
+sub generate_xs_preamble {
+	my ($self) = @_;
+	
+	my $perl_class_name = $self->{name};
+	my $perl_module_name = $self->{module}{name};
+	
+	print { $self->{xsh} } <<TOP;
+#
+# Automatically generated file
+#
+
+MODULE = $perl_module_name	PACKAGE = $perl_class_name
+
+TOP
+}
 
 =pod
 
-generate_xs_method
+generate_xs_function
 
 we should make it generate a single XS sub for all overloaded C++ subs
 
@@ -13,20 +29,13 @@ each overloaded function gets passed through once
 
 =cut
 
-sub generate_xs_method {
-	my ($self, $fh, %options) = @_;
+sub generate_xs_function {
+	my ($self, $function, $params) = @_;
 	
-	my $function = $options{function};
-	my $params = $options{params};
-	my $cpp_class_name = $options{cpp_class_name};
-	my $perl_class_name = $options{perl_class_name};
-	my $is_responder = $options{responder};
+	my $fh = $self->{xsh};
 	
-	my ($cpp_parent_name, $perl_parent_name);
-	if ($options{responder}) {
-		$cpp_parent_name = $options{cpp_parent_name};
-		$perl_parent_name = $options{perl_parent_name};
-	}
+	my $cpp_class_name = $self->{cpp_class};
+	my $perl_class_name = $self->{name};
 	
 	my @xs_inputs;	# what gets passed in to the XS sub
 	my @xs_input_defs;	# define the inputs here
@@ -67,7 +76,7 @@ sub generate_xs_method {
 		push @xs_init, "$type $p->{name};";
 		push @xs_init, "SV* $p->{name}_sv;";
 		
-		if ($p->{'must-not-delete'}) {
+		if ($p->{'must-not-delete'} eq 'true') {
 			push @must_not_delete, qq(must_not_delete_cpp_object($p->{name}_sv, true););
 		}
 	}
@@ -96,28 +105,28 @@ sub generate_xs_method {
 # This is because for prefixed methods, xsubpp will turn the first perl
 # argument into the CLASS variable (a char*) if the method name is 'new',
 # and into the THIS variable (the object pointer) otherwise. So we need to
-# trick xsubbpp by leaving off the prefix and generating CLASS ourselves
+# trick xsubbpp by leaving off the prefix and defining CLASS ourselves
 CMT
 		}
 		else {
 			$xs_name = "${cpp_class_name}::new";
 		}
-		$xs_rettype = "$cpp_class_name*";
-#		push @xs_init, qq(SV* perl_obj;);
-push @xs_init, qq(DEBUGME(4, "About to create %s", CLASS););
-		push @cpp_call, qq(new $cpp_class_name($cpp_inputs););
-		if ($is_responder) {
+		$xs_rettype = "SV*";
+		push @xs_init, qq($cpp_class_name* THIS;);
+#push @xs_init, qq(DEBUGME(4, "About to create %s", CLASS););
+		push @cpp_call,
+			qq(THIS = new $cpp_class_name($cpp_inputs);),
+			qq(RETVAL = newSV(0);),
+			qq(sv_setsv(RETVAL, create_perl_object((void*)THIS, CLASS)););
+#push @cpp_call, qq(DEBUGME(4, "Creating perl object: %d", RETVAL););
+		
+		if ($self->isa('Perl::ResponderPackage')) {
 			push @cpp_call,
-				qq(),
-				qq(SV* perl_obj;),
-qq(DEBUGME(4, "Creating %s", CLASS);),
-				qq(perl_obj = create_perl_object((void*)RETVAL, CLASS);),
-				qq(RETVAL->perl_link_data = get_link_data(perl_obj););
-#				qq(SvREFCNT_inc(RETVAL->perl_link_data->perl_obj); // our copy needs to stick around);
-			if ($options{must_not_delete}) {
-				push @cpp_call, qq(must_not_delete_cpp_object(perl_obj, true););
-			}
-push @cpp_call, qq(DEBUGME(4, "Creating perl object: %d", perl_obj););
+				qq(THIS->perl_link_data = get_link_data(RETVAL););
+		}
+		
+		if ($self->{binding}{must_not_delete} eq 'true') {
+			push @cpp_call, qq(must_not_delete_cpp_object(RETVAL, true););
 		}
 	}
 	elsif ($function->isa('Destructor')) {
@@ -139,41 +148,57 @@ push @cpp_call, qq(DEBUGME(4, "Creating perl object: %d", perl_obj););
 CMT
 		$xs_rettype = "void";
 		push @cpp_call,
-qq(DEBUGME(4, "Deleting $perl_class_name");),
+#qq(DEBUGME(4, "Deleting $perl_class_name");),
 			qq(link = get_link_data(perl_obj);),
 			qq(if (! PL_dirty && link->can_delete_cpp_object) {),
 			qq(	cpp_obj = (${cpp_class_name}*)link->cpp_object;),
-qq(DEBUGME(4, "Deleting corresponding c++ object ($cpp_class_name)");),
+#qq(DEBUGME(4, "Deleting corresponding c++ object ($cpp_class_name)");),
 			qq(	delete cpp_obj;),
 			qq(	link->cpp_object = NULL;),
 			qq(}),
 			qq(unlink_perl_object(perl_obj););
-push @cpp_call, qq(DEBUGME(4, "Leaving after destroying $perl_class_name");),
+#push @cpp_call, qq(DEBUGME(4, "Leaving after destroying $perl_class_name");),
 	}
-	elsif ($function->isa('Method')) {
-		$xs_name = "${cpp_class_name}::" . $function->name;
-		$xs_rettype = $params->{cpp_output}{type};
-		push @cpp_call, "THIS->" . $function->name . "($cpp_inputs);";
-	}
-	elsif ($function->isa('Event')) {
-		$xs_name = "${cpp_class_name}::" . $function->name;
-		$xs_rettype = $params->{cpp_output}{type};
-		push @cpp_call, "THIS->${cpp_parent_name}::" . $function->name . "($cpp_inputs);";
-	}
-	elsif ($function->isa('Static')) {
-		$xs_name = $function->name;
-		$xs_rettype = $params->{cpp_output}{type};
-		push @cpp_call, "${cpp_class_name}::" . $function->name . "($cpp_inputs);";
-	}
-	elsif ($function->isa('Plain')) {
-		$xs_name = $function->name;
-		$xs_rettype = $params->{cpp_output}{type};
-		push @cpp_call, $function->name . "($cpp_inputs);";
-	}
-	
-	my ($builtin, $target) = $self->{types}->get_builtin($xs_rettype);
-	if ($target and not $function->isa('Constructor')) {
-		push @xs_init, qq(char* CLASS = "$target";);
+	else {
+		my $func_call;
+		$xs_rettype = $params->{cpp_output}{type} || 'void';
+		if ($function->isa('Method')) {
+			$xs_name = "${cpp_class_name}::" . $function->name;
+			$func_call = "THIS->" . $function->name;
+		}
+		elsif ($function->isa('Event')) {
+			$xs_name = "${cpp_class_name}::" . $function->name;
+			$func_call = "THIS->${cpp_class_name}::" . $function->name;
+		}
+		elsif ($function->isa('Static')) {
+			$xs_name = $function->name;
+			$func_call = "${cpp_class_name}::" . $function->name;
+		}
+		elsif ($function->isa('Plain')) {
+			$xs_name = $func_call = $function->name;
+		}
+		
+		if ($xs_rettype eq 'void') {
+			push @cpp_call, "$func_call($cpp_inputs);"
+		}
+		else {
+			my ($builtin, $target) = $self->{types}->get_builtin($xs_rettype);
+			if ($target) {
+				my $target_class = $xs_rettype;
+				$xs_rettype = "SV*";
+				push @xs_init, qq($target_class OBJ;);
+				push @cpp_call,
+					"OBJ = $func_call($cpp_inputs);",
+					$self->{types}->output_converter($target_class, 'OBJ', 'RETVAL');
+				
+				if ($params->{cpp_output}{must_not_delete} eq 'true') {
+					push @cpp_call, qq(must_not_delete_cpp_object(RETVAL, true););
+				}
+			}
+			else {
+				push @cpp_call, "RETVAL = $func_call($cpp_inputs);"
+			}
+		}
 	}
 	
 	if ($comment) {
@@ -229,18 +254,12 @@ OPT
 		}
 	}
 	
-	my $retval;
 	my $cpp_call = join("\n\t\t", @cpp_call);
-	if ($xs_rettype eq 'void') {
-		print $fh qq(\t\t$cpp_call\n);
-	}
-	else {
-		print $fh qq(\t\tRETVAL = $cpp_call\n);
-	}
+	print $fh qq(\t\t$cpp_call\n);
 	
 	# error processing
 	if (@{ $params->{xs_errors} }) {
-		my $errvar = "$options{perl_module}::Error";
+		my $errvar = "$self->{module}{name}::Error";
 		for my $error (@{ $params->{xs_errors} }) {
 			print $fh <<ERR;
 		if ($error->{name} != $error->{success}) {
@@ -271,5 +290,102 @@ OUT
 	print $fh "\n";
 }
 
-1;
+sub generate_xs_property {
+	my ($self, $property) = @_;
+	
+	my $fh = $self->{xsh};
+	
+	my $cpp_class_name = $self->{cpp_class};
+	my $perl_class_name = $self->{name};
+	my $perl_module_name = $self->{module}{name};
+	
+	my $name = $property->{name};
+	my $type = $property->{type};
+	my $svgetter = $self->{types}->input_converter($type, "cpp_obj->$name", 'value');
+	my $svsetter = $self->{types}->output_converter($type, "cpp_obj->$name", 'RETVAL');
+	
+	print $fh <<PROP;
+MODULE = $perl_module_name	PACKAGE = ${perl_class_name}::$name
 
+SV*
+FETCH(tie_obj)
+		SV* tie_obj;
+	INIT:
+		SV* cpp_obj_sv;
+		$cpp_class_name* cpp_obj;
+	CODE:
+		RETVAL = newSV(0);
+		cpp_obj_sv = SvRV(tie_obj);
+		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
+		$svsetter;
+	OUTPUT:
+		RETVAL
+
+void
+STORE(tie_obj, value)
+		SV* tie_obj;
+		SV* value;
+	INIT:
+		SV* cpp_obj_sv;
+		$cpp_class_name* cpp_obj;
+	CODE:
+		cpp_obj_sv = SvRV(tie_obj);
+		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
+		$svgetter
+
+MODULE = $perl_module_name	PACKAGE = $perl_class_name
+
+SV*
+${cpp_class_name}::$name()
+	INIT:
+		SV* cpp_obj_sv;
+		SV* tie_obj;
+		HV* tie_obj_stash;
+	CODE:
+		RETVAL = newSV(0);
+		// make our object into an SV* and make a reference to it
+		cpp_obj_sv = newSViv((IV)THIS);	// do I need to make this mortal?
+		tie_obj = newRV_noinc(cpp_obj_sv);
+		
+		// bless the reference into the proper class
+		tie_obj_stash = gv_stashpv("${perl_class_name}::$name", TRUE);
+		sv_bless(tie_obj, tie_obj_stash);
+		
+		// tie the blessed object to the RETVAL scalar
+		sv_magic(RETVAL, tie_obj, PERL_MAGIC_tiedscalar, NULL, 0);
+	OUTPUT:
+		RETVAL
+
+BOOT:
+	CvFLAGS(get_cv("${perl_class_name}::$name", TRUE)) |= CVf_LVALUE;
+
+PROP
+}
+
+sub generate_xs_constant {
+	my ($self, $constant) = @_;
+	
+	my $fh = $self->{xsh};
+	
+	my $cpp_class_name = $self->{cpp_class};
+	my $perl_class_name = $self->{name};
+	my $perl_module_name = $self->{module}{name};
+	
+	my $name = $constant->{name};
+	
+	print $fh <<CONST;
+SV*
+$name()
+	CODE:
+		RETVAL = newSViv($name);
+	OUTPUT:
+		RETVAL
+
+CONST
+}
+
+sub generate_xs_postamble {
+	# nothing to do
+}
+
+1;

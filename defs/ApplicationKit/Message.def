@@ -1,17 +1,21 @@
 <bindings name="Haiku::Message">
 	<binding source="BMessage" target="Haiku::Message">
 		<properties>
-			<property name="what" type="uint32" />
+			<property name="what" type="uint32">
+				<doc>Indicates the purpose of the message.</doc>
+			</property>
 		</properties>
 		<functions>
 			<constructor>
 				<params>
-					<param name="command" type="uint32" action="input" />
+					<param name="command" type="uint32" action="input">
+						<doc>Sets the [code]what[/what] property.</doc>
+					</param>
 				</params>
 			</constructor>
 			<constructor overload-name="FromMessage">
 				<params>
-					<param name="message" type="BMessage&" action="input" />
+					<param name="message" type="BMessage" action="input" />
 				</params>
 			</constructor>
 			<constructor overload-name="Empty">

@@ -77,16 +77,16 @@ sub MessageReceived {
 package main;
 use strict;
 
-$Haiku::ApplicationKit::DEBUG = 0;
+$Haiku::ApplicationKit::DEBUG = 4;
 $Haiku::InterfaceKit::DEBUG = 0;
 
-$TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
+$TestApp = new Haiku::CustomApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 
-print "\nTestApp: ", $TestApp+0,"\n\n";
+print "\nTestApp: $TestApp (", $TestApp+0,")\n\n";
 
 my $wrect = new Haiku::Rect(50,50,250,250);
 
-print "\nwrect: ", $wrect+0,"\n\n";
+print "\nwrect: $wrect (", $wrect+0,")\n\n";
 
 # simple get
 #my $l = $wrect->left;
@@ -105,7 +105,7 @@ $TestWindow = new MyWindow(
 	B_QUIT_ON_WINDOW_CLOSE,	# flags
 );
 
-print "\nTestWindow: ", $TestWindow, "\n\n";
+print "\nTestWindow: $TestWindow(", $TestWindow+0, ")\n\n";
 
 {
 	my $win = new MyWindow(
@@ -115,9 +115,7 @@ print "\nTestWindow: ", $TestWindow, "\n\n";
 		B_QUIT_ON_WINDOW_CLOSE,	# flags
 	);
 	
-	print "\nwin: ", $win, "\n\n";
-	
-	#$win->UNLINK;
+	print "\nwin: $win (", $win+0, ")\n\n";
 }
 
 #=pod
@@ -131,7 +129,7 @@ $TestButton = new Haiku::Button(
 	B_WILL_DRAW | B_NAVIGABLE,	# flags
 );
 
-print "\nTestButton: ", $TestButton,"\n\n";
+print "\nTestButton: $TestButton(", $TestButton+0,")\n\n";
 
 $TestWindow->AddChild(
 	$TestButton,	# view

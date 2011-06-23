@@ -1,114 +1,3 @@
-package Binding;
-use Common::Functions;
-use Common::Properties;
-use Common::Constants;
-use strict;
-
-sub new {
-	my ($class, $element) = @_;
-	my $self = bless {
-		functions => new Functions,
-		properties => new Properties,
-		constants => new Constants,
-	}, $class;
-	
-	# binding element can have the following attributes:
-	# source source-inherits target target-inherits must-not-delete
-	for my $attr (qw(source source-inherits target target-inherits must-not-delete)) {
-		$self->{$attr} = $element->attr($attr);
-	}
-	
-	# binding element can have the following child elements:
-	# functions properties constants
-	for my $child (@{ $element->children }) {
-		# binding has no content, so Content elements are just whitespace
-		next if $child->isa('SGML::Content');
-		
-		# ignore comments
-		next if $child->isa('SGML::Comment');
-		
-		my $cn = $child->name;
-		
-		if ($cn eq 'functions') {
-			$self->{functions}->add($child);
-			next;
-		}
-		
-		if ($cn eq 'properties') {
-			$self->{properties}->add($child);
-			next;
-		}
-		
-		if ($cn eq 'constants') {
-			$self->{constants}->add($child);
-			next;
-		}
-		
-		die "Unsupported child of binding element: $cn";
-	}
-	return $self;
-}
-
-sub source {
-	my ($self) = @_;
-	return $self->{source};
-}
-
-sub source_inherits {
-	my ($self) = @_;
-	return $self->{'source-inherits'};
-}
-
-sub target {
-	my ($self) = @_;
-	return $self->{target};
-}
-
-sub target_inherits {
-	my ($self) = @_;
-	return $self->{'target-inherits'};
-}
-
-sub constructors {
-	my ($self) = @_;
-	$self->{functions}->constructors;
-}
-
-sub destructor {
-	my ($self) = @_;
-	$self->{functions}->destructor;
-}
-
-sub methods {
-	my ($self) = @_;
-	$self->{functions}->methods;
-}
-
-sub events {
-	my ($self) = @_;
-	$self->{functions}->events;
-}
-
-sub statics {
-	my ($self) = @_;
-	$self->{functions}->statics;
-}
-
-sub plains {
-	my ($self) = @_;
-	$self->{functions}->plains;
-}
-
-sub properties {
-	my ($self) = @_;
-	$self->{properties};
-}
-
-sub constants {
-	my ($self) = @_;
-	$self->{constants};
-}
-
 package Bindings;
 use File::Spec;
 use Common::SGML;
@@ -117,6 +6,35 @@ use Common::Includes;
 use Common::Links;
 use Common::Types;
 use strict;
+our @ISA = qw(BaseObject);
+
+our $content_as = '';
+our @allowed_attrs = qw(name);
+our %allowed_children = (
+	bundle => {
+		key => 'bundles',
+		class => 'Bundle',
+	},
+	includes => {
+		key => 'includes_collection',
+		class => 'Includes',
+	},
+	links => {
+		key => 'links_collection',
+		class => 'Links',
+	},
+	types => {
+		key => 'types_collection',
+		class => 'Types',
+	},
+	binding => {
+		key => 'bindings',
+		class => 'Binding',
+	},
+);
+our %child_handlers = (
+	imports => \&_import,
+);
 
 sub new {
 	my ($class, %options) = @_;
@@ -125,145 +43,148 @@ sub new {
 	my $folder = File::Spec->canonpath($dir);
 	
 	my $self = bless {
-		folder   => $folder,
-		bundles  => new Bundles($folder),
-		includes => new Includes,
-		links    => new Links,
-		types    => new Types,
-		bindings => [],
+		_name   => 'root',
+		_folder => $folder,
 	}, $class;
 	
-	$self->{parser} = new SGML::Parser(filename => $options{source});
-	my $root = $self->{parser}->root;
+print "Parsing $options{source}\n";
+	$self->{_parser} = new SGML::Parser(filename => $options{source});
+	my $root = $self->{_parser}->root;
 	
-	# bindings element can have the following attributes:
-	# name version
-	for my $attr (qw(name version)) {
-		$self->{$attr} = $root->attr($attr);
-	}
+	$self->_parse($root);
 	$self->{version} ||= '0.01';
-#print <<INFO;
-#Parsing bindings: $self->{name} ($self->{version})
-#	print $self->{folder}
-#INFO
-	
-	$self->parse_element($root);
 	
 	return $self;
 }
 
-sub parse_element {
-	my ($self, $parent) = @_;
-	
-	# bindings element can have the following child elements:
-	# bundles, imports, includes, links, types, binding
-	for my $child (@{ $parent->children }) {
-		# bindings has no content, so Content elements are just whitespace
-		next if $child->isa('SGML::Content');
+sub _import {
+	my ($self, $element) = @_;
+	for my $import (@{ $element->children }) {
+		# ignore content and comments
+		next if $import->isa('SGML::Content');
+		next if $import->isa('SGML::Comment');
 		
-		# ignore comments
-		next if $child->isa('SGML::Comment');
+		# only support 'import' elements as children
+		my $in = $import->name;
+		$in eq 'import' or
+			die "Unsupported child of imports element: $in";
 		
-		my $cn = $child->name;
+		my $filename = File::Spec->canonpath(
+			File::Spec->catfile($self->{_folder}, $import->attr('file'))
+		);
+		$self->{_parser}->addfilename($filename);
+		$self->{_parser}->parse;
 		
-		# a bundle is parsed and generated separately from the current binding
-		# it needs to know our paths so it can generate properly
-		if ($cn eq 'bundles') {
-			$self->{bundles}->add($child);
-			next;
+		my $elements = $self->{_parser}->root->children;
+		for my $element (@$elements) {
+			next if $element->isa('SGML::Content');
+			next if $element->isa('SGML::Comment');
+			$self->_add($element);
 		}
 		
-		# an import is pulled in and generated along with the current binding
-		if ($cn eq 'imports') {
-			for my $import (@{ $child->children }) {
-				# bundles has no content, so Content elements are just whitespace
-				next if $import->isa('SGML::Content');
-				
-				# ignore comments
-				next if $import->isa('SGML::Comment');
-				
-				my $in = $import->name;
-				
-				# imports element can have the following child elements:
-				# import
-				if ($in eq 'import') {
-#print "Importing bindings from $import->{attrs}{file}\n";
-					my $filename = File::Spec->canonpath(
-						File::Spec->catfile($self->{folder}, $import->attr('file'))
-					);
-					$self->{parser}->addfilename($filename);
-					$self->{parser}->parse;
-					
-					$self->parse_element($self->{parser}->root);
-					
-					next;
-				}
-				
-				die "Unsupported child of imports element: $in";
-			}
-			next;
-		}
-		
-		if ($cn eq 'includes') {
-			$self->{includes}->add($child);
-			next;
-		}
-		
-		if ($cn eq 'links') {
-			$self->{links}->add($child);
-			next;
-		}
-		
-		if ($cn eq 'types') {
-			$self->{types}->add($child);
-			next;
-		}
-		
-		if ($cn eq 'binding') {
-			push @{ $self->{bindings} }, new Binding($child);
-			next;
-		}
-		
-		die "Unsupported child of bindings element: $cn";
+		next;
 	}
 }
 
-sub name {
-	my ($self) = @_;
-	return $self->{name};
-}
+package Binding;
+use Common::BaseObject;
+use Common::Functions;
+use Common::Properties;
+use Common::Constants;
+use Common::Doc;
+use strict;
+our @ISA = qw(BaseObject);
 
-sub version {
-	my ($self) = @_;
-	return $self->{version};
-}
+our $content_as = '';
+our @allowed_attrs = qw(source source-inherits target target-inherits must-not-delete version);
+our %allowed_children = (
+	functions => {
+		key => 'functions_collection',
+		class => 'Functions',
+	},
+	properties => {
+		key => 'properties_collection',
+		class => 'Properties',
+	},
+	constants => {
+		key => 'constants_collection',
+		class => 'Constants',
+	},
+);
 
-sub bundles {
-	my ($self) = @_;
-	return $self->{bundles};
-}
+# some shortcut functions
 
-sub includes {
+sub constructors {
 	my ($self) = @_;
-	return $self->{includes};
-}
-
-sub links {
-	my ($self) = @_;
-	return $self->{links};
-}
-
-sub types {
-	my ($self) = @_;
-	return $self->{types};
-}
-
-sub bindings {
-	my ($self) = @_;
-	unless (@{ $self->{bindings} }) {
-		return undef;
+	my @ret;
+	for my $functions ($self->functions_collection) {
+		push @ret, $functions->constructors;
 	}
-	return $self->{bindings};
+	return @ret;
+}
+
+# should only be one destructor, so find first one
+sub destructor {
+	my ($self) = @_;
+	for my $functions ($self->functions_collection) {
+		my @d = $functions->destructors;
+		return $d[0];
+	}
+	return undef;
+}
+
+sub methods {
+	my ($self) = @_;
+	my @ret;
+	for my $functions ($self->functions_collection) {
+		push @ret, $functions->methods;
+	}
+	return @ret;
+}
+
+sub events {
+	my ($self) = @_;
+	my @ret;
+	for my $functions ($self->functions_collection) {
+		push @ret, $functions->events;
+	}
+	return @ret;
+}
+
+sub statics {
+	my ($self) = @_;
+	my @ret;
+	for my $functions ($self->functions_collection) {
+		push @ret, $functions->statics;
+	}
+	return @ret;
+}
+
+sub plains {
+	my ($self) = @_;
+	my @ret;
+	for my $functions ($self->functions_collection) {
+		push @ret, $functions->plains;
+	}
+	return @ret;
+}
+
+sub properties {
+	my ($self) = @_;
+	my @ret;
+	for my $properties ($self->properties_collection) {
+		push @ret, $properties->properties;
+	}
+	return @ret;
+}
+
+sub constants {
+	my ($self) = @_;
+	my @ret;
+	for my $constants ($self->constants_collection) {
+		push @ret, $constants->constants;
+	}
+	return @ret;
 }
 
 1;
