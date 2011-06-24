@@ -328,11 +328,19 @@ sub as_input_to_python {
 			}
 			elsif ($builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
 				my ($builtin, $target) = $self->{types}->get_builtin($param->{type});
-				(my $type = $target)=~s/\./_/g; $type .= '_Object';
-				$ret{format_definition} = "$type* py_$param->{name}";
+				(my $type = $target)=~s/\./_/g;
+				my $obj_type = $type . '_Object';
+				my $type_type = $type . '_Type';
+				$ret{format_definition} = "$obj_type* py_$param->{name}";
 				$ret{format_name} = "(PyObject*)py_$param->{name}";
 				$ret{format_code} = [
-					qq(py_$param->{name} = new $type();),
+#					qq(py_$param->{name} = new $obj_type;),
+#					qq(python_type = new $type_type;),
+#					qq(py_$param->{name} = python_type->tp_alloc(python_type, 0);),
+#$cname.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
+#qq(python_self = (${name}Object*)python_type->tp_alloc(python_type, 0););
+#python_self = (Haiku_Message_Message_Object*)python_type->tp_alloc(python_type, 0);
+
 					qq(py_$param->{name}->cpp_object = $param->{name};),
 				];
 				

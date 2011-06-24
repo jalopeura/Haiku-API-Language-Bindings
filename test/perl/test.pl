@@ -1,6 +1,6 @@
 # for testing before installation
 BEGIN {
-	my $folder = '../../generated.new/perl/';
+	my $folder = '../../generated/perl/';
 	for my $kit (qw(HaikuKits)) {
 		push @INC, "$folder$kit/blib/lib";
 		push @INC, "$folder$kit/blib/arch";
@@ -80,7 +80,7 @@ use strict;
 $Haiku::ApplicationKit::DEBUG = 4;
 $Haiku::InterfaceKit::DEBUG = 0;
 
-$TestApp = new Haiku::CustomApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
+$TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 
 print "\nTestApp: $TestApp (", $TestApp+0,")\n\n";
 
@@ -121,7 +121,7 @@ print "\nTestWindow: $TestWindow(", $TestWindow+0, ")\n\n";
 #=pod
 
 $TestButton = new Haiku::Button(
-	new Haiku::Rect(10,10,110,100),	# frame
+	new Haiku::Rect(10,10,110,110),	# frame
 	"TestButton",	# name
 	"Click Me",	# label
 	new Haiku::Message(0x12345678),	# message

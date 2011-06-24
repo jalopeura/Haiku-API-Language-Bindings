@@ -174,8 +174,6 @@ TOP
 	print $fh <<DEFS;
 static PyObject* $self->{filename}Error;
 
-void set_up_inheritance();
-
 DEFS
 		
 	# we need to predeclare responder classes;
@@ -269,44 +267,63 @@ sub generate_c_postamble {
 	
 	$self->SUPER::generate_c_postamble;
 	
-	my (@module_defs, @module_code);
+	my (%module_names, @module_defs, @module_code);
 	($module_defs[0], $module_code[0]) = $self->generate_module_init($self);
 	for my $module (@{ $self->{modules} }) {
 		my ($defs, $code) = $self->generate_module_init($module);
+		$module_names{ $module->{name} } = 1;
 		push @module_defs, $defs;
 		push @module_code, $code;
 	}
 	
+	# make any necessary empty modules to prevent "name not defined" errors
+	my (@parent_defs, @parent_methods, @parent_code);
+	for my $m (sort keys %module_names) {
+		my @m = split /\./, $m;
+		pop @m;
+		for my $i (0..$#m) {
+			my $module_name = join('.', @m[0..$i]);
+			next if $module_names{$module_name};
+			$module_names{$module_name} = 1;
+			
+			my @p = @m[0..$i];
+			my $full_string = join('.', @p);
+			my $module_string = pop @p;
+			my $parent_name = join('.', @p);
+			
+			$module_name=~s/\./_/g;
+			my $methods_name = $module_name . '_methods';
+			$module_name .= '_module';
+			
+			if ($parent_name) {
+				$parent_name=~s/\./_/g;
+				$parent_name .= '_module';
+			}
+			else {
+				$parent_name = 'python_main';
+			}
+
+			push @parent_defs, qq(\tPyObject* $module_name = PyImport_AddModule("$full_string");\n);
+			
+#			push @parent_methods, <<METHODS;
+#static PyMethodDef ${methods_name}[] = {
+#	{NULL} /* Sentinel */
+#};
+#
+#METHODS
+
+#push @parent_code, <<CODE;
+#	$module_name = Py_InitModule("$full_string", $methods_name);
+#	Py_INCREF($module_name);
+#	PyModule_AddObject($parent_name, "$module_string", $module_name);
+#	
+#CODE
+		}
+	}
+	
+	print $fh @parent_methods;
+	
 	print $fh <<INIT;
-PyMODINIT_FUNC
-init$filename()
-{
-INIT
-	
-	for my $def (@module_defs) {
-		print $fh "\t$def\n";
-	}
-	print $fh "\n";
-	
-	for my $code (@module_code) {
-		print $fh $code;
-	}
-	
-	(my $modname = $self->{name})=~s/\./_/g; $modname .= '_module';
-	
-	print $fh <<END;
-	// we need all types to be added before we set up inheritance
-	set_up_inheritance();
-	
-	// exception object
-	${filename}Error = PyErr_NewException("$self->{name}.error", NULL, NULL);
-    Py_INCREF(${filename}Error);
-    PyModule_AddObject($modname, "error", ${filename}Error);
-} //init$filename
-
-END
-
-	print $fh <<INHERIT;
 /*
  * Some of the base classes may be defined in other packages, which means we don't
  * have access to them here. We eval a Python string to get access to the base type.
@@ -318,31 +335,40 @@ END
  * are set using this function, so it must be called after all our own types have
  * been added to their containing modules.
  */
-void set_up_inheritance() {
+PyMODINIT_FUNC
+init$filename()
+{
 	PyObject* python_main = PyImport_AddModule("__main__");
 	PyObject* main_dict = PyModule_GetDict(python_main);
+//	PyObject* holder;
+INIT
 	
-INHERIT
+	print $fh @parent_defs;
 	
-	# determine includes and constants
-	my (@includes, @constant_defs);
-	for my $child (@{ $self->{children} }) {
-		next unless $child->{python_parent};
-		my @cname = split /\./, $child->{name};
-		my $type = join('_', @cname, 'Type');
-		print $fh qq($type.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);\n);
-	}
-	for my $module (@{ $self->{modules} }) {
-		push @includes, $module->{c_include};
-		for my $child (@{ $module->{children} }) {
-			next unless $child->{python_parent};
-			my @cname = split /\./, $child->{name};
-			my $type = join('_', @cname, 'Type');
-			print $fh qq(\t$type.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);\n);
-		}
+	for my $def (@module_defs) {
+		print $fh "\t$def\n";
 	}
 	
-	print $fh "} // set_up_inheritance\n";
+	print $fh "\n";
+
+	print $fh @parent_code;
+	
+	for my $code (@module_code) {
+		print $fh $code;
+	}
+	
+	(my $modname = $self->{name})=~s/\./_/g; $modname .= '_module';
+	
+	print $fh <<END;
+//printf("About to set up error object\\n");
+	// exception object
+	${filename}Error = PyErr_NewException("$self->{name}.error", NULL, NULL);
+    Py_INCREF(${filename}Error);
+    PyModule_AddObject($modname, "error", ${filename}Error);
+//printf("Successfully set up error object\\n");
+} //init$filename
+
+END
 }
 
 sub generate_module_init {
@@ -353,18 +379,51 @@ sub generate_module_init {
 	
 	my $def = "PyObject* $module_name;";
 	my $code = <<CODE;
+//printf("About to init $module->{name}\\n");
 	// $module->{name}: module
     $module_name = Py_InitModule("$module->{name}", ${name}methods);
     if ($module_name == NULL)
         return;
+//printf("Successfully init'ed $module->{name}\\n");
 		
 CODE
+	
+	# if we're not the module being loaded, we need to
+	# manually add ourselves to our parent module
+	if ($self != $module) {
+		my @p = split /\./, $module->{name};
+		my $subname = pop @p;
+		my $parent_name;
+		if (@p) {
+			$parent_name = join('_', @p, 'module');
+		}
+		else {
+			$parent_name = 'python_main';
+		}
+
+#		(my $parent_name = $self->{name})=~s/\./_/g; $parent_name .= '_module';
+		$code .= <<ADD;	
+	Py_INCREF($module_name);
+	PyModule_AddObject($parent_name, "$subname", $module_name);
+	
+ADD
+	}
 	
 	if (@{ $module->{children} }) {
 		$code .= "\t// $module->{name}: types (classes)\n";
 		for my $child (@{ $module->{children} }) {
 			my @cname = split /\./, $child->{name};
 			my $cname = join('_', @cname, 'Type');
+			
+			if ($child->{python_parent}) {
+				$code .= <<INHERIT;
+//	holder = PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
+//	$cname.tp_bases = PyTuple_Pack(1, holder);
+	$cname.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
+	
+INHERIT
+			}
+			
 			$code .= <<TYPE;
 	if (PyType_Ready(&$cname) < 0)
 		return;

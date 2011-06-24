@@ -108,10 +108,13 @@ FUNC
 		
 		print $fh <<FUNC;
 $output_to_cpp->{type} ${cpp_class_name}::$name($cpp_inputs) {
+printf("About to call ${cpp_class_name}::$name($cpp_inputs)\n");
 	if (python_object == NULL) {
+printf("\tOops! Null python object\n");
 		return ${cpp_parent_name}::$name($parent_inputs);
 	}
 	else {
+printf("\tCalling the python method\n");
 FUNC
 		if (@var_defs) {
 			print $fh qq(\t\t// defs\n);

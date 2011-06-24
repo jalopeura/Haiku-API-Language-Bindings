@@ -1,6 +1,7 @@
 package Perl::Generator;
 use File::Spec;
 use File::Path;
+use File::Copy;
 use Perl::Module;
 use strict;
 
@@ -22,6 +23,8 @@ sub generate {
 	my $target = File::Spec->catdir($options{target} || '.', $folder);
 	mkpath($target);
 print "Generating $target\n";
+	
+#	File::Path->remove_tree($target);
 	
 	# if the binding has any bundles, generate them
 	my @bundledirs;
@@ -98,6 +101,17 @@ use $name;
 
 ok(1);
 OUT
+	
+	my $test_source_dir = '../test/perl';
+	my $test_target_dir = File::Spec->catdir($target, 't');
+	mkpath($test_target_dir);
+	opendir DIR, $test_source_dir or die $!;
+	while (my $e = readdir DIR) {
+		my $file = File::Spec->catfile($test_source_dir, $e);
+		next if -d $file;
+		copy($file, $test_target_dir);
+	}
+	closedir DIR;
 }
 
 1;
