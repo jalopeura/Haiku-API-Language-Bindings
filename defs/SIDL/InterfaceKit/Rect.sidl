@@ -1,0 +1,57 @@
+<bindings name="Haiku::Rect">
+	<doc>Exposes the Rect object</doc>
+	<binding source="BRect" target="Haiku::Rect">
+		<doc>Exposes the Rect object</doc>
+		<properties>
+			<property name="left" type="float">
+				<doc>Left coordinate</doc>
+			</property>
+			<property name="top" type="float">
+				<doc>Top coordinate</doc>
+			</property>
+			<property name="right" type="float">
+				<doc>Right coordinate</doc>
+			</property>
+			<property name="bottom" type="float">
+				<doc>Bottom coordinate</doc>
+			</property>
+		</properties>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="left" type="float" action="input" />
+				<param name="top" type="float" action="input" />
+				<param name="right" type="float" action="input" />
+				<param name="bottom" type="float" action="input" />
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>...</doc>
+			</constructor>
+			<destructor />
+			<!-- Contains -->
+			<!-- Intersects -->
+			<!-- InsetBy -->
+			<!-- InsetBySelf -->
+			<!-- InsetByCopy -->
+			<!-- OffsetBy -->
+			<!-- OffsetBySelf -->
+			<!-- OffsetByCopy -->
+			<!-- OffsetTo -->
+			<!-- OffsetToSelf -->
+			<!-- OffsetToCopy -->
+			<!-- IsValid -->
+			<method name="PrintToStream">
+				<doc>Prints the contents to standard out as [code]BRect(left, top, right, bottom)[/code]</doc>
+			</method>
+			<!-- Set -->
+			<!-- SetLeftTop -->
+			<!-- SetLeftBottom -->
+			<!-- SetRightTop -->
+			<!-- SetRightBottom -->
+			<!-- Width -->
+			<!-- IntegerWidth -->
+			<!-- Height -->
+			<!-- IntegerHeight -->
+		</functions>
+	</binding>
+</bindings>

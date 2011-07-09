@@ -1,0 +1,29 @@
+<bindings name="Haiku::SupportKit">
+	<doc>Exposes the Haiku Support Kit</doc>
+	<include>
+		<file name="Archivable.h" />
+	</include>
+	<link>
+		<lib name="libbe" />
+	</link>
+	<types>
+<!--
+Objects defined by this Support automatically have data types (plain and
+pointer) created for them. If you need objects not defined in this Support,
+you need to define those types in this section.
+-->
+		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
+	</types>
+	<import>
+		<file name="Archivable.sidl" />
+	</import>
+	<binding source="SupportKit" target="Haiku::SupportKit">
+		<doc>Exposes the Haiku Support Kit</doc>
+		<constants>
+			<!-- type constants -->
+			<constant name="B_ANY_TYPE" group="type">
+				<doc>...</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

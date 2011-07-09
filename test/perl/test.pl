@@ -8,18 +8,32 @@ BEGIN {
 }
 
 use Haiku::ApplicationKit;
-use Haiku::InterfaceKit qw(
-	B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE B_CURRENT_WORKSPACE
-	B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE
-);
+use Haiku::InterfaceKit;
 use strict;
 
 our ($TestApp, $TestWindow, $TestButton);
 
 package MyApplication;
 use Haiku::CustomApplication;
+use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use strict;
 our @ISA = qw(Haiku::CustomApplication);
+
+sub new {
+	my ($class, @args) = @_;
+	my $self = $class->SUPER::new(@args);
+
+	$self->{window} = new MyWindow(
+		new Haiku::Rect(50,50,170,170),	# frame
+		"Test Window",	# title
+		B_TITLED_WINDOW,	# type
+		B_QUIT_ON_WINDOW_CLOSE,	# flags
+	);
+	
+	$self->{window}->Show;
+	
+	return $self;
+}
 
 sub ArgvReceived {
 	my ($self, $args) = @_;
@@ -51,24 +65,40 @@ warn "\nMessageReceived($self, $message)\n\n";
 
 package MyWindow;
 use Haiku::CustomWindow;
+use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 use strict;
 our @ISA = qw(Haiku::CustomWindow);
 
 my $click_count;
 my $message_count;
 
+sub new {
+	my ($class, @args) = @_;
+	my $self = $class->SUPER::new(@args);
+	
+	$self->{button} = new Haiku::Button(
+		new Haiku::Rect(10,10,110,110),	# frame
+		"TestButton",	# name
+		"Click Me",	# label
+		new Haiku::Message(0x12345678),	# message
+		B_FOLLOW_LEFT | B_FOLLOW_TOP,	# resizingMode
+		B_WILL_DRAW | B_NAVIGABLE,	# flags
+	);
+	
+	$self->AddChild($self->{button}, 0);
+	
+	return $self;
+}
+
 sub MessageReceived {
 	my ($self, $message) = @_;
-#print "$self, $message\n";
-	$message_count++;
-#print tied($message->what()),"\n";
+	$self->{message_count}++;
 	my $what = $message->what();
-	my $text = unpack('A*', pack('L', $what));
+#my $text = unpack('A*', pack('L', $what));
 #print "$what => $text\n";
 	if ($what == 0x12345678) {
-		$click_count++;
-#warn $click_count;
-		$main::TestButton->SetLabel("$click_count of $message_count");
+		$self->{click_count}++;
+		$self->{button}->SetLabel("$self->{click_count} of $self->{message_count}");
 		return;
 	}
 	$self->SUPER::MessageReceived($message);
@@ -78,73 +108,8 @@ package main;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
-$Haiku::InterfaceKit::DEBUG = 0;
+$Haiku::InterfaceKit::DEBUG = 4;
 
 $TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 
-print "\nTestApp: $TestApp (", $TestApp+0,")\n\n";
-
-my $wrect = new Haiku::Rect(50,50,250,250);
-
-print "\nwrect: $wrect (", $wrect+0,")\n\n";
-
-# simple get
-#my $l = $wrect->left;
-
-# simple set
-#$wrect->left = 20;
-
-# set and get
-#$l = $wrect->left = 20;
-#print $l,"\n";
-
-$TestWindow = new MyWindow(
-	$wrect,	# frame
-	"Test Window",	# title
-	B_TITLED_WINDOW,	# type
-	B_QUIT_ON_WINDOW_CLOSE,	# flags
-);
-
-print "\nTestWindow: $TestWindow(", $TestWindow+0, ")\n\n";
-
-{
-	my $win = new MyWindow(
-		$wrect,	# frame
-		"Test Window",	# title
-		B_TITLED_WINDOW,	# type
-		B_QUIT_ON_WINDOW_CLOSE,	# flags
-	);
-	
-	print "\nwin: $win (", $win+0, ")\n\n";
-}
-
-#=pod
-
-$TestButton = new Haiku::Button(
-	new Haiku::Rect(10,10,110,110),	# frame
-	"TestButton",	# name
-	"Click Me",	# label
-	new Haiku::Message(0x12345678),	# message
-	B_FOLLOW_LEFT | B_FOLLOW_TOP,	# resizingMode
-	B_WILL_DRAW | B_NAVIGABLE,	# flags
-);
-
-print "\nTestButton: $TestButton(", $TestButton+0,")\n\n";
-
-$TestWindow->AddChild(
-	$TestButton,	# view
-	0,	# sibling
-);
-
-#=cut
-
-$TestWindow->Show;
-
 $TestApp->Run;
-
-undef $wrect;
-undef $TestButton;
-undef $TestWindow;
-undef $TestApp;
-
-print "\nEnd of file\n\n";

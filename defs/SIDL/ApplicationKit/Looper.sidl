@@ -1,0 +1,58 @@
+<bindings name="Haiku::Looper">
+	<doc>Exposes the Looper object</doc>
+	<binding source="BLooper" source-inherits="BHandler" target="Haiku::Looper" target-inherits="Haiku::Handler">
+		<doc>Exposes the Looper object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Looper.</doc>
+				<param name="name" type="const char*" action="input" default="NULL" />
+				<param name="priority" type="int32" action="input" default="B_NORMAL_PRIORITY" />
+				<param name="portCapacity" type="int32" action="input" default="B_LOOPER_PORT_DEFAULT_CAPACITY" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates an Looper from an archive.</doc>
+				<param name="archive" type="BMessage*" action="input">
+					<doc>Contains an archived version of the Looper.</doc>
+				</param>
+			</constructor>
+			<destructor />
+			<!-- AddCommonFilter -->
+			<!-- RemoveCommonFilter -->
+			<!-- SetCommonFilterList -->
+			<!-- CommonFilterList -->
+			<!-- AddHandler -->
+			<!-- RemoveHandler -->
+			<!-- HandlerAt -->
+			<!-- CountHandlers -->
+			<!-- IndexOf -->
+			<!-- CurrentMessage -->
+			<!-- DetachCurrentMessage -->
+			<method name="Lock">
+				<return type="bool" />
+			</method>
+			<method name="LockWithTimeout">
+				<param name="timeout" type="bigtime_t" action="input" />
+				<return type="status_t" />
+			</method>
+			<!-- LockWithTimeout -->
+			<method name="Unlock" />
+			<!-- LockingThread -->
+			<!-- IsLocked -->
+			<!-- CountLocks -->
+			<!-- CountLockRequests -->
+			<!-- Sem -->
+			<!-- MessageQueue -->
+			<!-- PostMessage -->
+			<!-- Quit -->
+			<!-- Run -->
+			<!-- SetPreferredHandler -->
+			<!-- PreferredHandler -->
+			<!-- Thread -->
+			<!-- Team -->
+			<!-- DispatchMessage -->
+			<!-- QuitRequested -->
+			<!-- MessageReceived -->
+			<!-- LooperForThread -->
+		</functions>
+	</binding>
+</bindings>

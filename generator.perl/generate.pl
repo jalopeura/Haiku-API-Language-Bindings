@@ -3,16 +3,22 @@ use Common::Bindings;
 use strict;
 
 my %generators = (
-	perl => 'Perl::Generator',
+	perl   => 'Perl::Generator',
+	python => 'Python::Generator',
 );
 
-my ($target, @langs, @files);
+my ($target, $format, @langs, @files);
 
 while (@ARGV) {
 	my $arg = shift @ARGV;
 	
 	if ($arg eq '-t') {
 		$target = shift @ARGV;
+		next;
+	}
+	
+	if ($arg eq '-f') {
+		$format = shift @ARGV;
 		next;
 	}
 	
@@ -34,7 +40,7 @@ for my $l (@langs) {
 		die "Language '$l' is not supported\n";
 	}
 	my $t = File::Spec->catdir($target, $l);
-	eval qq(use $generators{$l}; push \@generators, [ new $generators{$l}, '$t' ];) or die $@;
+	eval qq(use $generators{$l}; push \@generators, [ new $generators{$l}, '$t', '$format' ];) or die $@;
 }
 
 for my $file (@files) {
@@ -43,7 +49,8 @@ for my $file (@files) {
 		die "File '$file' not found\n";
 	}
 	my $bindings = new Bindings(
-		source => $file,
+		source      => $file,
+		source_type => $format,
 	);
 	
 	for my $generator (@generators) {
@@ -56,18 +63,23 @@ for my $file (@files) {
 }
 
 sub usage {
-	my $sl = join("\t\n", sort keys %generators);
+	my $sl = join("\n\t", sort keys %generators);
 	
 	die <<USAGE;
 Usage:
 
-generator.pl -t TARGET -l LANG FILES
+generator.pl -t TARGET -l LANG -f FORMAT FILES
 TARGET is the folder you want the generated files to end up
 LANG is the language(s) to generated bindings for (one or more)
+FORMAT is the definition file format
 FILES is a whitespace-separated list if binding definition files
 
 Supported languages are
 	$sl
+
+Supported formats are
+	SIDL - SGML-esque interface definition language
+	TIDL - Tab-delimited interface definiton language (coming soon)
 
 Example:
 generate.pl -d generated -t perl -t python binding.def

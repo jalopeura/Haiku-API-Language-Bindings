@@ -1,94 +1,59 @@
 package Python::Package;
 use File::Spec;
 use File::Path;
+use Python::Bundle;
+use Python::Class;
+use Python::ResponderClass;
+use Python::Include;
+use Python::Link;
 use Python::Types;
-use Python::PyModule;
 require Python::UtilityCodeGenerator;
 use strict;
-our @ISA = qw(Python::PyModule);
-
-# A Library is the main PyModule in a group, the one for which the user
-# loads the library (via import); loading it also loads the other PyModules
+our @ISA = qw(Bindings Python::BaseObject);
 
 sub new {
 	my ($class, $bindings, $parent) = @_;
+	my $self = $class->upgrade($bindings->source_type_prefix, $bindings);
 	
-	my $self = bless {
-		modules => [],
-		parent  => $parent,
-	}, $class;
+	$self->{_parent} = $parent;
 	
-	# need to create this now, in order to pass it to packages
-	my $types = new Python::Types;
+	$self->{name}=~s/::/./g;
 	
-	for my $binding ($bindings->bindings) {
-		# if we have any of the following, we need a PyModule
-		#    plain functions, constants
-		# also if we're going to need a PyType, we need a PyModule to get at it
-		if ($binding->plains or $binding->constants or $binding->constructors) {
-			my $module = new Python::PyModule($self, $binding, $types);
-			if ($binding->target eq $bindings->name) {
-				# copy package into self
-				my @keys = keys %$module;
-				@{$self}{@keys} = @{$module}{@keys};
+	if ($self->has('classes')) {
+		my @classes = $self->classes;
+		$self->{classes} = [];
+		$self->{constants} = [];
+		for my $class (@classes) {
+			if ($class->has('functions') or $class->has('properties')) {
+				push @{ $self->{classes} }, $class;	
+				if ($class->functions->had('events')) {
+					push @{ $self->{classes} },
+						Python::ResponderClass->upgrade($bindings->source_type_prefix, $class);
+				}
 			}
-			else {
-				push @{ $self->{modules} }, $module;
+			elsif ($class->has('constants')) {
+				push @{ $self->{constants} }, $class->constants->constants;
 			}
 		}
 	}
 	
-	# register defined types
-	for my $btypes ($bindings->types_collection) {
-		for my $type ($btypes->types) {
-			my @target = split /::/, $type->target;
-			my $target = join('.', @target, $target[-1]);
-#print "Registering type from $type: $type->{name}/$type->{builtin}/$target\n";
-			$types->register_type(
-				$type->name,
-				$type->builtin,
-				$target,
-			);
-		}
-	}
+	$self->propagate_value('package_name', $self->name);
 	
-	# register the types we've just created
-	for my $child (@{ $self->{children} }) {
-		if (my $cpp_class = $child->{cpp_class}) {
-#print "Registering type from $child: $cpp_class*/$child->{type}/$child->{name}\n";
-			$types->register_type(
-				"$cpp_class*",
-				$child->{type},
-				$child->{name},
-			);
-		}
-	}
-	for my $module (@{ $self->{modules} }) {
-		for my $child (@{ $module->{children} }) {
-			if (my $cpp_class = $child->{cpp_class}) {
-#print "Registering type from $child: $cpp_class*/$child->{type}/$child->{name}\n";
-				$types->register_type(
-					"$cpp_class*",
-					$child->{type},
-					$child->{name},
-				);
+	$self->{types} ||= Python::Types->create_empty;
+	$self->propagate_value('types', $self->types);
+	
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			if ($class->has('cpp_name')) {
+				my $name = $class->cpp_name;
+				my $type = $class->is_responder ? 'responder' : 'object';
+				my $target = $class->python_name;
+				$self->types->register_type($name, $type, $target);
+				
+				$name .= '*'; $type .= '_ptr';
+				$self->types->register_type($name, $type, $target);
 			}
 		}
-	}
-	
-	if (my @includes = $bindings->includes_collection) {
-		my @inc;
-		for my $includes (@includes) {
-			for my $include ($includes->includes) {
-				push @inc, $include->file;
-			}
-		}
-		$self->{includes} = \@inc;
-	}
-	
-	# if we had no binding named the same as ourself we need to do some more
-	unless ($self->{name}) {
-		$self->{types} ||= $types;
 	}
 	
 	return $self;
@@ -108,54 +73,117 @@ sub resolve_path {
 	if ($self == $caller) {
 		return ();
 	}
-	my @path = ($self->{parent}->resolve_path($caller), $self->{filename});
+	my @path = ($self->{_parent}->resolve_path($caller), $self->{filename});
 	return @path;
 }
 
-sub open_files {
-	my ($self, $folder) = @_;
-	
-	my @subpath = split /\./, $self->{name};
-	my $filename = pop @subpath;
-	
-	mkpath($folder);
-	
-	# PY file
-#	my $py_filename = File::Spec->catfile($folder, "$filename.py");
-#	open $self->{pyh}, ">$py_filename" or die "Unable to create file '$py_filename': $!";
-	
-	my $c_filename = File::Spec->catfile($folder, "$filename.cc");
-	open $self->{ch}, ">$c_filename" or die "Unable to create file '$c_filename': $!";
-	
-	$self->{filename} = $filename;
+sub add_functions {
+	my ($self, $plains);
+	$self->{functions} ||= [];
+	push @{ $self->{functions} }, $plains;
+}
+
+sub add_method_table_entry {
+	my ($self, $python_name, $function_pointer, $flags, $doc) = @_;
+	push @{ $self->{method_table} }, qq({"$python_name", (PyCFunction)$function_pointer, $flags, "$doc"});
 }
 
 sub generate {
-	my ($self, $folder) = @_;
+#return;
+	my ($self, $folder, $ext_prefix) = @_;
 	
-	# generate our modules
-	for my $module (@{ $self->{modules} }) {
-		$module->generate($folder);
+	# generate packages before self, so packages can report filenames
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			$class->generate($folder, $ext_prefix);
+		}
 	}
-	
-	# generate ourself (with children)
-	$self->SUPER::generate($folder);
-	
-	# no name member means we had no binding named the same as ourself
-	# this means we're just being used to bundle other packages
-	# so no utility files are necessary
-	if ($self->{name}) {
-		$self->generate_h_code($folder);
+
+	# if we have classes or constants, we're a real binding and
+	# we need utility files; otherwise we're just a bundle
+	if ($self->has('classes') or $self->has('constants')) {
+		$self->open_files($folder, $ext_prefix);
+		$self->generate_preamble;
+		$self->generate_body;
+		$self->generate_postamble;
+		$self->close_files;
+		
 		$self->generate_utility_h_code($folder);
 		$self->generate_utility_cpp_code($folder);
 	}
 }
 
-sub generate_h_code {
-	my ($self, $folder) = @_;
+sub open_files {
+	my ($self, $folder, $ext_prefix) = @_;
 	
-	my $filename = File::Spec->catfile($folder, "$self->{filename}.h");
-	open my $fh, ">$filename" or die "Unable to create file '$filename': $!";
+	my @subpath = split /\./, $self->name;
+	my $filename = pop @subpath;
+	
+	mkpath($folder);
+	
+	# PY file
+#	my $py_filename = File::Spec->catfile($ext_folder, "$filename.py");
+#	open $self->{pyh}, ">$py_filename" or die "Unable to create file '$py_filename': $!";
+	
+	# H file
+	my $h_filename = File::Spec->catfile($folder, "$filename.h");
+	open $self->{hh}, ">$h_filename" or die "Unable to create file '$h_filename': $!";
+	
+	# CC file
+	my $cc_filename = File::Spec->catfile($folder, "$filename.cc");
+	open $self->{cch}, ">$cc_filename" or die "Unable to create file '$cc_filename': $!";
+	
+	$self->{filename} = $filename;
+}
+
+sub generate_preamble {
+	my ($self) = @_;
+	
+	$self->generate_py_preamble;
+	$self->generate_h_preamble;
+	$self->generate_cc_preamble;
+}
+
+sub generate_body {
+	my ($self) = @_;
+	
+	$self->generate_py_body;
+	$self->generate_h_body;
+	$self->generate_cc_body;
+}
+
+sub generate_postamble {
+	my ($self) = @_;
+	
+	$self->generate_py_postamble;
+	$self->generate_h_postamble;
+	$self->generate_cc_postamble;
+}
+
+sub close_files {
+	my ($self) = @_;
+#	close $self->{pyh};
+	close $self->{hh};
+	close $self->{cch};
+}
+
+#
+# PY-specific sections
+#
+
+sub generate_py_preamble {}	# nothing to do
+sub generate_py_body {}	# nothing to do
+sub generate_py_postamble {}	# nothing to do
+
+#
+# H-specific sections
+#
+
+sub generate_h_preamble {
+	my ($self) = @_;
+	
+	my $fh = $self->hh;
+	my $filename = $self->{filename};
 	
 	print $fh <<TOP;
 /*
@@ -164,51 +192,58 @@ sub generate_h_code {
 
 TOP
 	
-	if ($self->{includes}) {
-		for my $file (@{ $self->{includes} }) {
-			print $fh "#include <$file>\n";
+	# include standard files
+	if ($self->has('include')) {
+		for my $file ($self->include->files) {
+			print $fh qq(#include <), $file->name, qq(>\n);
 		}
 		print $fh "\n";
 	}
 	
 	print $fh <<DEFS;
-static PyObject* $self->{filename}Error;
+static PyObject* python_main;
+static PyObject* main_dict;
+static PyObject* ${filename}Error;
 
 DEFS
-		
-	# we need to predeclare responder classes;
-	my @predeclare;
-	for my $child (@{ $self->{children} }) {
-		next unless $child->isa('Python::ResponderPyType');
-		push @predeclare, $child->{cpp_class};
-	}
-	for my $module (@{ $self->{modules} }) {
-		for my $child (@{ $module->{children} }) {
-			next unless $child->isa('Python::ResponderPyType');
-			push @predeclare, $child->{cpp_class};
-		}
-	}
-	if (@predeclare) {
-		print $fh "// predeclare necessary class(es)\n";
-		for my $class (@predeclare) {
-			print $fh "class $class;\n"
+	
+	# predeclare responder classes
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			next unless $class->is_responder;
+			
+			print $fh 'class ', $class->cpp_name, ";\n";
 		}
 		print $fh "\n";
 	}
+}
+
+sub generate_h_body {}	# nothing to do
+
+sub generate_h_postamble {
+	my ($self) = @_;
 	
-	$self->{types}->write_typeobject_defs($fh);
-	
-	close $fh;
+	if ($self->has('types')) {
+#		if (my @foreign = $self->types->foreign_objects) {
+#			for my $type (@foreign) {
+#				(my $type_name = $type->target)=~s/\./_/g; $type_name .= '_Type';
+#				print { $self->hh } "PyTypeObject $type_name;\n";
+#			}
+#			print { $self->hh } "\n";
+#		}
+		
+		$self->types->write_object_types($self->hh);
+	}
 }
 
 #
-# overridden code-generation functions
+# CC-specific sections
 #
 
-sub generate_c_preamble {
+sub generate_cc_preamble {
 	my ($self) = @_;
 	
-	my $fh = $self->{ch};
+	my $fh = $self->cch;
 	my $filename = $self->{filename};
 	
 	print $fh <<TOP;
@@ -224,106 +259,52 @@ extern "C" {
 #include "${filename}Utils.cpp"
 TOP
 	
-	# determine includes and constants
-	my (@includes, @constant_defs);
-	for my $child (@{ $self->{children} }) {
-		if ($child->isa('Python::ResponderPyType')) {
-			push @includes, $child->{cpp_include};
-		}
-		push @includes, $child->{c_include};
-		push @constant_defs, @{ $child->{constant_defs} };
-	}
-	for my $module (@{ $self->{modules} }) {
-		for my $child (@{ $module->{children} }) {
-			if ($child->isa('Python::ResponderPyType')) {
-				push @includes, $child->{cpp_include};
+	# include extension files
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			if ($class->is_responder) {
+				print $fh qq(#include "), $class->cpp_include, qq("\n);
 			}
-			push @includes, $child->{c_include};
-			push @constant_defs, @{ $child->{constant_defs} };
+			print $fh qq(#include "), $class->cc_include, qq("\n);
 		}
-		# add module after adding children
-		push @includes, $module->{c_include};
+		print $fh "\n";
 	}
-	
-	for my $file (@includes) {
-		print $fh qq(#include "$file"\n);
-	}
-	print $fh "\n";
-	
-	for my $def (@constant_defs) {
-		print $fh qq($def\n);
-	}
-	print $fh "\n";
 }
 
-sub generate_c_postamble {
+sub generate_cc_body {
 	my ($self) = @_;
 	
-	my $fh = $self->{ch};
+	(my $python_module_prefix = $self->name)=~s/\./_/g;
+	
+	if ($self->has('functions')) {
+		for my $f ($self->functions) {
+			$f->generate;
+		}
+	}
+	
+	my $fh = $self->cch;
+	
+	# methods table
+	my $method_table = "${python_module_prefix}_methods";
+	print $fh qq(static PyMethodDef ${method_table}[] = {\n);
+	if ($self->has('method_table')) {
+		for my $def (@{ $self->{method_table} }) {
+			print $fh "\t$def,\n";
+		}
+	}
+	print $fh "\t{NULL} /* Sentinel */\n};\n\n";
+}
+
+sub generate_cc_postamble {
+	my ($self) = @_;
+	
+	my $fh = $self->cch;
 	my $filename = $self->{filename};
 	my $module_name = "${filename}_module";
 	
-	(my $name = $self->{name})=~s/\./_/g; $name .= '_';
+	(my $module_prefix = $self->name)=~s/\./_/g; $module_prefix .= '_';
 	
-	$self->SUPER::generate_c_postamble;
-	
-	my (%module_names, @module_defs, @module_code);
-	($module_defs[0], $module_code[0]) = $self->generate_module_init($self);
-	for my $module (@{ $self->{modules} }) {
-		my ($defs, $code) = $self->generate_module_init($module);
-		$module_names{ $module->{name} } = 1;
-		push @module_defs, $defs;
-		push @module_code, $code;
-	}
-	
-	# make any necessary empty modules to prevent "name not defined" errors
-	my (@parent_defs, @parent_methods, @parent_code);
-	for my $m (sort keys %module_names) {
-		my @m = split /\./, $m;
-		pop @m;
-		for my $i (0..$#m) {
-			my $module_name = join('.', @m[0..$i]);
-			next if $module_names{$module_name};
-			$module_names{$module_name} = 1;
-			
-			my @p = @m[0..$i];
-			my $full_string = join('.', @p);
-			my $module_string = pop @p;
-			my $parent_name = join('.', @p);
-			
-			$module_name=~s/\./_/g;
-			my $methods_name = $module_name . '_methods';
-			$module_name .= '_module';
-			
-			if ($parent_name) {
-				$parent_name=~s/\./_/g;
-				$parent_name .= '_module';
-			}
-			else {
-				$parent_name = 'python_main';
-			}
-
-			push @parent_defs, qq(\tPyObject* $module_name = PyImport_AddModule("$full_string");\n);
-			
-#			push @parent_methods, <<METHODS;
-#static PyMethodDef ${methods_name}[] = {
-#	{NULL} /* Sentinel */
-#};
-#
-#METHODS
-
-#push @parent_code, <<CODE;
-#	$module_name = Py_InitModule("$full_string", $methods_name);
-#	Py_INCREF($module_name);
-#	PyModule_AddObject($parent_name, "$module_string", $module_name);
-#	
-#CODE
-		}
-	}
-	
-	print $fh @parent_methods;
-	
-	print $fh <<INIT;
+	print $fh <<TOP;
 /*
  * Some of the base classes may be defined in other packages, which means we don't
  * have access to them here. We eval a Python string to get access to the base type.
@@ -338,112 +319,147 @@ sub generate_c_postamble {
 PyMODINIT_FUNC
 init$filename()
 {
-	PyObject* python_main = PyImport_AddModule("__main__");
-	PyObject* main_dict = PyModule_GetDict(python_main);
-//	PyObject* holder;
+TOP
+	
+	# determine the module names we'll need, including the package
+	my @module_names = ($module_name);
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			next unless $class->has('constants');
+			(my $class_name = $class->python_name)=~s/\./_/g; $class_name .= 'Constants_module';
+			push @module_names, $class_name;
+		}
+	}
+	for my $m (@module_names) {
+		print $fh qq(\tPyObject* $m;\n)
+	}
+	print $fh "\t\n";
+	
+	# set some globals
+	print $fh <<GLOBALS;
+	python_main = PyImport_AddModule("__main__");
+	main_dict = PyModule_GetDict(python_main);
+
+GLOBALS
+	
+	# init the package module
+	my $python_name = $self->name;
+	print $fh <<INIT;
+	// $python_name: package module
+//printf("About to init Haiku.ApplicationKit\\n");
+	$module_name = Py_InitModule("$python_name", ${module_prefix}methods);
+	if ($module_name == NULL)
+		return;
+//printf("Successfully init'ed Haiku.ApplicationKit\\n");
+	
+	// add us immediately (ordinarily we're not added until this
+	// function returns, but we need it before then
+//	Py_INCREF($module_name);
+//	PyModule_AddObject(python_main, "$python_name", $module_name);
+
 INIT
 	
-	print $fh @parent_defs;
+	my @n = split /\./, $self->name;
+	if (@n > 1) {
+		my $base_name = pop @n;
+		my $parent_name = join('.', @n);
+		my $parent_module = join('_', @n, 'module');
+		
+		print $fh <<PARENT;
+	// add us to parent
+	PyObject* $parent_module = PyImport_AddModule("$parent_name");
+	Py_INCREF($module_name);
+	PyModule_AddObject($parent_module, "$base_name", $module_name);
 	
-	for my $def (@module_defs) {
-		print $fh "\t$def\n";
+PARENT
 	}
 	
-	print $fh "\n";
-
-	print $fh @parent_code;
+	# if the package module has constants, add them here
+	if ($self->has('constants')) {
+		print $fh "\t// $python_name: constants\n";
+		for my $constant ($self->constants) {
+			my $cn = $constant->name;
+			print $fh <<CONSTANT;
+	PyObject* ${module_prefix}$cn = PyInt_FromLong((long)$cn);
+	Py_INCREF(${module_prefix}$cn);
+	PyModule_AddObject($module_name, "$cn", ${module_prefix}$cn);
 	
-	for my $code (@module_code) {
-		print $fh $code;
+CONSTANT
+		}
 	}
 	
-	(my $modname = $self->{name})=~s/\./_/g; $modname .= '_module';
+	# for each class, add the class to the package module
+	# if there are constants, add the constant module and add the constants to it
+	
+	# for each class, add the class to the module
+	# if there are constants, init the constant module
+	# and add the constants to it
+	if ($self->has('classes')) {
+		for my $class ($self->classes) {
+			my @n = split /\./, $class->python_name;
+			my $type = $class->pytype_name;
+			print $fh "\t// $class->{python_name}: class\n";
+			my $cn = pop @n;
+			
+			if ($class->has('python_parent')) {
+				my $pp = $class->python_parent;
+				print $fh qq(\t$type.tp_base = (PyTypeObject*)PyRun_String("$pp", Py_eval_input, main_dict, main_dict);\n);
+			}
+			
+#			my $base_name = pop @n;
+#			my $parent_name = join('.', @n);
+			my $parent_module = join('_', @n, 'module');
+			
+			print $fh <<CLASS;
+	$type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&$type) < 0)
+		return;
+	Py_INCREF(&$type);
+	PyModule_AddObject($parent_module, "$cn", (PyObject*)&$type);
+	
+CLASS
+			
+			if ($class->has('constants') and $class->constants->has('constants')) {
+				print $fh "\t// $cn: constants (in their own module)\n";
+				my @n = split /\./, $class->python_name;
+				$n[-1] .= 'Constants';
+				my $module_object_name = join('_', @n, 'module');
+				my $method_object_name = $class->constants_module_method_table_name;
+				my $python_module_name = join('.', @n);
+				(my $class_module = $class->python_name)=~s/\./_/g; $class_module .= 'Constants_module';
+				print $fh <<MODULE;
+	$module_object_name = Py_InitModule("$python_module_name", $method_object_name);
+	if ($module_object_name == NULL)
+		return;
+		
+	Py_INCREF($module_object_name);
+	PyModule_AddObject($parent_module, "$n[-1]", $module_object_name);
+	
+MODULE
+				my $module_object_prefix = join('_', @n, '');
+				for my $constant ($class->constants->constants) {
+					my $cn = $constant->name;
+					print $fh <<CONSTANT;
+	PyObject* ${module_object_prefix}$cn = PyInt_FromLong((long)$cn);
+	Py_INCREF(${module_object_prefix}$cn);
+	PyModule_AddObject($module_object_name, "$cn", ${module_object_prefix}$cn);
+	
+CONSTANT
+				}
+			}
+		}
+	}
 	
 	print $fh <<END;
 //printf("About to set up error object\\n");
 	// exception object
 	${filename}Error = PyErr_NewException("$self->{name}.error", NULL, NULL);
     Py_INCREF(${filename}Error);
-    PyModule_AddObject($modname, "error", ${filename}Error);
+    PyModule_AddObject($module_name, "error", ${filename}Error);
 //printf("Successfully set up error object\\n");
 } //init$filename
 
 END
-}
-
-sub generate_module_init {
-	my ($self, $module) = @_;
-	
-	(my $name = $module->{name})=~s/\./_/g; $name .= '_';
-	my $module_name = "${name}module";
-	
-	my $def = "PyObject* $module_name;";
-	my $code = <<CODE;
-//printf("About to init $module->{name}\\n");
-	// $module->{name}: module
-    $module_name = Py_InitModule("$module->{name}", ${name}methods);
-    if ($module_name == NULL)
-        return;
-//printf("Successfully init'ed $module->{name}\\n");
-		
-CODE
-	
-	# if we're not the module being loaded, we need to
-	# manually add ourselves to our parent module
-	if ($self != $module) {
-		my @p = split /\./, $module->{name};
-		my $subname = pop @p;
-		my $parent_name;
-		if (@p) {
-			$parent_name = join('_', @p, 'module');
-		}
-		else {
-			$parent_name = 'python_main';
-		}
-
-#		(my $parent_name = $self->{name})=~s/\./_/g; $parent_name .= '_module';
-		$code .= <<ADD;	
-	Py_INCREF($module_name);
-	PyModule_AddObject($parent_name, "$subname", $module_name);
-	
-ADD
-	}
-	
-	if (@{ $module->{children} }) {
-		$code .= "\t// $module->{name}: types (classes)\n";
-		for my $child (@{ $module->{children} }) {
-			my @cname = split /\./, $child->{name};
-			my $cname = join('_', @cname, 'Type');
-			
-			if ($child->{python_parent}) {
-				$code .= <<INHERIT;
-//	holder = PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
-//	$cname.tp_bases = PyTuple_Pack(1, holder);
-	$cname.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
-	
-INHERIT
-			}
-			
-			$code .= <<TYPE;
-	if (PyType_Ready(&$cname) < 0)
-		return;
-	Py_INCREF(&$cname);
-	PyModule_AddObject($module_name, "$cname[-1]", (PyObject*)&$cname);
-	
-TYPE
-		}
-	}
-	
-	if (@{ $module->{constant_code} }) {
-		$code .= "\t// $module->{name}: constants\n";
-		for my $i (0..$#{ $module->{constant_code} }) {
-			my $line = $module->{constant_code}[$i];
-			$line=~s/\%MODULE\%/$module_name/;
-			$code .= "\t$line\n";
-		}
-	}
-	
-	return ($def, $code);
 }
 
 1;

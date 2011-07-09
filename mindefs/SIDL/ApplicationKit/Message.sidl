@@ -1,0 +1,130 @@
+<bindings name="Haiku::Message">
+	<doc>Exposes the Message object</doc>
+	<binding source="BMessage" target="Haiku::Message">
+		<doc>Exposes the Message object</doc>
+		<properties>
+			<property name="what" type="uint32">
+				<doc>Indicates the purpose of the message.</doc>
+			</property>
+		</properties>
+		<functions>
+			<constructor>
+				<doc>Creates a Message from a command value.</doc>
+				<param name="command" type="uint32" action="input">
+					<doc>Sets the [code]what[/what] property.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates a Message from an archive.</doc>
+				<param name="message" type="BMessage" action="input">
+					<doc>Contains an archived version of the Message.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>Creates an empty Message.</doc>
+			</constructor>
+			<destructor />
+			<!-- AddData -->
+			<!-- AddBool -->
+			<!-- AddInt8 -->
+			<!-- AddInt16 -->
+			<!-- AddInt32 -->
+			<!-- AddInt64 -->
+			<!-- AddFloat -->
+			<!-- AddDouble -->
+			<!-- AddString -->
+			<!-- AddPoint -->
+			<!-- AddRect -->
+			<!-- AddRef -->
+			<!-- AddMessage -->
+			<!-- AddMessenger -->
+			<!-- AddPointer -->
+			<!-- AddFlat -->
+			<!-- AddSpecifier -->
+			<!-- CountNames -->
+			<!-- FindData -->
+			<!-- FindBool -->
+			<!-- FindInt8 -->
+			<!-- FindInt16 -->
+			<!-- FindInt32 -->
+			<!-- FindInt64 -->
+			<!-- FindFloat -->
+			<!-- FindDouble -->
+			<!-- FindString -->
+			<!-- FindPoint -->
+			<!-- FindRect -->
+			<!-- FindRef -->
+			<!-- FindMessage -->
+			<!-- FindMessenger -->
+			<!-- FindPointer -->
+			<!-- FindFlat -->
+			<!-- Flatten -->
+			<!-- Unflatten -->
+			<!-- FlattenedSize -->
+			<!-- GetCurrentSpecifier -->
+			<!-- PopSpecifier -->
+			<!-- GetInfo -->
+			<!-- HasSpecifiers -->
+			<!-- IsSystem -->
+			<!-- MakeEmpty -->
+			<!-- IsEmpty -->
+			<!-- PrintToStream -->
+			<!-- RemoveName -->
+			<!-- RemoveData -->
+			<!-- ReplaceData -->
+			<!-- ReplaceBool -->
+			<!-- ReplaceInt8 -->
+			<!-- ReplaceInt16 -->
+			<!-- ReplaceInt32 -->
+			<!-- ReplaceInt64 -->
+			<!-- ReplaceFloat -->
+			<!-- ReplaceDouble -->
+			<!-- ReplaceString -->
+			<!-- ReplacePoint -->
+			<!-- ReplaceRect -->
+			<!-- ReplaceRef -->
+			<!-- ReplaceMessage -->
+			<!-- ReplaceMessenger -->
+			<!-- ReplacePointer -->
+			<!-- ReplaceFlat -->
+			<!-- ReturnAddress -->
+			<!-- SendReply -->
+			<!-- WasDelivered -->
+			<!-- IsSourceRemote -->
+			<!-- IsSourceWaiting -->
+			<!-- IsReply -->
+			<!-- Previous -->
+			<!-- WasDropped -->
+			<!-- DropPoint -->
+		</functions>
+		<constants>
+			<constant name="B_NO_SPECIFIER" group="specifier">
+				<doc>There is no specifier.</doc>
+			</constant>
+			<constant name="B_DIRECT_SPECIFIER" group="specifier">
+				<doc>The property name itself is the specifier.</doc>
+			</constant>
+			<constant name="B_INDEX_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_REVERSE_INDEX_SPECIFIER" group="specifier">
+				<doc>The index counts backwards from the end of the list.</doc>
+			</constant>
+			<constant name="B_RANGE_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property.</doc>
+			</constant>
+			<constant name="B_REVERSE_RANGE_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property; the index counts backwards from the end of the list.</doc>
+			</constant>
+			<constant name="B_NAME_SPECIFIER" group="specifier">
+				<doc>The message contains a [code]name[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_ID_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]id[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_SPECIFIERS_END" group="specifier">
+				<doc>This constant reserves space for standard specifier constants; any user-specified constants should be greater than this.</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

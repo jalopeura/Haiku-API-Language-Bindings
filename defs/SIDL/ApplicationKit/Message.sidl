@@ -1,0 +1,688 @@
+<bindings name="Haiku::Message">
+	<doc>Exposes the Message object</doc>
+	<binding source="BMessage" target="Haiku::Message">
+		<doc>Exposes the Message object</doc>
+		<properties>
+			<property name="what" type="uint32">
+				<doc>Indicates the purpose of the message.</doc>
+			</property>
+		</properties>
+		<functions>
+			<constructor>
+				<doc>Creates a Message from a command value.</doc>
+				<param name="command" type="uint32" action="input">
+					<doc>Sets the [code]what[/what] property.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates a Message from an archive.</doc>
+				<param name="message" type="BMessage" action="input">
+					<doc>Contains an archived version of the Message.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>Creates an empty Message.</doc>
+			</constructor>
+			<destructor />
+			<!--
+			<method name="AddData">
+				<doc>Adds data to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="type" type="type_code" action="input">
+					<doc>Data type constant.</doc>
+				</param>
+				<param name="data" type="const void*" action="input">
+					<doc>Raw data.</doc>
+				</param>
+				<param name="numBytes" type="ssize_t" action="input">
+					<doc>Size of data.</doc>
+				</param>
+				<param name="fixedSize" type="bool" action="input" default="true">
+					<doc>If true, multiple items all have the same size.</doc>
+				</param>
+				<param name="numItems" type="int32" action="input" default="1">
+					<doc>Number of items being added.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddBool">
+				<doc>Adds a boolean to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aBool" type="bool" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddInt8">
+				<doc>Adds an 8-bit integer to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt8" type="int8" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddInt16">
+				<doc>Adds a 16-bit integer to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt16" type="int16" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddInt32">
+				<doc>Adds a 32-bit integer to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt32" type="int32" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddInt64">
+				<doc>Adds a 64-bit integer to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt64" type="int64" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddFloat">
+				<doc>Adds a float to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aFloat" type="float" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddDouble">
+				<doc>Adds a double to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aDouble" type="double" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddString">
+				<doc>Adds a string to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="string" type="const char*" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddPoint">
+				<doc>Adds a Point object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="point" type="BPoint" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddRect">
+				<doc>Adds a Rect object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="rect" type="BRect" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<!-- AddRef -->
+			<!--
+			<method name="AddMessage">
+				<doc>Adds a Message object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="message" type="BMessage*" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<!--
+			<method name="AddMessenger">
+				<doc>Adds a Messenger object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="messenger" type="BMessenger" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddPointer">
+				<doc>Adds a pointer to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="pointer" type="const void*" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<!-- AddFlat -->
+			<!--
+			<method name="AddSpecifier">
+				<doc>Adds a specifier to the Message.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>A specifier Message.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddSpecifier" overload-name="_Direct">
+				<doc>Adds a [code]B_DIRECT_SPECIFIER[/code] to the Message.</doc>
+				<param name="property" type="const char*" action="input">
+					<doc>The property being specified.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddSpecifier" overload-name="_Index">
+				<doc>Adds a [code]B_INDEX_SPECIFIER[/code] to the Message.</doc>
+				<param name="property" type="const char*" action="input">
+					<doc>The property being specified.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The specifier index.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddSpecifier" overload-name="_Range">
+				<doc>Adds a [code]B_RANGE_SPECIFIER[/code] to the Message.</doc>
+				<param name="property" type="const char*" action="input">
+					<doc>The property being specified.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The specifier index.</doc>
+				</param>
+				<param name="range" type="int32" action="input">
+					<doc>The specifier range.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddSpecifier" overload-name="_Name">
+				<doc>Adds a [code]B_NAME_SPECIFIER[/code] to the Message.</doc>
+				<param name="property" type="const char*" action="input">
+					<doc>The property being specified.</doc>
+				</param>
+				<param name="name" type="const char*" action="input">
+					<doc>The specifier name.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="CountNames">
+				<doc>Returns the number of named data fields that store the indicated type; for [code]B_ANY_TYPE[/code], counts all named fields.</doc>
+				<param name="type" type="type_code" action="input">
+					<doc>The data type.</doc>
+				</param>
+				<return type="int32" />
+			</method>
+			<method name="FindData">
+				<doc>Finds named data in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="type" type="type_code" action="input">
+					<doc>Data type constant.</doc>
+				</param>
+				<param name="data" type="const void*" action="output">
+					<doc>Raw data.</doc>
+				</param>
+				<param name="numBytes" type="ssize_t" action="output">
+					<doc>Size of data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindData" overload-name="ByIndex">
+				<doc>Finds named data in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="type" type="type_code" action="input">
+					<doc>Data type constant.</doc>
+				</param>
+				<param name="int32" type="index" action="input">
+					<doc>Index.</doc>
+				</param>
+				<param name="data" type="const void*" action="output">
+					<doc>Raw data.</doc>
+				</param>
+				<param name="numBytes" type="ssize_t" action="output">
+					<doc>Size of data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindBool">
+				<doc>Finds a boolean in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aBool" type="bool" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindBool" overload-name="ByIndex">
+				<doc>Finds a boolean in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="aBool" type="bool" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt8">
+				<doc>Finds an 8-bit integer in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt8" type="int8" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt8" overload-name="ByIndex">
+				<doc>Finds an 8-bit integer in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="anInt8" type="int8" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt16">
+				<doc>Finds a 16-bit integer in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt16" type="int16" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt16" overload-name="ByIndex">
+				<doc>Finds a 16-bit integer in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="anInt16" type="int16" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt32">
+				<doc>Finds a 32-bit integer in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt32" type="int32" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt32" overload-name="ByIndex">
+				<doc>Finds a 32-bit integer in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="anInt32" type="int32" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt64">
+				<doc>Finds a 64-bit integer in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="anInt64" type="int64" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindInt64" overload-name="ByIndex">
+				<doc>Finds a 64-bit integer in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="anInt64" type="int64" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindFloat">
+				<doc>Finds a float in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aFloat" type="float" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindFloat" overload-name="ByIndex">
+				<doc>Finds a float in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="aFloat" type="float" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindDouble">
+				<doc>Finds a double in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="aDouble" type="double" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindDouble" overload-name="ByIndex">
+				<doc>Finds a double in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="aDouble" type="double" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindString">
+				<doc>Finds a string in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="string" type="const char*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindString" overload-name="ByIndex">
+				<doc>Finds a string in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="string" type="const char*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindPoint">
+				<doc>Finds a Point object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="point" type="BPoint" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindPoint" overload-name="ByIndex">
+				<doc>Finds a Point object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="point" type="BPoint" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindRect">
+				<doc>Finds a Rect object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="rect" type="BRect" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindRect" overload-name="ByIndex">
+				<doc>Finds a Rect object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="rect" type="BRect" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<!-- FindRef -->
+			<!--
+			<method name="FindMessage">
+				<doc>Finds a Message object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="message" type="BMessage*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindMessage" overload-name="ByIndex">
+				<doc>Finds a Message object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="message" type="BMessage*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<!--
+			<method name="FindMessenger">
+				<doc>Finds a Messenger object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="messenger" type="BMessenger" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindMessenger" overload-name="ByIndex">
+				<doc>Finds a Messenger object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="messenger" type="BMessenger" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindPointer">
+				<doc>Finds a pointer in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="pointer" type="const void*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindPointer" overload-name="ByIndex">
+				<doc>Finds a pointer in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="pointer" type="const void*" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<!-- FindFlat -->
+			<!--
+			<method name="Flatten">
+				<doc>Flattens the Message to a sequence of bytes.</doc>
+				<param name="address" type="char*" action="input">
+					<doc>Where to write the data.</doc>
+				</param>
+				<param name="numBytes" type="ssize_t" action="output" default=NULL>
+					<doc>The number of bytes written.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unflatten">
+				<doc>Unflattens the Message from a sequence of bytes; will clear the previous content of the Message.</doc>
+				<param name="address" type="const char*" action="input">
+					<doc>Where to read the data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FlattenedSize">
+				<doc>Returns the number of bytes a [code]Flatten[/code]ed Message will occupy.</doc>
+				<return type="ssize_t" />
+			</method>
+			-->
+			<!-- GetCurrentSpecifier -->
+			<!-- PopSpecifier -->
+			<!-- GetInfo -->
+			<!-- HasSpecifiers -->
+			<method name="IsSystem">
+				<doc>Returns true if the Message is system-defined.</doc>
+				<return type="bool" />
+			</method>
+			<!--
+			<method name="MakeEmpty">
+				<doc>Empties the Message of data fields, but does not change the [code]what[/code] property.</doc>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<method name="IsEmpty">
+				<doc>Returns true if the Message has no data fields.</doc>
+				<return type="bool" />
+			</method>
+			<method name="PrintToStream">
+				<doc>Prints the contents of the Message to the screen.</doc>
+			</method>
+			<!-- RemoveName -->
+			<!-- RemoveData -->
+			<!-- ReplaceData -->
+			<!-- ReplaceBool -->
+			<!-- ReplaceInt8 -->
+			<!-- ReplaceInt16 -->
+			<!-- ReplaceInt32 -->
+			<!-- ReplaceInt64 -->
+			<!-- ReplaceFloat -->
+			<!-- ReplaceDouble -->
+			<!-- ReplaceString -->
+			<!-- ReplacePoint -->
+			<!-- ReplaceRect -->
+			<!-- ReplaceRef -->
+			<!-- ReplaceMessage -->
+			<!-- ReplaceMessenger -->
+			<!-- ReplacePointer -->
+			<!-- ReplaceFlat -->
+			<!--
+			<method name="ReturnAddress">
+				<doc>Returns a Messenger that can be used to reply to the Message.</doc>
+				<return type="BMessenger" />
+			</method>
+			-->
+			<!-- SendReply -->
+			<!-- WasDelivered -->
+			<!-- IsSourceRemote -->
+			<!-- IsSourceWaiting -->
+			<!-- IsReply -->
+			<!-- Previous -->
+			<!-- WasDropped -->
+			<!-- DropPoint -->
+		</functions>
+		<constants>
+			<constant name="B_NO_SPECIFIER" group="specifier">
+				<doc>There is no specifier.</doc>
+			</constant>
+			<constant name="B_DIRECT_SPECIFIER" group="specifier">
+				<doc>The property name itself is the specifier.</doc>
+			</constant>
+			<constant name="B_INDEX_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_REVERSE_INDEX_SPECIFIER" group="specifier">
+				<doc>The index counts backwards from the end of the list.</doc>
+			</constant>
+			<constant name="B_RANGE_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property.</doc>
+			</constant>
+			<constant name="B_REVERSE_RANGE_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property; the index counts backwards from the end of the list.</doc>
+			</constant>
+			<constant name="B_NAME_SPECIFIER" group="specifier">
+				<doc>The message contains a [code]name[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_ID_SPECIFIER" group="specifier">
+				<doc>The message contains an [code]id[/code] field that specifies an instance of the property.</doc>
+			</constant>
+			<constant name="B_SPECIFIERS_END" group="specifier">
+				<doc>This constant reserves space for standard specifier constants; any user-specified constants should be greater than this.</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

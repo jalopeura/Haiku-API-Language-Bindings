@@ -1,25 +1,21 @@
+use Common::Functions;
+use Python::BaseObject;
+
 package Python::Params;
 use strict;
+our @ISA = qw(BaseObject Python::BaseObject);
 
 sub new {
-	my ($class, $function, $types) = @_;
+	my ($class, @params) = @_;
 	
 	my $self = bless {
-		types => $types,
-		params => {},
-		cpp_inputs => [],
-		cpp_output => undef,
-		python_inputs => [],
-		python_outputs => [],
-		python_errors => [],
-		params => {},
+		_params => {},
+		cpp_input => [],
+		python_input => [],
+		python_output => [],
+		python_error => [],
 	}, $class;
 	
-	my @params;
-	push @params, $function->returns;
-	for my $params ($function->params_collection) {
-		push @params, $params->params;
-	}
 	$self->add(@params);
 	
 	return $self;
@@ -27,370 +23,292 @@ sub new {
 
 sub add {
 	my ($self, @params) = @_;
-	for my $p (@params) {
-		my $name;
-		$name = $p->name or do {
-			$name = $p->{name} = 'retval';
-		};
-		$self->{params}{$name} ||= Python::Param->new($p, $self->{types});
-		my $param = $self->{params}{$name};
+	
+	my @mod;
+	for my $param (@params) {
+		$self->{_params}{ $param->name } = $param;
 		
-		# if another param holds the count or length of this param, and that
-		# other param was parsed first, this param may have been created
-		# empty, so we fix that here
-		$param->{param} or $param->setparam($p);
-		
-		# c++ parameters
-		if ($p->isa('Return')) {
-			$param->{action} ||= 'output';
+		if ($param->isa('Return')) {
 			$self->{cpp_output} = $param;
-			push @{ $self->{python_outputs} }, $param;
 		}
 		else {
-			push @{ $self->{cpp_inputs} }, $param;
-			
-			# python parameters
-			my $action = $p->{action};
-			if ($action eq 'input') {
-				push @{ $self->{python_inputs} }, $param;
-			}
-			elsif ($action eq 'output') {
-				push @{ $self->{python_outputs} }, $param;
-			}
-			elsif ($action eq 'error') {
-				push @{ $self->{python_errors} }, $param;
-			}
-			elsif ($action=~/^(length|count)\[(.+?)\]$/) {
-				my $key = $1;
-				my $ref = $2;
-				$self->{params}{$ref} ||= Python::Param->new(undef, $self->{types});
-				$self->{params}{$ref}->setattr($key, $param);
-			}
-			else {
-				die "Unknown action in params: $action ($p)" . join(':::', %$p);
-			}
+			push @{ $self->{cpp_input} }, $param;
 		}
+		
+		my $action = $param->action;
+		if ($action eq 'input') {
+			push @{ $self->{python_input} }, $param;
+		}
+		elsif ($action eq 'output') {
+			push @{ $self->{python_output} }, $param;
+		}
+		elsif ($action eq 'error') {
+			push @{ $self->{python_error} }, $param;
+		}
+		elsif ($action=~/^(length|count)\[(.+?)\]$/) {
+			push @mod, [ $1, $2, $param ];
+		}
+		else {
+			die "Unsupported param action '$action'";
+		}
+	}
+	
+	for my $m (@mod) {
+		my ($key, $name, $param) = @$m;
+		$self->{_params}{$name}{$key} = $param;	
 	}
 }
 
-sub cpp_inputs {
+# as_cpp_input gives the paramaters as used in a function definition
+sub as_cpp_input {
 	my ($self) = @_;
-	return $self->{cpp_inputs};
+	
+	my @args;
+	for my $param ($self->cpp_input) {
+		push @args, $param->as_cpp_input;
+	}
+	
+	return \@args;
+}
+sub as_cpp_parent_input {
+	my ($self) = @_;
+	
+	my @args;
+	for my $param ($self->cpp_input) {
+		push @args, $param->name;
+	}
+	
+	return \@args;
 }
 
-sub cpp_output {
+# as_cpp_call gives the arguments ase used in a functioncall
+sub as_cpp_call {
 	my ($self) = @_;
-	return $self->{cpp_output};
+	
+	my @args;
+	for my $param ($self->cpp_input) {
+		push @args, $param->as_cpp_call;
+	}
+	
+	return \@args;
 }
 
-sub python_inputs {
+sub cpp_rettype {
 	my ($self) = @_;
-	return $self->{python_inputs};
+	if ($self->has('cpp_output')) {
+		return $self->cpp_output->type;
+	}
+	return 'void';
 }
 
-sub python_outputs {
+sub as_cpp_return {
 	my ($self) = @_;
-	return $self->{python_outputs};
+	
+	my ($item, $arg, @defs, @code);
+	if ($self->has('cpp_output') and $self->cpp_output->type ne 'void') {
+		my $type = $self->types->type($self->cpp_output->type);
+		return $type->arg_builder($self->cpp_output);
+	}
+	return 'void';
 }
 
-sub python_errors {
+sub as_input_from_python {
 	my ($self) = @_;
-	return $self->{python_errors};
+	
+	my ($format, @args, @defs, @code);
+	my $seen_default;
+	for my $param ($self->python_input) {
+		my ($fmt, $arg, $defs, $code) = $param->as_input_from_python;
+		if ($param->has('default') and not $seen_default) {
+			$format .= '|';
+			$seen_default = 1;
+		}
+		$format .= "$fmt";
+		push @args, $arg;
+		push @defs, @$defs;
+		push @code, @$code;
+	}
+	
+	my $outargs;
+	if ($format) {
+		$outargs = join(', ', qq("$format"), @args);
+	}
+#	else {
+#		$outargs = 'NULL';
+#	}
+	
+	return ($outargs, \@defs, \@code);
+}
+
+sub as_python_error {
+	my ($self) = @_;
+	
+	my (@defs, @code);
+	for my $param ($self->python_error) {
+		my $errname = $param->name;
+		my $errtype = $param->type;
+		my $success = $param->success;
+		
+		if ($param->needs_deref) {
+			$errtype=~s/\*$//;
+		}
+		push @defs, "$errtype $errname;";
+		
+		my $type = $self->types->type($errtype);
+		my $erritem = $type->format_item;
+		
+		my @n =  split /\./, $self->package_name;
+		my $errvar = $n[-1] . 'Error';
+		
+		push @code,
+			qq(if ($errname != $success) {),
+			qq(	PyObject* errval = Py_BuildValue("$erritem", $errname);),
+			qq(	PyErr_SetObject($errvar, errval);),
+			qq(	return NULL;),
+			qq(});
+	}
+#	ApplicationKitError
+	
+	return (\@defs, \@code);
+}
+
+sub as_python_call {
+	my ($self) = @_;
+	
+	my ($format, @args, @defs, @code);
+	for my $param ($self->python_input) {
+		my ($fmt, $arg, $def, $code) = $param->as_python_call;
+		$format .= $fmt;
+		push @args, $arg;
+		push @defs, @$def;
+		push @code, @$code;
+	}
+	
+	my $outargs;
+	if ($format) {
+		$outargs = join(', ', qq("$format"), @args);
+	}
+	else {
+		$outargs = 'NULL';
+	}
+	
+	return ($outargs, \@defs, \@code);
+}
+
+sub as_python_return {
+	my ($self) = @_;
+	
+	my ($name, $pyname, @defs, @code);
+	
+	if ($self->has('cpp_output') and $self->cpp_output->type ne 'void') {
+		my $retval = $self->cpp_output;
+		$name = $retval->name;
+		$pyname = "py_$name";
+		my $type = $self->types->type($retval->type);
+		my $item = $type->format_item;
+		
+		@defs = (
+			qq($retval->{type} $name;),
+			qq(PyObject* $pyname;),
+		);
+		
+		if ($item=~/[ibhlBH]/) {
+			@code = (
+				"$name = ($type->{name})PyInt_AsLong(py_$name)"
+			);
+		}
+		elsif ($item=~/[Ik]/) {
+			@code = (
+				"$name = ($type->{name})PyLong_AsLong(py_$name)"
+			);
+		}
+		elsif ($item=~/[fd]/) {
+			@code = (
+				"$name = ($type->{name})PyFloat_AsDouble(py_$name)"
+			);
+		}
+		elsif ($item=~/^O/) {
+			my $builtin = $type->builtin;
+			my $target;
+			
+			if ($builtin eq 'bool') {
+				@code = (
+					"$name = (bool)(PyObject_IsTrue($pyname));"
+				);
+			}
+			elsif ($builtin eq 'char**') {
+				my $count = $retval->count->name;
+				@code = (
+					"$name = PyList2CharArray($pyname, (int)$count);"
+				);
+			}
+			elsif ($builtin eq 'object' or $builtin eq 'responder') {
+				$target = $type->target;
+				my @n = split /\./, $target;
+				my $objtype = join('_', @n, 'Object');
+				
+				@code = (
+					"$name = *((($objtype*)$pyname)->cpp_object);"
+				);
+			}
+			elsif ($builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
+				$target = $type->target;
+				my @n = split /\./, $target;
+				my $objtype = join('_', @n, 'Object');
+				
+				@code = (
+					"$name = ((($objtype*)$pyname)->cpp_object);"
+				);
+			}
+			else {
+				die "Unsupported type: $retval->{type}/$builtin/$target";
+			}
+		}
+	}
+	return ($name, $pyname, \@defs, \@code);
+}
+
+package Python::Argument;
+use strict;
+our @ISA = qw(Python::BaseObject);
+
+sub as_cpp_input {
+	my ($self) = @_;
+	my $arg = "$self->{type} $self->{name}";
+	return $arg;
+}
+
+sub as_cpp_call {
+	my ($self) = @_;
+	my $arg = $self->name;
+	if ($self->needs_deref) {
+		$arg = "&$arg";
+	}
+	return $arg;
+}
+
+sub as_input_from_python {
+	my ($self) = @_;
+	
+	my $type = $self->types->type($self->type);
+	
+	return $type->arg_parser($self);
+}
+
+sub as_python_call {
+	my ($self) = @_;
+	
+	my $type = $self->types->type($self->type);
+	
+	return $type->arg_builder($self);
 }
 
 package Python::Param;
-use Carp;
 use strict;
+our @ISA = qw(Param Python::Argument);
 
-sub new {
-	my ($class, $param, $types) = @_;
-	
-#print join(':::', $param, %$param),"\n";
-	my $self = bless {
-		types => $types,
-	}, $class;
-	$self->setparam($param) if $param;
-	return $self;
-}
-
-sub setparam {
-	my ($self, $param) = @_;
-	$self->{name} = $param->name;
-	$self->{param} = $param;
-}
-
-sub setattr {
-	my ($self, $attr, $param) = @_;
-	$self->{$attr} = $param;
-}
-
-sub name {
-	my ($self) = @_;
-	return $self->{name};
-}
-
-sub as_cpp {
-	my ($self, $action) = @_;
-	
-	unless ($self->{cpp_input}) {
-		my $param = $self->{param};
-		my %ret;
-		
-		if ($param->isa('Return') and
-			($param->{type} eq 'void' or not $param->{type})
-			) {
-			$self->{cpp_input} = {
-				type => 'void',
-			};
-			return $self->{cpp_input};
-		}
-		
-		# name as it should be passed to the c++ function/method
-		$ret{name} = $param->name;
-		$ret{type} = my $type = $param->type;
-		if ($param->{deref}) {
-			$ret{name} = '&' . $ret{name};
-			$type=~s/\*$//;
-		}
-		
-		# define the c++ var
-		$ret{definition} = "$type $param->{name}";
-		if ($param->{default}) {
-			$ret{definition} .= " = $param->{default}";
-			$ret{is_optional} = 1;
-		}
-		$ret{funcdef_definition} = "$param->{type} $param->{name}";
-		
-		if ($action eq 'output') {
-			$ret{return_name} = "py_$ret{name}";
-			
-			my $item = $self->{types}->get_format_item($param->{type});
-			if ($item=~/[ibhlBH]/) {
-				$ret{return_code} = [
-					"$ret{name} = ($param->{type})PyInt_AsLong(py_$ret{name})"
-				];
-			}
-			elsif ($item=~/[Ik]/) {
-				$ret{return_code} = [
-					"$ret{name} = ($param->{type})PyLong_AsLong(py_$ret{name})"
-				];
-			}
-			elsif ($item=~/[fd]/) {
-				$ret{return_code} = [
-					"$ret{name} = ($param->{type})PyFloat_AsDouble(py_$ret{name})"
-				];
-			}
-			elsif ($item=~/^O/) {
-				my ($builtin, $target) = $self->{types}->get_builtin($param->{type});
-				if ($builtin eq 'bool') {
-					$ret{return_code} = [
-						"$ret{name} = (bool)(PyObject_IsTrue(py_$ret{name}));"
-					];
-				}
-				elsif ($builtin eq 'char**') {
-					my $count = $self->{count};
-					$ret{return_code} = [
-						"$ret{name} = PyList2CharArray(py_$ret{name}, (int)$count->{name});"
-					];
-				}
-				elsif ($builtin eq 'object' or $builtin eq 'responder') {
-					my @n = split /\./, $target;
-					my $objtype = join('_', @n, 'Object');
-					$ret{return_code} = [
-						"$ret{name} = *((($objtype*)py_$ret{name})->cpp_object);"
-					];
-				}
-				elsif ($builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
-					my @n = split /\./, $target;
-					my $objtype = join('_', @n, 'Object');
-					$ret{return_code} = [
-						"$ret{name} = ((($objtype*)py_$ret{name})->cpp_object);"
-					];
-				}
-				else {
-					die "Unsupported type: $param->{type}/$builtin/$target";
-				}
-			}
-			else {
-				die "Unsupported type: $param->{type} ($item)";
-			}
-		}
-		
-		if ($param->action eq $action) {
-			$ret{format_name} = "&$ret{name}";
-			
-			# format code for pulling out of tuple
-			my $type = $param->{type};
-			$param->{deref} and $type=~s/\*$//;
-			my $item = $self->{types}->get_format_item($type);
-			$item or warn "No format item for $type";
-			$ret{format_item} = $item;
-			
-			# some types are parsed as Python objects; deal with them here
-			if ($item=~/^O/) {
-				$ret{format_name} = "&py_$param->{name}";
-				$ret{format_definition} = "PyObject* py_$param->{name}";
-				
-				my ($builtin, $target) = $self->{types}->get_builtin($param->{type});
-				if ($builtin eq 'bool') {
-					$ret{format_code} = [ "$param->{name} = (bool)(PyObject_IsTrue(py_$param->{name}));" ];
-				}
-				elsif ($builtin eq 'char**') {
-					my $count = $self->{count};
-					$ret{format_code} = [ "$param->{name} = PyList2CharArray(py_$param->{name}, (int)$count->{name});" ];
-				}
-				elsif ($builtin eq 'object' or $builtin eq 'responder') {
-					my @n = split /\./, $target;
-					my $objtype = join('_', @n, 'Object');
-					$ret{format_code} = [ "$param->{name} = *((($objtype*)py_$param->{name})->cpp_object);" ];
-					
-				}
-				elsif ($builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
-					my @n = split /\./, $target;
-					my $objtype = join('_', @n, 'Object');
-					$ret{format_code} = [ "$param->{name} = (($objtype*)py_$param->{name})->cpp_object;" ];
-					
-				}
-				else {
-					die "Unsupported type: $param->{type}/$builtin/$target";
-				}
-			}
-		}
-		
-		$self->{cpp_input} = \%ret;
-	}
-	
-	return $self->{cpp_input}
-}
-
-sub as_input_to_cpp {
-	my ($self) = @_;
-	$self->as_cpp('input');
-}
-
-sub as_output_to_cpp {
-	my ($self) = @_;
-	$self->as_cpp('output');
-}
-
-sub as_input_to_python {
-	my ($self) = @_;
-	
-	unless ($self->{python_input}) {
-		my $param = $self->{param};
-		
-		if ($param->isa('Return') and
-			($param->{type} eq 'void' or not $param->{type})
-			) {
-			$self->{python_input} = {
-				type => 'void',
-			};
-			return $self->{python_input};
-		}
-		
-		my %ret;
-		
-		# name and type
-		$ret{name} = $param->{name};
-		$ret{type} = $param->{type};
-		
-		# define the c++ var
-		$ret{definition} = "$param->{type} $param->{name}";
-		
-		# name as it should be passed to Py_BuildValue
-		$ret{format_name} = $param->name;
-		
-		# format code for building value
-		my $type = $param->{type};
-		$param->{deref} and $type=~s/\*$//;
-		my $item = $self->{types}->get_format_item($type);
-		$item or warn "No format item for $type";
-		$ret{format_item} = $item;
-		
-		# some types are parsed as Python objects; deal with them here
-		if ($item=~/^O/) {
-			$ret{format_name} = "py_$param->{name}";
-			$ret{format_definition} = "PyObject* py_$param->{name}";
-			
-			my ($builtin, $target) = $self->{types}->get_builtin($param->{type});
-			if ($builtin eq 'bool') {
-				delete $ret{format_definition};
-				$ret{format_item} = 'b';
-				$ret{format_name} = "($param->{name} ? 1 : 0)";
-			}
-			elsif ($builtin eq 'char**') {
-				my $count = $self->{count};
-				$ret{format_code} = [ "py_$param->{name} = CharArray2PyList($param->{name}, (int)$count->{name});" ];
-			}
-			elsif ($builtin eq 'object' or $builtin eq 'responder') {
-				$ret{format_name} = "(PyObject*)py_$param->{name}";
-				$ret{format_code} = [ "... (HANDLE OBJECT HERE)" ];
-			}
-			elsif ($builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
-				my ($builtin, $target) = $self->{types}->get_builtin($param->{type});
-				(my $type = $target)=~s/\./_/g;
-				my $obj_type = $type . '_Object';
-				my $type_type = $type . '_Type';
-				$ret{format_definition} = "$obj_type* py_$param->{name}";
-				$ret{format_name} = "(PyObject*)py_$param->{name}";
-				$ret{format_code} = [
-#					qq(py_$param->{name} = new $obj_type;),
-#					qq(python_type = new $type_type;),
-#					qq(py_$param->{name} = python_type->tp_alloc(python_type, 0);),
-#$cname.tp_base = (PyTypeObject*)PyRun_String("$child->{python_parent}", Py_eval_input, main_dict, main_dict);
-#qq(python_self = (${name}Object*)python_type->tp_alloc(python_type, 0););
-#python_self = (Haiku_Message_Message_Object*)python_type->tp_alloc(python_type, 0);
-
-					qq(py_$param->{name}->cpp_object = $param->{name};),
-				];
-				
-				if ($param->{must_not_delete}) {
-					push @{ $ret{format_code} },
-						qq(// cannot delete this object; we do not own it),
-						qq(py_$param->{name}->can_delete_cpp_object = false;);
-				}
-				else {
-					push @{ $ret{format_code} },
-						qq(// we own this object, so we can delete it),
-						qq(py_$param->{name}->can_delete_cpp_object = true;);
-				}
-			}
-			else {
-				die "Unsupported type: $param->{type}/$builtin/$target";
-			}
-		}
-		
-		$self->{python_input} = \%ret;
-	}
-	
-	return $self->{python_input};
-}
-
-sub as_output_to_python {
-	my ($self) = @_;
-	$self->as_input_to_python;
-}
-
-sub as_error_to_python {
-	my ($self) = @_;
-	
-	unless ($self->{python_error}) {
-		my $param = $self->{param};
-		my %ret;
-		
-		$ret{name} = $param->{name};
-		$ret{success} = $param->{success};
-		
-		my $type = $param->{type};
-		if ($param->{deref}) {
-			$type=~s/\*$//;
-		}
-		$ret{format_item} = $self->{types}->get_format_item($type);
-		
-		$self->{python_error} = \%ret;
-	}
-	
-	return $self->{python_error};
-}
+package Python::Return;
+use strict;
+our @ISA = qw(Return Python::Argument);
 
 1;

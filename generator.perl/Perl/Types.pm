@@ -1,5 +1,9 @@
+use Common::Types;
+use Perl::BaseObject;
+
 package Perl::Types;
 use strict;
+our @ISA = qw(Types Perl::BaseObject);
 
 # need to handle long double
 
@@ -24,6 +28,7 @@ our %builtins = (
 	'wchar_t*'      => 'T_PV',
 	'char**'  => 'CHARARRAY',
 	'void*'   => 'T_PTR',
+	'constvoid*'   => 'T_PV',
 	
 	'responder' => 'RESP_OBJ',
 	'object'    => 'NORM_OBJ',
@@ -96,99 +101,89 @@ our %output_converters = (
 	'RESP_OBJ_PTR' => 'sv_setsv($arg, $var->perl_link_data->perl_object);',
 );
 
-sub new {
+sub create_empty {
 	my ($class) = @_;
-	my $self = bless {
-		typemap => {},
-		types => [],
-	}, $class;
-	return $self;
+	return bless { types => [] }, $class;
+}
+
+sub finalize_upgrade {
+	my ($self) = @_;
+	$self->{_typemap} = {};
+	$self->{types} ||= [];
+	for my $type ($self->types) {
+		my $name = $type->name;
+		my $builtin = $type->builtin;
+		$self->verify_builtin($name, $builtin);
+		$self->{_typemap}{$name} = $type;
+		
+		$builtin=~s/ //g;
+		my $perltype = $builtins{$builtin} or
+			warn "Type '$type' mapped to unsupported builtin type '$builtin'";
+			
+		$type->{perltype} = $perltype;
+		$type->{svtype} = $perltypes{$perltype};
+	}
 }
 
 sub register_type {
-	my ($self, $type, $builtin, $target) = @_;
+	my ($self, $name, $builtin, $target) = @_;
 #print "Registering type $type/$builtin/$target\n";
 	
 #	$type=~s/([^\s*])*/$1 */;	# xsubpp wants this space in the typemap
 	
 	# don't register an already registered type
-	if ($self->{typemap}{$type}) {
+	if (my $type = $self->{_typemap}{$name}) {
 		# but warn if mapped to something different
-		if ($self->{typemap}{$type}[0] ne $builtin) {
-			warn "Type '$type' already mapped to '$self->{typemap}{$type}[0]'; cannot remap to '$builtin'";
+		if ($type->builtin ne $builtin) {
+			warn "Type '$name' already mapped to '$type->{builtin}'; cannot remap to '$builtin'";
 		}
 		return;
 	}
 	
-	$self->verify_builtin($type, $builtin);
+	my $type = bless {
+		name => $name,
+		builtin => $builtin,
+	}, 'Perl::Type';
 	
-	$self->{typemap}{$type} = [ $builtin, $target ];
-	push @{ $self->{types} }, $type;
-}
-
-sub get_builtin {
-	my ($self, $type) = @_;
-	return @{ $self->{typemap}{$type} } if $self->{typemap}{$type};
-	return ();
-}
-
-sub get_perl_type {
-	my ($self, $type) = @_;
-	my $perltype = $builtins{$type};
-	unless ($perltype) {
-		if (my $t = $self->{typemap}{$type}) {
-			(my $builtin = $t->[0])=~s/ //g;
-			$perltype = $builtins{$builtin};
-		}
+	if ($target) {
+		$type->{target} = $target;
 	}
-	return $perltype;
-}
 	
-sub get_sv_type {
-	my ($self, $type) = @_;
-	my $perltype = $self->get_perl_type($type);
-	return $perltypes{$perltype};
-}
-
-sub needs_deref {
-	my ($self, $type) = @_;
+	$builtin=~s/ //g;
+	my $perltype = $builtins{$builtin} or
+		warn "Type '$type' mapped to unsupported builtin type '$builtin'";
+		
+	$type->{perltype} = $perltype;
+	$type->{svtype} = $perltypes{$perltype};
+	
+	$self->{_typemap}{$name} = $type;
+	push @{ $self->{types} }, $type;
 }
 
 sub verify_builtin {
 	my ($self, $type, $builtin) = @_;
 	(my $key = $builtin)=~s/\s//g;
-	$builtins{$key} or warn "Type '$type' mapped to unsupported builtin type '$builtin'";
 }
 
 sub registered_type_count {
 	my ($self) = @_;
-	my $c = $#{ $self->{types} } + 1;
-	return $c;
-}
-
-sub input_converter {
-	my ($self, $type, $var, $arg) = @_;
-	my $perltype = $self->get_perl_type($type);
-	my $converter = $input_converters{$perltype};
-	my $ntype = '$ntype';
-	my $ret = eval "qq($converter)" or die $@;
-#print "Input converter for $type/$perltype = $converter; result was $ret\n";
-#print "Called from ", join(':::', caller), "\n";
-	return $ret;
-}
-
-sub output_converter {
-	my ($self, $type, $var, $arg) = @_;
-	my $perltype = $self->get_perl_type($type);
-	my $converter = $output_converters{$perltype};
-	my $ntype = '$ntype';
-	my $ret = eval "qq($converter)" or die $@;
-	if (my $target = $self->{typemap}{$type}[1]) {
-		$ret=~s/CLASS/"$target"/;
+	if ($self->{types}) {
+		my $c = $#{ $self->{types} } + 1;
+		return $c;
 	}
-#print "Output converter for $type/$perltype = $converter; result was $ret\n";
-#print "Called from ", join(':::', caller), "\n";
-	return $ret;
+	return 0;
+}
+
+sub type {
+	my ($self, $name) = @_;
+	return $self->{_typemap}{$name} if $self->{_typemap}{$name};
+	
+	(my $k = $name)=~s/ //g;
+	if ($builtins{$k}) {
+		return new Perl::BuiltinType($name, $builtins{$k}, $perltypes{ $builtins{$k} });
+	}
+	
+	die "Unrecognized type '$name'";
 }
 
 sub write_typemap_file {
@@ -207,9 +202,10 @@ INTRO
 	
 	# add char** to force override of builtin
 	for my $type (@{ $self->{types} }) {
-		(my $key = $self->{typemap}{$type}[0])=~s/\s//g;;
+		my $name = $type->name;
+		(my $key = $type->builtin)=~s/\s//g;;
 		my $equiv = $builtins{$key};
-		print OUT "$type\t\t$equiv\n";
+		print OUT "$name\t\t$equiv\n";
 	}
 	# force override of char**
 	print OUT "char**\t\tCHARARRAY\n";
@@ -262,10 +258,54 @@ OBJTYPES
 	close OUT;
 }
 
+package Perl::Type;
+use strict;
+our @ISA = qw(Type Perl::BaseObject);
+
+sub input_converter {
+	my ($self, $var, $arg) = @_;
+	my $converter = $Perl::Types::input_converters{ $self->perltype };
+	
+	# values for the eval
+	my $type = $self->name;
+	my $ntype = '$ntype';
+	
+	my $ret = eval "qq($converter)" or die $@;
+#print "Input converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
+#print "Called from ", join(':::', caller), "\n";
+	return $ret;
+}
+
+sub output_converter {
+	my ($self, $var, $arg) = @_;
+	my $converter = $Perl::Types::output_converters{ $self->perltype };
+	
+	# values for the eval
+	my $type = $self->name;
+	my $ntype = '$ntype';
+	
+	my $ret = eval "qq($converter)" or die $@;
+	if ($self->has('target')) {
+		$ret=~s/CLASS/"$self->{target}"/;
+	}
+#print "Output converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
+#print "Called from ", join(':::', caller), "\n";
+	return $ret;
+}
+
+package Perl::BuiltinType;
+use strict;
+our @ISA = qw(Perl::Type);
+
+sub new {
+	my ($class, $name, $perltype, $svtype) = @_;
+	my $self = bless {
+		name     => $name,
+		builtin  => $name,
+		perltype => $perltype,
+		svtype   => $svtype,
+	};
+	return $self;
+}
+
 1;
-
-__END__
-
-this file needs to parse the types file and store the data
-it also needs to keep track of every encountered type and determine a match for it
-

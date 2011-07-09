@@ -1,0 +1,19 @@
+<bindings name="Haiku::Archivable">
+	<doc>Exposes the Archivable object</doc>
+	<binding source="BArchivable" target="Haiku::Archivable">
+		<doc>Exposes the Archivable object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Archivable.</doc>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates an Archivable from an archive.</doc>
+				<param name="archive" type="BMessage*" action="input">
+					<doc>Contains an archived version of the Archivable.</doc>
+				</param>
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+		</functions>
+	</binding>
+</bindings>

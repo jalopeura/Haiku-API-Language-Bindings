@@ -14,6 +14,13 @@ sub generate_utility_h_code {
  
 TOP
 	
+	if ($self->has('include')) {
+		for my $file ($self->include->files) {
+			print $fh "#include <", $file->name, ">\n";
+		}
+		print $fh "\n";
+	}
+	
 	if ($self->{includes}) {
 		for my $file (@{ $self->{includes} }) {
 			print $fh "#include <$file>\n";
@@ -186,6 +193,7 @@ void* get_cpp_object(SV* perl_obj) {
 	
 	if (link == NULL)
 		return NULL;
+//	DEBUGME(4, "Got object: %d", (IV)link->cpp_object);
 	
 	return link->cpp_object;
 }

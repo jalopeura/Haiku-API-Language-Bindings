@@ -1,0 +1,41 @@
+<bindings name="Haiku::Invoker">
+	<doc>Exposes the Invoker object</doc>
+	<binding source="BInvoker" target="Haiku::Invoker">
+		<doc>Exposes the Invoker object</doc>
+		<functions>
+			<!--
+			<constructor>
+				<doc>Creates an Invoker.</doc>
+				<param name="message" type="BMessage*" action="input" />
+				<param name="messenger" type="BMessenger*" action="input" />
+			</constructor>
+			-->
+			<constructor>
+				<doc>Creates an Invoker.</doc>
+				<param name="message" type="BMessage*" action="input" />
+				<param name="handler" type="BHandler*" action="input" />
+				<param name="looper" type="BLooper*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>Creates an empty Invoker.</doc>
+			</constructor>
+			<destructor />
+			<!-- BeginInvokeNotify -->
+			<!-- EndInvokeNotify -->
+			<!-- Invoke -->
+			<!-- InvokeNotify -->
+			<!-- InvokeKind -->
+			<!-- SetHandlerForReply -->
+			<!-- HandlerForReply -->
+			<!-- SetMessage -->
+			<!-- Message -->
+			<!-- Command -->
+			<!-- SetTarget -->
+			<!-- Target -->
+			<!-- IsTargetLocal -->
+			<!-- Messenger -->
+			<!-- SetTimeout -->
+			<!-- Timeout -->
+		</functions>
+	</binding>
+</bindings>

@@ -1,1 +1,1 @@
-perl generate.pl -t ../generated -l python ../defs/HaikuKits.def
+perl generate.pl -t ../generated -l python -f SIDL ../defs/SIDL/HaikuKits.sidl

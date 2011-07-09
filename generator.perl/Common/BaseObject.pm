@@ -3,107 +3,124 @@ use Carp;
 use strict;
 our $AUTOLOAD;
 
-sub new {
-	my ($class, $parent, $element) = @_;
-	my $self = bless {
-		_name => $element->name,
-		_parent => $parent,
-	}, $class;
-	$self->_parse($element);
-	return $self;
-}
+sub _has_doc {}
+sub _attributes {}
+sub _children {}
+sub _defaults {}
+sub _required_data {}
+sub _bool_attrs {}
 
-sub _parse {
-	my ($self, $element) = @_;
+sub check_required_data {
+	my ($self) = @_;
 	
-	$self->{_children_aref} = [];
-	$self->{_children_href} = {};
-	
-	# make sure all possible attributes and children exist
-	my @allowed_attrs = $self->_allowed_attrs;
-	for my $attr (@allowed_attrs) {
-		(my $key = $attr)=~s/-/_/g;
-		$self->{$key} = undef;
-	}
-	for my $c ($self->_allowed_children) {
-		my $key = $self->_element_key($c);
-		$self->{_children_href}{$key} = [];
+	my %d = $self->_defaults;
+	my @r = $self->_required_data;
+	for my $r (@r) {
+		next if $self->{$r};
+		next if $self->{$r} = $d{$r};
+		
+		$self->dump($self);
+		die "Required data '$r' not found in $self";
 	}
 	
-	# get attributes
-	my @allowed_attrs = $self->_allowed_attrs;
-	for my $attr (keys %{ $element->attrs }) {
-		# verify attribute is allowed
-		my $allowed;
-		for my $check (@allowed_attrs) {
-			next unless $attr eq $check;
-			$allowed = 1;
-			last;
+	for my $attr ($self->_bool_attrs) {
+		my $val = $self->{$attr};
+		if ($val eq 'true' or $val eq 'yes' or $val+0) {
+			$self->{$attr} = 1;
 		}
-		
-		# set if allowed
-		if ($allowed) {
-			(my $key = $attr)=~s/-/_/g;
-			$self->{$key} = $element->attr($attr);
-			next;
+		else {
+			$self->{$attr} = 0;
 		}
-		
-		# uh-oh
-		die "Unsupported attribute of $element->{name} element: $attr";
 	}
 	
-	# get children
-	my @allowed_children = $self->_allowed_children;
-	my $content_as = $self->_content_as;
-	for my $child (@{ $element->children }) {
-		# ignore comments
-		next if $child->isa('SGML::Comment');
+	my %c = $self->_children;
+	my @c = map { $c{$_}{key} } keys %c;
+	for my $k (@c) {
+		my $c = $self->{$k};
+		next unless $c;
 		
-		if ($child->isa('SGML::Content')) {
-			if ($content_as) {
-				$self->add($content_as, $element);
+		if (ref($c) eq 'ARRAY') {
+			for my $e (@$c) {
+				$e->check_required_data;
 			}
-			next;
 		}
-		
-		my $cn = $child->name;
-		
-		# check for a special handler
-		if (my $subref = $self->_child_handler($cn)) {
-			$self->$subref($child);
-			next;
+		else {
+			$c->check_required_data;
 		}
-		
-		# verify child is allowed
-		my $allowed;
-		for my $check (@allowed_children) {
-			next unless $cn eq $check;
-			$allowed = 1;
-			last;
-		}
-		
-		# set if allowed
-		if ($allowed) {
-			$self->_add($child);
-			next;
-		}
-		
-		# uh-oh
-		die "Unsupported child of $element->{name} element: $cn";
 	}
 }
 
-sub _add {
-	my ($self, $element) = @_;
-	my $name = $element->name;
+sub has {
+	my ($self, $key) = @_;
+	if (ref($self->{$key}) eq 'ARRAY') {
+		return @{ $self->{$key} };
+	}
+	else {
+		return exists $self->{$key};
+	}
+}
+
+sub dump {
+	my ($self) = @_;
 	
-	my $key = $self->_element_key($name);
-	my $class = $self->_element_class($name);
+	print STDERR $self,"\n";
+	for my $k ($self->_attributes) {
+		print STDERR "\t$k => $self->{$k}\n";
+	}
+}
+
+sub xdump {
+	my ($self, $value, $seen, $level) = @_;
 	
-#print "Adding a $class to $self under $key\n";
-	my $child = $class->new($self, $element);
-	push @{ $self->{_children_aref} }, $child;
-	push @{ $self->{_children_href}{$key} }, $child;
+	$seen ||= {};
+	
+	print STDERR $value,"\n";
+	
+	my $ref = ref($value);
+	return unless $ref;
+	
+	if ($ref eq 'SCALAR') {
+		$self->dump_sref($value, $seen, $level+1);
+		return;
+	}
+	if ($ref eq 'ARRAY') {
+		$self->dump_aref($value, $seen, $level+1);
+		return;
+	}
+	if ($ref eq 'HASH') {
+		$self->dump_href($value, $seen, $level+1);
+		return;
+	}
+	
+	if ($value->isa('BaseObject')) {
+		if ($seen->{$value}) {
+			print STDERR "\t" x ($level+1), "(previously dumped)\n";
+			next;
+		}
+		$seen->{$value} = 1;
+		$self->dump_href($value, $seen, $level+1);
+	}
+	
+}
+
+sub dump_aref {
+	my ($self, $value, $seen, $level) = @_;
+	
+	my $pfx = "\t" x $level;
+	for my $i (0..$#$value) {
+		print STDERR $pfx, $i, "\t";
+		$self->dump($value->[$i], $seen, $level);
+	}
+}
+
+sub dump_href {
+	my ($self, $value, $seen, $level) = @_;
+	
+	my $pfx = "\t" x $level;
+	for my $k (sort keys %$value) {
+		print STDERR $pfx, $k, "\t";
+		$self->dump($value->{$k}, $seen, $level);
+	}
 }
 
 # used for getting child elements;
@@ -111,59 +128,33 @@ sub AUTOLOAD {
 	my $self = shift;
 	(my $name = $AUTOLOAD)=~ s/.*://;   # strip fully-qualified portion
 	
-	# check for an attr
+	unless (ref $self) {
+		my $c = join(':::', caller);
+		warn "Function $AUTOLOAD called on $self from $c";
+	}
+	
 	if (exists $self->{$name}) {
+#print "Found $name\n";
+		if (ref($self->{$name}) eq 'ARRAY') {
+#print "..as array\n";
+			return @{ $self->{$name} };
+		}
+#print "..as scalar\n";
 		return $self->{$name};
 	}
 	
-	# check for children
-	if (exists $self->{_children_href}{$name}) {
-		return @{ $self->{_children_href}{$name} };
-	}
-	
-	croak "No child named '$name' in $self";
-}
-
-sub _folder {
-	my ($self) = @_;
-	return $self->{_folder} if $self->{_folder};
-	return $self->{_parent}->_folder;
-}
-
-sub _allowed_attrs {
-	my ($self) = @_;
-	no strict 'refs';
-	return @{ ref($self) . '::allowed_attrs' };
-}
-
-sub _allowed_children {
-	my ($self) = @_;
-	no strict 'refs';
-	return keys %{ ref($self) . '::allowed_children' };
-}
-
-sub _child_handler {
-	my ($self, $name) = @_;
-	no strict 'refs';
-	return ${ ref($self) . '::child_handlers' }{$name};
-}
-
-sub _content_as {
-	my ($self) = @_;
-	no strict 'refs';
-	return keys %{ ref($self) . '::want_content' };
-}
-
-sub _element_key {
-	my ($self, $name) = @_;
-	no strict 'refs';
-	return ${ ref($self) . '::allowed_children' }{$name}{'key'};
-}
-
-sub _element_class {
-	my ($self, $name) = @_;
-	no strict 'refs';
-	return ${ ref($self) . '::allowed_children' }{$name}{'class'};
+	my $c = join(':::', caller);
+	croak "No child named '$name' in $self ($c)";
 }
 
 1;
+
+__END__
+	
+	if (my %d = $self->_defaults) {
+		for my $k (keys %d) {
+			$self->{$k} ||= $d{$k};
+		}
+	}
+
+BaseObject's descendant classes are used as data holders. The parsers use them as base classes and fill the data slots. Then the generators rebless the underlying hashes into another class and use the data.

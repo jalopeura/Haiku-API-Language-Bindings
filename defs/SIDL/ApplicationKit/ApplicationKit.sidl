@@ -1,0 +1,101 @@
+<bindings name="Haiku::ApplicationKit">
+	<doc>Exposes the Haiku Application Kit</doc>
+	<include>
+		<file name="Application.h" />
+		<file name="Clipboard.h" />
+		<file name="Cursor.h" />
+		<file name="Handler.h" />
+		<file name="Invoker.h" />
+		<file name="Looper.h" />
+		<file name="Message.h" />
+	</include>
+	<link>
+		<lib name="libbe" />
+	</link>
+	<types>
+		<type name="int8"       builtin="char" />
+		<type name="int16"      builtin="int" />
+		<type name="uint32"     builtin="unsigned long" />
+		<type name="int32"      builtin="long" />
+		<type name="int64"      builtin="long" />
+		<type name="thread_id"  builtin="long" />
+		<type name="status_t"   builtin="long" />
+		<type name="bigtime_t"  builtin="long" />
+		<type name="type_code"  builtin="long" /><!-- is this right? -->
+		<type name="ssize_t"    builtin="long" />
+<!--
+Objects defined by this interface automatically have data types (plain and
+pointer) created for them. If you need objects not defined in this interface,
+you need to define those types in this section.
+-->
+		<type name="BWindow*"   builtin="object_ptr" target="Haiku::Window" />
+		<!-- <type name="BMessenger" builtin="object"     target="Haiku::Messenger" /> -->
+		<type name="BPoint"     builtin="object"     target="Haiku::Point" />
+		<type name="BRect"      builtin="object"     target="Haiku::Rect" />
+	</types>
+	<import>
+		<!-- ancestor classes must be defined before the descendant classes -->
+		<file name="Handler.sidl" />
+			<file name="Looper.sidl" />
+				<file name="Application.sidl" />
+		<file name="Clipboard.sidl" />
+		<file name="Cursor.sidl" />
+		<file name="Invoker.sidl" />
+		<file name="Message.sidl" />
+	</import>
+	<binding source="ApplicationKit" target="Haiku::ApplicationKit">
+		<doc>Exposes the Haiku Application Kit.</doc>
+		<constants>
+			<!-- interface message constants (see Interface Kit docs) -->
+			<!-- application message constants -->
+			<constant name="B_DUPLICATE_REPLY" group="error">
+				<doc>A reply message has already been sent</doc>
+			</constant>
+			<constant name="B_BAD_REPLY" group="error">
+				<doc>The reply message is inappropriate and can't be sent</doc>
+			</constant>
+			<constant name="B_BAD_HANDLER" group="error">
+				<doc>The designated message handler isn't valid</doc>
+			</constant>
+			<constant name="B_MESSAGE_TO_SELF" group="error">
+				<doc>A thread is trying to send a message to itself</doc>
+			</constant>
+			<constant name="B_ALREADY_RUNNING" group="error">
+				<doc>The application can't be launched again</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED" group="error">
+				<doc>The attempt to launch the application failed</doc>
+			</constant>
+			<constant name="B_AMBIGUOUS_APP_LAUNCH" group="error">
+				<doc>Odd things happening in app land</doc>
+			</constant>
+			<constant name="B_UNKNOWN_MIME_TYPE" group="error">
+				<doc>Application signature unknown</doc>
+			</constant>
+			<constant name="B_BAD_SCRIPT_SYNTAX" group="error">
+				<doc>Script syntax malformed</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" group="error">
+				<doc>Unable to resolve a link to the application to be launched</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_EXECUTABLE" group="error">
+				<doc>The attempt to launch the application failed because the application isn't a valid executable</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" group="error">
+				<doc>The attempt to launch the application failed because the application wasn't found</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" group="error">
+				<doc>The attempt to launch the application failed because the application was in the trash</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" group="error">
+				<doc>The attempt to launch the application failed because there is no preferred application for the document</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" group="error">
+				<doc>The attempt to launch the application failed because the document's application is missing</doc>
+			</constant>
+			<constant name="B_BAD_MIME_SNIFFER_RULE" group="error">
+				<doc>A MIME type sniffer rule is invalid</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

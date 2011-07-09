@@ -1,0 +1,392 @@
+<bindings name="Haiku::Window">
+	<doc>Exposes the Window object</doc>
+	<binding source="BWindow" source-inherits="BLooper" target="Haiku::Window" target-inherits="Haiku::Looper" must-not-delete="true">
+		<doc>Exposes the Window object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Window.</doc>
+				<param name="frame" type="BRect" action="input">
+					<doc>A Rect that indicates where on the screen the Window should be.</doc>
+				</param>
+				<param name="title" type="const char*" action="input">
+					<doc>A caption for the Window.</doc>
+				</param>
+				<param name="type" type="window_type" action="input">
+					<doc>A Window type. (See Window type constants.)</doc>
+				</param>
+				<param name="flags" type="uint32" action="input">
+					<doc>Flags. (See Window flag constants.)</doc>
+				</param>
+				<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE">
+					<doc>Indicates which workspaces the Window should appear in. Defaults to [code]B_CURRENT_WORKSPACE[/code].</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="ByLookAndFeel">
+				<doc>Creates a Window using separate [code]look[/code] and [code]feel[/code] values (rather than a single [code]type[/code] value). Other parameters are the same as the usual constructor.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="title" type="const char*" action="input" />
+				<param name="look" type="window_look" action="input">
+					<doc>A Window look. (See Window look constants.)</doc>
+				</param>
+				<param name="feel" type="window_feel" action="input">
+					<doc>A Window feel. (See Window feel constants.)</doc>
+				</param>
+				<param name="flags" type="uint32" action="input" />
+				<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Activate">
+				<doc>Activates or deactivates the Window.</doc>
+				<param name="flag" type="bool" action="input" default="true">
+					<doc>If true, activates; if false, deactivates.</doc>
+				</param>
+				<return type="void" />
+			</method>
+			<method name="IsActive">
+				<doc>Returns true if the Window is active, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<method name="AddChild">
+				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<param name="sibling" type="BView*" action="input" default="NULL" />
+				<return type="void" />
+			</method>
+			<method name="RemoveChild">
+				<doc>Removes [code]view[/code] from the window's view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="ChildAt">
+				<doc>Returns the [code]index[/code]th view from the window's view list.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+			<method name="CountChildren">
+				<doc>Returns the number of views in the window's view list.</doc>
+				<return type="int32" action="output" />
+			</method>
+			<!-- AddShortcut -->
+			<!-- RemoveShortcut -->
+			<!-- AddToSubset -->
+			<!-- RemoveFromSubset -->
+			<!-- Archive -->
+			<method name="Bounds">
+				<doc>Returns the Window's bounding rectangle in the Window's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Frame">
+				<doc>Returns the Window's bounding rectangle in the screen's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertToScreen" overload-name="_Point">
+				<doc>Converts a Point from the Window's coordinate system to the screen's coordinate system.</doc>
+				<param name="windowPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertToScreen" overload-name="_Rect">
+				<doc>Converts a Rect from the Window's coordinate system to the screen's coordinate system.</doc>
+				<param name="windowRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertFromScreen" overload-name="_Point">
+				<doc>Converts a Point from the screen's coordinate system to the Window's coordinate system.</doc>
+				<param name="windowPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertFromScreen" overload-name="_Rect">
+				<doc>Converts a Rect from the screen's coordinate system to the Window's coordinate system.</doc>
+				<param name="windowRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<!-- CurrentFocus -->
+			<!-- DisableUpdates -->
+			<!-- EnableUpdates -->
+			<!-- FindView -->
+			<method name="Flush">
+				<doc>Sends all pending messages to the Application Server and immediately returns.</doc>
+			</method>
+			<method name="Sync">
+				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
+			</method>
+			<!-- GetSupportedSuites -->
+			<method name="IsFront">
+				<doc>Returns true if the Window is frontmost, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsFloating">
+				<doc>Returns true if the Window has a floating feel, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsModal">
+				<doc>Returns true if the Window has a modal feel, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<!-- LastMouseMovedView -->
+			<method name="MoveBy">
+				<doc>Moves the window by the given coordinates.</doc>
+				<param name="horizontal" type="float" action="input" />
+				<param name="vertical" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="MoveTo">
+				<doc>Moves the window to the given coordinates.</doc>
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<!-- NeedsUpdate -->
+			<!-- OpenViewTransaction -->
+			<!-- CommitViewTransaction -->
+			<method name="Quit">
+				<doc>Ends the window's message loop.</doc>
+				<return type="void" />
+			</method>
+			<method name="ResizeBy">
+				<doc>Changes the window's size to the given dimensions.</doc>
+				<param name="horizontal" type="float" action="input" />
+				<param name="vertical" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ResizeTo">
+				<doc>Changes the window's size to the given dimensions.</doc>
+				<param name="width" type="float" action="input" />
+				<param name="height" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<!-- ResolveSpecifier -->
+			<method name="SendBehind">
+				<doc>Sends the Window behind another Window.</doc>
+				<param name="window" type="BWindow*" action="input">
+					<doc>The target Window.</doc>
+				</param>
+				<return type="status_t" />
+			</method>
+			<method name="SetDefaultButton">
+				<doc>Maps a button to the Enter key.</doc>
+				<param name="button" type="BButton*" action="input">
+					<doc>The target Button.</doc>
+				</param>
+			</method>
+			<method name="DefaultButton">
+				<doc>Returns the button mapped to the Enter key.</doc>
+				<return type="BButton*" must-not-delete="true" />
+			</method>
+			<method name="SetFeel">
+				<doc>Sets the Window's feel.</doc>
+				<param name="feel" type="window_feel" action="input" />
+			</method>
+			<method name="Feel">
+				<doc>Gets the Window's feel.</doc>
+				<return type="window_feel" />
+			</method>
+			<method name="SetFlags">
+				<doc>Sets the Window's flags.</doc>
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="Flags">
+				<doc>Gets the Window's flags.</doc>
+				<return type="uint32" />
+			</method>
+			<!-- SetKeyMenuBar -->
+			<!-- KeyMenuBar -->
+			<method name="SetLook">
+				<doc>Sets the Window's look.</doc>
+				<param name="look" type="window_look" action="input" />
+			</method>
+			<method name="Look">
+				<doc>Gets the Window's look.</doc>
+				<return type="window_look" />
+			</method>
+			<method name="SetPulseRate">
+				<doc>Sets the Window's pulse rate (in milliseconds).</doc>
+				<param name="microseconds" type="bigtime_t" action="input" />
+			</method>
+			<method name="PulseRate">
+				<doc>Gets the Window's pulse rate  (in milliseconds).</doc>
+				<return type="bigtime_t" />
+			</method>
+			<!-- SetSizeLimits -->
+			<!-- GetSizeLimits -->
+			<!-- SetZoomLimits -->
+			<method name="SetTitle">
+				<doc>Sets the Window's title.</doc>
+				<param name="newTitle" type="const char*" action="input" />
+			</method>
+			<method name="Title">
+				<doc>Gets the Window's title.</doc>
+				<return type="const char*" />
+			</method>
+			<method name="SetType">
+				<doc>Sets the Window's type.</doc>
+				<param name="type" type="window_type" action="input" />
+			</method>
+			<method name="Type">
+				<doc>Gets the Window's type.</doc>
+				<return type="window_type" />
+			</method>
+			<!-- SetWindowAlignment -->
+			<!-- GetWindowAlignment -->
+			<method name="SetWorkspaces">
+				<doc>Sets the workspaces in which the Window is present.</doc>
+				<param name="workspaces" type="uint32" action="input" />
+			</method>
+			<method name="Workspaces">
+				<doc>Gets the workspaces in which the Window is present.</doc>
+				<return type="uint32" />
+			</method>
+			<method name="Show">
+				<doc>Shows the window. A window is not automatically shown when created; the first call to [code]Show[/code] also begins the window's message loop.</doc>
+				<return type="void" />
+			</method>
+			<method name="Hide">
+				<doc>Hides the window.</doc>
+				<return type="void" />
+			</method>
+			<method name="IsHidden">
+				<doc>Returns true if the Window is hidden.</doc>
+				<return type="bool" />
+			</method>
+			<method name="Minimize">
+				<doc>Minimizes or unminimizes the Window.</doc>
+				<param name="minimize" type="bool" action="input">
+					<doc>If true, minimizes the Window; otherwise unminimizes it.</doc>
+				</param>
+			</method>
+			<method name="IsMinimized">
+				<doc>Returns true if the Window is minimized.</doc>
+				<return type="bool" />
+			</method>
+			<method name="UpdateIfNeeded">
+				<doc>Redraws the Window if necessary.</doc>
+			</method>
+			<!-- FrameMoved -->
+			<!-- FrameResized -->
+			<!-- MenusBeginning -->
+			<!-- MenusEnded -->
+			<event name="MessageReceived">
+				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<!-- ScreenChanged -->
+			<!-- WindowActivated -->
+			<!-- WorkspaceActivated -->
+			<!-- WorkspacesChanged -->
+			<!-- Zoom -->
+		</functions>
+		<constants>
+			<constant name="B_NOT_MOVABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_CLOSABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_ZOOMABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_MINIMIZABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_H_RESIZABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_V_RESIZABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_RESIZABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_OUTLINE_RESIZE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_WILL_ACCEPT_FIRST_CLICK" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_AVOID_FRONT" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_AVOID_FOCUS" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NO_WORKSPACE_ACTIVATION" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ASYNCHRONOUS_CONTROLS" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_QUIT_ON_WINDOW_CLOSE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TITLED_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DOCUMENT_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MODAL_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FLOATING_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BORDERED_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_UNTYPED_WINDOW" group="type">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CURRENT_WORKSPACE" group="workspace">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ALL_WORKSPACES" group="workspace">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DOCUMENT_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TITLED_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FLOATING_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MODAL_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BORDERED_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NO_BORDER_WINDOW_LOOK" group="look">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NORMAL_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MODAL_APP_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MODAL_ALL_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FLOATING_APP_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FLOATING_ALL_WINDOW_FEEL" group="feel">
+				<doc>...</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

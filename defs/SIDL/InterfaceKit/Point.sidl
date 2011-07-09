@@ -1,0 +1,30 @@
+<bindings name="Haiku::Point">
+	<doc>Exposes the Point object</doc>
+	<binding source="BPoint" target="Haiku::Point">
+		<doc>Exposes the Point object</doc>
+		<properties>
+			<property name="x" type="float">
+				<doc>x coordinate</doc>
+			</property>
+			<property name="y" type="float">
+				<doc>y coordinate</doc>
+			</property>
+		</properties>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>...</doc>
+			</constructor>
+			<destructor />
+			<!-- ConstrainTo -->
+			<method name="PrintToStream">
+				<doc>Prints the contents to standard out as [code]BRect(left, top, right, bottom)[/code]</doc>
+			</method>
+			<!-- Set -->
+		</functions>
+	</binding>
+</bindings>

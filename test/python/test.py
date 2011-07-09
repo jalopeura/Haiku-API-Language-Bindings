@@ -1,70 +1,62 @@
 import inspect
+def dump(object):
+	for item in inspect.getmembers(object):
+		print "ITEM:", item,"\n\n"
+
 import Haiku	# prevents a name not defined error
 import Haiku.ApplicationKit
 import Haiku.InterfaceKit
-#for item in inspect.getmembers(Haiku):
-#	print "ITEM:", item,"\n\n"
+#dump(Haiku)
+#dump(Haiku.ApplicationKit)
 
-#Haiku.Application.CustomApplication.__bases__ = Haiku.Application.Application
-#Haiku.Window.CustomWindow.__bases__ = Haiku.Window.Window
-
-class MyApplication(Haiku.Application.CustomApplication):
+class MyApplication(Haiku.CustomApplication):
+	def __init__(self, *args):
+		Haiku.CustomApplication.__init__(self, *args)
+		self.window = MyWindow(
+			Haiku.Rect(50,50,170,170),
+			"Test Window",
+			Haiku.WindowConstants.B_TITLED_WINDOW,
+			Haiku.WindowConstants.B_QUIT_ON_WINDOW_CLOSE
+			)
+		self.window.Show()
 	def ArgvReceived(self, args):
 		print "ArgvReceived: ", args, "\n"
-		return Haiku.Application.Application.ArgvRecieved(self, args)
+		return Haiku.Application.ArgvReceived(self, args)
 	def AppActivated(self, active):
 		print "AppActivated: ", active, "\n"
-		return Haiku.Application.Application.AppActivated(self, active)
+		return Haiku.Application.AppActivated(self, active)
 	def QuitRequested(self):
 		print "QuitRequested\n"
-		return Haiku.Application.Application.QuitRequested(self)
+		return Haiku.Application.QuitRequested(self)
 	def ReadyToRun(self):
 		print "ReadyToRun\n"
-		return Haiku.Application.Application.ReadyToRun(self)
+		return Haiku.Application.ReadyToRun(self)
 	def MessageReceived(self, message):
 		print "MessageReceived: ", message, "\n"
-		return Haiku.Application.Application.MessageReceived(self, message)
+		return Haiku.Application.MessageReceived(self, message)
 
-class MyWindow(Haiku.Window.CustomWindow):
+class MyWindow(Haiku.CustomWindow):
 	click_count = 0
 	message_count = 0
+	def __init__(self, *args):
+		Haiku.CustomWindow.__init__(self, *args)
+		self.button = Haiku.Button(
+			Haiku.Rect(10,10,110,110),
+			"Test Button",
+			"Click Me",
+			Haiku.Message(0x12345678),
+			Haiku.ViewConstants.B_FOLLOW_LEFT | Haiku.ViewConstants.B_FOLLOW_TOP,	# resizingMode
+			Haiku.ViewConstants.B_WILL_DRAW | Haiku.ViewConstants.B_NAVIGABLE	# flags
+			)
+		self.AddChild(self.button, 0)
 	def MessageReceived(self, message):
-		message_count += 1
+		self.message_count += 1
 		if (message.what == 0x12345678):
-			click_count ++ 1
-			main.TestButton.SetLabel("click_count of message_count")
+			self.click_count += 1
+			self.button.SetLabel("%d of %d" % (self.click_count, self.message_count));
 			return
-		return Haiku.Application.Application.MessageReceived(self, message)
-
-#for item in inspect.getmembers(Haiku.Window.CustomWindow):
-#	print "ITEM:", item,"\n\n"
-
-#print MyWindow.__bases__
-#print Haiku.Window.CustomWindow.__bases__
-
-#print MyWindow.__mro__
-#print Haiku.Window.CustomWindow.__mro__
+		return Haiku.Window.MessageReceived(self, message)
 
 TestApp = MyApplication("application/python-binding-test")
-
-TestWindow = MyWindow(
-	Haiku.Rect.Rect(50,50,250,250),
-	"Test Window",
-	Haiku.InterfaceKit.B_TITLED_WINDOW,
-	Haiku.InterfaceKit.B_QUIT_ON_WINDOW_CLOSE
-	)
-
-TestButton = Haiku.Button.Button(
-	Haiku.Rect.Rect(10,10,110,110),
-	"Test Button",
-	"Click Me",
-	Haiku.Message.Message(0x12345678),
-	Haiku.InterfaceKit.B_FOLLOW_LEFT | Haiku.InterfaceKit.B_FOLLOW_TOP,	# resizingMode
-	Haiku.InterfaceKit.B_WILL_DRAW | Haiku.InterfaceKit.B_NAVIGABLE	# flags
-	)
-
-TestWindow.AddChild(TestButton, 0)
-
-TestWindow.Show()
 
 TestApp.Run()

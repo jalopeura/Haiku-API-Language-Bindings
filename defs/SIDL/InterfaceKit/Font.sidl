@@ -1,0 +1,469 @@
+<bindings name="Haiku::Font">
+	<doc>Exposes the Font object</doc>
+	<binding source="BFont" target="Haiku::Font">
+		<doc>Exposes the Font object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates an empty Font.</doc>
+			</constructor>
+			<constructor overload-name="FromFont">
+				<doc>Creates a Font from another Font.</doc>
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<!--
+			<method name="Blocks">
+				<doc>Returns the supported Unicode blocks.</doc>
+				<return type="unicode_block" action="output" />
+			</method>
+			-->
+			<method name="BoundingBox">
+				<doc>Returns a BRect that can enclose the entire font in its current style and size.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Direction">
+				<doc>Returns the font direction.</doc>
+				<return type="font_direction" action="output" />
+			</method>
+			<method name="FileFormat">
+				<doc>Returns the format of the file containing the font.</doc>
+				<return type="font_file_format" action="output" />
+			</method>
+			<!-- GetBoundingBoxesAsGlyphs -->
+			<!-- GetBoundingBoxesAsString -->
+			<!-- GetEscapements -->
+			<!-- GetEdges -->
+			<!-- GetGlyphShapes -->
+			<!-- GetHasGlyphs -->
+			<!-- GetHeight -->
+			<!-- GetTruncatedStrings -->
+			<!-- TruncateStrings -->
+			<!-- GetTunedInfo -->
+			<!-- CountTuned -->
+			<method name="IsFixed">
+				<doc>Returns true if the font is fixed.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<!-- IsFullAndHalfFixed -->
+			<method name="PrintToStream">
+			</method>
+			<method name="SetEncoding">
+				<doc>Sets the font encoding.</doc>
+				<param name="encoding" type="uint8" action="input" />
+			</method>
+			<method name="Encoding">
+				<doc>Returns the font encoding.</doc>
+				<return type="uint8" action="output" />
+			</method>
+			<method name="SetFace">
+				<doc>Sets the font face.</doc>
+				<param name="face" type="uint16" action="input" />
+			</method>
+			<method name="Face">
+				<doc>Returns the font face.</doc>
+				<return type="uint16" action="output" />
+			</method>
+			<!-- SetFamilyAndFace -->
+			<!-- SetFamilyAndStyle -->
+			<!-- GetFamilyAndStyle -->
+			<!-- FamilyAndStyle -->
+			<method name="SetFlags">
+				<doc>Sets the font flags.</doc>
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="Flags">
+				<doc>Returns the font flags.</doc>
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetRotation">
+				<doc>Sets the font rotation.</doc>
+				<param name="rotation" type="float" action="input" />
+			</method>
+			<method name="Rotation">
+				<doc>Returns the font rotation.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetShear">
+				<doc>Sets the font shear.</doc>
+				<param name="shear" type="float" action="input" />
+			</method>
+			<method name="Shear">
+				<doc>Returns the font shear.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetSize">
+				<doc>Sets the font size.</doc>
+				<param name="size" type="float" action="input" />
+			</method>
+			<method name="Size">
+				<doc>Returns the font size.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetSpacing">
+				<doc>Sets the font spacing.</doc>
+				<param name="spacing" type="uint8" action="input" />
+			</method>
+			<method name="Spacing">
+				<doc>Returns the font spacing.</doc>
+				<return type="uint8" action="output" />
+			</method>
+			<!-- StringWidth -->
+			<!-- GetStringWidth -->
+		</functions>
+		<constants>
+			<constant name="B_UNICODE_UTF8" group="encodings">
+				<doc>UTF-8</doc>
+			</constant>
+			<constant name="B_ISO_8859_1" group="encodings">
+				<doc>Latin 1</doc>
+			</constant>
+			<constant name="B_ISO_8859_2" group="encodings">
+				<doc>Latin 2</doc>
+			</constant>
+			<constant name="B_ISO_8859_3" group="encodings">
+				<doc>Latin 3</doc>
+			</constant>
+			<constant name="B_ISO_8859_4" group="encodings">
+				<doc>Latin 4</doc>
+			</constant>
+			<constant name="B_ISO_8859_5" group="encodings">
+				<doc>Latin/Cyrillic</doc>
+			</constant>
+			<constant name="B_ISO_8859_6" group="encodings">
+				<doc>Latin/Arabic</doc>
+			</constant>
+			<constant name="B_ISO_8859_7" group="encodings">
+				<doc>Latin/Greek</doc>
+			</constant>
+			<constant name="B_ISO_8859_8" group="encodings">
+				<doc>Latin/Hebrew</doc>
+			</constant>
+			<constant name="B_ISO_8859_9" group="encodings">
+				<doc>Latin 5</doc>
+			</constant>
+			<constant name="B_ISO_8859_10" group="encodings">
+				<doc>Latin 6</doc>
+			</constant>
+			<constant name="B_MACINTOSH_ROMAN" group="encodings">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DISABLE_ANTIALIASING" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_IS_FIXED" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HAS_TUNED_FONT" group="flags">
+				<doc>...</doc>
+			</constant>
+<!--
+			<constant name="B_FONT_FAMILY_NAME_LENGTH" group="lengths">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_STYLE_NAME_LENGTH" group="lengths">
+				<doc>...</doc>
+			</constant>
+-->
+			<constant name="B_FONT_FAMILY_AND_STYLE" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_SIZE" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_SHEAR" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_ROTATION" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_SPACING" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_ENCODING" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_FACE" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_FLAGS" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_ALL" group="properties">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CHAR_SPACING" group="spacing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_STRING_SPACING" group="spacing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BITMAP_SPACING" group="spacing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FIXED_SPACING" group="spacing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SCREEN_METRIC" group="metric">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PRINTING_METRIC" group="metric">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRUETYPE_WINDOWS" group="format">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_POSTSCRIPT_TYPE1_WINDOWS" group="format">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_LEFT_TO_RIGHT" group="direction">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FONT_RIGHT_TO_LEFT" group="direction">
+				<doc>...</doc>
+			</constant>
+<!--
+			<constant name="B_BASIC_LATIN_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LATIN1_SUPPLEMENT_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LATIN_EXTENDED_A_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LATIN_EXTENDED_B_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_IPA_EXTENSIONS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SPACING_MODIFIER_LETTERS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_COMBINING_DIACRITICAL_MARKS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BASIC_GREEK_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GREEK_SYMBOLS_AND_COPTIC_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CYRILLIC_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ARMENIAN_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BASIC_HEBREW_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HEBREW_EXTENDED_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BASIC_ARABIC_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ARABIC_EXTENDED_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DEVANAGARI_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BENGALI_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GURMUKHI_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GUJARATI_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ORIYA_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TAMIL_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TELUGU_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_KANNADA_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MALAYALAM_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_THAI_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LAO_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BASIC_GEORGIAN_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GEORGIAN_EXTENDED_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HANGUL_JAMO_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LATIN_EXTENDED_ADDITIONAL_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GREEK_EXTENDED_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GENERAL_PUNCTUATION_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SUPERSCRIPTS_AND_SUBSCRIPTS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CURRENCY_SYMBOLS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_COMBINING_MARKS_FOR_SYMBOLS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LETTERLIKE_SYMBOLS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NUMBER_FORMS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ARROWS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MATHEMATICAL_OPERATORS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MISCELLANEOUS_TECHNICAL_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CONTROL_PICTURES_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_OPTICAL_CHARACTER_RECOGNITION_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ENCLOSED_ALPHANUMERICS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BOX_DRAWING_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BLOCK_ELEMENTS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_GEOMETRIC_SHAPES_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_MISCELLANEOUS_SYMBOLS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DINGBATS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_SYMBOLS_AND_PUNCTUATION_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HIRAGANA_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_KATAKANA_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_BOPOMOFO_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HANGUL_COMPATIBILITY_JAMO_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_MISCELLANEOUS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ENCLOSED_CJK_LETTERS_AND_MONTHS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_COMPATIBILITY_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HANGUL_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HIGH_SURROGATES_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_LOW_SURROGATES_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_UNIFIED_IDEOGRAPHS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PRIVATE_USE_AREA_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_COMPATIBILITY_IDEOGRAPHS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ALPHABETIC_PRESENTATION_FORMS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ARABIC_PRESENTATION_FORMS_A_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_COMBINING_HALF_MARKS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CJK_COMPATIBILITY_FORMS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SMALL_FORM_VARIANTS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ARABIC_PRESENTATION_FORMS_B_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SPECIALS_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TIBETAN_BLOCK" group="unicode_blocks">
+				<doc>...</doc>
+			</constant>
+-->
+			<constant name="B_ITALIC_FACE" group="face">
+				<doc>Characters are drawn italicized.</doc>
+			</constant>
+			<constant name="B_UNDERSCORE_FACE" group="face">
+				<doc>Characters are drawn underlined.</doc>
+			</constant>
+			<constant name="B_NEGATIVE_FACE" group="face">
+				<doc>Characters are drawn in the low color, while the background is drawn in the high color.</doc>
+			</constant>
+			<constant name="B_OUTLINED_FACE" group="face">
+				<doc>Characters are drawn hollow, with a line around their border, but unfilled.</doc>
+			</constant>
+			<constant name="B_STRIKEOUT_FACE" group="face">
+				<doc>Characters are drawn "struck-out," with a line drawn horizontally through the middle.</doc>
+			</constant>
+			<constant name="B_BOLD_FACE" group="face">
+				<doc>Characters are drawn in boldface.</doc>
+			</constant>
+			<constant name="B_REGULAR_FACE" group="face">
+				<doc>Characters are drawn normally.</doc>
+			</constant>
+			<!-- string truncation constants -->
+<!--
+B_TRUNCATE_END
+B_TRUNCATE_BEGINNING
+B_TRUNCATE_MIDDLE
+B_TRUNCATE_SMART
+-->
+		</constants>
+	</binding>
+</bindings>

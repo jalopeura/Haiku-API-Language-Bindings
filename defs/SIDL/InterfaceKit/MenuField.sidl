@@ -1,0 +1,86 @@
+<bindings name="Haiku::MenuField">
+	<doc>Exposes the MenuField object</doc>
+	<binding source="BMenuField" source-inherits="BView" target="Haiku::MenuField" target-inherits="Haiku::View">
+		<doc>Exposes the MenuField object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a MenuField.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="menu" type="BMenu*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FixedSize">
+				<doc>Creates a MenuField.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="menu" type="BMenu*" action="input" />
+				<param name="fixedSize" type="bool" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="MakeFocus">
+				<doc>Makes the MenuField focused (or not focused) within its Window.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<method name="Menu">
+				<doc>Returns the Menu associated with the MenuField.</doc>
+				<return type="BMenu*" action="output" />
+			</method>
+			<method name="MenuBar">
+				<doc>Returns the MenuBar created during construction to hold the Menu.</doc>
+				<return type="BMenuBar*" action="output" />
+			</method>
+			<method name="MenuItem">
+				<doc>Returns the first MenuItem from the Menu.</doc>
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="SetAlignment">
+				<doc>Sets the alignment for the label.</doc>
+				<param name="flag" type="alignment" action="input" />
+			</method>
+			<method name="Alignment">
+				<doc>Returns the alignment for the label.</doc>
+				<return type="alignment" action="output" />
+			</method>
+			<method name="SetDivider">
+				<doc>Sets the divider between the label and the menu.</doc>
+				<param name="xCoordinate" type="float" action="input" />
+			</method>
+			<method name="Divider">
+				<doc>Returns the divider between the label and the menu.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<doc>Enables or disables the MenuField.</doc>
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<doc>Returns true if the MenuField is enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetLabel">
+				<doc>Sets the label.</doc>
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="Label">
+				<doc>Gets the label.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- AllAttached -->
+			<!-- Draw -->
+			<!-- KeyDown -->
+			<!-- MouseDown -->
+			<!-- WindowActivated -->
+		</functions>
+	</binding>
+</bindings>

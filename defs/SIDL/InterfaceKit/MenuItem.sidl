@@ -1,0 +1,89 @@
+<bindings name="Haiku::MenuItem">
+	<doc>Exposes the MenuItem object</doc>
+	<binding source="BMenuItem" source-inherits="BInvoker" target="Haiku::MenuItem" target-inherits="Haiku::Invoker">
+		<doc>Exposes the MenuItem object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a MenuItem.</doc>
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="shortcut" type="char" action="input" default="0" />
+				<param name="modifiers" type="uint32" action="input" default="0" />
+			</constructor>
+			<constructor overload-name="Submenu">
+				<doc>Creates a MenuItem.</doc>
+				<param name="submenu" type="BMenu*" action="input" />
+				<param name="message" type="BMessage*" action="input" default="NULL" must-not-delete="true" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<!-- ContentLocation -->
+			<method name="Frame">
+				<doc>Gets the frame.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<!-- GetContentSize -->
+			<!-- Highlight -->
+			<!-- Invoke -->
+			<!-- IsSelected -->
+			<method name="Menu">
+				<doc>Gets the parent Menu.</doc>
+				<return type="BMenu*" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<doc>Enables or disables the MenuItem.</doc>
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<doc>Returns true if the MenuItem is enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetLabel">
+				<doc>Sets the label.</doc>
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="Label">
+				<doc>Gets the label.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<method name="SetMarked">
+				<doc>Sets whether the MenuItem is marked.</doc>
+				<param name="flag" type="bool" action="input" />
+			</method>
+			<method name="IsMarked">
+				<doc>Sets the shortcut.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetShortcut">
+				<doc>Sets the shortcut.</doc>
+				<param name="shortcut" type="char" action="input" />
+				<param name="modifiers" type="uint32" action="input" />
+			</method>
+<!--
+			<method name="Shortcut">
+				<doc>Returns the shortcut.</doc>
+				<param name="modifiers" type="uint32*" action="output" deref="true" default="NULL" />
+				<return type="char" action="output" />
+			</method>
+-->
+			<method name="SetTrigger">
+				<doc>Sets the trigger.</doc>
+				<param name="trigger" type="char" action="input" />
+			</method>
+			<method name="Trigger">
+				<doc>Returns the trigger.</doc>
+				<return type="char" action="output" />
+			</method>
+			<method name="Submenu">
+				<doc>Returns the associated submenu.</doc>
+				<return type="BMenu*" action="output" />
+			</method>
+			<!-- TruncateLabel -->
+			<!-- Draw -->
+			<!-- DrawContent -->
+		</functions>
+	</binding>
+</bindings>

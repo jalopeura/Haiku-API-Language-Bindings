@@ -2,7 +2,10 @@ use Common::Bindings;
 use strict;
 
 my $bindings = new Bindings(
-	source => '../defs/HaikuKits.def',
+	source_type => 'SIDL',
+	source => '../defs/SIDL/HaikuKits.sidl',
+#	source_type => 'TIDL',
+#	source => '../defs/TIDL/HaikuKits.sidl',
 );
 
 use Perl::Generator;

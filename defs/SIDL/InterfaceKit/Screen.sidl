@@ -1,0 +1,53 @@
+<bindings name="Haiku::Screen">
+	<doc>Exposes the Screen object</doc>
+	<binding source="BScreen" target="Haiku::Screen">
+		<doc>Exposes the Screen object</doc>
+		<functions>
+			<constructor>
+				<doc>Gets the screen from an id.</doc>
+<!--
+				<param name="id" type="screen_id" action="input" default="B_MAIN_SCREEN_ID" />
+-->
+			</constructor>
+			<constructor overload-name="ForWindow">
+				<doc>Gets that screen that the given window appears on.</doc>
+				<param name="window" type="BWindow*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- ColorMap -->
+			<!-- IndexForColor -->
+			<!-- ColorForIndex -->
+			<!-- InvertIndex -->
+			<!-- ColorSpace -->
+			<method name="Frame">
+				<doc>Returns a BRect that can represents the coordinates of the Screen.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<!-- GetDeviceInfo -->
+			<!-- GetModeList -->
+			<!-- SetMode -->
+			<!-- GetMode -->
+			<!-- GetPixelClockLimits -->
+			<!-- GetTimingConstraints -->
+			<method name="IsValid">
+				<doc>Returns true if the Screen is valid.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<!-- ProposeMode -->
+			<!-- ReadBitmap -->
+			<!-- GetBitmap -->
+			<!-- SetDesktopColor -->
+			<!-- DesktopColor -->
+			<!-- SetDPMS -->
+			<!-- DPMSState -->
+			<!-- DPMSCapabilities -->
+			<!-- SetToNext -->
+			<!-- WaitForRetrace -->
+		</functions>
+<!--
+		<constants>
+			<constant name="B_MAIN_SCREEN_ID" />
+		</constants>
+-->
+	</binding>
+</bindings>

@@ -1,0 +1,189 @@
+<bindings name="Haiku::Menu">
+	<doc>Exposes the Menu object</doc>
+	<binding source="BMenu" source-inherits="BView" target="Haiku::Menu" target-inherits="Haiku::View">
+		<doc>Exposes the Menu object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Menu; this constructor is suitable for use with [code]B_ITEMS_IN_COLUMN[/code] and [code]B_ITEMS_IN_ROW[/code].</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="layout" type="menu_layout" action="input" default="B_ITEMS_IN_COLUMN" />
+			</constructor>
+			<constructor overload-name="_Matrix">
+				<doc>Creates a Menu; this constructor sets the layout to [code]B_ITEMS_IN_MATRIX[/code].</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="width" type="float" action="input" />
+				<param name="height" type="float" action="input" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="AddItem">
+				<doc>Adds a MenuItem to the Menu.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddItem" overload-name="ByIndex">
+				<doc>Adds a MenuItem to the Menu at a specified index.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddItem" overload-name="_Matrix">
+				<doc>Adds a MenuItem to the Menu with a specified frame; for use with Menus arranged in a matrix.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddItem" overload-name="_Submenu">
+				<doc>Adds a submenu to the Menu.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddItem" overload-name="_SubmenuByIndex">
+				<doc>Adds a submenu to the Menu at a specified index.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddItem" overload-name="_Submenu_Matrix">
+				<doc>Adds a submenu to the Menu with a specified frame; for use with Menus arranged in a matrix.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AddSeparatorItem">
+				<doc>Adds a separator to the Menu.</doc>
+			</method>
+			<!-- Archive -->
+			<method name="CountItems">
+				<doc>Returns the number of MenuItems in the Menu.</doc>
+				<return type="int32" action="output" />
+			</method>
+			<method name="FindItem">
+				<doc>Finds a MenuItem by label.</doc>
+				<param name="label" type="const char*" action="input" />
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="FindItem" overload-name="ByCommand">
+				<doc>Finds a MenuItem by command constant.</doc>
+				<param name="command" type="uint32" action="input" />
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="FindMarked">
+				<doc>Finds the first marked MenuItem .</doc>
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<!-- Hide -->
+			<!-- Show -->
+			<method name="IndexOf">
+				<doc>Finds the index for the given MenuItem.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="IndexOf" overload-name="Submenu">
+				<doc>Finds the index for the given submenu.</doc>
+				<param name="item" type="BMenu*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<!-- InvalidateLayout -->
+			<method name="ItemAt">
+				<doc>Finds the MenuItem at the given index.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="SubmenuAt">
+				<doc>Finds the submenu at the given index.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BMenu*" action="output" />
+			</method>
+			<!-- Layout -->
+			<method name="RemoveItem">
+				<doc>Removes the given MenuItem.</doc>
+				<param name="item" type="BMenuItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="RemoveItem" overload-name="_Submenu">
+				<doc>Removes the given submenu.</doc>
+				<param name="item" type="BMenu*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="RemoveItem" overload-name="ByIndex">
+				<doc>Removes the MenuItem at the given index.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<!-- ScreenLocation -->
+			<method name="SetEnabled">
+				<doc>Enables or disables the Menu.</doc>
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<doc>Returns true if the Menu is enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<!-- SetItemMargins -->
+			<!-- GetItemMargins -->
+			<!-- SetLabelFromMarked -->
+			<!-- GetLabelFromMarked -->
+			<method name="SetMaxContentWidth">
+				<doc>Sets the maximum content width for the Menu.</doc>
+				<param name="width" type="float" action="input" />
+			</method>
+			<method name="MaxContentWidth">
+				<doc>Gets the maximum content width of the Menu.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetRadioMode">
+				<doc>Turns radio mode on or off for the Menu.</doc>
+				<param name="flag" type="bool" action="input" />
+			</method>
+			<method name="IsRadioMode">
+				<doc>Returns true if the Menu is in radio mode.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<!--
+			<method name="SetTargetForItems">
+				<doc>Sets the target for the MenuItems to the given Handler.</doc>
+				<param name="handler" type="BHandler*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTargetForItems" overload-name="_Messenger">
+				<doc>Sets the target for the MenuItems to the given Messenger.</doc>
+				<param name="messenger" type="BMessenger*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			-->
+			<method name="SetTriggersEnabled">
+				<doc>Enables or disables triggers for all items in the Menu.</doc>
+				<param name="flag" type="bool" action="input" />
+			</method>
+			<method name="AreTriggersEnabled">
+				<doc>Returns true if the Menu has triggers enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="Superitem">
+				<doc>Returns the MenuItem that contains this Menu.</doc>
+				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="Supermenu">
+				<doc>Returns the Menu that contains this Menu.</doc>
+				<return type="BMenu*" action="output" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- Draw -->
+			<!-- KeyDown -->
+		</functions>
+		<constants>
+			<constant name="B_ITEMS_IN_ROW" group="layout">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ITEMS_IN_COLUMN" group="layout">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ITEMS_IN_MATRIX" group="layout">
+				<doc>...</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

@@ -1,0 +1,130 @@
+<bindings name="Haiku::InterfaceKit">
+	<doc>Exposes the Haiku Interface Kit</doc>
+	<include>
+		<file name="Alert.h" />
+		<file name="Box.h" />
+		<file name="Button.h" />
+		<file name="Control.h" />
+		<file name="Font.h" />
+		<file name="Menu.h" />
+		<file name="MenuBar.h" />
+		<file name="MenuField.h" />
+		<file name="MenuItem.h" />
+		<file name="Point.h" />
+		<file name="PopUpMenu.h" />
+		<file name="Rect.h" />
+		<file name="Screen.h" />
+		<file name="StringView.h" />
+		<file name="TextControl.h" />
+		<file name="TextView.h" />
+		<file name="View.h" />
+		<file name="Window.h" />
+	</include>
+	<link>
+		<lib name="libbe" />
+	</link>
+	<types>
+		<type name="uint8"            builtin="unsigned char" />
+		<type name="uint16"           builtin="unsigned short" />
+		<type name="uint32"           builtin="unsigned long" />
+		<type name="int32"            builtin="long" />
+		<type name="window_type"      builtin="int" />
+		<type name="window_look"      builtin="int" />
+		<type name="window_feel"      builtin="int" />
+		<type name="status_t"         builtin="long" />
+		<type name="bigtime_t"        builtin="long" />
+		<type name="button_width"     builtin="long" /><!-- is this right? -->
+		<type name="button_spacing"   builtin="long" /><!-- is this right? -->
+		<type name="alert_type"       builtin="long" /><!-- is this right? -->
+		<type name="border_style"     builtin="long" /><!-- is this right? -->
+		<type name="font_direction"   builtin="long" /><!-- is this right? -->
+		<type name="font_file_format" builtin="long" /><!-- is this right? -->
+		<type name="menu_layout"      builtin="long" /><!-- is this right? -->
+		<type name="menu_bar_border"  builtin="long" /><!-- is this right? -->
+		<type name="alignment"        builtin="long" /><!-- is this right? -->
+		<type name="screen_id"        builtin="long" /><!-- is this right? -->
+<!--
+Objects defined by this interface automatically have data types (plain and
+pointer) created for them. If you need objects not defined in this interface,
+you need to define those types in this section.
+-->
+		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
+		<type name="BHandler*"   builtin="object_ptr" target="Haiku::Handler" />
+		<type name="BClipboard*" builtin="object_ptr" target="Haiku::Clipboard" />
+		<type name="BCursor*"    builtin="object_ptr" target="Haiku::Cursor" />
+	</types>
+	<import>
+		<!-- ancestor classes must be defined before the descendant classes -->
+		<file name="Window.sidl" />
+			<file name="Alert.sidl" />
+		<file name="View.sidl" />
+			<file name="Box.sidl" />
+			<file name="Control.sidl" />
+				<file name="Button.sidl" />
+				<file name="TextControl.sidl" />
+			<file name="Menu.sidl" />
+				<file name="MenuBar.sidl" />
+				<file name="PopUpMenu.sidl" />
+			<file name="MenuField.sidl" />
+			<file name="StringView.sidl" />
+			<file name="TextView.sidl" />
+		<!-- Invoker (defined in ApplicationKit) -->
+			<file name="MenuItem.sidl" />
+		<file name="Font.sidl" />
+		<file name="Point.sidl" />
+		<file name="Rect.sidl" />
+		<file name="Screen.sidl" />
+	</import>
+	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
+		<doc>Exposes the Haiku Interface Kit</doc>
+		<constants>
+			<constant name="B_ALIGN_LEFT" group="alignment">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ALIGN_RIGHT" group="alignment">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_ALIGN_CENTER" group="alignment">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PLAIN_BORDER" group="border">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FANCY_BORDER" group="border">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NO_BORDER" group="border">
+				<doc>...</doc>
+			</constant>
+			<!-- character constants -->
+			<!-- control value constants -->
+			<constant name="B_CONTROL_ON" group="">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_CONTROL_OFF" group="">
+				<doc>...</doc>
+			</constant>
+			<!-- dead-key mapping constants -->
+			<!-- function key constants -->
+			<!-- modifier state constants -->
+			<!-- orientation constants -->
+			<!-- tint_color constants -->
+			<!-- color_which constants -->
+			
+			<!-- message constants -->
+			
+			<!-- Defined in GraphicsDefs.h -->
+			<!-- color space constants -->
+			<!-- drawing mode constants -->
+			<!-- pattern constants -->
+			<!-- screen space constants -->
+			<!-- transparency constants -->
+			
+			<!-- Defined in ListView.h -->
+			<!-- list view type constants -->
+			
+			<!-- Defined in ScrollBar.h -->
+			<!-- scrollbar constants -->
+		</constants>
+	</binding>
+</bindings>

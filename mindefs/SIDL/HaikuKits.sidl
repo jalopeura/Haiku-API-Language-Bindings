@@ -1,0 +1,7 @@
+<bindings name="HaikuKits">
+	<doc>An installation bundle for the kits themseves</doc>
+	<bundle>
+		<file name="ApplicationKit/ApplicationKit.sidl" />
+		<file name="InterfaceKit/InterfaceKit.sidl" />
+	</bundle>
+</bindings>

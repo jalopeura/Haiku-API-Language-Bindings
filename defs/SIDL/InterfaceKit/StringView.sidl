@@ -1,0 +1,39 @@
+<bindings name="Haiku::StringView">
+	<doc>Exposes the StringView object</doc>
+	<binding source="BStringView" source-inherits="BView" target="Haiku::StringView" target-inherits="Haiku::View">
+		<doc>Exposes the StringView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a StringView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="text" type="const char*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="SetAlignment">
+				<doc>Sets the alignment for the StringView.</doc>
+				<param name="flag" type="alignment" action="input" />
+			</method>
+			<method name="Alignment">
+				<doc>Returns the alignment for the StringView.</doc>
+				<return type="alignment" action="output" />
+			</method>
+			<method name="SetText">
+				<doc>Sets the text.</doc>
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="Text">
+				<doc>Gets the text.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- Draw -->
+		</functions>
+	</binding>
+</bindings>

@@ -1,0 +1,45 @@
+<bindings name="Haiku::Handler">
+	<doc>Exposes the Handler object</doc>
+	<binding source="BHandler" target="Haiku::Handler">
+		<doc>Exposes the Handler object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Handler.</doc>
+				<param name="name" type="const char*" action="input" default="NULL">
+					<doc>Sets the [code]what[/what] property.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates an Handler from an archive.</doc>
+				<param name="archive" type="BMessage*" action="input">
+					<doc>Contains an archived version of the Handler.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="Empty">
+				<doc>Creates an empty Handler.</doc>
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<!-- GetSupportedSuites -->
+			<!-- LockLooper -->
+			<!-- LockLooperWithTimeout -->
+			<!-- UnlockLooper -->
+			<!-- Looper -->
+			<!-- ResolveSpecifier -->
+			<!-- SetFilterList -->
+			<!-- FilterList -->
+			<!-- AddFilter -->
+			<!-- RemoveFilter -->
+			<!-- SetName -->
+			<!-- Name -->
+			<!-- SetNextHandler -->
+			<!-- NextHandler -->
+			<!-- SendNotices -->
+			<!-- StartWatching -->
+			<!-- StartWatchingAll -->
+			<!-- StopWatching -->
+			<!-- StopWatchingAll -->
+			<!-- MessageReceived -->
+		</functions>
+	</binding>
+</bindings>

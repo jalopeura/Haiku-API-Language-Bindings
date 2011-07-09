@@ -1,0 +1,46 @@
+<bindings name="Haiku::PopUpMenu">
+	<doc>Exposes the PopUpMenu object</doc>
+	<binding source="BPopUpMenu" source-inherits="BMenu" target="Haiku::PopUpMenu" target-inherits="Haiku::Menu">
+		<doc>Exposes the PopUpMenu object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a PopUpMenu.</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="radioMode" type="bool" action="input" default="true" />
+				<param name="labelFromMarked" type="bool" action="input" default="true" />
+				<param name="layout" type="menu_layout" action="input" default="B_ITEMS_IN_COLUMN" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="Go">
+				<doc>Displays the PopUpMenu.</doc>
+				<param name="screenPoint" type="BPoint" action="input" />
+				<param name="deliversMessage" type="bool" action="input" default="false" />
+				<param name="openAnyway" type="bool" action="input" default="false" />
+				<param name="asynchronous" type="bool" action="input" default="false" />
+				<return type="BMenuItem*" />
+			</method>
+			<method name="Go" overload-name="WithClickRect">
+				<doc>Displays the PopUpMenu.</doc>
+				<param name="screenPoint" type="BPoint" action="input" />
+				<param name="deliversMessage" type="bool" action="input" />
+				<param name="openAnyway" type="bool" action="input" />
+				<param name="clickToOpenRect" type="BRect" action="input" />
+				<param name="asynchronous" type="bool" action="input" default="false" />
+				<return type="BMenuItem*" />
+			</method>
+			<!-- ScreenLocation -->
+			<method name="SetAsyncAutoDestruct">
+				<doc>Enables or disables auto-destruct for the PopUpMenu; of true, the associated Menu is deleted when the PopUpMenu closes.</doc>
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="AsyncAutoDestruct">
+				<doc>Returns true if auto-destruct is enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

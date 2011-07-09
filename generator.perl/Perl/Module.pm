@@ -1,90 +1,108 @@
 package Perl::Module;
 use File::Spec;
 use File::Path;
+use Perl::Bundle;
 use Perl::Package;
 use Perl::ResponderPackage;
+use Perl::Include;
+use Perl::Link;
 use Perl::Types;
 require Perl::UtilityCodeGenerator;
 use strict;
-our @ISA = qw(Perl::Package);
+our @ISA = qw(Bindings Perl::Package);
 
 sub new {
 	my ($class, $bindings) = @_;
+	my $self = $class->upgrade($bindings->source_type_prefix, $bindings);
+#	my $self = $class->SUPER::new(@_);
+#print $self,"\n";
 	
-	my $self = bless {
-		packages => [],
-		version => $bindings->{version},
-	}, $class;
-	
-	# need to create this now, in order to pass it to packages
-	my $types = new Perl::Types;
-	
-	for my $binding ($bindings->bindings) {
-		my $package = new Perl::Package($self, $binding, $types);
-		
-		if ($binding->target eq $bindings->name) {
-			# copy package into self
-			my @keys = keys %$package;
-			@{$self}{@keys} = @{$package}{@keys};
-		}
-		else {
-			push @{ $self->{packages} }, $package;
-		}
-		
-		if ($binding->events) {
-			push @{ $self->{packages} }, new Perl::ResponderPackage($self, $binding, $types);
-		}
-	}
-	
-	# register defined types
-	for my $btypes ($bindings->types_collection) {
-		for my $type ($btypes->types) {
-			$types->register_type(
-				$type->name,
-				$type->builtin,
-				$type->target,
-			);
-		}
-	}
-	
-	# register the types we've just created
-	for my $package (@{ $self->{packages} }) {
-		if (my $cpp_class = $package->{cpp_class}) {
-			$types->register_type(
-				"$cpp_class*",
-				$package->{type},
-				$package->{name},
-			);
-		}
-	}
-	
-	if (my @includes = $bindings->includes_collection) {
-		my @inc;
-		for my $includes (@includes) {
-			for my $include ($includes->includes) {
-				push @inc, $include->file;
+	if ($self->has('packages')) {
+		my @pkgs = $self->packages;
+		$self->{packages} = [];
+		for my $package (@pkgs) {
+#print join("\n", $package, %$package),"\n\n";
+#print join("\n", $package->{_upgraded_from}, %{ $package->{_upgraded_from} }),"\n\n";
+			if ($package->perl_name eq $self->name) {
+				# copy self into package and rebless package as self
+				# we MUST do this before anybody else has a reference
+				# to self, that's why we do it at the top of new()
+				my @keys = keys %$self;
+				@{$package}{@keys} = @{$self}{@keys};
+				$self = bless $package, ref $self;
+				
+				# we are a dynaloader
+				$self->{_isa} ||= [];
+				unshift @{ $self->{_isa} }, 'DynaLoader';
+			}
+			else {
+				push @{ $self->{packages} }, $package;
+			}
+			
+#print join("\n", $package, %$package),"\n\n";
+#print join("\n", $package->{_upgraded_from}, %{ $package->{_upgraded_from} }),"\n\n";
+			if ($package->has('functions') and $package->functions->had('events')) {
+				push @{ $self->{packages} },
+					Perl::ResponderPackage->upgrade($bindings->source_type_prefix, $package);
 			}
 		}
-		$self->{includes} = \@inc;
 	}
 	
+	$self->propagate_value('module_name', $self->name);
 	
-	# if we had no binding named the same as ourself we need to do some more
-	unless ($self->{name}) {
-		$self->{types} ||= $types;
+	$self->{types} ||= Perl::Types->create_empty;
+	$self->propagate_value('types', $self->types);
+	
+	if ($self->has('packages')) {
+		for my $package ($self->packages) {
+			if ($package->has('cpp_name')) {
+				my $name = $package->cpp_name;
+				my $type = $package->is_responder ? 'responder' : 'object';
+				my $target = $package->perl_name;
+				$self->types->register_type($name, $type, $target);
+				
+				$name .= '*'; $type .= '_ptr';
+				$self->types->register_type($name, $type, $target);
+			}
+		}
 	}
-	
-	$self->{isa} ||= [];
-	unshift @{ $self->{isa} }, 'DynaLoader';
-	$self->{dynaloader} = 1;
 	
 	return $self;
+}
+
+sub generate {
+#return;
+	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
+	
+	# generate packages before self, so packages can report filenames
+	if ($self->has('packages')) {
+		for my $package ($self->packages) {
+			$package->generate($folder, $pm_prefix, $xs_prefix);
+		}
+	}
+	
+	$self->SUPER::generate($folder, $pm_prefix, $xs_prefix);
+	
+	# create the typemap
+#	if ($self->types->has('types')) {
+	if ($self->types->registered_type_count) {
+		my $typemap_file = File::Spec->catfile($folder, 'typemap');
+		$self->{types}->write_typemap_file($typemap_file);
+	}
+
+	# some bindings merely bundle other bindings; they don't contain
+	# actual bindings; we know we have one of these if we don't have
+	# a cpp name
+	if ($self->has('cpp_name')) {
+		$self->generate_utility_h_code($folder);
+		$self->generate_utility_cpp_code($folder);
+	}
 }
 
 sub open_files {
 	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
 	
-	my @subpath = split /::/, $self->{name};
+	my @subpath = split /::/, $self->name;
 	my $filename = pop @subpath;
 	
 	mkpath($folder);
@@ -104,32 +122,6 @@ sub close_files {
 	my ($self) = @_;
 	close $self->{pmh};
 	close $self->{xsh};
-}
-
-sub generate {
-	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
-	
-	# generate packages before self, so packages can report filenames
-	for my $package (@{ $self->{packages} }) {
-		$package->generate($folder, $pm_prefix, $xs_prefix);
-	}
-	
-	$self->SUPER::generate($folder, $pm_prefix, $xs_prefix);
-	
-	# create the typemap
-	if ($self->{types}->registered_type_count) {
-		my $typemap_file = File::Spec->catfile($folder, 'typemap');
-		$self->{types}->write_typemap_file($typemap_file);
-	}
-	
-	
-	# no name member means we had no binding named the same as ourself
-	# this means we're just being used to bundle other modules
-	# so no utility files are necessary
-	if ($self->{name}) {
-		$self->generate_utility_h_code($folder);
-		$self->generate_utility_cpp_code($folder);
-	}
 }
 
 #
@@ -155,6 +147,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+#undef Copy // this macro might interfere with function names
 
 #include "$self->{filename}.cpp"
 TOP
@@ -197,7 +191,7 @@ MODINFO
 sub generate_pm_postamble {
 	my ($self) = @_;
 	
-	my $perl_module_name = $self->{module}{name};
+	my $perl_module_name = $self->name;
 	
 	print { $self->{pmh} } <<END;
 bootstrap $perl_module_name \$VERSION;
@@ -209,7 +203,7 @@ END
 sub generate_xs_postamble {
 	my ($self) = @_;
 	
-	my $perl_module_name = $self->{module}{name};
+	my $perl_module_name = $self->module_name;
 	
 	print { $self->{xsh} } <<DBG;
 MODULE = $perl_module_name	PACKAGE = ${perl_module_name}::DEBUG

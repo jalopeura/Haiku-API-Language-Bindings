@@ -1,27 +1,27 @@
+use Common::BaseObject;
+
 package Properties;
 use strict;
 our @ISA = qw(BaseObject);
 
-our $content_as = '';
-our @allowed_attrs = qw();
-our %allowed_children = (
+my %children = (
 	property => {
 		key => 'properties',
-		class => 'Property',
+		class => 'Property+',
 	},
 );
+
+sub _children { %children }
 
 package Property;
 use strict;
 our @ISA = qw(BaseObject);
 
-our $content_as = '';
-our @allowed_attrs = qw(name type);
-our %allowed_children = (
-	doc => {
-		key => 'docs',
-		class => 'Doc',
-	},
-);
+my @attributes = qw(name type);
+my @required_data = qw(name type);
+
+sub _has_doc { 1 }
+sub _attributes { @attributes }
+sub _required_data { @required_data }
 
 1;

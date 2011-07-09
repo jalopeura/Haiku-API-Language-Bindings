@@ -1,0 +1,446 @@
+<bindings name="Haiku::View">
+	<doc>Exposes the View object</doc>
+	<binding source="BView" source-inherits="BHandler" target="Haiku::View" target-inherits="Haiku::Handler">
+		<doc>Exposes the View object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a View.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" default="NULL" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="Bounds">
+				<doc>Returns the View's bounding rectangle in the View's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertToParent" overload-name="_Point">
+				<doc>Converts a Point from the View's coordinate system to the parent's coordinate system.</doc>
+				<param name="localPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertToParent" overload-name="_Rect">
+				<doc>Converts a Rect from the View's coordinate system to the parent's coordinate system.</doc>
+				<param name="localRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertFromParent" overload-name="_Point">
+				<doc>Converts a Point from the parent's coordinate system to the View's coordinate system.</doc>
+				<param name="parentPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertFromParent" overload-name="_Rect">
+				<doc>Converts a Rect from the parent's coordinate system to the View's coordinate system.</doc>
+				<param name="parentRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertToScreen" overload-name="_Point">
+				<doc>Converts a Point from the View's coordinate system to the screen's coordinate system.</doc>
+				<param name="localPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertToScreen" overload-name="_Rect">
+				<doc>Converts a Rect from the View's coordinate system to the screen's coordinate system.</doc>
+				<param name="localRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertFromScreen" overload-name="_Point">
+				<doc>Converts a Point from the screen's coordinate system to the View's coordinate system.</doc>
+				<param name="screenPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertFromScreen" overload-name="_Rect">
+				<doc>Converts a Rect from the screen's coordinate system to the View's coordinate system.</doc>
+				<param name="screenRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Frame">
+				<doc>Returns the View's bounding rectangle in the parent's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Hide">
+				<doc>Hides the View.</doc>
+				<return type="void" />
+			</method>
+			<method name="Show">
+				<doc>Shows the View.</doc>
+				<return type="void" />
+			</method>
+			<method name="IsFocus">
+				<doc>Returns true if the View has the focus in its Window.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsHidden">
+				<doc>Returns true if the View is hidden.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsPrinting">
+				<doc>Returns true if the View is printing.</doc>
+				<return type="bool" />
+			</method>
+			<method name="LeftTop">
+				<doc>Returns the upper left coordinate of the View as a Point.</doc>
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="MoveBy">
+				<doc>Moves the View by the given coordinates.</doc>
+				<param name="horizontal" type="float" action="input" />
+				<param name="vertical" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="MoveTo">
+				<doc>Moves the View to the given coordinates.</doc>
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ResizeBy">
+				<doc>Changes the View's size to the given dimensions.</doc>
+				<param name="horizontal" type="float" action="input" />
+				<param name="vertical" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ResizeTo">
+				<doc>Changes the View's size to the given dimensions.</doc>
+				<param name="width" type="float" action="input" />
+				<param name="height" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetFlags">
+				<doc>Sets the View's flags.</doc>
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="Flags">
+				<doc>Gets the View's flags.</doc>
+				<return type="uint32" />
+			</method>
+			<!-- SetOrigin -->
+			<!-- Origin -->
+			<method name="SetResizingMode">
+				<doc>Sets the View's resizing mode.</doc>
+				<param name="mode" type="uint32" action="input" />
+			</method>
+			<method name="ResizingMode">
+				<doc>Gets the View's resizing mode.</doc>
+				<return type="uint32" />
+			</method>
+			<method name="SetViewCursor">
+				<doc>Sets the View's cursor.</doc>
+				<param name="cursor" type="BCursor*" action="input" />
+				<param name="sync" type="bool" action="input" default="true">
+					<doc>If true, forces a sync with the Application Server so the cursor changes immediately.</doc>
+				</param>
+			</method>
+			<method name="Window">
+				<doc>Gets the View's owning Window (which may or may not be its immediate parent).</doc>
+				<return type="BWindow*" />
+			</method>
+			<method name="AddChild">
+				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<param name="sibling" type="BView*" action="input" default="NULL" />
+				<return type="void" />
+			</method>
+			<method name="RemoveChild">
+				<doc>Removes [code]view[/code] from the Views's child view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="FindView">
+				<doc>Finds a child View by name.</doc>
+				<param name="name" type="const char*" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+			<method name="Parent">
+				<doc>Returns the View's parent View, or NULL if the View's immediate parent is a Window.</doc>
+				<return type="BView*" action="output" />
+			</method>
+			<method name="NextSibling">
+				<doc>Returns the next child View of the parent.</doc>
+				<return type="BView*" action="output" />
+			</method>
+			<method name="PreviousSibling">
+				<doc>Returns the previous child View of the parent.</doc>
+				<return type="BView*" action="output" />
+			</method>
+			<method name="ChildAt">
+				<doc>Returns the [code]index[/code]th view from the Views's child view list.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+			<method name="CountChildren">
+				<doc>Returns the number of views in the Views's child view list.</doc>
+				<return type="int32" action="output" />
+			</method>
+			<method name="RemoveSelf">
+				<doc>Removes the View from its parent's child View list. Returns true if successful, false if unsuccessful or if the View doesn't have a parent.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="BeginRectTracking">
+				<doc>Starts displaying a rectangular outline that follows the cursor.</doc>
+				<param name="rect" type="BRect" action="input" />
+				<param name="how" type="uint32" action="input" default="B_TRACK_WHOLE_RECT" />
+			</method>
+			<method name="EndRectTracking">
+				<doc>Stops displaying the rectangular outline that follows the cursor.</doc>
+			</method>
+			<!--
+			<method name="DragMessage" overload-name="WithRect">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="rect" type="BRect" action="input">
+					<doc>A rectangle (in the View's coordinate system) to be used as the drag image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+			<method name="DragMessage">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="bitmap" type="BBitmap*" action="input">
+					<doc>A bitmap to be used as the drag image.</doc>
+				</param>
+				<param name="point" type="BPoint" action="input">
+					<doc>The hotspot within the image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+			<method name="DragMessage" overload-name="WithDrawingMode">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="image" type="BBitmap*" action="input">
+					<doc>A bitmap to be used as the drag image.</doc>
+				</param>
+				<param name="dragMode" type="drawing_mode" action="input">
+					<doc>A drawing mode.</doc>
+				</param>
+				<param name="offset" type="BPoint" action="input">
+					<doc>The hotspot within the image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+			-->
+			<!-- GetMouse -->
+			<method name="MakeFocus">
+				<doc>Makes the view focused (or not focused) within its Window.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<!--
+			<method name="ScrollBar">
+				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
+				<return type="BScrollBar*" action="output" />
+			</method>
+			-->
+			<method name="ScrollBy">
+				<doc>Scrolls the View by the given coordinates.</doc>
+				<param name="horizontal" type="float" action="input" />
+				<param name="vertical" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ScrollTo">
+				<doc>Scrolls the View to the given coordinates.</doc>
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<!-- SetEventMask -->
+			<!-- SetMouseEventMask -->
+			<!-- EventMask -->
+			<!-- MovePenBy -->
+			<!-- MovePenTo -->
+			<!-- PenLocation -->
+			<!-- PushState -->
+			<!-- PopState -->
+			<!-- SetLineMode -->
+			<!-- LineJoinMode -->
+			<!-- LineCapMode -->
+			<!-- LineMiterLimit -->
+			<!-- SetScale -->
+			<!-- SetPenSize -->
+			<!-- PenSize -->
+			<!-- SetHighColor -->
+			<!-- HighColor -->
+			<!-- SetLowColor -->
+			<!-- LowColor -->
+			<!-- SetViewColor -->
+			<!-- ViewColor -->
+			<!-- SetBlendingMode -->
+			<!-- GetBlendingMode -->
+			<!-- SetDrawingMode -->
+			<!-- DrawingMode -->
+			<!-- ForceFontAliasing -->
+			<!-- GetFontHeight -->
+			<!-- SetFont -->
+			<!-- GetFont -->
+			<!-- SetFontSize -->
+			<!-- StringWidth -->
+			<!-- GetStringWidths -->
+			<!-- TruncateString -->
+			<!-- ClipToPicture -->
+			<!-- ClipToInversePicture -->
+			<!-- ConstrainClippingRegion -->
+			<!-- GetClippingRegion -->
+			<!-- DrawBitmap -->
+			<!-- DrawBitmapAsync -->
+			<!-- DrawChar -->
+			<!-- DrawString -->
+			<!-- FillRegion -->
+			<!-- StrokeBezier -->
+			<!-- FillBezier -->
+			<!-- StrokeEllipse -->
+			<!-- FillEllipse -->
+			<!-- StrokeArc -->
+			<!-- FillArc -->
+			<!-- StrokeLine -->
+			<!-- StrokePolygon -->
+			<!-- FillPolygon -->
+			<!-- StrokeRect -->
+			<!-- FillRect -->
+			<!-- StrokeRoundRect -->
+			<!-- FillRoundRect -->
+			<!-- StrokeShape -->
+			<!-- FillShape -->
+			<!-- StrokeTriangle -->
+			<!-- FillTriangle -->
+			<!-- BeginLineArray -->
+			<!-- AddLine -->
+			<!-- EndLineArray -->
+			<!-- BeginPicture -->
+			<!-- AppendToPicture -->
+			<!-- EndPicture -->
+			<!-- CopyBits -->
+			<!-- DrawPicture -->
+			<!-- DrawPictureAsync -->
+			<method name="Flush">
+				<doc>Sends all pending messages to the Application Server and immediately returns.</doc>
+			</method>
+			<method name="Sync">
+				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
+			</method>
+			<!-- Invalidate -->
+			<!-- InvertRect -->
+			<!-- SetViewBitmap -->
+			<!-- ClearViewBitmap -->
+			<!-- SetViewOverlay -->
+			<!-- ClearViewOverlay -->			
+			<!-- AttachedToWindow -->
+			<!-- AllAttached -->
+			<!-- DetachedFromWindow -->
+			<!-- AllDetached -->
+			<!-- Draw -->
+			<!-- DrawAfterChildren -->
+			<!-- FrameMoved -->
+			<!-- FrameResized -->
+			<!-- GetPreferredSize -->
+			<!-- ResizeToPreferred -->
+			<!-- KeyDown -->
+			<!-- KeyUp -->
+			<!--
+			<event name="MessageReceived">
+				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			-->
+			<!-- MouseDown -->
+			<!-- MouseMoved -->
+			<!-- MouseUp -->
+			<!-- Pulse -->
+			<!-- TargetedByScrollView -->
+			<!-- WindowActivated -->
+		</functions>
+		<constants>
+			<constant name="B_ENTERED_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_INSIDE_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_EXITED_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<!-- mouse button constants -->
+<!--
+B_PRIMARY_MOUSE_BUTTON
+B_SECONDARY_MOUSE_BUTTON
+B_TERTIARY_MOUSE_BUTTON
+-->
+			<constant name="B_FOLLOW_LEFT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_RIGHT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_LEFT_RIGHT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_H_CENTER" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_TOP" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_BOTTOM" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_TOP_BOTTOM" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_V_CENTER" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL_SIDES" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_NONE" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FULL_UPDATE_ON_RESIZE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_WILL_DRAW" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PULSE_NEEDED" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FRAME_EVENTS" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE_JUMP" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SUBPIXEL_PRECISE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRACK_WHOLE_RECT" group="tracking">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRACK_RECT_CORNER" group="tracking">
+				<doc>...</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

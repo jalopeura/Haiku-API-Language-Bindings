@@ -18,18 +18,19 @@ sub generate {
 	my ($self, %options) = @_;
 	
 	my $bindings = $options{bindings};
+	$bindings->check_required_data;
 	my @p = split /::/, $bindings->name;
 	my $folder = $p[-1];
 	my $target = File::Spec->catdir($options{target} || '.', $folder);
 	mkpath($target);
 print "Generating $target\n";
 	
-#	File::Path->remove_tree($target);
+	File::Path->remove_tree($target);
 	
 	# if the binding has any bundles, generate them
 	my @bundledirs;
-	for my $bundle ($bindings->bundles) {
-		for my $bundled_bindings ($bundle->bindings_collection) {
+	if ($bindings->has('bundle')) {
+		for my $bundled_bindings ($bindings->bundle->bindings) {
 			$self->generate(
 				bindings => $bundled_bindings,
 				target => $target,
@@ -62,16 +63,12 @@ print "Generating $target\n";
 	);
 	
 	my @libs;
-	for my $links ($bindings->links_collection) {
-		for my $link ($links->links) {
-			push @libs, $link->lib;
-		}
-	}
-	if (@libs) {
-		my $libs = join(' ', @libs);
+	if ($module->has('link')) {
+		my $libs = join(' ', map { $_->name } $module->link->libs);
 #		push @makefile_params, qq('BSLOADLIBS' => '$libs');
 		push @makefile_params, qq(dynamic_lib => { 'BSLOADLIBS' => '$libs' });
 	}
+	
 	if (@bundledirs) {
 		my $dirs = join(', ', map { "'$_'" } @bundledirs);
 		push @makefile_params, qq('DIR'      => [ $dirs ]);
@@ -89,12 +86,13 @@ WriteMakefile(
 MAKE
 	
 	# a loading test
-	my $testdir = File::Spec->catdir($target, 't');
-	mkpath($testdir);
+	my $test_target_dir = File::Spec->catdir($target, 't');
+	mkpath($test_target_dir);
 	
-	my $testfile = File::Spec->catdir($testdir, 'load.t');
+	my $testfile = File::Spec->catdir($test_target_dir, 'load.t');
 	open TEST, ">$testfile" or die "Unable to create test: $!";
 	print TEST <<OUT;
+# simple load test
 use Test::Simple tests => 1;
 
 use $name;
@@ -103,8 +101,6 @@ ok(1);
 OUT
 	
 	my $test_source_dir = '../test/perl';
-	my $test_target_dir = File::Spec->catdir($target, 't');
-	mkpath($test_target_dir);
 	opendir DIR, $test_source_dir or die $!;
 	while (my $e = readdir DIR) {
 		my $file = File::Spec->catfile($test_source_dir, $e);
@@ -112,12 +108,31 @@ OUT
 		copy($file, $test_target_dir);
 	}
 	closedir DIR;
+	
+	return $module;
 }
 
 1;
 
 __END__
 
+make sure current stuff is working again
+especially make sure python is working properly
+commit it
+
+reimplement people app using the perl bindings
+
+add lots more bindings
+
+Interface Kit constants have ... for docs
+constructors have ... for docs
+params still need docs
+Application::RefsReceived
+
+May need to change some (all?) of the code to prefix converters with new mortal
+ and the converters themselves to use sv_setvsv instead of =
+-will compile first and see what happens
+
+# allow exporting of constants in groups
 # allow keyword-style entry (eventually)
-# alter ParamParser into Params (???)
 

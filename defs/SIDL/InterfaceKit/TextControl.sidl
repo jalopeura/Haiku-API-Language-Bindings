@@ -1,0 +1,80 @@
+<bindings name="Haiku::TextControl">
+	<doc>Exposes the TextControl object</doc>
+	<binding source="BTextControl" source-inherits="BControl" target="Haiku::TextControl" target-inherits="Haiku::Control">
+		<doc>Exposes the TextControl object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="text" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="MakeFocus">
+				<doc>Makes the TextControl focused (or not focused) within its Window; it passes this call to its child TextView, so the TextControl itself is never the focused control.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<!-- ResolveSpecifier -->
+			<method name="SetAlignment">
+				<doc>Sets the alignment for the TextControl.</doc>
+				<param name="forLabel" type="alignment" action="input" />
+				<param name="forText" type="alignment" action="input" />
+			</method>
+			<!--
+			<method name="GetAlignment">
+				<doc>Returns the alignment for the StringView.</doc>
+				<param name="forLabel" type="alignment" action="output" />
+				<param name="forText" type="alignment" action="output" />
+			</method>
+			-->
+			<method name="SetDivider">
+				<doc>Sets the divider between the label and the TextView.</doc>
+				<param name="xCoordinate" type="float" action="input" />
+			</method>
+			<method name="Divider">
+				<doc>Returns the divider between the label and the TextView.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<doc>Enables or disables the TextView.</doc>
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="SetModificationMessage">
+				<doc>Sets the message sent when the content changes.</doc>
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="ModificationMessage">
+				<doc>Returns the message sent when the content change.</doc>
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="SetText">
+				<doc>Sets the text.</doc>
+				<param name="text" type="const char*" action="input" />
+			</method>
+			<method name="Text">
+				<doc>Gets the text.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<method name="TextView">
+				<doc>Returns the child TextView.</doc>
+				<return type="BTextView*" action="output" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- Draw -->
+			<!-- GetPreferredSize -->
+			<!-- ResizeToPreferred -->
+			<!-- MessageReceived -->
+			<!-- MouseDown -->
+			<!-- WindowActivated -->
+		</functions>
+	</binding>
+</bindings>

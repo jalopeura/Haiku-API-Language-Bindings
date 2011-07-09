@@ -5,6 +5,8 @@ use File::Copy;
 use Python::Package;
 use strict;
 
+my $ext_folder = 'ext';
+
 sub new {
 	my ($class) = @_;
 	my $self = bless {}, $class;
@@ -15,108 +17,67 @@ sub generate {
 	my ($self, %options) = @_;
 	
 	my $bindings = $options{bindings};
+	$bindings->check_required_data;
 	my @p = split /::/, $bindings->name;
 	my $folder = $p[-1];
 	my $target = File::Spec->catdir($options{target} || '.', $folder);
 	mkpath($target);
 print "Generating $target\n";
 	
-#	File::Path->remove_tree($target);
+	File::Path->remove_tree($target);
 	
-	# drop build from last time
-	for my $drop (qw(build dist test)) {
-		my $dropdir = File::Spec->catdir($target, $drop);
-		if (-e $dropdir) {
-			File::Path->remove_tree($dropdir);;
-		}
-	}
-	
-	# create the package
+	# create this now so we can pass it in
 	my $package = new Python::Package($bindings, $options{parent});
-	my @packages = ($package);	
 	
-	# if the binding has any bundles, generate them and save their info
-	my @bundledirs;
-	for my $bundle ($bindings->bundles) {
-		for my $bundled_bindings ($bundle->bindings_collection) {
-			push @packages, $self->generate(
+	# if the binding has any bundles, generate them
+	my (@bundledirs, @packages);
+	if ($bindings->has('bundle')) {
+		for my $bundled_bindings ($bindings->bundle->bindings) {
+			my $pkg = $self->generate(
 				bindings => $bundled_bindings,
 				target => $target,
 				parent => $package,
 			);
 			my @q = split /::/, $bundled_bindings->name;
 			push @bundledirs, $q[-1];
+			push @packages, $pkg;
 		}
 	}
 	
 	# generate the package
-	# (it will create any additional packages)
-	$package->generate($target);
+	$package->generate($target, $ext_folder);
 	
-	# now I do myself (unless I'm just a bundle)
-	# and any bundled modules
-	my (%extensions, @extensions);
+	# are we a real package or just a bundle?
+	if ($package->has('classes') or $package->has('constants')) {
+		unshift @packages, $package
+	}
+	
+	# determine packages (including bundled packages)
+	my (%packages, @extensions);
 	for my $pkg (@packages) {
-		next unless $pkg->{name};
+		my $pkgname = $pkg->name;
 		my $filename = $pkg->resolve_filename($package);
-		$extensions{ $pkg->{name} } = 'c++';
-		push @extensions, qq(Extension('$pkg->{name}', ['$filename.cc']));
-#print $pkg->{name},"\n";
-#print join(':::', $pkg, %$pkg),"\n";
+		push @extensions, qq(Extension('$pkgname', ['$filename.cc']));
+		$packages{$pkgname} = 1;
 	}
 	
-	# for packages named X.Y, verify X exists
-	# if not, add an empty __init__.py
-	my @pymodules;
-	for my $pkg (keys %extensions) {
-		my @pkg = split /\./, $pkg;
-		pop @pkg;
-		for my $i (0..$#pkg) {
-			my $chk = join('.', @pkg[0..$i]);
-			next if $extensions{$chk};
-			
-			my $dir = File::Spec->catdir($target, @pkg[0..$i]);
-			mkpath($dir);
-			my $init = File::Spec->catfile($dir, '__init__.py');
-			open INIT, ">$init" or die "Unable to create init file in folder '$dir': $!";
-			close INIT;
-			
-			$extensions{$chk} = 'py';
-			push @pymodules, qq('$chk');
-		}
-	}
-
-	# any empty folders in the path need to have empty __init__.py
-	# files in them so python knows they contain modules
+	my @pkgnames = keys %packages;
 	my @pypackages;
-	my @folders = ('.');
-	while (@folders) {
-		my $f = shift @folders;
-		my @f = File::Spec->splitdir($f);
-		if (@f) {
-#print "$f[-1] from $f\n";
-			my $chk = File::Spec->catfile($target, $f, "$f[-1].cc");
-			unless (-e $chk) {
-				my $init = File::Spec->catfile($target, $f, '__init__.py');
-				open INIT, ">$init" or die "Unable to create init file in folder '$f': $!";
-				close INIT;
-				my $m = join('.', @f);
-				unless ($m eq '.') {
-					push @pypackages, qq('$m');
-				}
-			}
-		}
-		
-		my $dir = File::Spec->catdir($target, $f);
-		opendir DIR, $dir or die "Unable to read folder '$dir': $!";
-		my @e = readdir DIR;
-		closedir DIR;
-		
-		for my $e (sort @e) {
-			next if ($e eq '.' or $e eq '..');
-			my $d = File::Spec->catdir($target, $f, $e);
-			next unless -d $d;
-			push @folders, File::Spec->catdir($f, $e);
+	while (@pkgnames) {
+		my $pkgname = shift @pkgnames;
+		my @p = split /\./, $pkgname;
+		for my $i (0..$#p) {
+			my $chk = join('.', @p[0..$i]);
+			next if $packages{$chk};
+			
+			$packages{$chk} = 1;
+			push @pypackages, qq('$chk');
+			my $pkgdir = File::Spec->catdir($target, split /\./, $chk);
+			mkpath($pkgdir);
+			
+			my $pkginit = File::Spec->catfile($pkgdir, '__init__.py');
+			open INIT, ">$pkginit" or die "Unable to create init file: $1";
+			close INIT;
 		}
 	}
 
@@ -162,22 +123,9 @@ RULE
 		copy($file, $test_target_dir);
 	}
 	closedir DIR;
-	
-	
+
 	return $package;
 }
 
-
 1;
 
-__END__
-
-# CODE
-# not sure Py_BuildValue("") is okay; may need to be Py_BuildValue(NULL)
-# may need to alter setup.py for bundles - look into this
-#
-# TEST
-# make sure everything compiles properly
-# read a python tutorial
-# write a test program
-# debug

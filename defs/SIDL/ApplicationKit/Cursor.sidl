@@ -1,0 +1,21 @@
+<bindings name="Haiku::Cursor">
+	<doc>Exposes the Cursor object</doc>
+	<binding source="BCursor" target="Haiku::Cursor">
+		<doc>Exposes the Cursor object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a Cursor.</doc>
+				<param name="cursorData" type="char*" action="input">
+					<doc>...</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates an Cursor from an archive.</doc>
+				<param name="archive" type="BMessage*" action="input">
+					<doc>Contains an archived version of the Cursor.</doc>
+				</param>
+			</constructor>
+			<destructor />
+		</functions>
+	</binding>
+</bindings>

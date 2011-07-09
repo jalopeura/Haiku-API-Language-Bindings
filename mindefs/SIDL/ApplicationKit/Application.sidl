@@ -1,0 +1,119 @@
+<bindings name="Haiku::Application">
+	<doc>Exposes the Application object</doc>
+	<binding source="BApplication" target="Haiku::Application" must-not-delete="false">
+		<doc>Exposes the Application object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates an Application from a signature.</doc>
+				<param name="signature" type="const char*" action="input">
+					<doc>Sets the application signature. Must begin "[code]application/[/code]".</doc>
+				</param>
+				<param name="error" type="status_t*" deref="true" action="error" success="B_OK">
+					<doc>Indicates that the application was not successfully constructed.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>Creates a Message from an archive.</doc>
+				<param name="archive" type="BMessage*" action="input">
+					<doc>Contains an archived version of the Application.</doc>
+				</param>
+			</constructor>
+			<destructor />
+			<!-- InitCheck -->
+			<!-- Archive -->
+			<!-- GetAppInfo -->
+			<!-- GetSupportedSuites -->
+			<!-- ResolveSpecifier -->
+			<method name="IsLaunching">
+				<doc>Returns true until [code]ReadyToRun()[/code] returns.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="Run">
+				<doc>Begins the Application's message loop. Returns the Application's thread id.</doc>
+				<return type="thread_id" action="output" />
+			</method>
+			<method name="Quit">
+				<doc>Ends the app's message loop.</doc>
+				<return type="void" />
+			</method>
+			<!-- SetCursor -->
+			<!-- HideCursor -->
+			<!-- ShowCursor -->
+			<!-- ObscureCursor -->
+			<!-- IsCursorHidden -->
+<!--
+			<method name="SetPulseRate">
+				<param name="rate" type="bigtime_t" action="input" />
+				<return type="void" />
+			</method>
+-->
+			<method name="WindowAt">
+				<doc>Returns the [code]index[/code]th window from the application's window list.</doc>
+				<param name="index" type="int32" action="input">
+					<doc>The index of the desired window.</doc>
+				</param>
+				<return type="BWindow*" action="output" must-not-delete="true" />
+			</method>
+			<method name="CountWindows">
+				<doc>Returns the number of windows in the application's window list.</doc>
+				<return type="int32" action="output" />
+			</method>
+			<event name="AboutRequested">
+				<doc>Called when the app receives a [code]B_ABOUT_REQUESTED[/code] message.</doc>
+				<return type="void" />
+			</event>
+			<event name="AppActivated">
+				<doc>Called when the app receives a [code]B_APP_ACTIVATED[/code] message. This message can be sent programmatically via [code][name]Haiku::Window::Activate()[/name][/code] or [code][name]Haiku::Roster::ActivateApp()[/name][/code], or as a result of user action.</doc>
+				<param name="active" type="bool" action="input">
+					<doc>True indicates the Application is becoming active; false indicates in is becoming inactive.</doc>
+				</param>
+				<return type="void" />
+			</event>
+			<event name="ArgvReceived">
+				<doc>Called when the app receives a [code]B_ARGV_RECEIVED[/code] message. This can happen if the app is launched from the command line, or via [code][name]Haiku::Roster::Launch()[/name][/code]. The first argument will be the executable name. Note that if the app is set to [code]B_EXCLUSIVE_LAUNCH[/code] or [code]B_SINGLE_LAUNCH[/code], this event may be called multiple times.</doc>
+				<param name="argc" type="int32" action="count[argv]">
+					<doc>The number of arguments.</doc>
+				</param>
+				<param name="argv" type="char**" action="input">
+					<doc>The arguments, beginning with the executable name.</doc>
+				</param>
+				<return type="void" />
+			</event>
+			<event name="Pulse">
+				<doc>Called when the app receives a [code]B_PULSE[/code] message. The app will not begon receiving this message until [code]ReadyToRun()[/code] return.</doc>
+				<return type="void" />
+			</event>
+			<event name="QuitRequested">
+				<doc>Called when the app receives a [code]B_QUIT_REQUESTED[/code] message. Return [code]true[/code] to confirm the request and [code]false[/code] to deny it. Always call [code][name]Haiku::Application[/name][/code]'s version if you implement this event.</doc>
+				<return type="bool" />
+			</event>
+			<event name="ReadyToRun">
+				<doc>Called when the app receives a [code]B_READY_TO_RUN[/code] message. This message will be sent after [code]Run()[/code] is called, and after any [code]B_REFS_RECEIVED[/code] and [code]B_ARGV_RECEIVED[/code] messages.</doc>
+				<return type="void" />
+			</event>
+			<event name="RefsReceived">
+				<doc>Called when the app receives a [code]B_REFS_RECEIVED[/code] message. This message will be sent if our app is opened by double-clicking on an associated file, or if a file is dropped on your app's icon. This event may be called either before launch, or when the app is already running; you can tell which by using [code]IsLaunching()[/code].</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>A message containing...</doc>
+				</param>
+				<return type="void" />
+			</event>
+			<!-- inherited from BLooper -->
+<!--
+			<event name="DispatchMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="target" type="BHandler*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<!-- inherited from BHandler -->
+			<event name="MessageReceived">
+				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Application[/name][/code]'s version.</doc>
+				<param name="message" type="BMessage*" action="input" must-not-delete="true">
+					<doc>A message; the contents will depend on the action that generated the event.</doc>
+				</param>
+				<return type="void" />
+			</event>
+		</functions>
+	</binding>
+</bindings>

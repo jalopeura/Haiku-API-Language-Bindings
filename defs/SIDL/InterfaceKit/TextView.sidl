@@ -1,0 +1,144 @@
+<bindings name="Haiku::TextView">
+	<doc>Exposes the TextView object</doc>
+	<binding source="BTextView" source-inherits="BView" target="Haiku::TextView" target-inherits="Haiku::View">
+		<doc>Exposes the TextView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a TextView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="textRect" type="BRect" action="input" />
+				<param name="resizingMode" type="uint32" action="input" />
+				<param name="flags" type="uint32" action="input" />
+			</constructor>
+			<!--
+			<constructor overload-name="WithFontAndColor">
+				<doc>Creates a TextView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="textRect" type="BRect" action="input" />
+				<param name="font" type="BFont*" action="input" />
+				<param name="color" type="rgb_color*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" />
+				<param name="flags" type="uint32" action="input" />
+			</constructor>
+			-->
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="AcceptsDrop">
+				<doc>Returns true if the TextView will accept dropped data.</doc>
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AcceptsPaste">
+				<doc>Returns true if the TextView will accept pasted data.</doc>
+				<param name="clipboard" type="BClipboard*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<!-- Archive -->
+			<method name="CanEndLine">
+				<param name="offset" type="int32" action="input" />
+				<doc>Returns true if the character at the given offset can end a line; used for word wrapping.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="Cut">
+				<doc>Cuts the current selection to the given Clipboard.</doc>
+				<param name="clipboard" type="BClipboard*" action="input" />
+			</method>
+			<method name="Copy">
+				<doc>Copies the current selection to the given Clipboard.</doc>
+				<param name="clipboard" type="BClipboard*" action="input" />
+			</method>
+			<method name="Paste">
+				<doc>Pastes from the given Clipboard, replacing the current selection.</doc>
+				<param name="clipboard" type="BClipboard*" action="input" />
+			</method>
+			<method name="Clear">
+				<doc>Removes the current selection.</doc>
+			</method>
+			<method name="DisallowChar">
+				<doc>Prevents the TextView from accepting a (single-byte) character.</doc>
+				<param name="aChar" type="uint32" action="input" />
+			</method>
+			<method name="AllowChar">
+				<doc>Allows the TextView to accept a (single-byte) character.</doc>
+				<param name="aChar" type="uint32" action="input" />
+			</method>
+			<!-- FindWord -->
+			<!-- GetDragParameters -->
+			<!-- GetSelection -->
+			<!-- GetTextRegion -->
+			<!-- GoToLine -->
+			<!-- CountLines -->
+			<!-- CurrentLine -->
+			<!-- HideTyping -->
+			<!-- IsTypingHidden -->
+			<!-- Highlight -->
+			<!-- Insert -->
+			<!-- Delete -->
+			<!-- InsertText -->
+			<!-- DeleteText -->
+			<!-- LineAt -->
+			<!-- PointAt -->
+			<!-- OffsetAt -->
+			<!-- LineHeight -->
+			<!-- TextHeight -->
+			<!-- LineWidth -->
+			<!-- MakeEditable -->
+			<!-- IsEditable -->
+			<!-- MakeFocus -->
+			<!-- MakeResizable -->
+			<!-- IsResizable -->
+			<!-- MakeSelectable -->
+			<!-- IsSelectable -->
+			<!-- ResolveSpecifier -->
+			<!-- ScrollToOffset -->
+			<!-- ScrollToSelection -->
+			<!-- Select -->
+			<!-- SelectAll -->
+			<!-- SetAlignment -->
+			<!-- Alignment -->
+			<!-- SetAutoindent -->
+			<!-- DoesAutoindent -->
+			<!-- SetColorSpace -->
+			<!-- ColorSpace -->
+			<!-- SetDoesUndo -->
+			<!-- DoesUndo -->
+			<!-- UndoState -->
+			<!-- Undo -->
+			<!-- SetFontAndColor -->
+			<!-- GetFontAndColor -->
+			<!-- SetMaxBytes -->
+			<!-- MaxBytes -->
+			<!-- SetRunArray -->
+			<!-- RunArray -->
+			<!-- SetStylable -->
+			<!-- IsStylable -->
+			<!-- SetTabWidth -->
+			<!-- TabWidth -->
+			<!-- SetText -->
+			<!-- SetTextRect -->
+			<!-- TextRect -->
+			<!-- SetWordWrap -->
+			<!-- DoesWordWrap -->
+			<!-- Text -->
+			<!-- GetText -->
+			<!-- ByteAt -->
+			<!-- TextLength -->
+			<!-- AttachedToWindow -->
+			<!-- DetachedFromWindow -->
+			<!-- Draw -->
+			<!-- FrameResized -->
+			<!-- KeyDown -->
+			<!-- MessageReceived -->
+			<!-- MouseDown -->
+			<!-- MouseMoved -->
+			<!-- Pulse -->
+			<!-- WindowActivated -->
+			<!-- FlattenRunArray -->
+			<!-- UnflattenRunArray -->
+		</functions>
+	</binding>
+</bindings>

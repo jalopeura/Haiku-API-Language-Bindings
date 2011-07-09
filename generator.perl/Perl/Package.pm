@@ -1,65 +1,85 @@
+use Common::Bindings;
+use Perl::BaseObject;
+
 package Perl::Package;
 use File::Spec;
 use File::Path;
-require Perl::ParamParser;
-require Perl::PMCodeGenerator;
-require Perl::XSCodeGenerator;
+use Perl::Functions;
+use Perl::Properties;
+use Perl::Constants;
 use strict;
+our @ISA = qw(Binding Perl::BaseObject);
 
-sub new {
-	my ($class, $module, $binding, $types) = @_;
-	my $self = bless {
-		module  => $module,
-		types   => $types,
-	}, $class;
-	
-	$self->parse_binding($binding);
-	
-	return $self;
-}
+sub is_responder { 0 }
 
-sub parse_binding {
-	my ($self, $binding) = @_;
+sub finalize_upgrade {
+	my ($self) = @_;
 	
-	$self->{name} = $binding->{target};
-	$self->{cpp_class} = $binding->{source};
-	$self->{type} = 'object_ptr';
+	$self->propagate_value('package', $self);
+	
+	if ($self->has('cpp_name')) {
+		$self->propagate_value('cpp_class_name', $self->cpp_name);
+		$self->propagate_value('perl_class_name', $self->perl_name);
+	}
 	
 	# anything to export?
 	my @exports;
-	for my $plain ($binding->plains) {
-		push @exports, $plain->name;
+	if ($self->has('functions')) {
+		if ($self->functions->has('plains')) {
+			for my $plain ($self->functions->plains) {
+				push @exports, $plain->name;
+			}
+		}
 	}
-	for my $constant ($binding->constants) {
-			push @exports, $constant->name;
+	if ($self->has('constants')) {
+		if ($self->constants->has('constants')) {
+			for my $constant ($self->constants->constants) {
+				push @exports, $constant->name;
+			}
+		}
 	}
 	
 	my @isa;
 	if (@exports) {
 		push @isa, 'Exporter';
-		$self->{exports} = \@exports;
+		$self->{_exports} = \@exports;
 	}
 	
 	# any parent classes?
-	if (my $perl_isa = $binding->target_inherits) {
+	if ($self->has('perl_parent')) {
+		my $perl_isa = $self->perl_parent;
 		for my $parent (split /\s+/, $perl_isa) {
-			push @{ $self->{isa} }, $parent;
+			push @isa, $parent;
 		}
 	}
 	
 	if (@isa) {
-		$self->{isa} = \@isa;
+		$self->{_isa} = \@isa;
 	}
+}
+
+sub generate {
+	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
 	
-	$self->{version} ||= $binding->{version} || $self->{module}->{version};
+	# if there's no perl name, we're just a bundle and there's nothing to
+	# generate (makefile and typemap are handled by Perl::Module)
+	return unless ($self->has('perl_name'));
 	
-	$self->{binding} = $binding;
+	$self->open_files($folder, $pm_prefix, $xs_prefix);
+	
+	$self->generate_preamble;
+	
+	$self->generate_body;
+	
+	$self->generate_postamble;
+	
+	$self->close_files;
 }
 
 sub open_files {
 	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
 	
-	my @subpath = split /::/, $self->{name};
+	my @subpath = split /::/, $self->perl_name;
 	my $filename = pop @subpath;
 
 	my $xs_folder = File::Spec->catfile($folder, $xs_prefix, @subpath);
@@ -76,32 +96,9 @@ sub open_files {
 	my $xs_filename = File::Spec->catfile($xs_folder, "$filename.xs");
 	open $self->{xsh}, ">$xs_filename" or die "Unable to create file '$xs_filename': $!";
 	
-	$self->{xs_include} = File::Spec->catfile($xs_prefix, @subpath, "$filename.xs");
+	$self->{xs_include} = join('/', $xs_prefix, @subpath, "$filename.xs");
 	
 	$self->{filename} = $filename;
-}
-
-sub close_files {
-	my ($self) = @_;
-	close $self->{pmh};
-	close $self->{xsh};
-}
-
-sub generate {
-	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
-	
-	# if we're just a bundle, we may not have any files to generate
-	return unless ($self->{binding});
-	
-	$self->open_files($folder, $pm_prefix, $xs_prefix);
-	
-	$self->generate_preamble;
-	
-	$self->generate_functions;
-	
-	$self->generate_postamble;
-	
-	$self->close_files;
 }
 
 sub generate_preamble {
@@ -111,6 +108,34 @@ sub generate_preamble {
 	$self->generate_xs_preamble;
 }
 
+sub generate_body {
+	my ($self) = @_;
+	
+	#
+	# functions
+	#
+	
+	if ($self->has('functions')) {
+		$self->functions->generate;
+	}
+	
+	#
+	# properties
+	#
+	
+	if ($self->has('properties')) {
+		$self->properties->generate;
+	}
+	
+	#
+	# constants
+	#
+	
+	if ($self->has('constants')) {
+		$self->constants->generate;
+	}
+}
+
 sub generate_postamble {
 	my ($self) = @_;
 	
@@ -118,57 +143,81 @@ sub generate_postamble {
 	$self->generate_xs_postamble;
 }
 
-sub generate_functions {
+sub close_files {
 	my ($self) = @_;
-	my $binding = $self->{binding};
-	
-	#
-	# functions
-	# (constructor, destructor, object methods, object event methods,
-	#    class methods, plain functions)
-	#
-	
-	my @functions;
-	
-	if ($binding->constructors) {
-		push @functions, $binding->constructors;
-	}
-	if ($binding->destructor) {
-		push @functions, $binding->destructor;
-	}
-	if ($binding->methods) {
-		push @functions, $binding->methods;
-	}
-	if ($binding->events) {
-		push @functions, $binding->events;
-	}
-	if ($binding->statics) {
-		push @functions, $binding->statics;
-	}
-	if ($binding->plains) {
-		push @functions, $binding->plains;
-	}
-	
-	for my $function (@functions) {
-		my $params = $self->parse_params($function);
-		$self->generate_xs_function($function, $params);
-	}
-	
-	#
-	# properties
-	#
-	
-	for my $property ($binding->properties) {
-		$self->generate_xs_property($property);
-	}
-	
-	#
-	# constants
-	#
-	
-	for my $constant ($binding->constants) {
-		$self->generate_xs_constant($constant);
-	}
+	close $self->{pmh};
+	close $self->{xsh};
 }
+
+#
+# PM-specific sections
+#
+
+sub generate_pm_preamble {
+	my ($self) = @_;
+	
+	my $perl_class_name = $self->perl_name;
+	
+	print { $self->{pmh} } <<TOP;
+#
+# Automatically generated file
+#
+
+package $perl_class_name;
+use strict;
+use warnings;
+TOP
+	
+	# if we're a top-level package, we need to be a DynaLoader
+	if ($self->has('name')) {
+		print  { $self->{pmh} } "require DynaLoader;\n"
+	}
+	
+	if ($self->has('_exports')) {
+		print  { $self->{pmh} } "require Exporter;\n"
+	}
+	
+	print { $self->{pmh} } "\nour \$VERSION = $self->{version};\n";
+	
+	if ($self->has('_isa')) {
+		my $isa = join(' ', $self->_isa);
+		print { $self->{pmh} } "our \@ISA = qw($isa);\n";
+	}
+	
+	if ($self->has('_exports')) {
+		my $exp = join(' ', $self->_exports);
+		print { $self->{pmh} } "our \@EXPORT_OK = qw($exp);\n";
+	}
+	
+	print { $self->{pmh} } "\n";
+}
+
+sub generate_pm_postamble {
+	my ($self) = @_;
+	
+	print { $self->{pmh} } "1;\n";
+}
+
+#
+# XS-specific sections
+#
+
+sub generate_xs_preamble {
+	my ($self) = @_;
+	
+	my $perl_class_name = $self->perl_name;
+	my $perl_module_name = $self->module_name;
+	
+	print { $self->{xsh} } <<TOP;
+#
+# Automatically generated file
+#
+
+MODULE = $perl_module_name	PACKAGE = $perl_class_name
+
+TOP
+}
+
+sub generate_xs_postamble {} # nothing to do
 
 1;

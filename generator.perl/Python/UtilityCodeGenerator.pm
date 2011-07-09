@@ -67,7 +67,6 @@ char** PyList2CharArray(PyObject* arg, int &count) {
 	count = PyList_Size(arg);
 	ret = (char**)malloc(count);
 	//will need to free this memory - but when?
-	count++; // PyList_Size returns 0-based count
 	
 	for (i = 0; i < count; i++) {
 		PyObject * pystring = 0;

@@ -1,0 +1,35 @@
+<bindings name="Haiku::Button">
+	<doc>Exposes the Button object</doc>
+	<binding source="BButton" source-inherits="BControl" target="Haiku::Button">
+		<doc>Exposes the Button object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<!-- Draw -->
+			<!-- GetPreferredSize -->
+			<!-- IsDefault -->
+			<method name="SetLabel">
+				<doc>Sets the button's label.</doc>
+				<param name="string" type="const char*" action="input" />
+				<return type="void" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- KeyDown -->
+			<!-- MakeDefault -->
+			<!-- MouseDown -->
+		</functions>
+	</binding>
+</bindings>

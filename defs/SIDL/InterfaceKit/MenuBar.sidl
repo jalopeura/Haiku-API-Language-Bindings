@@ -1,0 +1,51 @@
+<bindings name="Haiku::MenuBar">
+	<doc>Exposes the MenuBar object</doc>
+	<binding source="BMenuBar" source-inherits="BMenu" target="Haiku::MenuBar" target-inherits="Haiku::Menu">
+		<doc>Exposes the MenuBar object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a MenuBar.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="layout" type="menu_layout" action="input" default="B_ITEMS_IN_ROW" />
+				<param name="resizeToFit" type="bool" action="input" default="true" />
+			</constructor>
+			<constructor overload-name="FromMessage">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<!-- Archive -->
+			<method name="Hide">
+				<doc>Hides the MenuBar.</doc>
+				<return type="void" />
+			</method>
+			<method name="Show">
+				<doc>Shows the MenuBar.</doc>
+				<return type="void" />
+			</method>
+			<method name="SetBorder">
+				<doc>Sets the maximum content width for the MenuBar.</doc>
+				<param name="border" type="menu_bar_border" action="input" />
+			</method>
+			<method name="Border">
+				<doc>Gets the maximum content width of the MenuBar.</doc>
+				<return type="menu_bar_border" action="output" />
+			</method>
+			<!-- AttachedToWindow -->
+			<!-- Draw -->
+			<!-- MouseDown -->
+		</functions>
+		<constants>
+			<constant name="B_BORDER_FRAME" group="border">
+				<doc>The border is drawn around the entire frame rectangle.</doc>
+			</constant>
+			<constant name="B_BORDER_CONTENTS" group="border">
+				<doc>The border is drawn around just the list of items.</doc>
+			</constant>
+			<constant name="B_BORDER_EACH_ITEM" group="border">
+				<doc>A border is drawn around each item.</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>
