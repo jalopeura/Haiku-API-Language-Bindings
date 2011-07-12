@@ -1,27 +1,51 @@
 use Common::Bindings;
 use strict;
 
-my $bindings = new Bindings(
-	source_type => 'SIDL',
-	source => '../mindefs/SIDL/HaikuKits.sidl',
-#	source_type => 'TIDL',
-#	source => '../mindefs/TIDL/HaikuKits.sidl',
-);
+my $perl = 0;
+my $python = 1;
 
-use Perl::Generator;
+my ($modular_bindings, $global_bindings);
 
-my $perlgen = new Perl::Generator;
+if ($perl) {	# or any future languages using modular extensions
+	print "Separate modular extensions...\n";
 
-$perlgen->generate(
-	bindings => $bindings,
-	target => '../generated/perl',
-);
+	$modular_bindings = new Bindings(
+		source_type => 'SIDL',
+		source => '../mindefs/SIDL/HaikuKits.sidl',
+#		source_type => 'TIDL',
+#		source => '../mindefs/TIDL/HaikuKits.sidl',
+	);
+}
 
-use Python::Generator;
+if ($perl) {
+	eval "use Perl::Generator";
 
-my $pythongen = new Python::Generator;
+	my $perlgen = new Perl::Generator;
 
-$pythongen->generate(
-	bindings => $bindings,
-	target => '../generated/python',
-);
+	$perlgen->generate(
+		bindings => $modular_bindings,
+		target => '../generated/perl',
+	);
+}
+
+if ($python) {	# or any future languages using modular extensions
+	print "Single global extension...\n";
+
+	$global_bindings = new Bindings(
+		source_type => 'SIDL',
+		source => '../mindefs/SIDL/Haiku.sidl',
+#		source_type => 'TIDL',
+#		source => '../mindefs/TIDL/Haiku.sidl',
+	);
+}
+
+if ($python) {
+	eval "use Python::Generator";
+
+	my $pythongen = new Python::Generator;
+
+	$pythongen->generate(
+		bindings => $global_bindings,
+		target => '../generated/python',
+	);
+}

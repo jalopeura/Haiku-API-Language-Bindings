@@ -55,7 +55,18 @@ sub _import {
 		$self->{_parser}->addfilename($filename);
 		$self->{_parser}->parse;
 		
+$DB::single = 1;
+		# before we parse our children, we need to adjust our path
+		# to reflect the location of the file we just parsed
+		$self->{_folder_stack} ||= [];
+		push @{ $self->{_folder_stack} }, $self->{_folder};
+		
+		my ($vol, $path, $file) = File::Spec->splitpath($filename);
+		$self->{_folder} = File::Spec->catpath($vol, $path);
+		
 		$self->_parse_children($self->{_parser}->root);
+		
+		$self->{_folder} = pop @{ $self->{_folder_stack} };
 		
 #		my $elements = $self->{_parser}->root->children;
 #		for my $element (@$elements) {
