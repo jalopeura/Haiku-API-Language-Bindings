@@ -11,11 +11,11 @@ sub finalize_upgrade {
 	$self->{name} = 'DESTROY';
 }
 
-sub generate_xs_function {
+sub generate_xs {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
 	
-	$options->{comment} = <<COMMENT;
+	print { $self->package->xsh } <<DESTRUCTOR;
 # Note that this method is not prefixed by the class name.
 #
 # This is because if we prefix the class name the first argument is
@@ -23,28 +23,24 @@ sub generate_xs_function {
 # access to the Perl object. But we need that access in order to determine
 # whether we're allowed to delete the C++ object, and to clean up the Perl
 # object.
-COMMENT
-	
-	$options->{input} = ['perl_obj'];
-	$options->{input_defs} = ['SV* perl_obj;'];
-	
-	$options->{init} = [
-		"$cpp_class_name* cpp_obj;",
-		"object_link_data* link;",
-	];
-	
-	$options->{code} = [
-#qq(DEBUGME(4, "About to delete $cpp_class_name for %d", (IV)perl_obj);),
-		qq(link = get_link_data(perl_obj);),
-		qq(if (! PL_dirty && link->can_delete_cpp_object) {),
-		qq(\tcpp_obj = ($cpp_class_name*)link->cpp_object;),
-		qq(\tdelete cpp_obj;),
-		qq(\tlink->cpp_object = NULL;),
-		qq(}),
-		qq(unlink_perl_object(perl_obj);),
-	];
-	
-	$self->SUPER::generate_xs_function($options);
+void
+DESTROY(perl_obj)
+	INPUT:
+		SV* perl_obj;
+	INIT:
+		$cpp_class_name* cpp_obj;
+		object_link_data* link;
+	CODE:
+//DEBUGME(4, "DESTROYing a $cpp_class_name (%x, %d)", perl_obj, perl_obj);
+		link = get_link_data(perl_obj);
+		if (! PL_dirty && link->can_delete_cpp_object) {
+			cpp_obj = ($cpp_class_name*)link->cpp_object;
+			delete cpp_obj;
+			link->cpp_object = NULL;
+		}
+		unlink_perl_object(perl_obj);
+
+DESTRUCTOR
 }
 
 sub generate_h {

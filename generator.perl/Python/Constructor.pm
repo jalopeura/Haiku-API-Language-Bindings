@@ -11,23 +11,45 @@ sub finalize_upgrade {
 	$self->{name} = 'new';
 }
 
-sub generate_cc_function {
-	my ($self, $options) = @_;
+sub generate_cc {
+	my ($self) = @_;
+	
 	my $cpp_class_name = $self->cpp_class_name;
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	my $args = delete $options->{arg_input};
+	unless ($self->has('return')) {	
+		$self->{return} ||= new Python::ConstructorReturn(
+			name => 'python_self',
+			type_name => $cpp_class_name . '*',
+			action => 'output',
+			types  => $self->types,
+			needs_deref => 0,
+			must_not_delete => $self->class->must_not_delete,
+			is_responder => $self->class->is_responder
+		);
+		$self->{params} ||= new Perl::Params;
+		$self->params->add($self->{return});
+	}
 	
-	$options->{code} ||= [];
-	$options->{input_defs} ||= [];
+	my %options = (
+		cpp_name => "new $cpp_class_name",
+		python_input => [
+			'',
+			'PyObject* python_args',
+		],
+		python_args => 'python_args',
+	);
 	
 	if ($self->has('overload_name')) {
-		$options->{input} = "PyTypeObject* python_type, $args";
+		$options{name} = "${python_object_prefix}_new" . $self->overload_name;
+		$options{python_input}[0] = 'PyTypeObject* python_type';
 		
-		push @{ $options->{input_defs} }, "${python_object_prefix}_Object* python_self;";
-		
-		push @{ $options->{code} },
-			qq(python_self = (${python_object_prefix}_Object*)python_type->tp_alloc(python_type, 0););
+		$options{predefs} = [
+			qq(${python_object_prefix}_Object* python_self;),
+		];
+		$options{precode} = [
+			qq(python_self = (${python_object_prefix}_Object*)python_type->tp_alloc(python_type, 0);),
+		];
 		
 		my $doc;
 		if ($self->has('doc')) {
@@ -35,17 +57,17 @@ sub generate_cc_function {
 		}
 		$self->class->add_method_table_entry(
 			$self->overload_name,	# name as seen from Python
-			$options->{name},		# name of wrapper function
+			$options{name},		# name of wrapper function
 			'METH_VARARGS|METH_CLASS',	# flags
 			$doc					# docs
 		);
 	}
 	else {
-		$options->{name} = "${python_object_prefix}_init";
-		$options->{rettype} = 'int';
-		$options->{input} = "${python_object_prefix}_Object* python_self, $args, PyObject* python_kwds";
-		
-		$options->{comment} = <<COMMENT;
+		$options{name} = "${python_object_prefix}_init";
+		$options{python_input}[0] = "${python_object_prefix}_Object* python_self";
+		$options{python_input}[2] = 'PyObject* python_kwds';	# __init__ always takes keywords, even though we don't do anything with them yet
+		$options{rettype} = 'int';
+		$options{comment} = <<COMMENT;
 /*
  * The main constructor is implemented in terms of __init__(). This allows
  * __new__() to return an empty object, so when we pass to Python an object
@@ -57,10 +79,26 @@ sub generate_cc_function {
  */
 COMMENT
 		
-		unshift @{ $options->{code} },
-			qq(// dont't let python code call us a second time),
+		$options{precode} = [
+			qq(// don't let python code call us a second time),
 			qq(if (python_self->cpp_object != NULL)),
 			qq(	return -1;),
+		];
+		
+		$self->class->{constructor_name} = $options{name};
+	}
+	
+	$self->SUPER::generate_cc(%options);
+}
+
+=pod
+
+	$options{name} ||= $self->name;
+	$options{cpp_name} ||= 'CPP_NAME';
+	$options{comment} ||= 'COMMENT';
+	$options{python_input} ||= [qw(PY_OBJ_OR_CLS PY_ARGS PY_KWDS)];
+	$options{rettype} ||= 'RETTYPE';
+	
 	}
 	
 	if (@{ $options->{code} }) {
@@ -97,6 +135,8 @@ COMMENT
 	
 	$self->SUPER::generate_cc_function($options);
 }
+
+=cut
 
 sub generate_h {
 	my ($self) = @_;

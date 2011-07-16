@@ -36,7 +36,6 @@
 				<doc>Ends the app's message loop.</doc>
 				<return type="void" />
 			</method>
-			<!--
 			<method name="SetCursor">
 				<doc>Sets the cursor from a cursor object.</doc>
 				<param name="cursor" type="BCursor*" action="input">
@@ -47,6 +46,7 @@
 				</param>
 				<return type="void" />
 			</method>
+<!-- const void* type not yet implemented
 			<method name="SetCursor" overload-name="FromData">
 				<doc>Sets the cursor from raw data.</doc>
 				<param name="cursor" type="const void*" action="input">
@@ -54,7 +54,7 @@
 				</param>
 				<return type="void" />
 			</method>
-			-->
+-->
 			<method name="HideCursor">
 				<doc>Hides the cursor.</doc>
 				<return type="void" />
@@ -129,12 +129,12 @@
 				</param>
 				<return type="void" />
 			</event>
-			<!--
+<!-- BResources object not yet implemented
 			<static name="AppResources">
 				<doc>Returns a Resources object with data from the currently running executable.</doc>
 				<return type="BResources*" must-not-delete="true" />
 			</static>
-			-->
+-->
 			
 			<!-- inherited from BArchivable -->
 			<!-- Archive -->

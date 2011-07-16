@@ -20,12 +20,12 @@ pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
 		<type name="BMessage*" builtin="object_ptr" target="Haiku::Message" />
-		<type name="BView*"    builtin="object_ptr" target="Haiku::View" />
 	</types>
 	<import>
 		<file name="Window.sidl" />
 		<file name="Rect.sidl" />
 		<file name="Button.sidl" />
+		<file name="View.sidl" />
 	</import>
 	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
 		<doc>Exposes the Haiku Interface Kit</doc>
@@ -47,91 +47,6 @@ you need to define those types in this section.
 				<doc>...</doc>
 			</constant>
 			<constant name="B_NO_BORDER" group="">
-				<doc>...</doc>
-			</constant>
-			<!-- character constants -->
-			<!-- color space constants -->
-			<!-- control value constants -->
-			<constant name="B_CONTROL_ON" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_CONTROL_OFF" group="">
-				<doc>...</doc>
-			</constant>
-			<!-- cursor transit constants -->
-			<!-- dead-key mapping constants -->
-			<!-- drawing mode constants -->
-			<!-- function key constants -->
-			<!-- interface message constants -->
-			<!-- list view type constants -->
-			<!-- main screen constants -->
-			<!-- <constant name="B_MAIN_SCREEN_ID" /> -->
-			<!-- menu bar border constants -->
-			<!-- menu layout constants -->
-			<!-- modifier state constants -->
-			<!-- mouse button constants -->
-			<!-- orientation constants -->
-			<!-- pattern constants -->
-			<!-- resizing mode constants -->
-			<constant name="B_FOLLOW_LEFT" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_RIGHT" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_LEFT_RIGHT" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_H_CENTER" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_TOP" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_BOTTOM" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_TOP_BOTTOM" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_V_CENTER" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_ALL_SIDES" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_ALL" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_NONE" group="">
-				<doc>...</doc>
-			</constant>
-			<!-- screen space constants -->
-			<!-- scrollbar constants -->
-			<!-- string truncation constants -->
-			<!-- tint_color constants -->
-			<!-- transparency constants -->
-			<!-- color_which constants -->
-			<!-- view flags constants -->
-			<constant name="B_FULL_UPDATE_ON_RESIZE" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_WILL_DRAW" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_PULSE_NEEDED" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FRAME_EVENTS" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_NAVIGABLE" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_NAVIGABLE_JUMP" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_SUBPIXEL_PRECISE" group="">
 				<doc>...</doc>
 			</constant>
 		</constants>

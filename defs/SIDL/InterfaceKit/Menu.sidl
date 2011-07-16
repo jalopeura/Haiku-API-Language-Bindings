@@ -142,18 +142,18 @@
 				<doc>Returns true if the Menu is in radio mode.</doc>
 				<return type="bool" action="output" />
 			</method>
-			<!--
 			<method name="SetTargetForItems">
 				<doc>Sets the target for the MenuItems to the given Handler.</doc>
 				<param name="handler" type="BHandler*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- BMessenger object not yet implemented
 			<method name="SetTargetForItems" overload-name="_Messenger">
 				<doc>Sets the target for the MenuItems to the given Messenger.</doc>
 				<param name="messenger" type="BMessenger*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
+-->
 			<method name="SetTriggersEnabled">
 				<doc>Enables or disables triggers for all items in the Menu.</doc>
 				<param name="flag" type="bool" action="input" />

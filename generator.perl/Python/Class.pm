@@ -193,10 +193,19 @@ sub generate_cc_postamble {
 	
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	my ($init_function, $dealloc_function, $doc, $property_table, $method_table);
+	my ($init_function, $dealloc_function, $parent, $doc, $property_table, $method_table);
 	
-	$init_function = "${python_object_prefix}_init";
-	$dealloc_function = "${python_object_prefix}_DESTROY";
+	$init_function = $self->constructor_name;
+	$dealloc_function = $self->destructor_name;
+	
+	# TODO: enable multiple inheritance
+	if ($self->has('python_parent')) {
+		($parent = $self->python_parent)=~s/\./_/g;
+		$parent = '&' . $parent . '_PyType';
+	}
+	else {
+		$parent = 0;
+	}
 	
 	if ($self->has('doc')) {
 		$doc = $self->doc;
@@ -224,13 +233,35 @@ sub generate_cc_postamble {
 		print $fh "\t{NULL} /* Sentinel */\n};\n\n";
 	}
 	
+
+=pod
+
+	# type object
+	my $type = $self->{pytype_name};
+	print $fh <<TYPE;
+$type.tp_name      = "$self->{python_name}";
+$type.tp_basicsize = sizeof(${python_object_prefix}_Object);
+$type.tp_dealloc   = (destructor)$dealloc_function;
+$type.tp_flags     = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+$type.tp_doc       = "...";	// fix to use real docs
+$type.tp_methods   = $method_table;
+$type.tp_getset    = $property_table;
+$type.tp_base      = $parent;	// fix to use tp_bases to enable multiple inheritance
+$type.tp_init      = (initproc)$init_function;
+$type.tp_new       = PyTpe_GenericNew;
+
+TYPE
+
+=cut
+
+
 	# type object
 	print $fh <<TYPE;
-static PyTypeObject $self->{pytype_name} = {
+PyTypeObject $self->{pytype_name} = {
 	PyObject_HEAD_INIT(NULL)
 	0,                         /*ob_size*/
-	"$self->{python_name}",             /*tp_name*/
-	sizeof(${python_object_prefix}_Object),             /*tp_basicsize*/
+	"$self->{python_name}",    /*tp_name*/
+	sizeof(${python_object_prefix}_Object), /*tp_basicsize*/
 	0,                         /*tp_itemsize*/
 	(destructor)$dealloc_function, /*tp_dealloc*/
 	0,                         /*tp_print*/
@@ -248,25 +279,29 @@ static PyTypeObject $self->{pytype_name} = {
 	0,                         /*tp_setattro*/
 	0,                         /*tp_as_buffer*/
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-	"...",           /* tp_doc */
-	0,		               /* tp_traverse */
-	0,		               /* tp_clear */
-	0,		               /* tp_richcompare */
-	0,		               /* tp_weaklistoffset */
-	0,		               /* tp_iter */
-	0,		               /* tp_iternext */
-	$method_table,            /* tp_methods */
+	"...",                     /* tp_doc */
+	0,                         /* tp_traverse */
+	0,                         /* tp_clear */
+	0,                         /* tp_richcompare */
+	0,                         /* tp_weaklistoffset */
+	0,                         /* tp_iter */
+	0,                         /* tp_iternext */
+	$method_table,             /* tp_methods */
 	0,                         /* tp_members */
-	$property_table,         /* tp_getset */
-	0,                         /* tp_base */
+	$property_table,           /* tp_getset */
+	$parent,                   /* tp_base */
 	0,                         /* tp_dict */
 	0,                         /* tp_descr_get */
 	0,                         /* tp_descr_set */
 	0,                         /* tp_dictoffset */
-	(initproc)$init_function,                         /* tp_init */
+	(initproc)$init_function,  /* tp_init */
+	0,                         /* tp_alloc */
+	PyType_GenericNew,         /* tp_new */
 };
 
 TYPE
+
+
 }
 
 1;

@@ -9,7 +9,7 @@ our @ISA = qw(Types Perl::BaseObject);
 
 # map builtin types to perl types
 our %builtins = (
-	'char'    => 'T_CHAR',
+	'char'    => 'T_UV',
 	'short'   => 'T_IV',
 	'int'     => 'T_IV',
 	'long'    => 'T_IV',

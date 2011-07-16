@@ -3,6 +3,39 @@ use Python::Functions;
 use strict;
 our @ISA = qw(Static Python::Function);
 
+sub generate_cc {
+	my ($self) = @_;
+	
+	my $cpp_class_name = $self->cpp_class_name;
+	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
+	
+	my $name = "${python_object_prefix}_" . $self->name;
+	if ($self->has('overload_name')) {
+		$name .= $self->overload_name;
+	}
+	
+	$self->SUPER::generate_cc(
+		name => $name,
+		cpp_name => "${cpp_class_name}::$self->{name}",
+		python_input => [
+			'PyObject python_type',
+			'PyObject* python_args',
+		],
+		python_args => 'python_args',
+	);
+	
+	my $doc;
+	if ($self->has('doc')) {
+		$doc = $self->doc;
+	}
+	$self->class->add_method_table_entry(
+		$self->name,		# name as seen from Python
+		$name,		# name of wrapper function
+		'METH_VARARGS|METH_CLASS',	# flags
+		$doc				# docs
+	);
+}
+
 sub generate_cc_function {
 	my ($self, $options) = @_;
 	my $funcname = $self->name;

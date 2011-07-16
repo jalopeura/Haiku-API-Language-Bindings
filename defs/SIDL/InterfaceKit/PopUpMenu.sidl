@@ -32,7 +32,7 @@
 				<param name="asynchronous" type="bool" action="input" default="false" />
 				<return type="BMenuItem*" />
 			</method>
-			<!-- ScreenLocation -->
+			<!-- Screen Location -->
 			<method name="SetAsyncAutoDestruct">
 				<doc>Enables or disables auto-destruct for the PopUpMenu; of true, the associated Menu is deleted when the PopUpMenu closes.</doc>
 				<param name="state" type="bool" action="input" />

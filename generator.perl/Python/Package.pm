@@ -401,16 +401,17 @@ CONSTANT
 			print $fh "\t// $class->{python_name}: class\n";
 			my $cn = pop @n;
 			
-			if ($class->has('python_parent')) {
-				my $pp = $class->python_parent;
-				print $fh qq(\t$type.tp_base = (PyTypeObject*)PyRun_String("$pp", Py_eval_input, main_dict, main_dict);\n);
-			}
+#			if ($class->has('python_parent')) {
+#				my $pp = $class->python_parent;
+#				print $fh qq(\t$type.tp_base = (PyTypeObject*)PyRun_String("$pp", Py_eval_input, main_dict, main_dict);\n);
+#			}
 			
 #			my $base_name = pop @n;
 #			my $parent_name = join('.', @n);
 			my $parent_module = join('_', @n, 'module');
 			
 			print $fh <<CLASS;
+	// should move this to the type definition
 	$type.tp_new = PyType_GenericNew;
 	if (PyType_Ready(&$type) < 0)
 		return;
@@ -453,7 +454,7 @@ CONSTANT
 	print $fh <<END;
 //printf("About to set up error object\\n");
 	// exception object
-	${filename}Error = PyErr_NewException("$self->{name}.error", NULL, NULL);
+	${filename}Error = PyErr_NewException((char*)"$self->{name}.error", NULL, NULL);
     Py_INCREF(${filename}Error);
     PyModule_AddObject($module_name, "error", ${filename}Error);
 //printf("Successfully set up error object\\n");

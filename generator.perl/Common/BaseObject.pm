@@ -52,12 +52,13 @@ sub check_required_data {
 
 sub has {
 	my ($self, $key) = @_;
-	if (ref($self->{$key}) eq 'ARRAY') {
-		return @{ $self->{$key} };
+	if (exists $self->{$key}) {
+		if (ref($self->{$key}) eq 'ARRAY') {
+			return @{ $self->{$key} };
+		}
+		return 1;
 	}
-	else {
-		return exists $self->{$key};
-	}
+	return undef;
 }
 
 sub dump {

@@ -85,7 +85,7 @@ static int $setter_name($class_name* self, PyObject* value, void* closure) {
 
 PROP
 	
-	push @{ $self->class->{property_table } }, qq({ "$property_name", (getter)$getter_name, (setter)$setter_name, "<DOC>", NULL});
+	push @{ $self->class->{property_table } }, qq({ (char*)"$property_name", (getter)$getter_name, (setter)$setter_name, (char*)"<DOC>", NULL});
 }
 
 1;

@@ -15,7 +15,6 @@
 			<destructor>
 				<doc>Destroys the Clipboard object, but not the underlying clipboard.</doc>
 			</destructor>
-			<!--
 			<method name="Clear">
 				<doc>Clears the Clipboard object's data.</doc>
 				<return type="status_t" action="error" success="B_OK" />
@@ -28,17 +27,16 @@
 				<doc>Reloads data from the underlying clipboard, losing any data in the Clipboard object.</doc>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
 			<method name="Data">
 				<doc>Returns the Message object that holds the clipboard data, or NULL if the CLipboard object is not locked.</doc>
 				<return type="BMessage*" action="output" />
 			</method>
-			<!--
+<!-- BMessenger object not yet implemented
 			<method name="DataSource">
 				<doc>Returns a BMessenger that targets the Application that last wrote to the Clipboard.</doc>
 				<return type="BMessenger*" action="output" />
 			</method>
-			-->
+-->
 			<method name="LocalCount">
 				<doc>Fetches a cached count of clipboards.</doc>
 				<return type="uint32" action="output" />
@@ -62,7 +60,7 @@
 				<doc>Returns the name of the clipboard.</doc>
 				<return type="const char*" />
 			</method>
-			<!--
+<!-- BMessenger object not yet implemented
 			<method name="StartWatching">
 				<doc>Begins watching for changes in the clipboard.</doc>
 				<param name="target" type="BMessenger*" action="input">
@@ -77,7 +75,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
+-->
 		</functions>
 	</binding>
 </bindings>

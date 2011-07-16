@@ -29,6 +29,8 @@ sub add {
 		$self->{_params}{ $param->name } = $param;
 		
 		if ($param->isa('Return')) {
+			# ignore void returns
+			return if ($param->{type} eq 'void');
 			$self->{cpp_output} = $param;
 		}
 		else {
@@ -59,29 +61,28 @@ sub add {
 	}
 }
 
-# as_cpp_input gives the paramaters as used in a function definition
-sub as_cpp_input {
-	my ($self) = @_;
+sub Xdefault_var_code {
+	my ($self, $offset) = @_;
 	
-	my @args;
-	for my $param ($self->cpp_input) {
-		push @args, $param->as_cpp_input;
+	$offset--;
+	my @code;
+	if ($self->has('cpp_input')) {
+		for my $param ($self->cpp_input) {
+			if ($param->action eq 'input') {
+				$offset++;
+				next unless $param->has('default');
+				push @code,
+					qq(if (items > $offset) {),
+					"\t" . $param->input_converter("ST($offset)"),
+					qq(});
+			}
+		}
 	}
 	
-	return \@args;
-}
-sub as_cpp_parent_input {
-	my ($self) = @_;
-	
-	my @args;
-	for my $param ($self->cpp_input) {
-		push @args, $param->name;
-	}
-	
-	return \@args;
+	return \@code;
 }
 
-# as_cpp_call gives the arguments ase used in a functioncall
+# as_cpp_call gives the arguments as used in a function call
 sub as_cpp_call {
 	my ($self) = @_;
 	
@@ -93,106 +94,37 @@ sub as_cpp_call {
 	return \@args;
 }
 
+# as_cpp_funcdef gives the paramaters as used in a function definition
+sub as_cpp_funcdef {
+	my ($self) = @_;
+	
+	my @args;
+	for my $param ($self->cpp_input) {
+		push @args, $param->as_cpp_funcdef;
+	}
+	
+	return \@args;
+}
+
+# as_cpp_call gives the arguments as used in a parent function call
+# (as part of a constructor def)
+sub as_cpp_parent_call {
+	my ($self) = @_;
+	
+	my @args;
+	for my $param ($self->cpp_input) {
+		push @args, $param->as_cpp_parent_call;
+	}
+	
+	return \@args;
+}
+
 sub cpp_rettype {
 	my ($self) = @_;
 	if ($self->has('cpp_output')) {
-		return $self->cpp_output->type;
+		return $self->cpp_output->type_name;
 	}
 	return 'void';
-}
-
-sub as_xs_input {
-	my ($self) = @_;
-	
-	my (@inputs, @input_defs);
-	for my $param ($self->perl_input) {
-		if ($param->has('default')) {
-			push @inputs, '...';
-			last;
-		}
-		my ($input, $input_def) = $param->as_xs_input;
-		push @inputs, $input;
-		push @input_defs, $input_def;
-	}
-	
-	return (\@inputs, \@input_defs);
-}
-
-sub xs_error_code {
-	my ($self) = @_;
-	
-	my @code;
-	for my $param ($self->perl_error) {
-		my $errname = $param->name;
-		my $success = $param->success;
-		my $varname = $self->module_name . '::Error';
-		push @code,
-			qq(if ($errname != $success) {),
-			qq(	// this doesn't seem to be working...),
-			qq(	error_sv = get_sv("!", 1);),
-			qq(	sv_setiv(error_sv, (IV)error);),
-			qq(	// ...so use this for now),
-			qq(	error_sv = get_sv("$varname", 1);),
-			qq(	sv_setiv(error_sv, (IV)error);),
-			qq(	XSRETURN_UNDEF;),
-			qq(});
-	}
-	
-	return \@code;
-}
-
-sub as_xs_call {
-	my ($self) = @_;
-	
-	my ($count, @defs, @puts);
-	for my $param ($self->perl_input) {
-		$count++;
-		my ($def, $put) = $param->as_xs_call;
-		push @defs, @$def;
-		push @puts, @$put, '';	# empty string so we get a newline in the output
-	}
-	
-	return ($count, \@defs, \@puts);
-}
-
-# assume typemap will take care of output(s); just return error(s)
-# if typemap does not handle output(s), function object will deal with it
-sub as_xs_init {
-	my ($self) = @_;
-	
-	my (@preinits, @inits, @code);
-	
-	for my $param ($self->perl_error) {
-		push @inits, $param->as_xs_init;
-	}
-	
-	my $i = 0;
-	for my $param ($self->perl_input) {
-		$i++;
-		if ($param->has('count')) {
-			my $name = $param->name;
-			my $type = $param->type;
-			my $cname = $param->count->name;
-			my $ctype = $param->count->type;
-			push @preinits, "int count_$name;";
-			push @inits, "$ctype $cname = count_$name;"
-		}
-		if ($param->has('default')) {
-			my $name = $param->name;
-			my $type = $param->type;
-			my $def = $param->default;
-			push @inits, "$type $name = $def;";
-			
-			$type = $self->types->type($type);
-			my $n = $i+1;
-			my $converter = $type->input_converter($name, "ST($i)");
-			push @code,
-				qq(if (items >= $n)),
-				"\t" . $converter;
-		}
-	}
-	
-	return (\@preinits, \@inits, \@code);
 }
 		
 
@@ -200,9 +132,38 @@ package Perl::Argument;
 use strict;
 our @ISA = qw(Perl::BaseObject);
 
-sub as_cpp_input {
+sub type {
 	my ($self) = @_;
-	my $arg = "$self->{type} $self->{name}";
+	unless ($self->{type}) {
+		my $t = $self->{type_name};
+		if ($self->{needs_deref}) {
+			$t=~s/\*$//;
+		}
+		$self->{type} = $self->types->type($t);
+	}
+	return $self->{type};
+}
+
+sub input_converter {
+	my ($self, $target) = @_;
+	
+	return $self->type->input_converter($self->name, $target);
+}
+
+sub output_converter {
+	my ($self, $target) = @_;
+	
+	return $self->type->output_converter($self->name, $target);
+}
+
+sub as_cpp_def {
+	my ($self) = @_;
+	my $type = $self->type->name;
+	my $arg = "$type $self->{name}";
+	if ($self->has('default')) {
+		$arg .= " = $self->{default}";
+	}
+	$arg .= ';';
 	return $arg;
 }
 
@@ -215,53 +176,36 @@ sub as_cpp_call {
 	return $arg;
 }
 
-sub as_xs_input {
+sub as_cpp_funcdef {
 	my ($self) = @_;
-	my $input = $self->name;
-	my $input_def = "$self->{type} $self->{name};";
-	return ($input, $input_def);
+	my $arg = "$self->{type_name} $self->{name}";
+	return $arg;
 }
 
-sub as_xs_init {
+sub as_cpp_parent_call {
 	my ($self) = @_;
-	my $type = $self->type;
-	if ($self->needs_deref) {
-		$type=~s/\*//;
-	}
-	return (
-		"$type $self->{name};",
-		"SV* $self->{name}_sv;",
-	);
+	return $self->name;
 }
 
-sub as_xs_call {
+sub xs_error_code {
 	my ($self) = @_;
 	
-	my $name = $self->name;
-	
-	my $svname = $name . '_sv';
-	my @defs = (qq(SV* $svname;));
-	
-	if ($self->{count}) {
-		my $cname = $self->count->name;
-		push @defs, qq(int count_$name = $cname;);
-	}
-	
-	my $type = $self->types->type($self->type);
-	my $converter = $type->output_converter($name, $svname);
-	my @puts = (
-		qq($svname = sv_newmortal();),
-		$converter
+	my $errname = $self->name;
+	my $success = $self->success;
+	my $varname = $self->module_name . '::Error';
+	my @code = (
+		qq(if ($errname != $success) {),
+		qq(	// this doesn't seem to be working...),
+		qq(	error_sv = get_sv("!", 1);),
+		qq(	sv_setiv(error_sv, (IV)$errname);),
+		qq(	// ...so use this for now),
+		qq(	error_sv = get_sv("$varname", 1);),
+		qq(	sv_setiv(error_sv, (IV)$errname);),
+		qq(	XSRETURN_UNDEF;),
+		qq(}),
 	);
-	
-	if ($self->must_not_delete) {
-		push @puts, 
-			qq(must_not_delete_cpp_object($svname, true););
-	}
-	
-	push @puts, qq(PUSHs($svname););
-	
-	return (\@defs, \@puts);
+		
+	return @code;
 }
 
 package Perl::Param;

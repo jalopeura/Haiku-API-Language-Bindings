@@ -27,13 +27,13 @@
 				<param name="string" type="const char*" action="input" />
 				<return type="void" />
 			</method>
-			<!--
+<!--
 			<event name="Draw">
 				<doc>Draws the button label.</doc>
 				<param name="updateRect" type="BRect" action="input" />
 				<return type="void" />
 			</event>
-			-->
+-->
 			<!-- GetPreferredSize -->
 			<!-- AttachedToWindow -->
 			<!-- KeyDown -->

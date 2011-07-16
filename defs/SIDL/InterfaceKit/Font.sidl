@@ -11,12 +11,12 @@
 			</constructor>
 			<destructor />
 			<!-- Archive -->
-			<!--
+<!-- unicode_block struct not yet implemented
 			<method name="Blocks">
 				<doc>Returns the supported Unicode blocks.</doc>
 				<return type="unicode_block" action="output" />
 			</method>
-			-->
+-->
 			<method name="BoundingBox">
 				<doc>Returns a BRect that can enclose the entire font in its current style and size.</doc>
 				<return type="BRect" action="output" />

@@ -62,13 +62,11 @@
 				<param name="shortcut" type="char" action="input" />
 				<param name="modifiers" type="uint32" action="input" />
 			</method>
-<!--
 			<method name="Shortcut">
 				<doc>Returns the shortcut.</doc>
-				<param name="modifiers" type="uint32*" action="output" deref="true" default="NULL" />
+				<param name="modifiers" type="uint32*" deref="true" action="output" />
 				<return type="char" action="output" />
 			</method>
--->
 			<method name="SetTrigger">
 				<doc>Sets the trigger.</doc>
 				<param name="trigger" type="char" action="input" />
@@ -81,7 +79,6 @@
 				<doc>Returns the associated submenu.</doc>
 				<return type="BMenu*" action="output" />
 			</method>
-			<!-- TruncateLabel -->
 			<!-- Draw -->
 			<!-- DrawContent -->
 		</functions>

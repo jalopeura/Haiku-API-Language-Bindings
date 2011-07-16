@@ -215,6 +215,8 @@ sub generate_xs_preamble {
 
 MODULE = $perl_module_name	PACKAGE = $perl_class_name
 
+PROTOTYPES: DISABLE
+
 TOP
 }
 

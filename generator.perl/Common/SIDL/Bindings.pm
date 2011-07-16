@@ -55,7 +55,6 @@ sub _import {
 		$self->{_parser}->addfilename($filename);
 		$self->{_parser}->parse;
 		
-$DB::single = 1;
 		# before we parse our children, we need to adjust our path
 		# to reflect the location of the file we just parsed
 		$self->{_folder_stack} ||= [];

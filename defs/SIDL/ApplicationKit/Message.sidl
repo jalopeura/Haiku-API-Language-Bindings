@@ -24,7 +24,7 @@
 				<doc>Creates an empty Message.</doc>
 			</constructor>
 			<destructor />
-			<!--
+<!-- const void* type not yet implemented
 			<method name="AddData">
 				<doc>Adds data to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -47,6 +47,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+-->
 			<method name="AddBool">
 				<doc>Adds a boolean to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -147,9 +148,18 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
-			<!-- AddRef -->
-			<!--
+<!-- entry_ref struct not yet implemented
+			<method name="AddRef">
+				<doc>Adds a Messenger object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="ref" type="entry_ref*" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
 			<method name="AddMessage">
 				<doc>Adds a Message object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -160,7 +170,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<!--
+<!-- BMessenger object not yet implemented
 			<method name="AddMessenger">
 				<doc>Adds a Messenger object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -171,6 +181,8 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+-->
+<!-- const void* type not yet implemented
 			<method name="AddPointer">
 				<doc>Adds a pointer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -181,9 +193,19 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
-			<!-- AddFlat -->
-			<!--
+-->
+<!-- BFlattenable object not yet implemented
+			<method name="AddFlat">
+				<doc>Adds a Messenger object to the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="object" type="BFlattenable*" action="input">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
 			<method name="AddSpecifier">
 				<doc>Adds a specifier to the Message.</doc>
 				<param name="message" type="BMessage*" action="input">
@@ -238,6 +260,7 @@
 				</param>
 				<return type="int32" />
 			</method>
+<!-- const void* type object not yet implemented
 			<method name="FindData">
 				<doc>Finds named data in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -262,7 +285,7 @@
 				<param name="type" type="type_code" action="input">
 					<doc>Data type constant.</doc>
 				</param>
-				<param name="int32" type="index" action="input">
+				<param name="index" type="int32" action="input">
 					<doc>Index.</doc>
 				</param>
 				<param name="data" type="const void*" action="output">
@@ -273,12 +296,13 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+-->
 			<method name="FindBool">
 				<doc>Finds a boolean in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="aBool" type="bool" action="output">
+				<param name="aBool" type="bool*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -291,7 +315,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="aBool" type="bool" action="output">
+				<param name="aBool" type="bool*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -301,7 +325,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="anInt8" type="int8" action="output">
+				<param name="anInt8" type="int8*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -314,7 +338,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="anInt8" type="int8" action="output">
+				<param name="anInt8" type="int8*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -324,7 +348,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="anInt16" type="int16" action="output">
+				<param name="anInt16" type="int16*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -337,7 +361,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="anInt16" type="int16" action="output">
+				<param name="anInt16" type="int16*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -347,7 +371,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="anInt32" type="int32" action="output">
+				<param name="anInt32" type="int32*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -360,7 +384,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="anInt32" type="int32" action="output">
+				<param name="anInt32" type="int32*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -370,7 +394,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="anInt64" type="int64" action="output">
+				<param name="anInt64" type="int64*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -383,7 +407,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="anInt64" type="int64" action="output">
+				<param name="anInt64" type="int64*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -393,7 +417,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="aFloat" type="float" action="output">
+				<param name="aFloat" type="float*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -406,7 +430,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="aFloat" type="float" action="output">
+				<param name="aFloat" type="float*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -416,7 +440,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="aDouble" type="double" action="output">
+				<param name="aDouble" type="double*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -429,7 +453,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="aDouble" type="double" action="output">
+				<param name="aDouble" type="double*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -439,7 +463,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="string" type="const char*" action="output">
+				<param name="string" type="const char**" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -452,7 +476,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="string" type="const char*" action="output">
+				<param name="string" type="const char**" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -462,7 +486,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="point" type="BPoint" action="output">
+				<param name="point" type="BPoint*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -475,7 +499,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="point" type="BPoint" action="output">
+				<param name="point" type="BPoint*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -485,7 +509,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="rect" type="BRect" action="output">
+				<param name="rect" type="BRect*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -498,20 +522,42 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="rect" type="BRect" action="output">
+				<param name="rect" type="BRect*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
-			<!-- FindRef -->
-			<!--
+<!-- entry_ref struct not yet implemented
+			<method name="FindRef">
+				<doc>Finds a Messenger object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="ref" type="entry_ref*" deref="true" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindRef" overload-name="ByIndex">
+				<doc>Finds a Messenger object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="ref" type="entry_ref*" deref="true" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
 			<method name="FindMessage">
 				<doc>Finds a Message object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="message" type="BMessage*" action="output">
+				<param name="message" type="BMessage*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -524,18 +570,18 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="message" type="BMessage*" action="output">
+				<param name="message" type="BMessage*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<!--
+<!-- BMessenger object not yet implemented
 			<method name="FindMessenger">
 				<doc>Finds a Messenger object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="messenger" type="BMessenger" action="output">
+				<param name="messenger" type="BMessenger*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -548,17 +594,19 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="messenger" type="BMessenger" action="output">
+				<param name="messenger" type="BMessenger*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+-->
+<!-- const void* type object not yet implemented
 			<method name="FindPointer">
 				<doc>Finds a pointer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="pointer" type="const void*" action="output">
+				<param name="pointer" type="const void**" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -571,20 +619,43 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="pointer" type="const void*" action="output">
+				<param name="pointer" type="const void**" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
-			<!-- FindFlat -->
-			<!--
+-->
+<!-- BFlattenable object not yet implemented
+			<method name="FindFlat">
+				<doc>Finds a Messenger object in the Message.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="object" type="BFlattenable*" deref="true" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindFlat" overload-name="ByIndex">
+				<doc>Finds a Messenger object in the Message using an index.</doc>
+				<param name="name" type="const char*" action="input">
+					<doc>Name of the data.</doc>
+				</param>
+				<param name="index" type="int32" action="input">
+					<doc>The index.</doc>
+				</param>
+				<param name="object" type="BFlattenable*" deref="true" action="output">
+					<doc>The data.</doc>
+				</param>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
 			<method name="Flatten">
 				<doc>Flattens the Message to a sequence of bytes.</doc>
 				<param name="address" type="char*" action="input">
 					<doc>Where to write the data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="output" default=NULL>
+				<param name="numBytes" type="ssize_t" action="output" default="0">
 					<doc>The number of bytes written.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -600,7 +671,6 @@
 				<doc>Returns the number of bytes a [code]Flatten[/code]ed Message will occupy.</doc>
 				<return type="ssize_t" />
 			</method>
-			-->
 			<!-- GetCurrentSpecifier -->
 			<!-- PopSpecifier -->
 			<!-- GetInfo -->
@@ -609,12 +679,10 @@
 				<doc>Returns true if the Message is system-defined.</doc>
 				<return type="bool" />
 			</method>
-			<!--
 			<method name="MakeEmpty">
 				<doc>Empties the Message of data fields, but does not change the [code]what[/code] property.</doc>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
 			<method name="IsEmpty">
 				<doc>Returns true if the Message has no data fields.</doc>
 				<return type="bool" />
@@ -640,12 +708,12 @@
 			<!-- ReplaceMessenger -->
 			<!-- ReplacePointer -->
 			<!-- ReplaceFlat -->
-			<!--
+<!-- BMessenger object not yet implemented
 			<method name="ReturnAddress">
 				<doc>Returns a Messenger that can be used to reply to the Message.</doc>
 				<return type="BMessenger" />
 			</method>
-			-->
+-->
 			<!-- SendReply -->
 			<!-- WasDelivered -->
 			<!-- IsSourceRemote -->

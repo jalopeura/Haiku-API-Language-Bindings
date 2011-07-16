@@ -85,6 +85,7 @@ my %class_map = (
 		key   => 'params',
 		class => 'Python::Param',
 		attr_map => {
+			type    => 'type_name',
 			deref   => 'needs_deref',
 			'must-not-delete' => 'must_not_delete',
 		},
@@ -93,6 +94,7 @@ my %class_map = (
 		key   => 'return',
 		class => 'Python::Return',
 		attr_map => {
+			type    => 'type_name',
 			deref   => 'needs_deref',
 			'must-not-delete' => 'must_not_delete',
 		},

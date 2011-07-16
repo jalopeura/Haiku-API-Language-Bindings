@@ -15,6 +15,7 @@ my $modular_bindings = new Bindings(
 
 if ($perl) {
 	eval "use Perl::Generator";
+	die if $@;
 
 	my $perlgen = new Perl::Generator;
 

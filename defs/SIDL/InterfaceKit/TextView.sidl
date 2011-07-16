@@ -11,7 +11,7 @@
 				<param name="resizingMode" type="uint32" action="input" />
 				<param name="flags" type="uint32" action="input" />
 			</constructor>
-			<!--
+<!-- rgb_color struct not yet implemented
 			<constructor overload-name="WithFontAndColor">
 				<doc>Creates a TextView.</doc>
 				<param name="frame" type="BRect" action="input" />
@@ -22,7 +22,7 @@
 				<param name="resizingMode" type="uint32" action="input" />
 				<param name="flags" type="uint32" action="input" />
 			</constructor>
-			-->
+-->
 			<constructor overload-name="FromMessage">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>

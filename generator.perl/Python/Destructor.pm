@@ -11,35 +11,37 @@ sub finalize_upgrade {
 	$self->{name} = 'DESTROY';
 }
 
-sub generate_cc_function {
+sub generate_cc {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	$options->{rettype} = 'void';
-	$options->{input} = "${python_object_prefix}_Object* python_self";
+	my $fh = $self->class->cch;
 	
-	$options->{init} = [
-		"$cpp_class_name* cpp_obj;",
-		"object_link_data* link;",
-	];
-	
-	$options->{code} = [
-		qq(if (python_self->cpp_object != NULL) {),
-		qq(	if (python_self->can_delete_cpp_object) {),
-		qq(		delete python_self->cpp_object;),
-		qq(	}),
-	];	
+	print $fh <<DESTRUCTOR;
+//static void ${python_object_prefix}_DESTROY(${python_object_prefix}_Object* python_self);
+static void ${python_object_prefix}_DESTROY(${python_object_prefix}_Object* python_self) {
+	if (python_self->cpp_object != NULL) {
+		if (python_self->can_delete_cpp_object) {
+			delete python_self->cpp_object;
+		}
+DESTRUCTOR
+
 	if ($self->class->is_responder) {
-		push @{ $options->{code} },
-		qq(	else {),
-		qq(		python_self->cpp_object->python_object = NULL;),
-		qq(	});
+		print $fh <<DESTRUCTOR
+		else {
+			python_self->cpp_object->python_object = NULL;
+		}
+DESTRUCTOR
 	}
 	
-	push @{ $options->{code} },	qq(});
-	
-	$self->SUPER::generate_cc_function($options);
+	print $fh <<END;
+	}
+}
+
+END
+		
+	$self->class->{destructor_name} = "${python_object_prefix}_DESTROY";
 }
 
 sub generate_h {

@@ -39,13 +39,13 @@
 			</method>
 			<!-- AttachedToWindow -->
 			<!-- KeyDown -->
-			<!--
+<!--
 			<event name="MessageReceived">
 				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				<return type="void" />
 			</event>
-			-->
+-->
 			<!-- WindowActivated -->
 		</functions>
 		<constants>

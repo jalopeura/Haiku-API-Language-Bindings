@@ -1,0 +1,22 @@
+To create the mirror:
+	mkdir <mirrordir>
+	cd <mirrordir>
+	git init
+	git svn init -T  <source-repo>
+	git svn fetch
+	git gc (to speed things up)
+	git remote add origin <target-repo>
+	git push origin master
+
+To sync:
+	cd <mirrordir>
+    git svn rebase
+    git push origin master
+
+The original example used the following values:
+mirrordir: ~/src/sphinx
+source-repo: http://sphinxsearch.googlecode.com/svn/trunk
+target-repo: git@githubmirror:yourgitusername/sphinx.git
+
+From http://www.icoretech.org/2009/08/how-to-mirror-a-svn-repository-on-github/
+via http://petersteinberger.com/2010/01/how-to-mirror-an-svn-repository-on-github/

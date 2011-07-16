@@ -16,37 +16,32 @@ sub generate {
 	}
 }
 
+sub generate_xs {
+	my ($self) = @_;
+	
+	my $cpp_class_name = $self->cpp_class_name;
+	
+	$self->SUPER::generate_xs(
+		cpp_call => "THIS->${cpp_class_name}::" . $self->name,
+		perl_name => "${cpp_class_name}::" . $self->name,
+		extra_items => [
+			'// item 0: THIS',	# automatic variable
+		],
+	);
+}
+
 sub generate_xs_function {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
-	my $name = "${cpp_class_name}::" . $self->name;
+	$options->{cpp_call_name} = "THIS->${cpp_class_name}::" . $self->name;
 	$options->{name} = "${cpp_class_name}::$options->{name}";
 	
-	$options->{code} ||= [];
+	$options->{precode} ||= [];
+	# get defaults, with an offset of 1 for the THIS variable
+	my $code = $self->params->default_var_code(1);
+	$code and unshift @{ $options->{precode} }, @$code;
 	
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	if ($options->{rettype} eq 'void') {
-		push @{ $options->{code} }, qq(THIS->$name($call_args););
-	}
-	else {
-		my $type = $self->types->type($options->{rettype});
-		if ($type->has('target')) {
-			push @{ $options->{init} }, "$options->{rettype} OBJ;";
-			$options->{rettype} = 'SV*';
-			my $class = $type->target;
-			push @{ $options->{code} },
-				qq(OBJ = THIS->$name($call_args);),
-				qq{RETVAL = create_perl_object((void*)OBJ, "$class");};
-			
-			if ($self->params->cpp_output->must_not_delete) {
-				push @{ $options->{code} },
-					qq{must_not_delete_cpp_object(RETVAL, true);},
-			}
-		}
-		else {
-			push @{ $options->{code}}, qq(RETVAL = THIS->$name($call_args););
-		}
-	}
+	$self->generate_xs_body_code($options);
 		
 	$self->SUPER::generate_xs_function($options);
 }
@@ -55,7 +50,7 @@ sub generate_h {
 	my ($self) = @_;
 	my $name = $self->name;
 	my $rettype = $self->params->cpp_rettype;
-	my $inputs = join(', ', @{ $self->params->as_cpp_input });
+	my $inputs = join(', ', @{ $self->params->as_cpp_funcdef });
 	
 	print { $self->package->hh } <<EVENT;
 		$rettype $name($inputs);
@@ -65,17 +60,127 @@ EVENT
 sub generate_cpp {
 	my ($self) = @_;
 	
-	my $name = $self->name;
+	my @args;		# names as they will be used in the C++ call
+	my @defs;		# defs necessary for the XS call
+	my @precode;	# any required pre-call code
+	my @xspush;		# pushes to XS stack
+	# function will supply the call code
+	my @postcode;	# any required post-call code
+	my $stack_count = 0;
+	
+	push @xspush, "PUSHs(perl_link_data->perl_object);";
+	$stack_count++;
+	
+	if ($self->params->has('cpp_input')) {
+		for my $param ($self->params->cpp_input) {
+			push @args, $param->as_cpp_funcdef;
+			
+			my $action = $param->action;
+			if ($action eq 'input') {
+				my $svname = $param->name . '_sv';
+				push @defs, qq(SV* $svname;);
+				push @precode,
+					qq($svname = sv_newmortal();),
+					$param->output_converter($svname);
+				if ($param->must_not_delete) {
+					push @precode, 
+						qq(must_not_delete_cpp_object($svname, true););
+				}
+				push @xspush, "PUSHs($svname);";
+				$stack_count++;
+			}
+			#
+			# currently don't accept output or error
+			# as actions for calls from c++ to perl
+			#
+			#elsif ($action eq 'output') {
+			#	push @init, $param->as_cpp_def;
+			#	push @outputs, $param;
+			#}
+			#elsif ($action eq 'error') {
+			#	push @init, $param->as_cpp_def;
+			#	push @postcode, $param->xs_error_code;
+			#}
+			
+			if ($param->has('length')) {
+				my $name = $param->name;
+				my $lname = $param->length->name;
+				push @defs, qq(int length_$name = $lname;);
+			}
+			elsif ($param->has('count')) {
+				my $name = $param->name;
+				my $cname = $param->count->name;
+				push @defs, qq(int count_$name = $cname;);
+			}
+		}
+	}
+	
+	# If we don't have any perl inputs, we won't prepare
+	# the stack variables. If we have returns, this is a
+	# problem. It won't affect us now, as under the current
+	# implementation, all cpp_to_perl calls have at least
+	# the perl object as an input. But it may bite us later.
+	if ($stack_count) {
+		push @precode, '' if @precode;
+		push @precode,
+			'dSP;',
+			'ENTER;',
+			'SAVETMPS;',
+			"EXTEND(SP, $stack_count);",
+			'PUSHMARK(SP);',
+			'',
+			@xspush,
+			'',
+			'PUTBACK;';		
+	}
+	
+	my @return;
+	if ($self->params->has('cpp_output') and $self->params->cpp_output->type_name ne 'void') {
+		my $retval = $self->params->cpp_output;
+		my $retname = $retval->name . '_sv';
+		push @defs,
+			$retval->as_cpp_def,
+			"SV* $retname;";
+		push @postcode,
+			'SPAGAIN;',
+			"$retname = POPs;",
+			$retval->input_converter($retname),
+			'PUTBACK;';
+		push @return,
+			'',
+			qq(return $retval->{name};);
+		#
+		# currently don't accept output or error
+		# as actions for returns from perl to c++
+		#
+		#my $action = $retval->action;
+		#if ($action eq 'output') {
+		#	push @init, $retval->as_cpp_def;
+		#	push @outputs, $retval;
+		#}
+		#elsif ($action eq 'error') {
+		#	push @init, $retval->as_cpp_def;
+		#	push @postcode, $retval->xs_error_code;
+		#}
+	}
+	
+	push @postcode,
+		'FREETMPS;',
+		'LEAVE;',
+		@return;
+		
+	
+	my $name = $self->name;	
 	my $rettype = $self->params->cpp_rettype;
 	my $cpp_class_name = $self->cpp_class_name;
-	my $inputs = join(', ', @{ $self->params->as_cpp_input });
 	my $cpp_parent_name = $self->package->cpp_parent;
-	my $parent_inputs = join(', ', @{ $self->params->as_cpp_parent_input });
 	
-	my ($stackcount, $stackdefs, $stackputs) = $self->params->as_xs_call;
-	$stackcount++;	# for the perl object itself
+	my $inputs = join(', ', @args);	
+	my $parent_inputs = join(', ', @{ $self->params->as_cpp_parent_call });
 	
-	my $void_return = $rettype eq 'void';
+	if ($rettype ne 'void') {
+		push @defs, 'int perl_return_count;';
+	}
 	
 	my $fh = $self->package->cpph;
 
@@ -87,73 +192,40 @@ $rettype ${cpp_class_name}::$name($inputs) {
 	else {
 EVENT
 	
-	my $retval;
-	unless ($void_return) {
-		$retval = $self->params->cpp_output;
-		print $fh "\t\t", $retval->as_cpp_input, ";\n";
-		my ($def, $put) = $retval->as_xs_call;
-		for my $line (@$def) {
+	if (@defs) {
+		for my $def (@defs) {
+			print $fh "\t\t$def\n";
+		}
+		print $fh "\t\t\n";
+	}
+	
+	if (@precode) {
+		for my $line (@precode) {
 			print $fh "\t\t$line\n";
 		}
-		print $fh "\t\tint perl_return_count;\n";
+		print $fh "\t\t\n";
 	}
 	
-	for my $line (@$stackdefs) {
-		print $fh "\t\t$line\n";
-	}
-	
-	print $fh <<EVENT;
-		
-		dSP;
-		
-		ENTER;
-		SAVETMPS;
-		
-		EXTEND(SP, $stackcount);
-		PUSHMARK(SP);
-		
-		PUSHs(perl_link_data->perl_object);
-		
-EVENT
-	
-	for my $line (@$stackputs) {
-		print $fh "\t\t$line\n";
-	}
-	
-	print $fh "\t\tPUTBACK;\n\t\t\n";
-	
-	if ($void_return) {
-		print $fh qq(\t\tcall_method("$name", G_VOID);\n\t\t\n);
+	if ($rettype eq 'void') {
+		print $fh qq(\t\tcall_method("$name", G_VOID););
 	}
 	else {
-		my $type = $self->types->type($retval->type);
-		my $retname = $retval->name . '_sv';
-		my $converter = $type->input_converter($retval->name, $retname);
 		print $fh <<EVENT;
 		perl_return_count = call_method("$name", G_SCALAR);
 		
 		// need to add some real error checking here
-//		if (count != 1)
-//			DEBUGME(4, "Got a bad number of returns from perl call: %d", count);
-		
-		SPAGAIN;
-		$retname = POPs;
-		$converter
-		PUTBACK;
-		
+		if (perl_return_count != 1)
+			DEBUGME(4, "Got a bad number of returns from perl call: %d", perl_return_count);
 EVENT
 	}
 	
-	print $fh <<EVENT;
-		FREETMPS;
-		LEAVE;
-EVENT
-	
-	
-	unless ($void_return) {
-		print $fh "\t\t\n\t\treturn ", $retval->name ,";\n";
+	if (@postcode) {
+		print $fh "\t\t\n";
+		for my $line (@postcode) {
+			print $fh "\t\t$line\n";
+		}
 	}
-		
+	
 	print $fh <<EVENT;
 	}
 } // ${cpp_class_name}::$name

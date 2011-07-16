@@ -3,74 +3,40 @@ use Perl::Functions;
 use strict;
 our @ISA = qw(Static Perl::Function);
 
+sub generate_xs {
+	my ($self) = @_;
+	
+	my $cpp_class_name = $self->cpp_class_name;
+	
+	$self->SUPER::generate_xs(
+		cpp_call => "$cpp_class_name}::" . $self->name,
+		add_CLASS => 1,
+		extra_items => [
+			'// item 0: CLASS',	# added variable
+		],
+	);
+}
+
 sub generate_xs_function {
 	my ($self, $options) = @_;
 	
 	my $cpp_class_name = $self->cpp_class_name;
-	my $name = "$cpp_class_name}::" . $self->name;
+	$options->{cpp_call_name} = "$cpp_class_name}::" . $self->name; 
 	
 	# first perl input will be class
 	$options->{input} ||= [];
-	unshift @{ $options->{input} }, "CLASS";
+	unshift @{ $options->{args} }, "CLASS";
 	
 	$options->{input_defs} ||= [];
-	unshift @{ $options->{input_defs} }, "char* CLASS;";
+	unshift @{ $options->{input} }, "char* CLASS;";
 	
-	$options->{code} ||= [];
+	$options->{precode} ||= [];
+	# get defaults, with an offset of 1 for the CLASS variable
+	my $code = $self->params->default_var_code(1);
+	$code and unshift @{ $options->{precode} }, @$code;
 	
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	if ($options->{rettype} eq 'void') {
-		push @{ $options->{code} }, qq($name($call_args););
-	}
-	else {
-		my $type = $self->types->type($options->{rettype});
-		if ($type->has('target')) {
-			push @{ $options->{init} }, "$options->{rettype} OBJ;";
-			$options->{rettype} = 'SV*';
-			my $class = $type->target;
-			push @{ $options->{code} },
-				qq(OBJ = $name($call_args);),
-				qq{RETVAL = create_perl_object((void*)OBJ, "$class");};
-			
-			if ($self->params->cpp_output->must_not_delete) {
-				push @{ $options->{code} },
-					qq{must_not_delete_cpp_object(RETVAL, true);},
-			}
-		}
-		else {
-			push @{ $options->{code} }, qq(RETVAL = $name($call_args););
-		}
-	}
+	$self->generate_xs_body_code($options);
 	
-	# call must be prefixed with class name
-	my $name = $self->name;
-	my $cpp_class_name = $self->cpp_class_name;
-	$options->{name} = "${cpp_class_name}::$options->{name}";
-	
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	if ($options->{rettype} eq 'void') {
-		push @{ $options->{code} }, qq(THIS->$name($call_args););
-	}
-	else {
-		my $type = $self->types->type($options->{rettype});
-		if ($type->has('target')) {
-			push @{ $options->{init} }, "$options->{rettype} OBJ;";
-			$options->{rettype} = 'SV*';
-			my $class = $type->target;
-			push @{ $options->{code} },
-				qq(OBJ = THIS->$name($call_args);),
-				qq{RETVAL = create_perl_object((void*)OBJ, "$class");};
-			
-			if ($self->params->cpp_output->must_not_delete) {
-				push @{ $options->{code} },
-					qq{must_not_delete_cpp_object(RETVAL, true);},
-			}
-		}
-		else {
-			push @{ $options->{code} }, qq(RETVAL = THIS->$name($call_args););
-		}
-	}
-		
 	$self->SUPER::generate_xs_function($options);
 }
 

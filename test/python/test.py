@@ -3,11 +3,8 @@ def dump(object):
 	for item in inspect.getmembers(object):
 		print "ITEM:", item,"\n\n"
 
-import Haiku	# prevents a name not defined error
-import Haiku.ApplicationKit
-import Haiku.InterfaceKit
+import Haiku
 #dump(Haiku)
-#dump(Haiku.ApplicationKit)
 
 class MyApplication(Haiku.CustomApplication):
 	def __init__(self, *args):
@@ -56,6 +53,8 @@ class MyWindow(Haiku.CustomWindow):
 			self.button.SetLabel("%d of %d" % (self.click_count, self.message_count));
 			return
 		return Haiku.Window.MessageReceived(self, message)
+
+#dump(MyApplication)
 
 TestApp = MyApplication("application/python-binding-test")
 

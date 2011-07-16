@@ -3,6 +3,44 @@ use Python::Functions;
 use strict;
 our @ISA = qw(Method Python::Function);
 
+sub generate_cc {
+	my ($self) = @_;
+	
+	my $cpp_class_name = $self->cpp_class_name;
+	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
+	
+	my $name = "${python_object_prefix}_" . $self->name;
+	if ($self->has('overload_name')) {
+		$name .= $self->overload_name;
+	}
+	
+	$self->SUPER::generate_cc(
+		name => $name,
+		cpp_name => "python_self->cpp_object->$self->{name}",
+		python_input => [
+			"${python_object_prefix}_Object* python_self",
+			'PyObject* python_args',
+		],
+		python_args => 'python_args',
+	);
+	
+	my $doc;
+	if ($self->has('doc')) {
+		$doc = $self->doc;
+	}
+	$self->class->add_method_table_entry(
+		$self->name,		# name as seen from Python
+		$name,				# name of wrapper function
+		'METH_VARARGS',		# flags
+		$doc				# docs
+	);
+}
+#		$options{name} = "${python_object_prefix}_init";
+#		$options{python_input}[0] = "${python_object_prefix}_Object* python_self";
+#		$options{python_input}[2] = 'PyObject* python_kwds';	# __init__ always takes keywords, even though we don't do anything with them yet
+#		$options{rettype} = 'int';
+#		$options{comment} = <<COMMENT;
+
 sub generate_cc_function {
 	my ($self, $options, $funcname) = @_;
 	$funcname ||= $self->name;

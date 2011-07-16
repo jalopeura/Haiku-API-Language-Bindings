@@ -1,0 +1,83 @@
+<bindings name="Haiku::View">
+	<doc>Exposes the View object</doc>
+	<binding source="BView" source-inherits="BHandler" target="Haiku::View" target-inherits="Haiku::Handler">
+		<doc>Exposes the View object</doc>
+		<constants>
+			<constant name="B_ENTERED_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_INSIDE_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_EXITED_VIEW" group="cursor_transit">
+				<doc>...</doc>
+			</constant>
+			<!-- mouse button constants -->
+<!--
+B_PRIMARY_MOUSE_BUTTON
+B_SECONDARY_MOUSE_BUTTON
+B_TERTIARY_MOUSE_BUTTON
+-->
+			<constant name="B_FOLLOW_LEFT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_RIGHT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_LEFT_RIGHT" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_H_CENTER" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_TOP" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_BOTTOM" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_TOP_BOTTOM" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_V_CENTER" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL_SIDES" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_NONE" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FULL_UPDATE_ON_RESIZE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_WILL_DRAW" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PULSE_NEEDED" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FRAME_EVENTS" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE_JUMP" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SUBPIXEL_PRECISE" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRACK_WHOLE_RECT" group="tracking">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRACK_RECT_CORNER" group="tracking">
+				<doc>...</doc>
+			</constant>
+		</constants>
+	</binding>
+</bindings>

@@ -17,6 +17,7 @@
 		<file name="StringView.h" />
 		<file name="TextControl.h" />
 		<file name="TextView.h" />
+		<!-- <file name="UnicodeBlockObjects.h" /> -->
 		<file name="View.h" />
 		<file name="Window.h" />
 	</include>
@@ -33,6 +34,7 @@
 		<type name="window_feel"      builtin="int" />
 		<type name="status_t"         builtin="long" />
 		<type name="bigtime_t"        builtin="long" />
+		<!-- <type name="unicode_block"    builtin="void*" /> -->
 		<type name="button_width"     builtin="long" /><!-- is this right? -->
 		<type name="button_spacing"   builtin="long" /><!-- is this right? -->
 		<type name="alert_type"       builtin="long" /><!-- is this right? -->
@@ -48,10 +50,11 @@ Objects defined by this interface automatically have data types (plain and
 pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
-		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
-		<type name="BHandler*"   builtin="object_ptr" target="Haiku::Handler" />
 		<type name="BClipboard*" builtin="object_ptr" target="Haiku::Clipboard" />
 		<type name="BCursor*"    builtin="object_ptr" target="Haiku::Cursor" />
+		<type name="BHandler*"   builtin="object_ptr" target="Haiku::Handler" />
+		<type name="BInvoker*"   builtin="object_ptr" target="Haiku::Invoker" />
+		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->

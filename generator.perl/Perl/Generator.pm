@@ -85,26 +85,13 @@ WriteMakefile(
 );
 MAKE
 	
-	# a loading test
 	my $test_target_dir = File::Spec->catdir($target, 't');
-	mkpath($test_target_dir);
-	
-	my $testfile = File::Spec->catdir($test_target_dir, 'load.t');
-	open TEST, ">$testfile" or die "Unable to create test: $!";
-	print TEST <<OUT;
-# simple load test
-use Test::Simple tests => 1;
-
-use $name;
-
-ok(1);
-OUT
-	
 	my $test_source_dir = '../test/perl';
 	opendir DIR, $test_source_dir or die $!;
 	while (my $e = readdir DIR) {
 		my $file = File::Spec->catfile($test_source_dir, $e);
 		next if -d $file;
+#		next unless $e=~/\.t$/;
 		copy($file, $test_target_dir);
 	}
 	closedir DIR;

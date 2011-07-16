@@ -49,6 +49,9 @@ warn "\nAppActivated($self, $active)\n\n";
 sub QuitRequested {
 	my ($self) = @_;
 warn "\nQuitRequested ($self)\n\n";
+my $val = $self->SUPER::QuitRequested();
+warn "About to return [$val]\n";
+return 1;	# try to force a 1
 	return $self->SUPER::QuitRequested();
 }
 

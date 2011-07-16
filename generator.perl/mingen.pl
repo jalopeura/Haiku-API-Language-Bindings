@@ -1,8 +1,8 @@
 use Common::Bindings;
 use strict;
 
-my $perl = 0;
-my $python = 1;
+my $perl = 1;
+my $python = 0;
 
 my ($modular_bindings, $global_bindings);
 

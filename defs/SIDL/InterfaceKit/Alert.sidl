@@ -48,30 +48,39 @@
 				<doc>Displays the Alert and returns the 0-based index of the selected button.</doc>
 				<return type="int32" />
 			</method>
-			<!--
 			<method name="Go" overload-name="Asynchronous">
 				<doc>Displays the Alert and returns immediately.</doc>
 				<param name="invoker" type="BInvoker*" action="input">
 					<doc>An Invoker to which a message will be sent when a button is selected. The 0-based index of the selected button will be in the int32 "which" field of the message.</doc>
 				</param>
-				<return type="status_t" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			-->
-			<!-- SetShortcut -->
-			<!-- Shortcut -->
+			<method name="SetShortcut">
+				<doc>Assigns a shortcut character to the button at [code]index[/code].</doc>
+				<param name="index" type="int32" action="input" />
+				<param name="shortcut" type="char" action="input" />
+			</method>
+			<method name="Shortcut">
+				<doc>Returns the shortcut character assigned to the button at [code]index[/code].</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="char" />
+			</method>
 			<method name="TextView">
 				<doc>Returns the TextView object for the Alert's text.</doc>
 				<return type="BTextView*" action="output" must-not-delete="true" />
 			</method>
-			<!-- FrameResized -->
-			<!--
+<!--
+			<event name="FrameResized">
+				<param name="width" type="float" action="input" />
+				<param name="height" type="float" action="input" />
+				<return type="void" />
+			</event>
 			<event name="MessageReceived">
 				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				<return type="void" />
 			</event>
-			-->
+-->
 		</functions>
 		<constants>
 			<constant name="B_EMPTY_ALERT" group="type">

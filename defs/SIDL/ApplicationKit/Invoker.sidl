@@ -3,13 +3,13 @@
 	<binding source="BInvoker" target="Haiku::Invoker">
 		<doc>Exposes the Invoker object</doc>
 		<functions>
-			<!--
+<!-- BMessenger object not yet implemented
 			<constructor>
 				<doc>Creates an Invoker.</doc>
 				<param name="message" type="BMessage*" action="input" />
 				<param name="messenger" type="BMessenger*" action="input" />
 			</constructor>
-			-->
+-->
 			<constructor>
 				<doc>Creates an Invoker.</doc>
 				<param name="message" type="BMessage*" action="input" />

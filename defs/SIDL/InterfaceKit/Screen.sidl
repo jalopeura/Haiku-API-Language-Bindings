@@ -5,7 +5,7 @@
 		<functions>
 			<constructor>
 				<doc>Gets the screen from an id.</doc>
-<!--
+<!-- screen_id type not yet implemented, so let it default
 				<param name="id" type="screen_id" action="input" default="B_MAIN_SCREEN_ID" />
 -->
 			</constructor>

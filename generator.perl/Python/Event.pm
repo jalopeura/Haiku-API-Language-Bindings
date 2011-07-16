@@ -16,6 +16,39 @@ sub generate {
 	}
 }
 
+sub generate_cc {
+	my ($self) = @_;
+	
+	my $cpp_class_name = $self->cpp_class_name;
+	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
+	
+	my $name = "${python_object_prefix}_" . $self->name;
+	if ($self->has('overload_name')) {
+		$name .= $self->overload_name;
+	}
+	
+	$self->SUPER::generate_cc(
+		name => $name,
+		cpp_name => "python_self->cpp_object->${cpp_class_name}::$self->{name}",
+		python_input => [
+			"${python_object_prefix}_Object* python_self",
+			'PyObject* python_args',
+		],
+		python_args => 'python_args',
+	);
+	
+	my $doc;
+	if ($self->has('doc')) {
+		$doc = $self->doc;
+	}
+	$self->class->add_method_table_entry(
+		$self->name,		# name as seen from Python
+		$name,				# name of wrapper function
+		'METH_VARARGS',		# flags
+		$doc				# docs
+	);
+}
+
 sub generate_cc_function {
 	my ($self, $options) = @_;
 	my $funcname = $self->class->cpp_name . '::' . $self->name;
@@ -86,13 +119,13 @@ EVENT
 	if ($void_return) {
 		print $fh <<EVENT;
 		// call the proper method
-		PyObject_CallMethod((PyObject*)python_object, "$name", $python_call_args);
+		PyObject_CallMethod((PyObject*)python_object, (char*)"$name", $python_call_args);
 EVENT
 	}
 	else {
 		print $fh <<EVENT;
 		// call the proper method
-		$pyretname = PyObject_CallMethod((PyObject*)python_object, "$name", $python_call_args);
+		$pyretname = PyObject_CallMethod((PyObject*)python_object, (char*)"$name", $python_call_args);
 		
 EVENT
 	}

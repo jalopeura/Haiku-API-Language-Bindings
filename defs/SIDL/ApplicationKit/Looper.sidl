@@ -32,9 +32,8 @@
 			</method>
 			<method name="LockWithTimeout">
 				<param name="timeout" type="bigtime_t" action="input" />
-				<return type="status_t" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<!-- LockWithTimeout -->
 			<method name="Unlock" />
 			<!-- LockingThread -->
 			<!-- IsLocked -->

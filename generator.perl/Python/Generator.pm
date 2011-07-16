@@ -57,7 +57,13 @@ print "Generating $target\n";
 	for my $pkg (@packages) {
 		my $pkgname = $pkg->name;
 		my $filename = $pkg->resolve_filename($package);
-		push @extensions, qq(Extension('$pkgname', ['$filename.cc']));
+		push @extensions, <<EXT;
+		Extension(
+			'$pkgname',
+			['$filename.cc'],
+			extra_compile_args=["-Wno-multichar"]
+			)
+EXT
 		$packages{$pkgname} = 1;
 	}
 	
@@ -83,7 +89,7 @@ print "Generating $target\n";
 
 	my $setup_py_file = File::Spec->catfile($target, 'setup.py');
 	my $pypackages = join(', ', @pypackages);
-	my $extensions = join(",\n\t\t", @extensions);
+	my $extensions = join(",", @extensions);
 	my ($name) = $bindings->{name}=~/([^:]+$)/g;
 	open SETUP, ">$setup_py_file" or die "Unable to create file '$setup_py_file': $!";
 	print SETUP <<DIST;
@@ -96,7 +102,7 @@ setup(name='$name',
 	version='$bindings->{version}',
 	packages=[$pypackages],
 	ext_modules=[
-		$extensions
+$extensions
 		],
 	)
 DIST

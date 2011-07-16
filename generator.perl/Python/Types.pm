@@ -131,14 +131,17 @@ sub write_object_types {
 		next if $seen{$cpp_type};
 		$seen{$cpp_type} = 1;
 		
-		(my $python_type = $type->target)=~s/\./_/g; $python_type .= '_Object';
+		(my $python_type = $type->target)=~s/\./_/g;
 		
 		print $fh <<OBJECT;
+// make a default version here so it's available early
+// we'll fill in the values in another file
+extern PyTypeObject ${python_type}_PyType;
 typedef struct {
     PyObject_HEAD
     $cpp_type* cpp_object;
 	bool  can_delete_cpp_object;
-} $python_type;
+} ${python_type}_Object;
 
 OBJECT
 	}
@@ -203,19 +206,14 @@ sub arg_builder {
 				$target = $self->target;
 				(my $objprefix = $target)=~s/\./_/g; $objprefix .= '_';
 				my $objtype = $objprefix . 'Object';
-				my $type_name = $objprefix . 'Type';
+				my $type_name = $objprefix . 'PyType';
 				
 				$def[-1] = "$objtype* $arg;";
 				
 				push @code,
-#					qq(if (!$type_name) {),
-#					qq(\t$type_name = *(PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
-#					qq(}),
-#					qq(py_$name = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
-#					qq(py_$name = ($objtype*)PyRun_String("$target.__new__()", Py_eval_input, main_dict, main_dict););
-
-					qq(PyTypeObject* py_${name}_type = (PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
-					qq(py_$name = ($objtype*)py_${name}_type->tp_alloc(py_${name}_type, 0););
+					#qq(PyTypeObject* py_${name}_type = (PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
+					#qq(py_$name = ($objtype*)py_${name}_type->tp_alloc(py_${name}_type, 0););
+					qq(py_$name = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
 				
 				if ($builtin eq 'object' or $builtin eq 'responder') {
 					push @code, qq(py_$name->cpp_object = &$name;);
@@ -253,7 +251,7 @@ sub arg_parser {
 	my $arg = $name;
 	my (@def, @code);
 	
-	my $def = "$param->{type} $name";
+	my $def = "$param->{type_name} $name";
 	if ($param->has('default')) {
 		$def .= " = " . $param->default;
 	}
@@ -271,9 +269,9 @@ sub arg_parser {
 		}
 		elsif ($builtin eq 'char**') {
 			my $count_name = $param->count->name;
-			my $count_type = $param->count->type;
-			push @def, "$count_type $count_name;";
-			push @code, qq($name = PyList2CharArray($arg, (int)$count_name););
+			my $count_type = $param->count->type_name;
+			push @def, "$count_type $count_name = 0;";
+			push @code, qq($name = PyList2CharArray($arg, (int*)&$count_name););
 		}
 		elsif ($builtin eq 'object' or $builtin eq 'responder'
 			or $builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {

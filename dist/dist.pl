@@ -3,16 +3,12 @@ use File::Path;
 use File::Copy;
 use strict;
 
-my $target = $ARGV[0] or die <<USAGE;
-Usage: dist.pl <extension>
-USAGE
-
 my $gendir = '../generated';
 my @dist = (
 	{
 		lang         => 'perl',
-		prep_subpath => [ $target ],
-		dist_subpath => [ $target ],
+		prep_subpath => [ 'HaikuKits' ],
+		dist_subpath => [ 'HaikuKits' ],
 		pattern      => qr/(HaikuKits-[\d.]+)(\.tar\.gz)/,
 		commands     => [
 			"perl Makefile.PL",
@@ -22,9 +18,9 @@ my @dist = (
 	},
 	{
 		lang        => 'python',
-		prep_subpath => [ $target ],
-		dist_subpath => [ $target, 'dist' ],
-		pattern      => qr/(HaikuKits-[\d.]+)(\.tar\.gz)/,
+		prep_subpath => [ 'Haiku' ],
+		dist_subpath => [ 'Haiku', 'dist' ],
+		pattern      => qr/(Haiku-[\d.]+)(\.tar\.gz)/,
 		commands    => [
 			"python setup.py sdist",
 		],

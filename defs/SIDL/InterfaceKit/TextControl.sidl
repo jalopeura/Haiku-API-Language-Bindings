@@ -29,13 +29,11 @@
 				<param name="forLabel" type="alignment" action="input" />
 				<param name="forText" type="alignment" action="input" />
 			</method>
-			<!--
 			<method name="GetAlignment">
 				<doc>Returns the alignment for the StringView.</doc>
-				<param name="forLabel" type="alignment" action="output" />
-				<param name="forText" type="alignment" action="output" />
+				<param name="forLabel" type="alignment*" deref="true" action="output" />
+				<param name="forText" type="alignment*" deref="true" action="output" />
 			</method>
-			-->
 			<method name="SetDivider">
 				<doc>Sets the divider between the label and the TextView.</doc>
 				<param name="xCoordinate" type="float" action="input" />
