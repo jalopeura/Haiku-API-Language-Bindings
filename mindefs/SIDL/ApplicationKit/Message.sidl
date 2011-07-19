@@ -98,31 +98,31 @@
 			<!-- DropPoint -->
 		</functions>
 		<constants>
-			<constant name="B_NO_SPECIFIER" group="specifier">
+			<constant name="B_NO_SPECIFIER" type="int" group="specifier">
 				<doc>There is no specifier.</doc>
 			</constant>
-			<constant name="B_DIRECT_SPECIFIER" group="specifier">
+			<constant name="B_DIRECT_SPECIFIER" type="int" group="specifier">
 				<doc>The property name itself is the specifier.</doc>
 			</constant>
-			<constant name="B_INDEX_SPECIFIER" group="specifier">
+			<constant name="B_INDEX_SPECIFIER" type="int" group="specifier">
 				<doc>The message contains an [code]index[/code] field that specifies an instance of the property.</doc>
 			</constant>
-			<constant name="B_REVERSE_INDEX_SPECIFIER" group="specifier">
+			<constant name="B_REVERSE_INDEX_SPECIFIER" type="int" group="specifier">
 				<doc>The index counts backwards from the end of the list.</doc>
 			</constant>
-			<constant name="B_RANGE_SPECIFIER" group="specifier">
+			<constant name="B_RANGE_SPECIFIER" type="int" group="specifier">
 				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property.</doc>
 			</constant>
-			<constant name="B_REVERSE_RANGE_SPECIFIER" group="specifier">
+			<constant name="B_REVERSE_RANGE_SPECIFIER" type="int" group="specifier">
 				<doc>The message contains an [code]index[/code] field and a [code]range[/code] field that specify a number of instances of the property; the index counts backwards from the end of the list.</doc>
 			</constant>
-			<constant name="B_NAME_SPECIFIER" group="specifier">
+			<constant name="B_NAME_SPECIFIER" type="int" group="specifier">
 				<doc>The message contains a [code]name[/code] field that specifies an instance of the property.</doc>
 			</constant>
-			<constant name="B_ID_SPECIFIER" group="specifier">
+			<constant name="B_ID_SPECIFIER" type="int" group="specifier">
 				<doc>The message contains an [code]id[/code] field that specifies an instance of the property.</doc>
 			</constant>
-			<constant name="B_SPECIFIERS_END" group="specifier">
+			<constant name="B_SPECIFIERS_END" type="int" group="specifier">
 				<doc>This constant reserves space for standard specifier constants; any user-specified constants should be greater than this.</doc>
 			</constant>
 		</constants>

@@ -21,7 +21,7 @@ you need to define those types in this section.
 		<doc>Exposes the Haiku Support Kit</doc>
 		<constants>
 			<!-- type constants -->
-			<constant name="B_ANY_TYPE" group="type">
+			<constant name="B_ANY_TYPE" type="int" group="type">
 				<doc>...</doc>
 			</constant>
 		</constants>

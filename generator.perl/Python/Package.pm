@@ -1,4 +1,6 @@
-package Python::Package;
+
+	
+	$class_name .= '_Object';package Python::Package;
 use File::Spec;
 use File::Path;
 use Python::Bundle;
@@ -373,20 +375,18 @@ INIT
 	
 PARENT
 	}
-	
-	# if the package module has constants, add them here
-	if ($self->has('constants')) {
-		print $fh "\t// $python_name: constants\n";
-		for my $constant ($self->constants) {
-			my $cn = $constant->name;
-			print $fh <<CONSTANT;
-	PyObject* ${module_prefix}$cn = PyInt_FromLong((long)$cn);
-	Py_INCREF(${module_prefix}$cn);
-	PyModule_AddObject($module_name, "$cn", ${module_prefix}$cn);
-	
-CONSTANT
-		}
-	}
+#	if ($self->has('constants')) {
+#		print $fh "\t// $python_name: constants\n";
+#		for my $constant ($self->constants) {
+#			my $cn = $constant->name;
+#			print $fh <<CONSTANT;
+#	PyObject* ${module_prefix}$cn = PyInt_FromLong((long)$cn);
+#	Py_INCREF(${module_prefix}$cn);
+#	PyModule_AddObject($module_name, "$cn", ${module_prefix}$cn);
+#	
+#CONSTANT
+#		}
+#	}
 	
 	# for each class, add the class to the package module
 	# if there are constants, add the constant module and add the constants to it
@@ -411,8 +411,6 @@ CONSTANT
 			my $parent_module = join('_', @n, 'module');
 			
 			print $fh <<CLASS;
-	// should move this to the type definition
-	$type.tp_new = PyType_GenericNew;
 	if (PyType_Ready(&$type) < 0)
 		return;
 	Py_INCREF(&$type);
@@ -432,20 +430,32 @@ CLASS
 	$module_object_name = Py_InitModule("$python_module_name", $method_object_name);
 	if ($module_object_name == NULL)
 		return;
-		
 	Py_INCREF($module_object_name);
 	PyModule_AddObject($parent_module, "$n[-1]", $module_object_name);
 	
 MODULE
 				my $module_object_prefix = join('_', @n, '');
-				for my $constant ($class->constants->constants) {
-					my $cn = $constant->name;
-					print $fh <<CONSTANT;
-	PyObject* ${module_object_prefix}$cn = PyInt_FromLong((long)$cn);
-	Py_INCREF(${module_object_prefix}$cn);
-	PyModule_AddObject($module_object_name, "$cn", ${module_object_prefix}$cn);
+#				for my $constant ($class->constants->constants) {
+#					my $cn = $constant->name;
+#					print $fh <<CONSTANT;
+#	PyObject* ${module_object_prefix}$cn = PyInt_FromLong((long)$cn);
+#	Py_INCREF(${module_object_prefix}$cn);
+#	PyModule_AddObject($module_object_name, "$cn", ${module_object_prefix}$cn);
+#	
+#CONSTANT
+#				}
 	
-CONSTANT
+				# if the package module has constants, add them here
+				if ($class->has('constant_defs')) {
+					for my $def ($class->constant_defs) {
+						print $fh qq(\t$def\n)
+					}
+					print $fh "\n";
+				}
+				if ($class->has('constant_code')) {
+					for my $line ($class->constant_code) {
+						print $fh qq(\t$line\n)
+					}
 				}
 			}
 		}

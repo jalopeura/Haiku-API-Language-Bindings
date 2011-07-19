@@ -83,34 +83,34 @@
 -->
 		</functions>
 		<constants>
-			<constant name="B_EMPTY_ALERT" group="type">
+			<constant name="B_EMPTY_ALERT" type="int" group="type">
 				<doc>No icon</doc>
 			</constant>
-			<constant name="B_INFO_ALERT" group="type">
+			<constant name="B_INFO_ALERT" type="int" group="type">
 				<doc>Info icon</doc>
 			</constant>
-			<constant name="B_IDEA_ALERT" group="type">
+			<constant name="B_IDEA_ALERT" type="int" group="type">
 				<doc>Idea icon</doc>
 			</constant>
-			<constant name="B_WARNING_ALERT" group="type">
+			<constant name="B_WARNING_ALERT" type="int" group="type">
 				<doc>Warning icon</doc>
 			</constant>
-			<constant name="B_STOP_ALERT" group="type">
+			<constant name="B_STOP_ALERT" type="int" group="type">
 				<doc>Stop icon</doc>
 			</constant>
-			<constant name="B_EVEN_SPACING" group="spacing">
+			<constant name="B_EVEN_SPACING" type="int" group="spacing">
 				<doc>Buttons are evenly spaced</doc>
 			</constant>
-			<constant name="B_OFFSET_SPACING" group="spacing">
+			<constant name="B_OFFSET_SPACING" type="int" group="spacing">
 				<doc>Leftmost button is offset</doc>
 			</constant>
-			<constant name="B_WIDTH_AS_USUAL" group="width">
+			<constant name="B_WIDTH_AS_USUAL" type="int" group="width">
 				<doc>Buttons are the usual width</doc>
 			</constant>
-			<constant name="B_WIDTH_FROM_LABEL" group="width">
+			<constant name="B_WIDTH_FROM_LABEL" type="int" group="width">
 				<doc>Each button's width depends on its label</doc>
 			</constant>
-			<constant name="B_WIDTH_FROM_WIDEST" group="width">
+			<constant name="B_WIDTH_FROM_WIDEST" type="int" group="width">
 				<doc>Buttons have the same width, based on the widest label</doc>
 			</constant>
 		</constants>

@@ -154,5 +154,8 @@
 				<return type="void" />
 			</event>
 		</functions>
+		<globals>
+			<global name="be_app" type="BApplication*" />
+		</globals>
 	</binding>
 </bindings>

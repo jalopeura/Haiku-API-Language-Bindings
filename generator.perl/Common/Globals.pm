@@ -1,23 +1,23 @@
 use Common::BaseObject;
 
-package Constants;
+package Globals;
 use strict;
 our @ISA = qw(BaseObject);
 
 my %children = (
-	constant => {
-		key => 'constants',
-		class => 'Constant+',
+	global => {
+		key => 'globals',
+		class => 'Global+',
 	},
 );
 
 sub _children { %children }
 
-package Constant;
+package Global;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name type group);
+my @attributes = qw(name type);
 my @required_data = qw(name type);
 
 sub _has_doc { 1 }

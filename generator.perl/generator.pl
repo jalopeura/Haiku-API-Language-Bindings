@@ -36,6 +36,7 @@ my $global_bindings = new Bindings(
 
 if ($python) {
 	eval "use Python::Generator";
+	die if $@;
 
 	my $pythongen = new Python::Generator;
 

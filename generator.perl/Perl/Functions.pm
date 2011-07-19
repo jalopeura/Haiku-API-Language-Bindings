@@ -50,6 +50,16 @@ sub generate {
 	}
 }
 
+sub exports {
+	my ($self) = @_;
+	if ($self->has('plains')) {
+		return ['\@exported_functions'];
+	}
+	else {
+		return [];
+	}
+}
+
 # convenience package for inheritance
 package Perl::Function;
 use strict;

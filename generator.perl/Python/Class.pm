@@ -7,6 +7,7 @@ use File::Path;
 use Python::Functions;
 use Python::Properties;
 use Python::Constants;
+use Python::Globals;
 use strict;
 our @ISA = qw(Binding Python::BaseObject);
 
@@ -120,6 +121,14 @@ sub generate_body {
 	
 	if ($self->has('properties')) {
 		$self->properties->generate;
+	}
+	
+	#
+	# globals
+	#
+	
+	if ($self->has('globals')) {
+		$self->globals->generate;
 	}
 	
 	#
@@ -295,7 +304,7 @@ PyTypeObject $self->{pytype_name} = {
 	0,                         /* tp_descr_set */
 	0,                         /* tp_dictoffset */
 	(initproc)$init_function,  /* tp_init */
-	0,                         /* tp_alloc */
+	PyType_GenericAlloc,       /* tp_alloc */
 	PyType_GenericNew,         /* tp_new */
 };
 

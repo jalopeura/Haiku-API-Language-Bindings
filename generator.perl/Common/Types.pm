@@ -17,7 +17,7 @@ package Type;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name builtin target);
+my @attributes = qw(name builtin repeat target);
 my @required_data = qw(name builtin);
 
 sub _attributes { @attributes }

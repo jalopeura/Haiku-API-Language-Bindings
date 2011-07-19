@@ -3,13 +3,13 @@
 	<binding source="BView" source-inherits="BHandler" target="Haiku::View" target-inherits="Haiku::Handler">
 		<doc>Exposes the View object</doc>
 		<constants>
-			<constant name="B_ENTERED_VIEW" group="cursor_transit">
+			<constant name="B_ENTERED_VIEW" type="int" group="cursor_transit">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_INSIDE_VIEW" group="cursor_transit">
+			<constant name="B_INSIDE_VIEW" type="int" group="cursor_transit">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_EXITED_VIEW" group="cursor_transit">
+			<constant name="B_EXITED_VIEW" type="int" group="cursor_transit">
 				<doc>...</doc>
 			</constant>
 			<!-- mouse button constants -->
@@ -18,64 +18,64 @@ B_PRIMARY_MOUSE_BUTTON
 B_SECONDARY_MOUSE_BUTTON
 B_TERTIARY_MOUSE_BUTTON
 -->
-			<constant name="B_FOLLOW_LEFT" group="resizing">
+			<constant name="B_FOLLOW_LEFT" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_RIGHT" group="resizing">
+			<constant name="B_FOLLOW_RIGHT" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_LEFT_RIGHT" group="resizing">
+			<constant name="B_FOLLOW_LEFT_RIGHT" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_H_CENTER" group="resizing">
+			<constant name="B_FOLLOW_H_CENTER" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_TOP" group="resizing">
+			<constant name="B_FOLLOW_TOP" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_BOTTOM" group="resizing">
+			<constant name="B_FOLLOW_BOTTOM" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_TOP_BOTTOM" group="resizing">
+			<constant name="B_FOLLOW_TOP_BOTTOM" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_V_CENTER" group="resizing">
+			<constant name="B_FOLLOW_V_CENTER" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_ALL_SIDES" group="resizing">
+			<constant name="B_FOLLOW_ALL_SIDES" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_ALL" group="resizing">
+			<constant name="B_FOLLOW_ALL" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_NONE" group="resizing">
+			<constant name="B_FOLLOW_NONE" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FULL_UPDATE_ON_RESIZE" group="flags">
+			<constant name="B_FULL_UPDATE_ON_RESIZE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_WILL_DRAW" group="flags">
+			<constant name="B_WILL_DRAW" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PULSE_NEEDED" group="flags">
+			<constant name="B_PULSE_NEEDED" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FRAME_EVENTS" group="flags">
+			<constant name="B_FRAME_EVENTS" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NAVIGABLE" group="flags">
+			<constant name="B_NAVIGABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NAVIGABLE_JUMP" group="flags">
+			<constant name="B_NAVIGABLE_JUMP" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SUBPIXEL_PRECISE" group="flags">
+			<constant name="B_SUBPIXEL_PRECISE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TRACK_WHOLE_RECT" group="tracking">
+			<constant name="B_TRACK_WHOLE_RECT" type="int" group="tracking">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TRACK_RECT_CORNER" group="tracking">
+			<constant name="B_TRACK_RECT_CORNER" type="int" group="tracking">
 				<doc>...</doc>
 			</constant>
 		</constants>

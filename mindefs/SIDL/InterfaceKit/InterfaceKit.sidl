@@ -31,22 +31,22 @@ you need to define those types in this section.
 		<doc>Exposes the Haiku Interface Kit</doc>
 		<constants>
 			<!-- alignment constants -->
-			<constant name="B_ALIGN_LEFT" group="">
+			<constant name="B_ALIGN_LEFT" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALIGN_RIGHT" group="">
+			<constant name="B_ALIGN_RIGHT" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALIGN_CENTER" group="">
+			<constant name="B_ALIGN_CENTER" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PLAIN_BORDER" group="">
+			<constant name="B_PLAIN_BORDER" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FANCY_BORDER" group="">
+			<constant name="B_FANCY_BORDER" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_BORDER" group="">
+			<constant name="B_NO_BORDER" type="int" group="">
 				<doc>...</doc>
 			</constant>
 		</constants>

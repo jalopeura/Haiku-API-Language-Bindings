@@ -10,7 +10,12 @@ BEGIN {
 use Haiku::SupportKit;
 use Haiku::ApplicationKit;
 use Haiku::InterfaceKit;
-use Test::Simple tests =>  6;
+
+use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
+use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
+
+use Test::Simple tests =>  8;
+use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
 $Haiku::InterfaceKit::DEBUG = 4;
@@ -53,4 +58,10 @@ my $item = new Haiku::MenuItem(
 	10,
 );
 my ($char, $mod) = $item->Shortcut;
-ok($char && $mod, "Multiple return values: [$char] [$mod]");
+ok($char && $mod, "Multiple return values working: [$char] [$mod]");
+
+my $origin = Haiku::Point::B_ORIGIN;
+ok(ref($origin), "Non-integer constants working [$origin]");
+
+my $be_app = Haiku::Application::be_app;
+ok(ref($be_app), "Globals working [$be_app]");

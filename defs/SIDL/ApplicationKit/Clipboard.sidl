@@ -77,5 +77,8 @@
 			</method>
 -->
 		</functions>
+		<globals>
+			<global name="be_clipboard" type="BClipboard*" />
+		</globals>
 	</binding>
 </bindings>

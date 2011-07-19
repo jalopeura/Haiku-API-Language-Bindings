@@ -17,7 +17,7 @@
 		<file name="StringView.h" />
 		<file name="TextControl.h" />
 		<file name="TextView.h" />
-		<!-- <file name="UnicodeBlockObjects.h" /> -->
+		<file name="UnicodeBlockObjects.h" />
 		<file name="View.h" />
 		<file name="Window.h" />
 	</include>
@@ -25,16 +25,20 @@
 		<lib name="libbe" />
 	</link>
 	<types>
+		<type name="uchar"            builtin="unsigned char" />
 		<type name="uint8"            builtin="unsigned char" />
 		<type name="uint16"           builtin="unsigned short" />
+		<type name="int16"            builtin="short" />
 		<type name="uint32"           builtin="unsigned long" />
 		<type name="int32"            builtin="long" />
+		<type name="uint64"           builtin="unsigned long" />
 		<type name="window_type"      builtin="int" />
 		<type name="window_look"      builtin="int" />
 		<type name="window_feel"      builtin="int" />
 		<type name="status_t"         builtin="long" />
 		<type name="bigtime_t"        builtin="long" />
-		<!-- <type name="unicode_block"    builtin="void*" /> -->
+		<type name="font_family"      builtin="char" repeat="B_FONT_FAMILY_LENGTH + 1" />
+		<type name="font_style"       builtin="char" repeat="B_FONT_STYLE_LENGTH + 1" />
 		<type name="button_width"     builtin="long" /><!-- is this right? -->
 		<type name="button_spacing"   builtin="long" /><!-- is this right? -->
 		<type name="alert_type"       builtin="long" /><!-- is this right? -->
@@ -44,7 +48,9 @@
 		<type name="menu_layout"      builtin="long" /><!-- is this right? -->
 		<type name="menu_bar_border"  builtin="long" /><!-- is this right? -->
 		<type name="alignment"        builtin="long" /><!-- is this right? -->
-		<type name="screen_id"        builtin="long" /><!-- is this right? -->
+		<type name="font_name"        builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
+		<type name="color_space"      builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
+		<type name="color_list"       builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
 <!--
 Objects defined by this interface automatically have data types (plain and
 pointer) created for them. If you need objects not defined in this interface,
@@ -55,6 +61,7 @@ you need to define those types in this section.
 		<type name="BHandler*"   builtin="object_ptr" target="Haiku::Handler" />
 		<type name="BInvoker*"   builtin="object_ptr" target="Haiku::Invoker" />
 		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
+<!-- get an error without this; some problem with order of definitions; need to figure it out -->
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -81,30 +88,30 @@ you need to define those types in this section.
 	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
 		<doc>Exposes the Haiku Interface Kit</doc>
 		<constants>
-			<constant name="B_ALIGN_LEFT" group="alignment">
+			<constant name="B_ALIGN_LEFT" type="int" group="alignment">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALIGN_RIGHT" group="alignment">
+			<constant name="B_ALIGN_RIGHT" type="int" group="alignment">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALIGN_CENTER" group="alignment">
+			<constant name="B_ALIGN_CENTER" type="int" group="alignment">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PLAIN_BORDER" group="border">
+			<constant name="B_PLAIN_BORDER" type="int" group="border">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FANCY_BORDER" group="border">
+			<constant name="B_FANCY_BORDER" type="int" group="border">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_BORDER" group="border">
+			<constant name="B_NO_BORDER" type="int" group="border">
 				<doc>...</doc>
 			</constant>
 			<!-- character constants -->
 			<!-- control value constants -->
-			<constant name="B_CONTROL_ON" group="">
+			<constant name="B_CONTROL_ON" type="int" group="">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CONTROL_OFF" group="">
+			<constant name="B_CONTROL_OFF" type="int" group="">
 				<doc>...</doc>
 			</constant>
 			<!-- dead-key mapping constants -->
@@ -116,7 +123,7 @@ you need to define those types in this section.
 			
 			<!-- message constants -->
 			
-			<!-- Defined in GraphicsDefs.h -->
+		<!-- Defined in GraphicsDefs.h -->
 			<!-- color space constants -->
 			<!-- drawing mode constants -->
 			<!-- pattern constants -->
@@ -130,4 +137,137 @@ you need to define those types in this section.
 			<!-- scrollbar constants -->
 		</constants>
 	</binding>
+	<binding source="key_map" target="Haiku::key_map">
+		<doc>Exposes the key_map struct</doc>
+		<properties>
+			<property name="version"               type="uint32" />
+			<property name="caps_key"              type="uint32" />
+			<property name="scroll_key"            type="uint32" />
+			<property name="num_key"               type="uint32" />
+			<property name="left_shift_key"        type="uint32" />
+			<property name="right_shift_key"       type="uint32" />
+			<property name="left_command_key"      type="uint32" />
+			<property name="right_command_key"     type="uint32" />
+			<property name="left_control_key"      type="uint32" />
+			<property name="right_control_key"     type="uint32" />
+			<property name="left_option_key"       type="uint32" />
+			<property name="right_option_key"      type="uint32" />
+			<property name="menu_key"              type="uint32" />
+			<property name="lock_settings"         type="uint32" />
+<!-- Commented out until repeats are enabled -->
+<!--
+			<property name="control_map"           type="int32" repeat="128" />
+			<property name="option_caps_shift_map" type="int32" repeat="128" />
+			<property name="option_caps_map"       type="int32" repeat="128" />
+			<property name="option_shift_map"      type="int32" repeat="128" />
+			<property name="option_map"            type="int32" repeat="128" />
+			<property name="caps_shift_map"        type="int32" repeat="128" />
+			<property name="caps_map"              type="int32" repeat="128" />
+			<property name="shift_map"             type="int32" repeat="128" />
+			<property name="normal_map"            type="int32" repeat="128" />
+			<property name="acute_dead_key"        type="int32" repeat="32" />
+			<property name="grave_dead_key"        type="int32" repeat="32" />
+			<property name="circumflex_dead_key"   type="int32" repeat="32" />
+			<property name="dieresis_dead_key"     type="int32" repeat="32" />
+			<property name="tilde_dead_key"        type="int32" repeat="32" />
+			<property name="acute_tables"          type="uint32" />
+-->
+			<property name="grave_tables"          type="uint32" />
+			<property name="circumflex_tables"     type="uint32" />
+			<property name="dieresis_tables"       type="uint32" />
+			<property name="tilde_tables"          type="uint32" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="mouse_map" target="Haiku::mouse_map">
+		<doc>Exposes the mouse_map struct</doc>
+		<properties>
+<!-- Commented out until repeats are enabled -->
+<!--			<property name="button" type="uint32" repeat="B_MAX_MOUSE_BUTTONS" /> -->
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+<!-- does not seem to be defined in Haiku
+	<binding source="screen_info" target="Haiku::screen_info">
+		<doc>Exposes the screen_info struct</doc>
+		<properties>
+			<property name="mode"             type="color_space" />
+			<property name="frame"            type="BRect" />
+			<property name="spaces"           type="uint32" />
+			<property name="min_refresh_rate" type="float" />
+			<property name="max_refresh_rate" type="float" />
+			<property name="refresh_rate"     type="float" />
+			<property name="h_position"       type="uchar" />
+			<property name="v_position"       type="uchar" />
+			<property name="h_size"           type="uchar" />
+			<property name="v_size"           type="uchar" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+-->
+	<binding source="scroll_bar_info" target="Haiku::scroll_bar_info">
+		<doc>Exposes the scroll_bar_info struct</doc>
+		<properties>
+			<property name="proportional"  type="bool" />
+			<property name="double_arrows" type="bool" />
+			<property name="knob"          type="int32" />
+			<property name="min_knob_size" type="int32" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+<!-- Defined in GraphicsDefs.h -->
+	<binding source="rgb_color" target="Haiku::rgb_color">
+		<doc>Exposes the rgb_color struct</doc>
+		<properties>
+			<property name="red"   type="uint8" />
+			<property name="green" type="uint8" />
+			<property name="blue"  type="uint8" />
+			<property name="alpha" type="uint8" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="color_map" target="Haiku::color_map">
+		<doc>Exposes the color_map struct</doc>
+		<properties>
+			<property name="id"            type="int32" />
+<!-- Commented out until repeats are enabled -->
+<!--
+			<property name="rgb_color"     type="color_list" repeat="256" />
+			<property name="inversion_map" type="uint8"      repeat="256"  />
+			<property name="index_map"     type="uint8"      repeat="32768" />
+-->
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="pattern" target="Haiku::pattern">
+		<doc>Exposes the pattern struct</doc>
+		<properties>
+<!-- Commented out until repeats are enabled -->
+<!--			<property name="data" type="uchar" repeat="8" /> -->
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	
+<!-- print_file_header from PrintJob -->
 </bindings>

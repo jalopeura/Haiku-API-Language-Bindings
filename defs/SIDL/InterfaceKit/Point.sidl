@@ -32,5 +32,8 @@
 				<param name="y" type="float" action="input" />
 			</method>
 		</functions>
+		<constants>
+			<constant name="B_ORIGIN" type="BPoint" group="" />
+		</constants>
 	</binding>
 </bindings>

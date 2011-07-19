@@ -107,7 +107,21 @@ my %class_map = (
 	Constant  => {
 		key   => 'constants',
 		class => 'Perl::Constant',
-		attr_map => {},
+		attr_map => {
+			type    => 'type_name',
+		},
+	},
+	
+	Globals => {
+		key   => 'globals',
+		class => 'Perl::Globals',
+	},
+	Global  => {
+		key   => 'globals',
+		class => 'Perl::Global',
+		attr_map => {
+			type    => 'type_name',
+		},
 	},
 	
 	Properties => {
@@ -117,7 +131,9 @@ my %class_map = (
 	Property   => {
 		key   => 'properties',
 		class => 'Perl::Property',
-		attr_map => {},
+		attr_map => {
+			type    => 'type_name',
+		},
 	},
 	
 	Types => {

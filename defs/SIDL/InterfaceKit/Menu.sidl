@@ -175,15 +175,34 @@
 			<!-- KeyDown -->
 		</functions>
 		<constants>
-			<constant name="B_ITEMS_IN_ROW" group="layout">
+			<constant name="B_ITEMS_IN_ROW" type="int" group="layout">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ITEMS_IN_COLUMN" group="layout">
+			<constant name="B_ITEMS_IN_COLUMN" type="int" group="layout">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ITEMS_IN_MATRIX" group="layout">
+			<constant name="B_ITEMS_IN_MATRIX" type="int" group="layout">
 				<doc>...</doc>
 			</constant>
 		</constants>
+	</binding>
+	<binding source="menu_info" target="Haiku::menu_info">
+		<doc>Exposes the menu_info struct</doc>
+		<properties>
+			<property name="font_size"             type="float" />
+<!-- Commented out until repeats are enabled (font_family and font_style are arrays -->
+<!--
+			<property name="f_family"              type="font_family" />
+			<property name="f_style"               type="font_style" />
+-->
+			<property name="background_color"      type="rgb_color" />
+			<property name="separator"             type="int32" />
+			<property name="click_to_open"         type="bool" />
+			<property name="triggers_always_shown" type="bool" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
 	</binding>
 </bindings>

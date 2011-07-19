@@ -7,6 +7,7 @@ use File::Path;
 use Perl::Functions;
 use Perl::Properties;
 use Perl::Constants;
+use Perl::Globals;
 use strict;
 our @ISA = qw(Binding Perl::BaseObject);
 
@@ -25,18 +26,20 @@ sub finalize_upgrade {
 	# anything to export?
 	my @exports;
 	if ($self->has('functions')) {
-		if ($self->functions->has('plains')) {
-			for my $plain ($self->functions->plains) {
-				push @exports, $plain->name;
-			}
-		}
+		push @exports, @{ $self->functions->exports };
+#		if ($self->functions->has('plains')) {
+#			for my $plain ($self->functions->plains) {
+#				push @exports, $plain->name;
+#			}
+#		}
 	}
 	if ($self->has('constants')) {
-		if ($self->constants->has('constants')) {
-			for my $constant ($self->constants->constants) {
-				push @exports, $constant->name;
-			}
-		}
+		push @exports, @{ $self->constants->exports };
+#		if ($self->constants->has('constants')) {
+#			for my $constant ($self->constants->constants) {
+#				push @exports, $constant->name;
+#			}
+#		}
 	}
 	
 	my @isa;
@@ -134,6 +137,14 @@ sub generate_body {
 	if ($self->has('constants')) {
 		$self->constants->generate;
 	}
+	
+	#
+	# globals
+	#
+	
+	if ($self->has('globals')) {
+		$self->globals->generate;
+	}
 }
 
 sub generate_postamble {
@@ -185,8 +196,11 @@ TOP
 	}
 	
 	if ($self->has('_exports')) {
-		my $exp = join(' ', $self->_exports);
-		print { $self->{pmh} } "our \@EXPORT_OK = qw($exp);\n";
+		if ($self->has('constants')) {
+			$self->constants->generate_export_groups;
+		}
+		my $exp = join(', ', $self->_exports);
+		print { $self->{pmh} } "our \@EXPORT_OK = ($exp);\n";
 	}
 	
 	print { $self->{pmh} } "\n";

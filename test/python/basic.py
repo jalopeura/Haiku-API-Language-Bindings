@@ -10,6 +10,10 @@ from Haiku.ViewConstants import \
 
 message = Haiku.Message(0)
 
+#print message.what
+#message.what = 0xff
+#print message.what
+
 app = Haiku.Application("application/python-test")
 window = Haiku.Window(
 	Haiku.Rect(50,50,170,170),
@@ -42,3 +46,9 @@ item = Haiku.MenuItem(
 
 char, mod = item.Shortcut()
 print "Should get two return values; got", char, "and", mod
+
+origin = Haiku.PointConstants.B_ORIGIN
+print "Should get a non-integer constant; got", origin
+
+global_be_app = Haiku.Application.be_app()
+print "Should get a global; got", global_be_app

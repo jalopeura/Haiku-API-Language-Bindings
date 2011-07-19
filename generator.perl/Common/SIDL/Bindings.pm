@@ -82,6 +82,7 @@ package SIDL::Binding;
 use Common::SIDL::Functions;
 use Common::SIDL::Properties;
 use Common::SIDL::Constants;
+use Common::SIDL::Globals;
 use strict;
 our @ISA = qw(Binding SIDL::BaseObject);
 

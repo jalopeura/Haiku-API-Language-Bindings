@@ -107,7 +107,21 @@ my %class_map = (
 	Constant  => {
 		key   => 'constants',
 		class => 'Python::Constant',
-		attr_map => {},
+		attr_map => {
+			type    => 'type_name',
+		},
+	},
+	
+	Globals => {
+		key   => 'globals',
+		class => 'Python::Globals',
+	},
+	Global  => {
+		key   => 'globals',
+		class => 'Python::Global',
+		attr_map => {
+			type    => 'type_name',
+		},
 	},
 	
 	Properties => {
@@ -117,7 +131,9 @@ my %class_map = (
 	Property   => {
 		key   => 'properties',
 		class => 'Python::Property',
-		attr_map => {},
+		attr_map => {
+			type    => 'type_name',
+		},
 	},
 	
 	Types => {

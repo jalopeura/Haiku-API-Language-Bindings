@@ -37,13 +37,13 @@
 			<!-- MouseDown -->
 		</functions>
 		<constants>
-			<constant name="B_BORDER_FRAME" group="border">
+			<constant name="B_BORDER_FRAME" type="int" group="border">
 				<doc>The border is drawn around the entire frame rectangle.</doc>
 			</constant>
-			<constant name="B_BORDER_CONTENTS" group="border">
+			<constant name="B_BORDER_CONTENTS" type="int" group="border">
 				<doc>The border is drawn around just the list of items.</doc>
 			</constant>
-			<constant name="B_BORDER_EACH_ITEM" group="border">
+			<constant name="B_BORDER_EACH_ITEM" type="int" group="border">
 				<doc>A border is drawn around each item.</doc>
 			</constant>
 		</constants>

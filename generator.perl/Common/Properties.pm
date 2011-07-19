@@ -17,7 +17,7 @@ package Property;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name type);
+my @attributes = qw(name type repeat);
 my @required_data = qw(name type);
 
 sub _has_doc { 1 }

@@ -9,7 +9,7 @@ sub generate_cc {
 	my $cpp_class_name = $self->cpp_class_name;
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	my $name = $self->name;
+	my $name = "${python_object_prefix}_" . $self->name;
 	if ($self->has('overload_name')) {
 		$name .= $self->overload_name;
 	}
@@ -28,10 +28,10 @@ sub generate_cc {
 	if ($self->has('doc')) {
 		$doc = $self->doc;
 	}
-	$self->package->add_method_table_entry(
+	$self->class->add_method_table_entry(
 		$self->name,		# name as seen from Python
 		$name,				# name of wrapper function
-		'METH_VARARGS',		# flags
+		'METH_VARARGS|METH_STATIC',		# flags
 		$doc				# docs
 	);
 }

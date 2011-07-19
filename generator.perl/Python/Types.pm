@@ -175,11 +175,23 @@ sub finalize_upgrade {
 	$self->{target_inherits}=~s/::/./g;
 }
 
+#%options = (
+#	name
+#	default
+#	count/length = {
+#		name
+#		type
+#	}
+#	must_not_delete
+#)
+
 sub arg_builder {
-	my ($self, $param) = @_;
+	my ($self, $object) = @_;
+	
+	my $options = $object->type_options;
 	
 	my $item = $self->format_item;
-	my $name = $param->name;
+	my $name = $options->{name};
 	
 	my $arg = $name;
 	my (@def, @code);
@@ -192,14 +204,15 @@ sub arg_builder {
 			$arg = "($name ? 1 : 0)";
 		}
 		else {
-			$arg = "py_$name";
+			$arg=~s/[^>]+>//g;
+			$arg = "py_$arg";
 			push @def, "PyObject* py_$name;";
 			my $builtin = $self->builtin;
 			my $target;
 			
 			if ($builtin eq 'char**') {
-				my $count = $param->count->name;
-				push @code, qq(py_$name = CharArray2PyList($name, (int)$count););
+				my $count = $options->{count}{name};
+				push @code, qq($arg = CharArray2PyList($name, (int)$count););
 			}
 			elsif ($builtin eq 'object' or $builtin eq 'responder'
 				or $builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
@@ -211,26 +224,26 @@ sub arg_builder {
 				$def[-1] = "$objtype* $arg;";
 				
 				push @code,
-					#qq(PyTypeObject* py_${name}_type = (PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
-					#qq(py_$name = ($objtype*)py_${name}_type->tp_alloc(py_${name}_type, 0););
-					qq(py_$name = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
+					#qq(PyTypeObject* ${arg}_type = (PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
+					#qq($arg = ($objtype*)${arg}_type->tp_alloc(${arg}_type, 0););
+					qq($arg = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
 				
 				if ($builtin eq 'object' or $builtin eq 'responder') {
-					push @code, qq(py_$name->cpp_object = &$name;);
+					push @code, qq($arg->cpp_object = ($self->{name}*)&$name;);
 				}
 				else {
-					push @code, qq(py_$name->cpp_object = $name;);
+					push @code, qq($arg->cpp_object = ($self->{name})$name;);
 				}
 				
-				if ($param->must_not_delete) {
+				if ($options->{must_not_delete}) {
 					push @code,
 						qq(// cannot delete this object; we do not own it),
-						qq(py_$name->can_delete_cpp_object = false;);
+						qq($arg->can_delete_cpp_object = false;);
 				}
 				else {
 					push @code,
 						qq(// we own this object, so we can delete it),
-						qq(py_$name->can_delete_cpp_object = true;);
+						qq($arg->can_delete_cpp_object = true;);
 				}
 			}
 			else {
@@ -243,23 +256,25 @@ sub arg_builder {
 }
 
 sub arg_parser {
-	my ($self, $param) = @_;
+	my ($self, $object) = @_;
+	
+	my $options = $object->type_options;
 	
 	my $item = $self->format_item;
-	my $name = $param->name;
+	my $name = $options->{name};
 	
 	my $arg = $name;
 	my (@def, @code);
 	
-	my $def = "$param->{type_name} $name";
-	if ($param->has('default')) {
-		$def .= " = " . $param->default;
+	my $def = "$self->{name} $name";
+	if (exists $options->{default}) {
+		$def .= " = " . $options->{default};
 	}
 	$def .= ';';
 	push @def, $def;
-	
 	if ($item=~/^O/) {
-		$arg = "py_$name";
+		$arg=~s/[^>]+>//g;
+		$arg = "py_$arg";
 		push @def, "PyObject* $arg;";
 		
 		my $builtin = $self->builtin;
@@ -268,9 +283,11 @@ sub arg_parser {
 			push @code, qq($name = (bool)(PyObject_IsTrue($arg)););
 		}
 		elsif ($builtin eq 'char**') {
-			my $count_name = $param->count->name;
-			my $count_type = $param->count->type_name;
-			push @def, "$count_type $count_name = 0;";
+			my $count_name = $options->{count}{name};
+			if ($options->{count}{type}) {
+				my $count_type = $options->{count}{type}->name;
+				push @def, "$count_type $count_name = 0;";
+			}
 			push @code, qq($name = PyList2CharArray($arg, (int*)&$count_name););
 		}
 		elsif ($builtin eq 'object' or $builtin eq 'responder'
@@ -285,16 +302,23 @@ sub arg_parser {
 			else {
 				push @code, qq($name = (($objtype*)$arg)->cpp_object;);
 			}
-			if ($param->must_not_delete) {
+			if ($options->{must_not_delete}) {
 				push @code, qq((($objtype*)$arg)->can_delete_cpp_object = false;);
 			}
 		}
 		else {
-			die "Unsupported type: $param->{type}/$builtin/$target";
+			die "Unsupported type: $self->{name}/$builtin/$target";
 		}
 	}
 	
-	return ($item, "&$arg", \@def, \@code);
+	if ($arg=~/[>.]/) {
+		$arg = "&($arg)";
+	}
+	else {
+		$arg = "&$arg";
+	}
+	
+	return ($item, $arg, \@def, \@code);
 }
 
 package Python::BuiltinType;

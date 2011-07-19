@@ -8,6 +8,10 @@ our @ISA = qw(Types Perl::BaseObject);
 # need to handle long double
 
 # map builtin types to perl types
+# char  >=  8
+# short >= 16
+# int   >= 16
+# long  >= 32
 our %builtins = (
 	'char'    => 'T_UV',
 	'short'   => 'T_IV',
@@ -277,7 +281,7 @@ sub input_converter {
 }
 
 sub output_converter {
-	my ($self, $var, $arg) = @_;
+	my ($self, $var, $arg, $must_not_delete) = @_;
 	my $converter = $Perl::Types::output_converters{ $self->perltype };
 	
 	# values for the eval
@@ -285,9 +289,15 @@ sub output_converter {
 	my $ntype = '$ntype';
 	
 	my $ret = eval "qq($converter)" or die $@;
+	
+	if ($must_not_delete) {
+		$ret=~s/CLASS/CLASS, true/;
+	}
+	
 	if ($self->has('target')) {
 		$ret=~s/CLASS/"$self->{target}"/;
 	}
+	
 #print "Output converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
 #print "Called from ", join(':::', caller), "\n";
 	return $ret;

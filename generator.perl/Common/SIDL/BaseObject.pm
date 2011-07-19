@@ -47,7 +47,7 @@ sub _parse_attributes {
 		}
 		
 		# uh-oh
-		die "Unsupported attribute of $element->{name} element: $attr";
+		die "Unsupported attribute of $element->{name} element: $attr in file " . $self->_tree;
 	}
 }
 

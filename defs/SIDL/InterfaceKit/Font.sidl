@@ -111,350 +111,346 @@
 			<!-- GetStringWidth -->
 		</functions>
 		<constants>
-			<constant name="B_UNICODE_UTF8" group="encodings">
+			<constant name="B_UNICODE_UTF8" type="int" group="encodings">
 				<doc>UTF-8</doc>
 			</constant>
-			<constant name="B_ISO_8859_1" group="encodings">
+			<constant name="B_ISO_8859_1" type="int" group="encodings">
 				<doc>Latin 1</doc>
 			</constant>
-			<constant name="B_ISO_8859_2" group="encodings">
+			<constant name="B_ISO_8859_2" type="int" group="encodings">
 				<doc>Latin 2</doc>
 			</constant>
-			<constant name="B_ISO_8859_3" group="encodings">
+			<constant name="B_ISO_8859_3" type="int" group="encodings">
 				<doc>Latin 3</doc>
 			</constant>
-			<constant name="B_ISO_8859_4" group="encodings">
+			<constant name="B_ISO_8859_4" type="int" group="encodings">
 				<doc>Latin 4</doc>
 			</constant>
-			<constant name="B_ISO_8859_5" group="encodings">
+			<constant name="B_ISO_8859_5" type="int" group="encodings">
 				<doc>Latin/Cyrillic</doc>
 			</constant>
-			<constant name="B_ISO_8859_6" group="encodings">
+			<constant name="B_ISO_8859_6" type="int" group="encodings">
 				<doc>Latin/Arabic</doc>
 			</constant>
-			<constant name="B_ISO_8859_7" group="encodings">
+			<constant name="B_ISO_8859_7" type="int" group="encodings">
 				<doc>Latin/Greek</doc>
 			</constant>
-			<constant name="B_ISO_8859_8" group="encodings">
+			<constant name="B_ISO_8859_8" type="int" group="encodings">
 				<doc>Latin/Hebrew</doc>
 			</constant>
-			<constant name="B_ISO_8859_9" group="encodings">
+			<constant name="B_ISO_8859_9" type="int" group="encodings">
 				<doc>Latin 5</doc>
 			</constant>
-			<constant name="B_ISO_8859_10" group="encodings">
+			<constant name="B_ISO_8859_10" type="int" group="encodings">
 				<doc>Latin 6</doc>
 			</constant>
-			<constant name="B_MACINTOSH_ROMAN" group="encodings">
+			<constant name="B_MACINTOSH_ROMAN" type="int" group="encodings">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DISABLE_ANTIALIASING" group="flags">
+			<constant name="B_DISABLE_ANTIALIASING" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_IS_FIXED" group="flags">
+			<constant name="B_IS_FIXED" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HAS_TUNED_FONT" group="flags">
+			<constant name="B_HAS_TUNED_FONT" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-<!--
-			<constant name="B_FONT_FAMILY_NAME_LENGTH" group="lengths">
+			<constant name="B_FONT_FAMILY_LENGTH" type="int" group="lengths">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_STYLE_NAME_LENGTH" group="lengths">
+			<constant name="B_FONT_STYLE_LENGTH" type="int" group="lengths">
 				<doc>...</doc>
 			</constant>
--->
-			<constant name="B_FONT_FAMILY_AND_STYLE" group="properties">
+			<constant name="B_FONT_FAMILY_AND_STYLE" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_SIZE" group="properties">
+			<constant name="B_FONT_SIZE" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_SHEAR" group="properties">
+			<constant name="B_FONT_SHEAR" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_ROTATION" group="properties">
+			<constant name="B_FONT_ROTATION" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_SPACING" group="properties">
+			<constant name="B_FONT_SPACING" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_ENCODING" group="properties">
+			<constant name="B_FONT_ENCODING" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_FACE" group="properties">
+			<constant name="B_FONT_FACE" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_FLAGS" group="properties">
+			<constant name="B_FONT_FLAGS" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_ALL" group="properties">
+			<constant name="B_FONT_ALL" type="int" group="properties">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CHAR_SPACING" group="spacing">
+			<constant name="B_CHAR_SPACING" type="int" group="spacing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_STRING_SPACING" group="spacing">
+			<constant name="B_STRING_SPACING" type="int" group="spacing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BITMAP_SPACING" group="spacing">
+			<constant name="B_BITMAP_SPACING" type="int" group="spacing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FIXED_SPACING" group="spacing">
+			<constant name="B_FIXED_SPACING" type="int" group="spacing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SCREEN_METRIC" group="metric">
+			<constant name="B_SCREEN_METRIC" type="int" group="metric">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PRINTING_METRIC" group="metric">
+			<constant name="B_PRINTING_METRIC" type="int" group="metric">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TRUETYPE_WINDOWS" group="format">
+			<constant name="B_TRUETYPE_WINDOWS" type="int" group="format">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_POSTSCRIPT_TYPE1_WINDOWS" group="format">
+			<constant name="B_POSTSCRIPT_TYPE1_WINDOWS" type="int" group="format">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_LEFT_TO_RIGHT" group="direction">
+			<constant name="B_FONT_LEFT_TO_RIGHT" type="int" group="direction">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FONT_RIGHT_TO_LEFT" group="direction">
+			<constant name="B_FONT_RIGHT_TO_LEFT" type="int" group="direction">
 				<doc>...</doc>
 			</constant>
-<!--
-			<constant name="B_BASIC_LATIN_BLOCK" group="unicode_blocks">
+			<constant name="B_BASIC_LATIN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LATIN1_SUPPLEMENT_BLOCK" group="unicode_blocks">
+			<constant name="B_LATIN1_SUPPLEMENT_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LATIN_EXTENDED_A_BLOCK" group="unicode_blocks">
+			<constant name="B_LATIN_EXTENDED_A_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LATIN_EXTENDED_B_BLOCK" group="unicode_blocks">
+			<constant name="B_LATIN_EXTENDED_B_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_IPA_EXTENSIONS_BLOCK" group="unicode_blocks">
+			<constant name="B_IPA_EXTENSIONS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SPACING_MODIFIER_LETTERS_BLOCK" group="unicode_blocks">
+			<constant name="B_SPACING_MODIFIER_LETTERS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_COMBINING_DIACRITICAL_MARKS_BLOCK" group="unicode_blocks">
+			<constant name="B_COMBINING_DIACRITICAL_MARKS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BASIC_GREEK_BLOCK" group="unicode_blocks">
+			<constant name="B_BASIC_GREEK_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GREEK_SYMBOLS_AND_COPTIC_BLOCK" group="unicode_blocks">
+			<constant name="B_GREEK_SYMBOLS_AND_COPTIC_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CYRILLIC_BLOCK" group="unicode_blocks">
+			<constant name="B_CYRILLIC_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ARMENIAN_BLOCK" group="unicode_blocks">
+			<constant name="B_ARMENIAN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BASIC_HEBREW_BLOCK" group="unicode_blocks">
+			<constant name="B_BASIC_HEBREW_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HEBREW_EXTENDED_BLOCK" group="unicode_blocks">
+			<constant name="B_HEBREW_EXTENDED_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BASIC_ARABIC_BLOCK" group="unicode_blocks">
+			<constant name="B_BASIC_ARABIC_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ARABIC_EXTENDED_BLOCK" group="unicode_blocks">
+			<constant name="B_ARABIC_EXTENDED_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DEVANAGARI_BLOCK" group="unicode_blocks">
+			<constant name="B_DEVANAGARI_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BENGALI_BLOCK" group="unicode_blocks">
+			<constant name="B_BENGALI_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GURMUKHI_BLOCK" group="unicode_blocks">
+			<constant name="B_GURMUKHI_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GUJARATI_BLOCK" group="unicode_blocks">
+			<constant name="B_GUJARATI_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ORIYA_BLOCK" group="unicode_blocks">
+			<constant name="B_ORIYA_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TAMIL_BLOCK" group="unicode_blocks">
+			<constant name="B_TAMIL_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TELUGU_BLOCK" group="unicode_blocks">
+			<constant name="B_TELUGU_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_KANNADA_BLOCK" group="unicode_blocks">
+			<constant name="B_KANNADA_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MALAYALAM_BLOCK" group="unicode_blocks">
+			<constant name="B_MALAYALAM_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_THAI_BLOCK" group="unicode_blocks">
+			<constant name="B_THAI_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LAO_BLOCK" group="unicode_blocks">
+			<constant name="B_LAO_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BASIC_GEORGIAN_BLOCK" group="unicode_blocks">
+			<constant name="B_BASIC_GEORGIAN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GEORGIAN_EXTENDED_BLOCK" group="unicode_blocks">
+			<constant name="B_GEORGIAN_EXTENDED_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HANGUL_JAMO_BLOCK" group="unicode_blocks">
+			<constant name="B_HANGUL_JAMO_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LATIN_EXTENDED_ADDITIONAL_BLOCK" group="unicode_blocks">
+			<constant name="B_LATIN_EXTENDED_ADDITIONAL_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GREEK_EXTENDED_BLOCK" group="unicode_blocks">
+			<constant name="B_GREEK_EXTENDED_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GENERAL_PUNCTUATION_BLOCK" group="unicode_blocks">
+			<constant name="B_GENERAL_PUNCTUATION_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SUPERSCRIPTS_AND_SUBSCRIPTS_BLOCK" group="unicode_blocks">
+			<constant name="B_SUPERSCRIPTS_AND_SUBSCRIPTS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CURRENCY_SYMBOLS_BLOCK" group="unicode_blocks">
+			<constant name="B_CURRENCY_SYMBOLS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_COMBINING_MARKS_FOR_SYMBOLS_BLOCK" group="unicode_blocks">
+			<constant name="B_COMBINING_MARKS_FOR_SYMBOLS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LETTERLIKE_SYMBOLS_BLOCK" group="unicode_blocks">
+			<constant name="B_LETTERLIKE_SYMBOLS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NUMBER_FORMS_BLOCK" group="unicode_blocks">
+			<constant name="B_NUMBER_FORMS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ARROWS_BLOCK" group="unicode_blocks">
+			<constant name="B_ARROWS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MATHEMATICAL_OPERATORS_BLOCK" group="unicode_blocks">
+			<constant name="B_MATHEMATICAL_OPERATORS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MISCELLANEOUS_TECHNICAL_BLOCK" group="unicode_blocks">
+			<constant name="B_MISCELLANEOUS_TECHNICAL_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CONTROL_PICTURES_BLOCK" group="unicode_blocks">
+			<constant name="B_CONTROL_PICTURES_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_OPTICAL_CHARACTER_RECOGNITION_BLOCK" group="unicode_blocks">
+			<constant name="B_OPTICAL_CHARACTER_RECOGNITION_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ENCLOSED_ALPHANUMERICS_BLOCK" group="unicode_blocks">
+			<constant name="B_ENCLOSED_ALPHANUMERICS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BOX_DRAWING_BLOCK" group="unicode_blocks">
+			<constant name="B_BOX_DRAWING_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BLOCK_ELEMENTS_BLOCK" group="unicode_blocks">
+			<constant name="B_BLOCK_ELEMENTS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_GEOMETRIC_SHAPES_BLOCK" group="unicode_blocks">
+			<constant name="B_GEOMETRIC_SHAPES_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MISCELLANEOUS_SYMBOLS_BLOCK" group="unicode_blocks">
+			<constant name="B_MISCELLANEOUS_SYMBOLS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DINGBATS_BLOCK" group="unicode_blocks">
+			<constant name="B_DINGBATS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_SYMBOLS_AND_PUNCTUATION_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_SYMBOLS_AND_PUNCTUATION_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HIRAGANA_BLOCK" group="unicode_blocks">
+			<constant name="B_HIRAGANA_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_KATAKANA_BLOCK" group="unicode_blocks">
+			<constant name="B_KATAKANA_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BOPOMOFO_BLOCK" group="unicode_blocks">
+			<constant name="B_BOPOMOFO_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HANGUL_COMPATIBILITY_JAMO_BLOCK" group="unicode_blocks">
+			<constant name="B_HANGUL_COMPATIBILITY_JAMO_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_MISCELLANEOUS_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_MISCELLANEOUS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ENCLOSED_CJK_LETTERS_AND_MONTHS_BLOCK" group="unicode_blocks">
+			<constant name="B_ENCLOSED_CJK_LETTERS_AND_MONTHS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_COMPATIBILITY_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_COMPATIBILITY_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HANGUL_BLOCK" group="unicode_blocks">
+			<constant name="B_HANGUL_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HIGH_SURROGATES_BLOCK" group="unicode_blocks">
+			<constant name="B_HIGH_SURROGATES_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_LOW_SURROGATES_BLOCK" group="unicode_blocks">
+			<constant name="B_LOW_SURROGATES_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_UNIFIED_IDEOGRAPHS_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_UNIFIED_IDEOGRAPHS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PRIVATE_USE_AREA_BLOCK" group="unicode_blocks">
+			<constant name="B_PRIVATE_USE_AREA_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_COMPATIBILITY_IDEOGRAPHS_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_COMPATIBILITY_IDEOGRAPHS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALPHABETIC_PRESENTATION_FORMS_BLOCK" group="unicode_blocks">
+			<constant name="B_ALPHABETIC_PRESENTATION_FORMS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ARABIC_PRESENTATION_FORMS_A_BLOCK" group="unicode_blocks">
+			<constant name="B_ARABIC_PRESENTATION_FORMS_A_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_COMBINING_HALF_MARKS_BLOCK" group="unicode_blocks">
+			<constant name="B_COMBINING_HALF_MARKS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CJK_COMPATIBILITY_FORMS_BLOCK" group="unicode_blocks">
+			<constant name="B_CJK_COMPATIBILITY_FORMS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SMALL_FORM_VARIANTS_BLOCK" group="unicode_blocks">
+			<constant name="B_SMALL_FORM_VARIANTS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ARABIC_PRESENTATION_FORMS_B_BLOCK" group="unicode_blocks">
+			<constant name="B_ARABIC_PRESENTATION_FORMS_B_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK" group="unicode_blocks">
+			<constant name="B_HALFWIDTH_AND_FULLWIDTH_FORMS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_SPECIALS_BLOCK" group="unicode_blocks">
+			<constant name="B_SPECIALS_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TIBETAN_BLOCK" group="unicode_blocks">
+			<constant name="B_TIBETAN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
--->
-			<constant name="B_ITALIC_FACE" group="face">
+			<constant name="B_ITALIC_FACE" type="int" group="face">
 				<doc>Characters are drawn italicized.</doc>
 			</constant>
-			<constant name="B_UNDERSCORE_FACE" group="face">
+			<constant name="B_UNDERSCORE_FACE" type="int" group="face">
 				<doc>Characters are drawn underlined.</doc>
 			</constant>
-			<constant name="B_NEGATIVE_FACE" group="face">
+			<constant name="B_NEGATIVE_FACE" type="int" group="face">
 				<doc>Characters are drawn in the low color, while the background is drawn in the high color.</doc>
 			</constant>
-			<constant name="B_OUTLINED_FACE" group="face">
+			<constant name="B_OUTLINED_FACE" type="int" group="face">
 				<doc>Characters are drawn hollow, with a line around their border, but unfilled.</doc>
 			</constant>
-			<constant name="B_STRIKEOUT_FACE" group="face">
+			<constant name="B_STRIKEOUT_FACE" type="int" group="face">
 				<doc>Characters are drawn "struck-out," with a line drawn horizontally through the middle.</doc>
 			</constant>
-			<constant name="B_BOLD_FACE" group="face">
+			<constant name="B_BOLD_FACE" type="int" group="face">
 				<doc>Characters are drawn in boldface.</doc>
 			</constant>
-			<constant name="B_REGULAR_FACE" group="face">
+			<constant name="B_REGULAR_FACE" type="int" group="face">
 				<doc>Characters are drawn normally.</doc>
 			</constant>
 			<!-- string truncation constants -->
@@ -465,5 +461,74 @@ B_TRUNCATE_MIDDLE
 B_TRUNCATE_SMART
 -->
 		</constants>
+		<globals>
+			<global name="be_plain_font" type="BFont*" />
+			<global name="be_bold_font"  type="BFont*" />
+			<global name="be_fixed_font" type="BFont*" />
+		</globals>
+	</binding>
+	<binding source="edge_info" target="Haiku::edge_info">
+		<doc>Exposes the edge_info struct</doc>
+		<properties>
+			<property name="left"  type="float" />
+			<property name="right" type="float" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="escapement_delta" target="Haiku::escapement_delta">
+		<doc>Exposes the escapement_delta struct</doc>
+		<properties>
+			<property name="nonspace" type="float" />
+			<property name="space"    type="float" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="font_height" target="Haiku::font_height">
+		<doc>Exposes the font_height struct</doc>
+		<properties>
+			<property name="ascent"  type="float" />
+			<property name="descent" type="float" />
+			<property name="leading" type="float" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="tuned_font_info" target="Haiku::tuned_font_info">
+		<doc>Exposes the tuned_font_info struct</doc>
+		<properties>
+			<property name="size"     type="float" />
+			<property name="shear"    type="float" />
+			<property name="rotation" type="float" />
+			<property name="flags"    type="int32" />
+			<property name="face"     type="int16" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="unicode_block" target="Haiku::unicode_block">
+		<doc>Exposes the unicode_block struct</doc>
+		<functions>
+			<constructor>
+				<param name="block2" type="uint64" action="input" />
+				<param name="block1" type="uint64" action="input" />
+			</constructor>
+			<constructor overload-name="Empty" />
+			<destructor />
+			<method name="Includes">
+				<doc>Determines whether the given block is a subset of this block.</doc>
+				<param name="block" type="unicode_block" action="input" />
+				<return type="bool" action="output" />
+			</method>
+		</functions>
 	</binding>
 </bindings>

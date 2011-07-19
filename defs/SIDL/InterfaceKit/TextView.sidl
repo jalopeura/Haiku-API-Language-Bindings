@@ -141,4 +141,28 @@
 			<!-- UnflattenRunArray -->
 		</functions>
 	</binding>
+	<binding source="text_run" target="Haiku::text_run">
+		<doc>Exposes the text_run struct</doc>
+		<properties>
+			<property name="offset" type="int32" />
+			<property name="font"   type="BFont" />
+			<property name="color"  type="rgb_color" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="text_run_array" target="Haiku::text_run_array">
+		<doc>Exposes the text_run_array struct</doc>
+		<properties>
+			<property name="count" type="int32" />
+<!-- Commented out until repeats are enabled -->
+<!--			<property name="runs"  type="text_run" repeat="count"/> -->
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
 </bindings>

@@ -279,112 +279,112 @@
 			<!-- Zoom -->
 		</functions>
 		<constants>
-			<constant name="B_NOT_MOVABLE" group="flags">
+			<constant name="B_NOT_MOVABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_CLOSABLE" group="flags">
+			<constant name="B_NOT_CLOSABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_ZOOMABLE" group="flags">
+			<constant name="B_NOT_ZOOMABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_MINIMIZABLE" group="flags">
+			<constant name="B_NOT_MINIMIZABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_H_RESIZABLE" group="flags">
+			<constant name="B_NOT_H_RESIZABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_V_RESIZABLE" group="flags">
+			<constant name="B_NOT_V_RESIZABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_RESIZABLE" group="flags">
+			<constant name="B_NOT_RESIZABLE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_OUTLINE_RESIZE" group="flags">
+			<constant name="B_OUTLINE_RESIZE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_WILL_ACCEPT_FIRST_CLICK" group="flags">
+			<constant name="B_WILL_ACCEPT_FIRST_CLICK" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_AVOID_FRONT" group="flags">
+			<constant name="B_AVOID_FRONT" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_AVOID_FOCUS" group="flags">
+			<constant name="B_AVOID_FOCUS" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_WORKSPACE_ACTIVATION" group="flags">
+			<constant name="B_NO_WORKSPACE_ACTIVATION" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" group="flags">
+			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ASYNCHRONOUS_CONTROLS" group="flags">
+			<constant name="B_ASYNCHRONOUS_CONTROLS" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_QUIT_ON_WINDOW_CLOSE" group="flags">
+			<constant name="B_QUIT_ON_WINDOW_CLOSE" type="int" group="flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TITLED_WINDOW" group="type">
+			<constant name="B_TITLED_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DOCUMENT_WINDOW" group="type">
+			<constant name="B_DOCUMENT_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_WINDOW" group="type">
+			<constant name="B_MODAL_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_WINDOW" group="type">
+			<constant name="B_FLOATING_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BORDERED_WINDOW" group="type">
+			<constant name="B_BORDERED_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_UNTYPED_WINDOW" group="type">
+			<constant name="B_UNTYPED_WINDOW" type="int" group="type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CURRENT_WORKSPACE" group="workspace">
+			<constant name="B_CURRENT_WORKSPACE" type="int" group="workspace">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALL_WORKSPACES" group="workspace">
+			<constant name="B_ALL_WORKSPACES" type="int" group="workspace">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DOCUMENT_WINDOW_LOOK" group="look">
+			<constant name="B_DOCUMENT_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TITLED_WINDOW_LOOK" group="look">
+			<constant name="B_TITLED_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_WINDOW_LOOK" group="look">
+			<constant name="B_FLOATING_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_WINDOW_LOOK" group="look">
+			<constant name="B_MODAL_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BORDERED_WINDOW_LOOK" group="look">
+			<constant name="B_BORDERED_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_BORDER_WINDOW_LOOK" group="look">
+			<constant name="B_NO_BORDER_WINDOW_LOOK" type="int" group="look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NORMAL_WINDOW_FEEL" group="feel">
+			<constant name="B_NORMAL_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" group="feel">
+			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_APP_WINDOW_FEEL" group="feel">
+			<constant name="B_MODAL_APP_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_ALL_WINDOW_FEEL" group="feel">
+			<constant name="B_MODAL_ALL_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" group="feel">
+			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_APP_WINDOW_FEEL" group="feel">
+			<constant name="B_FLOATING_APP_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_ALL_WINDOW_FEEL" group="feel">
+			<constant name="B_FLOATING_ALL_WINDOW_FEEL" type="int" group="feel">
 				<doc>...</doc>
 			</constant>
 		</constants>

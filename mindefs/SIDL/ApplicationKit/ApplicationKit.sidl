@@ -26,52 +26,52 @@ you need to define those types in this section.
 	<binding source="ApplicationKit" target="Haiku::ApplicationKit">
 		<doc>Exposes the Haiku Application Kit.</doc>
 		<constants>
-			<constant name="B_DUPLICATE_REPLY" group="error">
+			<constant name="B_DUPLICATE_REPLY" type="int" group="error">
 				<doc>A reply message has already been sent</doc>
 			</constant>
-			<constant name="B_BAD_REPLY" group="error">
+			<constant name="B_BAD_REPLY" type="int" group="error">
 				<doc>The reply message is inappropriate and can't be sent</doc>
 			</constant>
-			<constant name="B_BAD_HANDLER" group="error">
+			<constant name="B_BAD_HANDLER" type="int" group="error">
 				<doc>The designated message handler isn't valid</doc>
 			</constant>
-			<constant name="B_MESSAGE_TO_SELF" group="error">
+			<constant name="B_MESSAGE_TO_SELF" type="int" group="error">
 				<doc>A thread is trying to send a message to itself</doc>
 			</constant>
-			<constant name="B_ALREADY_RUNNING" group="error">
+			<constant name="B_ALREADY_RUNNING" type="int" group="error">
 				<doc>The application can't be launched again</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED" group="error">
+			<constant name="B_LAUNCH_FAILED" type="int" group="error">
 				<doc>The attempt to launch the application failed</doc>
 			</constant>
-			<constant name="B_AMBIGUOUS_APP_LAUNCH" group="error">
+			<constant name="B_AMBIGUOUS_APP_LAUNCH" type="int" group="error">
 				<doc>Odd things happening in app land</doc>
 			</constant>
-			<constant name="B_UNKNOWN_MIME_TYPE" group="error">
+			<constant name="B_UNKNOWN_MIME_TYPE" type="int" group="error">
 				<doc>Application signature unknown</doc>
 			</constant>
-			<constant name="B_BAD_SCRIPT_SYNTAX" group="error">
+			<constant name="B_BAD_SCRIPT_SYNTAX" type="int" group="error">
 				<doc>Script syntax malformed</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" group="error">
+			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" type="int" group="error">
 				<doc>Unable to resolve a link to the application to be launched</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_EXECUTABLE" group="error">
+			<constant name="B_LAUNCH_FAILED_EXECUTABLE" type="int" group="error">
 				<doc>The attempt to launch the application failed because the application isn't a valid executable</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" group="error">
+			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" type="int" group="error">
 				<doc>The attempt to launch the application failed because the application wasn't found</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" group="error">
+			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" type="int" group="error">
 				<doc>The attempt to launch the application failed because the application was in the trash</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" group="error">
+			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" type="int" group="error">
 				<doc>The attempt to launch the application failed because there is no preferred application for the document</doc>
 			</constant>
-			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" group="error">
+			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" type="int" group="error">
 				<doc>The attempt to launch the application failed because the document's application is missing</doc>
 			</constant>
-			<constant name="B_BAD_MIME_SNIFFER_RULE" group="error">
+			<constant name="B_BAD_MIME_SNIFFER_RULE" type="int" group="error">
 				<doc>A MIME type sniffer rule is invalid</doc>
 			</constant>
 		</constants>

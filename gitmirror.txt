@@ -20,3 +20,24 @@ target-repo: git@githubmirror:yourgitusername/sphinx.git
 
 From http://www.icoretech.org/2009/08/how-to-mirror-a-svn-repository-on-github/
 via http://petersteinberger.com/2010/01/how-to-mirror-an-svn-repository-on-github/
+
+git_url: git://github.com/jalopeura/Haiku-API-Language-Bindings.git
+
+Common git operations:
+	add (also used to indicate that files have been resolved)
+	rm
+	mv
+	clean (removes untracked files)
+	commit -a
+	log
+	blame
+	show (-s to show a commit)
+	pull <repo> <branch> (fetches and merges a remote branch)
+	push <repo> <branch> (sends changes to a remote branch)
+
+Branches
+	branch <new> <old>
+	checkout <branch> (switch branches; can also be used to revert to last commit)
+	checkout <rev>
+	checkout -b <new> (turns an older revision into a new branch)
+	merge <target> (merges <target> into the current branch)

@@ -73,6 +73,10 @@ my %children = (
 		key => 'constants',
 		class => 'Constants',
 	},
+	globals  => {
+		key => 'globals',
+		class => 'Globals',
+	},
 );
 my %defaults = (
 	version => '0.01',

@@ -18,7 +18,7 @@ sub generate_cc {
 		name => $name,
 		cpp_name => "${cpp_class_name}::$self->{name}",
 		python_input => [
-			'PyObject python_type',
+			'PyObject* python_type',
 			'PyObject* python_args',
 		],
 		python_args => 'python_args',

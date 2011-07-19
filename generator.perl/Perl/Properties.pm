@@ -19,6 +19,30 @@ package Perl::Property;
 use strict;
 our @ISA = qw(Property Perl::BaseObject);
 
+sub type {
+	my ($self) = @_;
+	unless ($self->{type}) {
+		my $t = $self->{type_name};
+		if ($self->{needs_deref}) {
+			$t=~s/\*$//;
+		}
+		$self->{type} = $self->types->type($t);
+	}
+	return $self->{type};
+}
+
+sub input_converter {
+	my ($self, $target) = @_;
+	
+	return $self->type->input_converter("cpp_obj->$self->{name}", $target);
+}
+
+sub output_converter {
+	my ($self, $target) = @_;
+	
+	return $self->type->output_converter("cpp_obj->$self->{name}", $target, 1);	# 1 (true) because we should never delete a property
+}
+
 sub generate {
 	my ($self) = @_;
 	
@@ -27,9 +51,8 @@ sub generate {
 	my $perl_module_name = $self->module_name;
 	
 	my $name = $self->name;
-	my $type = $self->types->type($self->type);
-	my $svgetter = $type->input_converter("cpp_obj->$name", 'value');
-	my $svsetter = $type->output_converter("cpp_obj->$name", 'RETVAL');
+	my $ctype_to_sv = $self->output_converter('RETVAL');
+	my $sv_to_ctype = $self->input_converter('value');
 	
 	print { $self->package->xsh } <<PROP;
 MODULE = $perl_module_name	PACKAGE = ${perl_class_name}::$name
@@ -44,7 +67,7 @@ FETCH(tie_obj)
 		RETVAL = newSV(0);
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
-		$svsetter;
+		$ctype_to_sv
 	OUTPUT:
 		RETVAL
 
@@ -58,7 +81,7 @@ STORE(tie_obj, value)
 	CODE:
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
-		$svgetter
+		$sv_to_ctype
 
 MODULE = $perl_module_name	PACKAGE = $perl_class_name
 

@@ -284,6 +284,34 @@ sub type {
 	return $self->{type};
 }
 
+#%options = (
+#	name
+#	default
+#	count/length = {
+#		name
+#		type
+#	}
+#	must_not_delete
+#)
+
+sub type_options {
+	my ($self) = @_;
+	my $options = {
+		name => $self->name,
+		must_not_delete => $self->must_not_delete,
+	};
+	if ($self->has('default')) {
+		$options->{default} = $self->default;
+	}
+	if ($self->has('count')) {
+		$options->{count} = {
+			name => $self->count->name,
+			type => $self->count->type,
+		};
+	}
+	return $options;
+}
+
 sub arg_builder {
 	my ($self) = @_;
 	return $self->type->arg_builder($self);
