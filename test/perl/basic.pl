@@ -14,7 +14,7 @@ use Haiku::InterfaceKit;
 use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 
-use Test::Simple tests =>  8;
+use Test::Simple tests =>  10;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
@@ -65,3 +65,16 @@ ok(ref($origin), "Non-integer constants working [$origin]");
 
 my $be_app = Haiku::Application::be_app;
 ok(ref($be_app), "Globals working [$be_app]");
+
+my $pattern = new Haiku::pattern;
+my $aref = $pattern->data;
+ok(ref($aref) eq 'ARRAY', sprintf("Return aref [$aref => %s] for an array property", join(' ', @$aref)));
+
+$aref->[2] = 0x10;
+$pattern->data = $aref;
+$aref = $pattern->data;
+ok($pattern->data->[2] == 0x10, sprintf("Set an element of an array property: %s", join(' ', @{ $pattern->data })));
+
+# test Haiku::pattern for repeats
+
+# test multiple inheritance (when something multiple inherited is defined)

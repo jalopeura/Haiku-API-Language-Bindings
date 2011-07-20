@@ -61,12 +61,12 @@ sub type_options {
 
 sub arg_builder {
 	my ($self) = @_;
-	return $self->type->arg_builder($self);
+	return $self->type->arg_builder($self, $self->has('repeat'));
 }
 
 sub arg_parser {
 	my ($self) = @_;
-	return $self->type->arg_parser($self);
+	return $self->type->arg_parser($self, $self->has('repeat'));
 }
 
 sub generate {

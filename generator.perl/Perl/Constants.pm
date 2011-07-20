@@ -92,13 +92,21 @@ sub type {
 sub input_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->input_converter($self->name, $target);
+	if ($self->has('repeat')) {
+		return $self->type->array_input_converter("$self->{name}", $target, $self->repeat);
+	}
+	
+	return [ $self->type->input_converter("$self->{name}", $target) ];
 }
 
 sub output_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->output_converter($self->name, $target, 1);	# 1 (true) because we can never delete a constant
+	if ($self->has('repeat')) {
+		return $self->type->array_output_converter("$self->{name}", $target, $self->repeat, 1);	# 1 (true) because we should never delete a constant
+	}
+	
+	return [ $self->type->output_converter("$self->{name}", $target, 1) ];	# 1 (true) because we should never delete a constant
 }
 
 sub generate {
@@ -111,12 +119,20 @@ sub generate {
 	
 	my $ctype_to_sv = $self->output_converter('RETVAL');
 	
-	print { $self->package->xsh } <<CONST;
+	my $fh = $self->package->xsh;
+	
+	print $fh <<CONST;
 SV*
 $name()
 	CODE:
 		RETVAL = newSV(0);
-		$ctype_to_sv
+CONST
+	
+	for my $line (@$ctype_to_sv) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<CONST;
 	OUTPUT:
 		RETVAL
 

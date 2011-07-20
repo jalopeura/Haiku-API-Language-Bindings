@@ -30,15 +30,24 @@ sub Xgenerate {
 	
 	my $ctype_to_sv = $self->output_converter('RETVAL');
 	
-	print { $self->package->xsh } <<CONST;
+	my $fh = $self->package->xsh;
+	
+	print $fh <<GLOBAL;
 SV*
 $name()
 	CODE:
-		$ctype_to_sv
+		RETVAL = newSV(0);
+GLOBAL
+	
+	for my $line (@$ctype_to_sv) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<GLOBAL;
 	OUTPUT:
 		RETVAL
 
-CONST
+GLOBAL
 }
 
 1;

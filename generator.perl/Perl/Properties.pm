@@ -34,13 +34,21 @@ sub type {
 sub input_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->input_converter("cpp_obj->$self->{name}", $target);
+	if ($self->has('repeat')) {
+		return $self->type->array_input_converter("cpp_obj->$self->{name}", $target, $self->repeat);
+	}
+	
+	return [ $self->type->input_converter("cpp_obj->$self->{name}", $target) ];
 }
 
 sub output_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->output_converter("cpp_obj->$self->{name}", $target, 1);	# 1 (true) because we should never delete a property
+	if ($self->has('repeat')) {
+		return $self->type->array_output_converter("cpp_obj->$self->{name}", $target, $self->repeat, 1);	# 1 (true) because we should never delete a property
+	}
+	
+	return [ $self->type->output_converter("cpp_obj->$self->{name}", $target, 1) ];	# 1 (true) because we should never delete a property
 }
 
 sub generate {
@@ -54,7 +62,9 @@ sub generate {
 	my $ctype_to_sv = $self->output_converter('RETVAL');
 	my $sv_to_ctype = $self->input_converter('value');
 	
-	print { $self->package->xsh } <<PROP;
+	my $fh = $self->package->xsh;
+	
+	print $fh <<PROP;
 MODULE = $perl_module_name	PACKAGE = ${perl_class_name}::$name
 
 SV*
@@ -67,7 +77,13 @@ FETCH(tie_obj)
 		RETVAL = newSV(0);
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
-		$ctype_to_sv
+PROP
+	
+	for my $line (@$ctype_to_sv) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<PROP;
 	OUTPUT:
 		RETVAL
 
@@ -81,7 +97,13 @@ STORE(tie_obj, value)
 	CODE:
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
-		$sv_to_ctype
+PROP
+	
+	for my $line (@$sv_to_ctype) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<PROP;
 
 MODULE = $perl_module_name	PACKAGE = $perl_class_name
 

@@ -81,7 +81,7 @@ sub generate_cpp {
 				push @defs, qq(SV* $svname;);
 				push @precode,
 					qq($svname = sv_newmortal();),
-					$param->output_converter($svname);
+					@{ $param->output_converter($svname) };
 				if ($param->must_not_delete) {
 					push @precode, 
 						qq(must_not_delete_cpp_object($svname, true););
@@ -144,7 +144,7 @@ sub generate_cpp {
 		push @postcode,
 			'SPAGAIN;',
 			"$retname = POPs;",
-			$retval->input_converter($retname),
+			@{ $retval->input_converter($retname) },
 			'PUTBACK;';
 		push @return,
 			'',

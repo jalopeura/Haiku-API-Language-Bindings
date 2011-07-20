@@ -186,7 +186,11 @@ sub finalize_upgrade {
 #)
 
 sub arg_builder {
-	my ($self, $object) = @_;
+	my ($self, $object, $repeat) = @_;
+	
+	if ($repeat) {
+		return $self->array_arg_builder($object);
+	}
 	
 	my $options = $object->type_options;
 	
@@ -255,8 +259,37 @@ sub arg_builder {
 	return ($item, $arg, \@def, \@code);
 }
 
-sub arg_parser {
+sub array_arg_builder {
 	my ($self, $object) = @_;
+	
+	my $options = $object->type_options;
+	
+	my $item = 'O';
+	my $arg = 'py_list_from_array';
+	my @defs = ("PyObject* $arg;");
+	
+	my ($element_item, $element_arg, $element_defs, $element_code)
+		= $self->arg_builder($object);
+	$element_arg .= '[i]';
+	
+	my @code = (
+		qq($arg = PyList_New(0);),
+		qq(for (int i = 0; i < $options->{repeat}; i++) {),
+		map( { "\t$_" } @$element_defs),
+		map( { "\t$_" } @$element_code),
+		qq(\tPyList_Append($arg, Py_BuildValue("$element_item", $element_arg));),
+		'}',
+	);
+	
+	return ($item, $arg, \@defs, \@code);
+}
+
+sub arg_parser {
+	my ($self, $object, $repeat, $argname) = @_;
+	
+	if ($repeat) {
+		return $self->array_arg_parser($object, $argname);
+	}
 	
 	my $options = $object->type_options;
 	
@@ -266,12 +299,12 @@ sub arg_parser {
 	my $arg = $name;
 	my (@def, @code);
 	
-	my $def = "$self->{name} $name";
-	if (exists $options->{default}) {
-		$def .= " = " . $options->{default};
-	}
-	$def .= ';';
-	push @def, $def;
+#	my $def = "$self->{name} $name";
+#	if (exists $options->{default}) {
+#		$def .= " = " . $options->{default};
+#	}
+#	$def .= ';';
+#	push @def, $def;
 	if ($item=~/^O/) {
 		$arg=~s/[^>]+>//g;
 		$arg = "py_$arg";
@@ -319,6 +352,47 @@ sub arg_parser {
 	}
 	
 	return ($item, $arg, \@def, \@code);
+}
+
+sub array_arg_parser {
+	my ($self, $object, $argname) = @_;
+	
+	my $options = $object->type_options;
+	
+	my $item = 'O';
+	my @defs = (
+		'PyObject* item;',
+		'PyObject* tuple;',
+	);
+	
+	my ($element_item, $element_arg, $element_defs, $element_code)
+		= $self->arg_parser($object);
+	my $arg = $element_arg;
+	$element_arg .= '[i]';
+	$element_arg=~s/\)\[i\]/[i])/;	# in case there are parentheses around the arg
+	
+	# get rid of the reference
+	my $plain_name = $element_arg;
+	$plain_name=~s/^&\(?//;
+	$plain_name=~s/\)$//;
+	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
+	
+	my @code = (
+		qq(for (int i = 0; i < $options->{repeat}; i++) {),
+		map( { "\t$_" } @$element_defs),
+		map( { "\t$_" } @$element_code),
+		qq(\titem = PyList_GetItem($argname, i);),
+		qq(\tif (item == NULL) {),
+		qq(\t\t$plain_name = $none;),
+		qq(\t\tcontinue;),
+		"\t}",
+		qq(\ttuple = PyTuple_Pack(1, item);),
+		qq(\tPyArg_ParseTuple(tuple, "$element_item", $element_arg);),
+		'}',
+	);
+	
+	return ($item, $arg, \@defs, \@code);
+
 }
 
 package Python::BuiltinType;

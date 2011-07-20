@@ -73,7 +73,7 @@ sub Xdefault_var_code {
 				next unless $param->has('default');
 				push @code,
 					qq(if (items > $offset) {),
-					"\t" . $param->input_converter("ST($offset)"),
+					map { "\t$_" } @{ $param->input_converter("ST($offset)") },
 					qq(});
 			}
 		}
@@ -147,13 +147,23 @@ sub type {
 sub input_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->input_converter($self->name, $target);
+	if ($self->has('repeat')) {
+		return $self->type->array_input_converter("$self->{name}", $target, $self->repeat);
+	}
+	
+	return [ $self->type->input_converter("$self->{name}", $target) ];
 }
 
 sub output_converter {
 	my ($self, $target) = @_;
 	
-	return $self->type->output_converter($self->name, $target);
+	my $mnd = $self->must_not_delete;
+	
+	if ($self->has('repeat')) {
+		return $self->type->array_output_converter("$self->{name}", $target, $self->repeat, $mnd);
+	}
+	
+	return [ $self->type->output_converter("$self->{name}", $target, $mnd) ];
 }
 
 sub as_cpp_def {

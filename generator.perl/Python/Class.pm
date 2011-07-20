@@ -207,19 +207,6 @@ sub generate_cc_postamble {
 	$init_function = $self->constructor_name;
 	$dealloc_function = $self->destructor_name;
 	
-	# TODO: enable multiple inheritance
-	if ($self->has('python_parent')) {
-		($parent = $self->python_parent)=~s/\./_/g;
-		$parent = '&' . $parent . '_PyType';
-	}
-	else {
-		$parent = 0;
-	}
-	
-	if ($self->has('doc')) {
-		$doc = $self->doc;
-	}
-	
 	# getter/setter
 	$property_table = '0';
 	if ($self->has('property_table')) {
@@ -242,28 +229,28 @@ sub generate_cc_postamble {
 		print $fh "\t{NULL} /* Sentinel */\n};\n\n";
 	}
 	
-
-=pod
-
-	# type object
-	my $type = $self->{pytype_name};
-	print $fh <<TYPE;
-$type.tp_name      = "$self->{python_name}";
-$type.tp_basicsize = sizeof(${python_object_prefix}_Object);
-$type.tp_dealloc   = (destructor)$dealloc_function;
-$type.tp_flags     = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
-$type.tp_doc       = "...";	// fix to use real docs
-$type.tp_methods   = $method_table;
-$type.tp_getset    = $property_table;
-$type.tp_base      = $parent;	// fix to use tp_bases to enable multiple inheritance
-$type.tp_init      = (initproc)$init_function;
-$type.tp_new       = PyTpe_GenericNew;
-
-TYPE
-
-=cut
-
-
+	if ($self->has('python_parent')) {
+		my @p = split /\s+/, $self->{python_parent};
+		for my $p (@p) {
+			$p=~s/\./_/g;
+			$p = '&' . $p . '_PyType';
+		}
+		
+		$parent = "${python_object_prefix}_bases";
+		
+		print $fh 
+			sprintf("PyObject* $parent = PyTuple_Pack(%d, %s);\n\n", scalar(@p), @p);
+		
+		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), @p);
+	}
+	else {
+		$parent = 0;
+	}
+	
+	if ($self->has('doc')) {
+		$doc = $self->doc;
+	}
+	
 	# type object
 	print $fh <<TYPE;
 PyTypeObject $self->{pytype_name} = {
@@ -298,7 +285,7 @@ PyTypeObject $self->{pytype_name} = {
 	$method_table,             /* tp_methods */
 	0,                         /* tp_members */
 	$property_table,           /* tp_getset */
-	$parent,                   /* tp_base */
+	0,                         /* tp_base */
 	0,                         /* tp_dict */
 	0,                         /* tp_descr_get */
 	0,                         /* tp_descr_set */
@@ -306,6 +293,9 @@ PyTypeObject $self->{pytype_name} = {
 	(initproc)$init_function,  /* tp_init */
 	PyType_GenericAlloc,       /* tp_alloc */
 	PyType_GenericNew,         /* tp_new */
+	0,                         /* tp_free */
+	0,                         /* tp_is_gc */
+    $parent                    /* tp_bases */
 };
 
 TYPE

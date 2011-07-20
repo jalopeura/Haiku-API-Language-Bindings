@@ -155,7 +155,7 @@ you need to define those types in this section.
 			<property name="menu_key"              type="uint32" />
 			<property name="lock_settings"         type="uint32" />
 <!-- Commented out until repeats are enabled -->
-<!--
+
 			<property name="control_map"           type="int32" repeat="128" />
 			<property name="option_caps_shift_map" type="int32" repeat="128" />
 			<property name="option_caps_map"       type="int32" repeat="128" />
@@ -171,7 +171,7 @@ you need to define those types in this section.
 			<property name="dieresis_dead_key"     type="int32" repeat="32" />
 			<property name="tilde_dead_key"        type="int32" repeat="32" />
 			<property name="acute_tables"          type="uint32" />
--->
+
 			<property name="grave_tables"          type="uint32" />
 			<property name="circumflex_tables"     type="uint32" />
 			<property name="dieresis_tables"       type="uint32" />
@@ -260,8 +260,7 @@ you need to define those types in this section.
 	<binding source="pattern" target="Haiku::pattern">
 		<doc>Exposes the pattern struct</doc>
 		<properties>
-<!-- Commented out until repeats are enabled -->
-<!--			<property name="data" type="uchar" repeat="8" /> -->
+			<property name="data" type="uchar" repeat="8" />
 		</properties>
 		<functions>
 			<constructor />

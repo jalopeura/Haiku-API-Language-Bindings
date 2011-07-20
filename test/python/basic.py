@@ -52,3 +52,13 @@ print "Should get a non-integer constant; got", origin
 
 global_be_app = Haiku.Application.be_app()
 print "Should get a global; got", global_be_app
+
+pattern = Haiku.pattern();
+data = pattern.data
+print "Should get an array; got", data
+
+data[2] = 0x10
+pattern.data = data
+print "Should get changed value; got", pattern.data
+
+# test multiple inheritance (when something multiple inherited is defined)

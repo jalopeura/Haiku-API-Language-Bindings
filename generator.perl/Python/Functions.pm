@@ -125,6 +125,7 @@ sub generate_cc {
 			push @cpp_args, $param->as_cpp_arg;
 			my $action = $param->action;
 			if ($action eq 'input') {
+				push @defs, $param->as_cpp_def;
 				my ($fmt, $arg, $defs, $code) = $param->arg_parser;
 				if ($param->has('default') and not $seen_default) {
 					$parse_format .= '|';

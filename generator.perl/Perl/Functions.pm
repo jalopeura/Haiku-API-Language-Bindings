@@ -182,7 +182,7 @@ sub generate_xs {
 					}
 					push @precode,
 					qq(if (items > $i) {),
-					"\t" . $param->input_converter("ST($i)"),
+					map {"\t$_" } @{ $param->input_converter("ST($i)") },
 					qq(});
 				}
 				else {
@@ -298,7 +298,7 @@ sub generate_xs {
 				
 				# if we're a target, we've already converted it
 				unless ($type->has('target')) {
-					push @postcode, $param->output_converter("$svname"),
+					push @postcode, @{ $param->output_converter("$svname") },
 				}
 				push @postcode, qq(PUSHs(sv_2mortal($svname)););
 			}
@@ -436,7 +436,7 @@ OUT
 			
 			# if we're a target, we've already converted it
 			unless ($type->has('target')) {
-				push @postcode, $param->output_converter("$svname"),
+				push @postcode, @{ $param->output_converter("$svname") },
 			}
 			else {
 				push @postcode, qq(PUSHs(sv_2mortal($svname)););

@@ -13,7 +13,9 @@ our @ISA = qw(Types Perl::BaseObject);
 # int   >= 16
 # long  >= 32
 our %builtins = (
-	'char'    => 'T_UV',
+#	'char'    => 'STRING',
+#	'intchar' => 'T_IV',
+'char' => 'T_IV',
 	'short'   => 'T_IV',
 	'int'     => 'T_IV',
 	'long'    => 'T_IV',
@@ -21,7 +23,8 @@ our %builtins = (
 	'unsignedshort' => 'T_UV',
 	'unsignedint'   => 'T_UV',
 	'unsignedlong'  => 'T_UV',
-	'wchar_t' => 'T_IV',
+#	'wchar_t' => 'STRING',
+'wchar_t' => 'T_IV',
 	'float'   => 'T_FLOAT',
 	'double'  => 'T_DOUBLE',
 	'longdouble'    => 'T_DOUBLE',
@@ -267,7 +270,7 @@ use strict;
 our @ISA = qw(Type Perl::BaseObject);
 
 sub input_converter {
-	my ($self, $var, $arg) = @_;
+	my ($self, $var, $arg, $repeat) = @_;
 	my $converter = $Perl::Types::input_converters{ $self->perltype };
 	
 	# values for the eval
@@ -278,6 +281,32 @@ sub input_converter {
 #print "Input converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
 #print "Called from ", join(':::', caller), "\n";
 	return $ret;
+}
+
+sub array_input_converter {
+	my ($self, $var, $arg, $repeat) = @_;
+	
+	my $array = "${arg}_av";
+	my $cpp_item = "${var}[i]";
+	my $perl_item = 'element_sv';
+	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
+	
+	my @ret = (
+		"//Converting Perl arg '$arg' to C array '$var'",
+		qq(AV* $array;),
+		qq(SV** $perl_item;),
+		qq($array = (AV*)SvRV($arg);),
+		qq(for (int i = 0; i < $repeat; i++) {),
+		qq(\t$perl_item = av_fetch($array, i, 0);),
+		qq(\tif ($perl_item == NULL) {),
+		qq(\t\t$cpp_item = $none;),
+		qq(\t\tcontinue;),
+		"\t}",
+		"\t" . $self->input_converter($cpp_item, "*$perl_item"),
+		'}',
+	);
+	
+	return \@ret;
 }
 
 sub output_converter {
@@ -301,6 +330,29 @@ sub output_converter {
 #print "Output converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
 #print "Called from ", join(':::', caller), "\n";
 	return $ret;
+}
+
+sub array_output_converter {
+	my ($self, $var, $arg, $repeat, $must_not_delete) = @_;
+	
+	my $array = "${arg}_av";
+	my $cpp_item = "${var}[i]";
+	my $perl_item = 'element_sv';
+	
+	my @ret = (
+		"//Converting C array '$var' to Perl arg '$arg'",
+		qq(AV* $array;),
+		qq(SV* $perl_item;),
+		qq($array = newAV();),
+		qq(for (int i = 0; i < $repeat; i++) {),
+		qq(\t$perl_item = newSV(0);),
+		"\t" . $self->output_converter($cpp_item, $perl_item, $must_not_delete),
+		qq(\tav_push($array, element_sv);),
+		'}',
+		qq($arg = newRV_noinc((SV*) $array);),
+	);
+	
+	return \@ret;
 }
 
 package Perl::BuiltinType;

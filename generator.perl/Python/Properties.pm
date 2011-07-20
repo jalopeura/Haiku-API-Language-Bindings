@@ -55,12 +55,12 @@ sub type_options {
 
 sub arg_builder {
 	my ($self) = @_;
-	return $self->type->arg_builder($self);
+	return $self->type->arg_builder($self, $self->has('repeat'));
 }
 
 sub arg_parser {
-	my ($self) = @_;
-	return $self->type->arg_parser($self);
+	my ($self, $argname) = @_;
+	return $self->type->arg_parser($self, $self->has('repeat'), $argname);
 }
 
 sub generate {
@@ -154,12 +154,17 @@ PROP
 	print $fh qq(\treturn Py_BuildValue("$get_fmt", $get_arg);\n);
 	print $fh "}\n\n";
 
-	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser;
-	shift @$set_defs;	# because property is already defined
+	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser('value');
+#	shift @$set_defs;	# because property is already defined
 	print $fh qq(static int $setter_name($class_name* python_self, PyObject* value, void* closure) {\n);
-	print $fh "\tPyObject* tuple = PyTuple_Pack(1, value);\n";
+	if (not $self->has('repeat')) {
+		print $fh "\tPyObject* tuple = PyTuple_Pack(1, value);\n";
+	}
 	print $fh map { "\t$_\n" } @$set_defs;
-	print $fh qq(\tPyArg_ParseTuple(tuple, "$set_fmt", $set_arg);\n);
+	print $fh map { "\t$_\n" } @$set_code;
+	if (not $self->has('repeat')) {
+		print $fh qq(\tPyArg_ParseTuple(tuple, "$set_fmt", $set_arg);\n);
+	}
 	print $fh "\treturn 0;\n";	# do we need error checks, or will Python raise an exception for us?
 	print $fh "}\n\n";
 	
