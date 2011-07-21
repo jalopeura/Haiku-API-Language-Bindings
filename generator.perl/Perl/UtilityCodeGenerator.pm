@@ -58,6 +58,8 @@ bool can_delete_cpp_object(SV* perl_obj);
 
 char** Aref2CharArray(SV* arg, int &count);
 SV* CharArray2Aref(char** var, int count);
+void Scalar2Char(SV* arg, void* var, int num_chars, int size);
+SV* Char2Scalar(const void* var, int num_chars, int size);
 
 UTIL
 	
@@ -250,6 +252,34 @@ SV* CharArray2Aref(char** var, int count) {
 	}
 	
 	return newRV_noinc((SV*) av);
+}
+
+void Scalar2Char(SV* arg, void* var, int num_chars, int size) {
+	size_t length;
+	char* sv_contents;
+	STRLEN sv_length;
+	
+	length = num_chars * size;
+	sv_contents = SvPV(arg, sv_length);
+	if (sv_length < length) {
+		length = sv_length;
+	}
+	
+	memcpy(var, (void*)sv_contents, length);
+}
+
+SV* Char2Scalar(const void* var, int num_chars, int size) {
+	SV* ret;
+	STRLEN sv_length;
+	
+	sv_length = num_chars * size;
+	ret = newSVpv((char*)var, sv_length);
+	
+	if (is_utf8_string((const U8*)var, sv_length)) {
+		SvUTF8_on(ret);
+	}
+	
+	return ret;
 }
 
 UTIL

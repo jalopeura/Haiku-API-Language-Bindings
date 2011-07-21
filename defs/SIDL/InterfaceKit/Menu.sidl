@@ -191,10 +191,10 @@
 		<properties>
 			<property name="font_size"             type="float" />
 <!-- Commented out until repeats are enabled (font_family and font_style are arrays -->
-<!--
+
 			<property name="f_family"              type="font_family" />
 			<property name="f_style"               type="font_style" />
--->
+
 			<property name="background_color"      type="rgb_color" />
 			<property name="separator"             type="int32" />
 			<property name="click_to_open"         type="bool" />

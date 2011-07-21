@@ -181,14 +181,18 @@ sub generate_xs {
 						$has_defaults = 1;
 					}
 					push @precode,
-					qq(if (items > $i) {),
-					map {"\t$_" } @{ $param->input_converter("ST($i)") },
-					qq(});
+						qq(if (items > $i) {),
+						map( {"\t$_" } @{ $param->input_converter("ST($i)") } ),
+						qq(});
 				}
 				else {
 					push @precode, "// item $i: $param->{name}";
 					push @input, $param->as_cpp_def;
 					push @xsargs, $param->name;
+					if ($param->type->builtin eq 'char') {
+						my $length = $param->has('repeat') ? $param->repeat : 1;
+						push @preinit, qq(int LENGTH = $length; // length for item $i: $param->{name});
+					}
 				}
 			}
 			elsif ($action eq 'output') {
@@ -318,6 +322,10 @@ sub generate_xs {
 					"SvREFCNT_inc($retname);";
 			}
 			else {
+				if ($outputs[0]->type->builtin eq 'char') {
+					my $length = $outputs[0]->has('repeat') ? $outputs[0]->repeat : 1;
+					push @init, qq(int LENGTH = $length; // length for return value);
+				}
 				push @postcode, "RETVAL = $retname;";
 			}
 		}

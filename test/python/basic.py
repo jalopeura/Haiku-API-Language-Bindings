@@ -40,7 +40,7 @@ print "Should get nothing (instead of an empty wrapper); got", child
 item = Haiku.MenuItem(
 	"Test",
 	Haiku.Message(0),
-	30,
+	"a",
 	10
 	)
 
@@ -61,4 +61,14 @@ data[2] = 0x10
 pattern.data = data
 print "Should get changed value; got", pattern.data
 
+menu_info = Haiku.menu_info()
+print menu_info.f_family
+print 1
+menu_info.f_family = "Test String"
+print 2
+menu_info.f_family = unicode("\x100\x101\x102\x103\x104\x105\x106\x107\x108\x109")
+print menu_info.f_family
+
 # test multiple inheritance (when something multiple inherited is defined)
+
+print "app and be_app comparison: ", (app == be_app)

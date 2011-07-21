@@ -177,10 +177,21 @@ sub as_python_call {
 	
 	my ($format, @args, @defs, @code);
 	for my $param ($self->python_input) {
-		my ($fmt, $arg, $def, $code) = $param->as_python_call;
-		$format .= $fmt;
-		push @args, $arg;
-		push @defs, @$def;
+#		my ($fmt, $arg, $def, $code) = $param->as_python_call;
+#		$format .= $fmt;
+#		push @args, $arg;
+		my $pyobj_name = 'py_' . $param->name;
+		my $options = {
+			input_name => $param->name,
+			output_name => $pyobj_name,
+			must_not_delete => $param->must_not_delete,
+		};
+		my ($def, $code) = $param->arg_builder($options);
+		$format .= $param->type->format_item;
+		push @args, $pyobj_name;
+		push @defs,
+			"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
+			@$def;
 		push @code, @$code;
 	}
 	
@@ -313,13 +324,13 @@ sub type_options {
 }
 
 sub arg_builder {
-	my ($self) = @_;
-	return $self->type->arg_builder($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_builder($options, $repeat);
 }
 
 sub arg_parser {
-	my ($self) = @_;
-	return $self->type->arg_parser($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_parser($options, $repeat);
 }
 
 sub as_cpp_def {
@@ -386,7 +397,7 @@ sub Xas_input_from_python {
 	return $type->arg_parser($self);
 }
 
-sub as_python_call {
+sub Xas_python_call {
 	my ($self) = @_;
 	
 	return $self->arg_builder($self);
@@ -423,6 +434,33 @@ sub as_cpp_def {
 }
 
 sub arg_builder {
+	my ($self, $options) = @_;
+	
+	my @code = ();
+	
+	if ($self->is_responder) {
+		push @code,
+			qq(python_self->cpp_object->python_object = python_self;);
+	}
+
+	if ($self->must_not_delete) {
+		push @code,
+			qq(// we do not own this object, so we can't delete it),
+			qq(python_self->can_delete_cpp_object = false;);
+	}
+	else{
+		push @code,
+			qq(// we own this object, so we can delete it),
+			qq(python_self->can_delete_cpp_object = true;);
+	}
+	
+	return (
+		[],	# empty defs
+		\@code
+	);
+}
+
+sub Xarg_builder {
 	my ($self) = @_;
 	
 	my ($fmt, $arg, $defs, $code) = $self->SUPER::arg_builder;

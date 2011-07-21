@@ -54,13 +54,13 @@ sub type_options {
 }
 
 sub arg_builder {
-	my ($self) = @_;
-	return $self->type->arg_builder($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_builder($options, $repeat);
 }
 
 sub arg_parser {
-	my ($self, $argname) = @_;
-	return $self->type->arg_parser($self, $self->has('repeat'), $argname);
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_parser($options, $repeat);
 }
 
 sub generate {
@@ -146,25 +146,39 @@ PROP
 	
 	my $fh = $self->class->cch;
 	
-	my ($get_fmt, $get_arg, $get_defs, $get_code) = $self->arg_builder;
-#	shift @$get_defs;	# because property is already defined
+#	my ($get_fmt, $get_arg, $get_defs, $get_code) = $self->arg_builder;
+	my $get_fmt = $self->type->format_item;
+	my $get_arg = 'py_' . $self->name;
+	my $options = {
+		input_name => 'python_self->cpp_object->' . $self->name,
+		output_name => $get_arg,
+		must_not_delete => 1,
+		repeat => $self->has('repeat') ? $self->repeat : 0,
+	};
+	my ($get_defs, $get_code) = $self->arg_builder($options);
 	print $fh qq(static PyObject* $getter_name($class_name* python_self, void* python_closure) {\n);
 	print $fh map { "\t$_\n" } @$get_defs;
 	print $fh map { "\t$_\n" } @$get_code;
-	print $fh qq(\treturn Py_BuildValue("$get_fmt", $get_arg);\n);
+	print $fh qq(\treturn $get_arg;\n);
 	print $fh "}\n\n";
 
-	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser('value');
-#	shift @$set_defs;	# because property is already defined
+#	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser('value');
+	my $set_fmt = $self->type->format_item;
+	my $options = {
+		input_name => 'value',
+		output_name => 'python_self->cpp_object->' . $self->name,
+		repeat => $self->has('repeat') ? $self->repeat : 0,
+	};
+	my ($set_defs, $set_code) = $self->arg_parser($options);
 	print $fh qq(static int $setter_name($class_name* python_self, PyObject* value, void* closure) {\n);
-	if (not $self->has('repeat')) {
-		print $fh "\tPyObject* tuple = PyTuple_Pack(1, value);\n";
-	}
+#	if (not $self->has('repeat') and not $self->type->has('repeat')) {
+#		print $fh "\tPyObject* tuple = PyTuple_Pack(1, value);\n";
+#	}
 	print $fh map { "\t$_\n" } @$set_defs;
 	print $fh map { "\t$_\n" } @$set_code;
-	if (not $self->has('repeat')) {
-		print $fh qq(\tPyArg_ParseTuple(tuple, "$set_fmt", $set_arg);\n);
-	}
+#	if (not $self->has('repeat') and not $self->type->has('repeat')) {
+#		print $fh qq(\tPyArg_ParseTuple(tuple, "$set_fmt", $set_arg);\n);
+#	}
 	print $fh "\treturn 0;\n";	# do we need error checks, or will Python raise an exception for us?
 	print $fh "}\n\n";
 	

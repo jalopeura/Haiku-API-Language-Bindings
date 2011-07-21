@@ -54,13 +54,13 @@ sub type_options {
 }
 
 sub arg_builder {
-	my ($self) = @_;
-	return $self->type->arg_builder($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_builder($options, $repeat);
 }
 
 sub arg_parser {
-	my ($self) = @_;
-	return $self->type->arg_parser($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_parser($options, $repeat);
 }
 
 sub generate {
@@ -75,12 +75,19 @@ sub generate {
 	
 	my $fh = $self->class->cch;
 	
-	my ($fmt, $arg, $defs, $code) = $self->arg_builder;
-#	shift @$defs;	# because property is already defined
+	my $pyobj_name = 'py_' . $self->name;
+	my $options = {
+		input_name => $self->name,
+		output_name => $pyobj_name,
+		must_not_delete => 1,
+		repeat => $self->has('repeat') ? $self->repeat : 0,
+	};
+	my ($defs, $code) = $self->arg_builder($options);
 	print $fh qq(static PyObject* $global_name($class_name* python_dummy) {\n);
+	print $fh "\tPyObject* $pyobj_name;\n";	# may need to change this for C++ objects
 	print $fh map { "\t$_\n" } @$defs;
 	print $fh map { "\t$_\n" } @$code;
-	print $fh qq(\treturn Py_BuildValue("$fmt", $arg);\n);
+	print $fh qq(\treturn $pyobj_name;\n);
 	print $fh "}\n\n";
 	
 	my $doc;

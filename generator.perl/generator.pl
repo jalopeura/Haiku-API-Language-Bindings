@@ -1,7 +1,7 @@
 use Common::Bindings;
 use strict;
 
-my $perl = 1;
+my $perl = 0;
 my $python = 1;
 
 print "Separate modular extensions...\n";

@@ -15,7 +15,7 @@
 		<lib name="libbe" />
 	</link>
 	<types>
-		<type name="int8"       builtin="char" />
+		<type name="int8"       builtin="intchar" />
 		<type name="int16"      builtin="int" />
 		<type name="uint32"     builtin="unsigned long" />
 		<type name="int32"      builtin="long" />

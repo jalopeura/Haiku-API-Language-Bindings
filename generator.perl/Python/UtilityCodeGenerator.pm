@@ -30,6 +30,8 @@ void debug_me(int level, const char* file, int line, const char* pattern, ...);
 
 char** PyList2CharArray(PyObject* arg, int* count);
 PyObject* CharArray2PyList(char** var, int count);
+void PyString2Char(PyObject* arg, void* var, int num_chars, int size);
+PyObject* Char2PyString(const void* var, int num_chars, int size);
 UTIL
 	
 	close $fh;
@@ -86,6 +88,32 @@ PyObject* CharArray2PyList(char** var, int count) {
 	}
 	
 	return list;
+}
+
+void PyString2Char(PyObject* arg, void* var, int num_chars, int size) {
+	size_t length;
+	char* pystring_contents;
+	Py_ssize_t pystring_length;
+	
+	PyString_AsStringAndSize(arg, &pystring_contents, &pystring_length);
+//printf("Setting size %d and string %s\\n", (int)pystring_length, &pystring_contents);
+	length = num_chars * size;
+	if (pystring_length < (int)length) {
+		length = pystring_length;
+	}
+	
+	memcpy(var, (void*)pystring_contents, pystring_length);
+}
+
+PyObject* Char2PyString(const void* var, int num_chars, int size) {
+	PyObject* ret;
+	Py_ssize_t pystring_length;
+	
+	pystring_length = num_chars * size;
+printf("Got size %d and string %s\\n", (int)pystring_length, (char*)var);
+	ret = PyString_FromStringAndSize((char*)var, (int)pystring_length);
+	
+	return ret;
 }
 
 UTIL

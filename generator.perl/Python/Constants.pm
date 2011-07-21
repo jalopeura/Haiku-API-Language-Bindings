@@ -60,13 +60,13 @@ sub type_options {
 }
 
 sub arg_builder {
-	my ($self) = @_;
-	return $self->type->arg_builder($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_builder($options, $repeat);
 }
 
 sub arg_parser {
-	my ($self) = @_;
-	return $self->type->arg_parser($self, $self->has('repeat'));
+	my ($self, $options, $repeat) = @_;
+	return $self->type->arg_parser($options, $repeat);
 }
 
 sub generate {
@@ -84,7 +84,14 @@ sub generate {
 #	print $fh qq(\treturn Py_BuildValue("$get_fmt", $get_arg);\n);
 #	print $fh "}\n\n";
 	
-	my ($fmt, $arg, $defs, $code) = $self->arg_builder;
+#	my ($fmt, $arg, $defs, $code) = $self->arg_builder;
+	my $options = {
+		input_name => $self->name,
+		output_name => $object_name,
+		must_not_delete => 1,
+		repeat => $self->has('repeat') ? $self->repeat : 0,
+	};
+	my ($defs, $code) = $self->arg_builder($options);
 	
 #	if ($self->type->has('target')) {
 #		my @ret;
@@ -106,7 +113,7 @@ sub generate {
 		@$defs;
 	push @{ $class->{constant_code} },
 		@$code,
-		qq($object_name = Py_BuildValue("$fmt", $arg);),
+#		qq($object_name = Py_BuildValue("$fmt", $arg);),
 		qq(Py_INCREF($object_name);),
 		qq(PyModule_AddObject($module_name, "$constant_name", $object_name);),
 		"";

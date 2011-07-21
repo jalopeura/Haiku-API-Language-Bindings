@@ -13,9 +13,8 @@ our @ISA = qw(Types Perl::BaseObject);
 # int   >= 16
 # long  >= 32
 our %builtins = (
-#	'char'    => 'STRING',
-#	'intchar' => 'T_IV',
-'char' => 'T_IV',
+	'char'    => 'STRING',
+	'intchar' => 'T_IV',
 	'short'   => 'T_IV',
 	'int'     => 'T_IV',
 	'long'    => 'T_IV',
@@ -23,8 +22,7 @@ our %builtins = (
 	'unsignedshort' => 'T_UV',
 	'unsignedint'   => 'T_UV',
 	'unsignedlong'  => 'T_UV',
-#	'wchar_t' => 'STRING',
-'wchar_t' => 'T_IV',
+	'wchar_t' => 'WSTRING',
 	'float'   => 'T_FLOAT',
 	'double'  => 'T_DOUBLE',
 	'longdouble'    => 'T_DOUBLE',
@@ -57,6 +55,8 @@ our %perltypes = (
 	
 	'T_PV'     => 'PV',
 	'CHARARRAY' => 'PV',
+	'STRING'   => 'PV',
+	'WSTRING'  => 'PV',
 	'T_PTR'    => 'PV',
 	
 	# how to deal with objects?
@@ -76,6 +76,8 @@ our %input_converters = (
 	
 	'T_PV'     => '$var = ($type)SvPV_nolen($arg);',
 	'CHARARRAY' => '$var = Aref2CharArray($arg, count_$var);',
+	'STRING'    => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(char));',
+	'WSTRING'   => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(wchar_t));',
 	'T_PTR'    => '$var = INT2PTR($type,SvIV($arg));',
 	
 	'NORM_OBJ'     => '$var = *($type*)get_cpp_object($arg);',
@@ -98,6 +100,8 @@ our %output_converters = (
 	
 	'T_PV'     => 'sv_setpv((SV*)$arg, $var);',
 	'CHARARRAY' => '$arg = CharArray2Aref($var, count_$var);',
+	'STRING'   => '$arg = Char2Scalar(&$var, LENGTH, sizeof(char));',
+	'WSTRING'  => '$arg = Char2Scalar(&$var, LENGTH, sizeof(wchar_t));',
 	'T_PTR'    => 'sv_setiv($arg, PTR2IV($var));',
 	
 	'NORM_OBJ'     => 'sv_setsv($arg, create_perl_object((void*)&$var, CLASS));',
@@ -243,6 +247,9 @@ NORM_OBJ_PTR
 CHARARRAY
 	$output_converters{CHARARRAY}
 
+STRING
+	$output_converters{STRING}
+
 INPUT
 
 RESP_OBJ
@@ -259,6 +266,9 @@ NORM_OBJ_PTR
 
 CHARARRAY
 	$input_converters{CHARARRAY}
+
+STRING
+	$input_converters{STRING}
 
 OBJTYPES
 	
@@ -278,6 +288,11 @@ sub input_converter {
 	my $ntype = '$ntype';
 	
 	my $ret = eval "qq($converter)" or die $@;
+	
+	if ($self->builtin eq 'char') {
+		my $length = $self->has('repeat') ? $self->repeat : 1;
+		$ret=~s/LENGTH/$length/;
+	}
 #print "Input converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
 #print "Called from ", join(':::', caller), "\n";
 	return $ret;
@@ -318,6 +333,11 @@ sub output_converter {
 	my $ntype = '$ntype';
 	
 	my $ret = eval "qq($converter)" or die $@;
+	
+	if ($self->builtin eq 'char') {
+		my $length = $self->has('repeat') ? $self->repeat : 1;
+		$ret=~s/LENGTH/$length/;
+	}
 	
 	if ($must_not_delete) {
 		$ret=~s/CLASS/CLASS, true/;
@@ -361,6 +381,9 @@ our @ISA = qw(Perl::Type);
 
 sub new {
 	my ($class, $name, $perltype, $svtype) = @_;
+	if ($name eq 'intchar') {
+		$name = 'char';
+	}
 	my $self = bless {
 		name     => $name,
 		builtin  => $name,

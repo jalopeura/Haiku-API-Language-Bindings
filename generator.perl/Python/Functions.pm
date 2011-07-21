@@ -126,15 +126,30 @@ sub generate_cc {
 			my $action = $param->action;
 			if ($action eq 'input') {
 				push @defs, $param->as_cpp_def;
-				my ($fmt, $arg, $defs, $code) = $param->arg_parser;
+				my $item = $param->type->format_item;
 				if ($param->has('default') and not $seen_default) {
 					$parse_format .= '|';
 					$seen_default = 1;
 				}
-				$parse_format .= $fmt;
-				push @parse_args, $arg;
-				push @defs, @$defs;
-				push @parsecode, @$code;
+				$parse_format .= $item;
+				
+				if ($item=~/^O/) {
+					my $pyobj_name = 'py_' . $param->name;
+					my $options = {
+						input_name => $pyobj_name,
+						output_name => $param->name,
+						must_not_delete => $param->must_not_delete,
+					};
+					my ($arg_defs, $arg_code) = $param->arg_parser($options);
+					push @defs,
+						"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
+						@$arg_defs;
+					push @parsecode, @$arg_code;
+					push @parse_args, '&' . $pyobj_name;
+				}
+				else {
+					push @parse_args, '&' . $param->name;
+				}
 			}
 			elsif ($action eq 'output') {
 				push @defs, $param->as_cpp_def;
@@ -170,23 +185,55 @@ sub generate_cc {
 	}
 	
 	if (@outputs) {
-		for my $param (@outputs) {
-			my ($fmt, $arg, $defs, $code) = $param->arg_builder;
-			$build_format .= $fmt;
-			push @build_args, $arg;
-			push @defs, @$defs;
-			push @postcode, @$code;
+		if ($#outputs) {	# multiple return
+			for my $i (0..$#outputs) {
+				my $param = $outputs[$i];
+				my $item = $param->type->format_item;
+				my $pyobj_name = 'py_' . $param->name;
+				if ($item=~/^O/) {
+					my $options = {
+						input_name => $param->name,
+						output_name => $pyobj_name,
+						must_not_delete => $param->must_not_delete,
+					};
+					my ($defs, $code) = $param->arg_builder($options);
+					push @defs,
+						"PyObject* $pyobj_name;",
+						@$defs;
+					push @postcode, @$code;
+					push @build_args, $pyobj_name;
+				}
+				else {
+					push @build_args, $param->name;
+				}
+				$build_format .= $item;
+			}
+			
+			if (@postcode) {
+				push @postcode, '';
+			}
+			if ($options{rettype} eq 'int') {	# __init__ (constructor)
+				push @postcode, "return 0;";
+			}
+			else {
+				my $build_args = join(', ', @build_args);
+				push @postcode, qq(return Py_BuildValue("$build_format", $build_args););
+			}
 		}
-		
-		if (@postcode) {
-			push @postcode, '';
-		}
-		if ($options{rettype} eq 'int') {	# __init__ (constructor)
-			push @postcode, "return 0;";
-		}
-		else {
-			my $build_args = join(', ', @build_args);
-			push @postcode, qq(return Py_BuildValue("$build_format", $build_args););
+		else {	# single return
+			my $pyobj_name = 'py_' . $outputs[0]->name;
+			my $options = {
+				input_name => $outputs[0]->name,
+				output_name => $pyobj_name,
+				must_not_delete => $outputs[0]->must_not_delete,
+			};
+			my ($defs, $code) = $outputs[0]->arg_builder($options);
+			push @defs,
+				"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
+				@$defs;
+			push @postcode,
+				@$code,
+				"return $pyobj_name;";
 		}
 	}
 	else {

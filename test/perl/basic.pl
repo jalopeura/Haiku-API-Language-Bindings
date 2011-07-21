@@ -14,7 +14,7 @@ use Haiku::InterfaceKit;
 use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 
-use Test::Simple tests =>  10;
+use Test::Simple tests =>  11;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
@@ -75,6 +75,25 @@ $pattern->data = $aref;
 $aref = $pattern->data;
 ok($pattern->data->[2] == 0x10, sprintf("Set an element of an array property: %s", join(' ', @{ $pattern->data })));
 
-# test Haiku::pattern for repeats
+my $test_string = join('', map { chr $_ } 0x100..0x109);
+my $menu_info = new Haiku::menu_info;
+$menu_info->f_family = $test_string;
+my $ret_string = unpack('Z64', $menu_info->f_family);
+ok($test_string eq $ret_string, "Set and return char strings [$test_string <=> $ret_string]");
+
+=pod
+
+ok(length($menu_item->f_family) == 64, '');
+$family=~s/([\0-\x1a\x7f])/sprintf("\\x{%X}", ord $1)/ge;
+print $family,"\n";
+
+$menu_item->f_family = 
+$family = $menu_item->f_family;
+$family=~s/([\0-\x1a\x7f])/sprintf("\\x{%X}", ord $1)/ge;
+print $family,"\n";
+
+=cut
 
 # test multiple inheritance (when something multiple inherited is defined)
+
+print "\$app ($app) and \$be_app ($be_app) comparison: ", ($app == $be_app ? 'true' : 'false');
