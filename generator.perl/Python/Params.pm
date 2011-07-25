@@ -186,13 +186,27 @@ sub as_python_call {
 			output_name => $pyobj_name,
 			must_not_delete => $param->must_not_delete,
 		};
+		for (qw(count length repeat)) {
+			if ($param->has($_)) {
+				$options->{$_} = $param->{$_};
+			}
+		}
 		my ($def, $code) = $param->arg_builder($options);
 		$format .= $param->type->format_item;
 		push @args, $pyobj_name;
-		push @defs,
-			"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
-			@$def;
 		push @code, @$code;
+		
+#		my $obj_return;
+		if ($param->type->has('target') and my $target = $param->type->target) {
+			(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+			push @defs, "$objtype* $pyobj_name;";
+#			$obj_return = 1;
+		}
+		else {
+			push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
+			
+		}
+		push @defs, @$def;
 	}
 	
 	my $outargs;
@@ -331,6 +345,17 @@ sub arg_builder {
 sub arg_parser {
 	my ($self, $options, $repeat) = @_;
 	return $self->type->arg_parser($options, $repeat);
+}
+
+sub repeat {
+	my ($self) = @_;
+	if ($self->{repeat}) {
+		return $self->{repeat};
+	}
+	if ($self->type->has('repeat')) {
+		return $self->type->repeat;
+	}
+	return 0;
 }
 
 sub as_cpp_def {

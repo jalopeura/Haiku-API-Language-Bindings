@@ -50,8 +50,8 @@ print "Should get two return values; got", char, "and", mod
 origin = Haiku.PointConstants.B_ORIGIN
 print "Should get a non-integer constant; got", origin
 
-global_be_app = Haiku.Application.be_app()
-print "Should get a global; got", global_be_app
+be_app = Haiku.Application.be_app()
+print "Should get a global; got", be_app
 
 pattern = Haiku.pattern();
 data = pattern.data
@@ -62,12 +62,8 @@ pattern.data = data
 print "Should get changed value; got", pattern.data
 
 menu_info = Haiku.menu_info()
-print menu_info.f_family
-print 1
 menu_info.f_family = "Test String"
-print 2
-menu_info.f_family = unicode("\x100\x101\x102\x103\x104\x105\x106\x107\x108\x109")
-print menu_info.f_family
+print "Should get 'Test String'; got", menu_info.f_family
 
 # test multiple inheritance (when something multiple inherited is defined)
 

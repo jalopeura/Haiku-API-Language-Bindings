@@ -139,7 +139,13 @@ sub generate_cc {
 						input_name => $pyobj_name,
 						output_name => $param->name,
 						must_not_delete => $param->must_not_delete,
+						repeat => $param->repeat,
 					};
+					for (qw(count length)) {
+						if ($param->has($_)) {
+							$options->{$_} = $param->{$_};
+						}
+					}
 					my ($arg_defs, $arg_code) = $param->arg_parser($options);
 					push @defs,
 						"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
@@ -196,6 +202,11 @@ sub generate_cc {
 						output_name => $pyobj_name,
 						must_not_delete => $param->must_not_delete,
 					};
+					for (qw(count length repeat)) {
+						if ($param->has($_)) {
+							$options->{$_} = $param->{$_};
+						}
+					}
 					my ($defs, $code) = $param->arg_builder($options);
 					push @defs,
 						"PyObject* $pyobj_name;",
@@ -222,18 +233,42 @@ sub generate_cc {
 		}
 		else {	# single return
 			my $pyobj_name = 'py_' . $outputs[0]->name;
+			
+			my $obj_return;
+			unless ($self->isa('Python::Constructor')) {
+				if ($outputs[0]->type->has('target') and my $target = $outputs[0]->type->target) {
+					(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+					push @defs, "$objtype* $pyobj_name; // from generate_py()";
+					$obj_return = 1;
+				}
+				else {
+					push @defs, "PyObject* $pyobj_name; // from generate_py()",	# may need to fix this for C++ objects
+				}
+			}
+			
 			my $options = {
 				input_name => $outputs[0]->name,
 				output_name => $pyobj_name,
 				must_not_delete => $outputs[0]->must_not_delete,
 			};
 			my ($defs, $code) = $outputs[0]->arg_builder($options);
-			push @defs,
-				"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
-				@$defs;
-			push @postcode,
-				@$code,
-				"return $pyobj_name;";
+			push @defs, @$defs;
+			push @postcode, @$code;
+			
+			if ($self->isa('Python::Constructor')) {
+				if ($self->has('overload_name')) {
+					push @postcode, "return (PyObject*)python_self;";
+				}
+				else {
+					push @postcode, "return 0;";
+				}
+			}
+			elsif ($obj_return) {
+				push @postcode, "return (PyObject*)$pyobj_name;";
+			}
+			else {
+				push @postcode, "return $pyobj_name;";
+			}
 		}
 	}
 	else {

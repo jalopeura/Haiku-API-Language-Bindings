@@ -46,10 +46,8 @@ sub type_options {
 	my $options = {
 		name => $self->name,
 		must_not_delete => 1,
+		repeat => $self->repeat,
 	};
-	if ($self->has('repeat')) {
-		$options->{repeat} = $self->repeat;
-	}
 	return $options;
 }
 
@@ -61,6 +59,17 @@ sub arg_builder {
 sub arg_parser {
 	my ($self, $options, $repeat) = @_;
 	return $self->type->arg_parser($options, $repeat);
+}
+
+sub repeat {
+	my ($self) = @_;
+	if ($self->{repeat}) {
+		return $self->{repeat};
+	}
+	if ($self->type->has('repeat')) {
+		return $self->type->repeat;
+	}
+	return 0;
 }
 
 sub generate {
@@ -80,14 +89,31 @@ sub generate {
 		input_name => $self->name,
 		output_name => $pyobj_name,
 		must_not_delete => 1,
-		repeat => $self->has('repeat') ? $self->repeat : 0,
+		repeat => $self->repeat,
 	};
 	my ($defs, $code) = $self->arg_builder($options);
 	print $fh qq(static PyObject* $global_name($class_name* python_dummy) {\n);
-	print $fh "\tPyObject* $pyobj_name;\n";	# may need to change this for C++ objects
+	
+	my $obj_return;
+	if ($self->type->has('target') and my $target = $self->type->target) {
+		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+		print $fh "\t$objtype* $pyobj_name;\n";
+		$obj_return = 1;
+	}
+	else {
+		print $fh "\tPyObject* $pyobj_name;\n";	# may need to change this for C++ objects
+	}
+	
 	print $fh map { "\t$_\n" } @$defs;
 	print $fh map { "\t$_\n" } @$code;
-	print $fh qq(\treturn $pyobj_name;\n);
+	
+	if ($obj_return) {
+		print $fh qq(\treturn (PyObject*)$pyobj_name;\n);
+	}
+	else {
+		print $fh qq(\treturn $pyobj_name;\n);
+	}
+	
 	print $fh "}\n\n";
 	
 	my $doc;

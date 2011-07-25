@@ -63,6 +63,17 @@ sub arg_parser {
 	return $self->type->arg_parser($options, $repeat);
 }
 
+sub repeat {
+	my ($self) = @_;
+	if ($self->{repeat}) {
+		return $self->{repeat};
+	}
+	if ($self->type->has('repeat')) {
+		return $self->type->repeat;
+	}
+	return 0;
+}
+
 sub generate {
 	my ($self) = @_;
 	
@@ -153,13 +164,30 @@ PROP
 		input_name => 'python_self->cpp_object->' . $self->name,
 		output_name => $get_arg,
 		must_not_delete => 1,
-		repeat => $self->has('repeat') ? $self->repeat : 0,
+		repeat => $self->repeat,
 	};
 	my ($get_defs, $get_code) = $self->arg_builder($options);
+	
+	my $obj_return;
+	if ($self->type->has('target') and my $target = $self->type->target) {
+		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+		unshift @$get_defs, "$objtype* $get_arg;\n";
+		$obj_return = 1;
+	}
+	else {
+		unshift @$get_defs, "PyObject* $get_arg; // from generate()";
+	}
+	
 	print $fh qq(static PyObject* $getter_name($class_name* python_self, void* python_closure) {\n);
 	print $fh map { "\t$_\n" } @$get_defs;
 	print $fh map { "\t$_\n" } @$get_code;
-	print $fh qq(\treturn $get_arg;\n);
+	
+	if ($obj_return) {
+		print $fh qq(\treturn (PyObject*)$get_arg;\n);
+	}
+	else {
+		print $fh qq(\treturn $get_arg;\n);
+	}
 	print $fh "}\n\n";
 
 #	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser('value');
@@ -167,7 +195,7 @@ PROP
 	my $options = {
 		input_name => 'value',
 		output_name => 'python_self->cpp_object->' . $self->name,
-		repeat => $self->has('repeat') ? $self->repeat : 0,
+		repeat => $self->repeat,
 	};
 	my ($set_defs, $set_code) = $self->arg_parser($options);
 	print $fh qq(static int $setter_name($class_name* python_self, PyObject* value, void* closure) {\n);

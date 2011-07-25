@@ -63,7 +63,7 @@
 			<method name="ChildAt">
 				<doc>Returns the [code]index[/code]th view from the window's view list.</doc>
 				<param name="index" type="int32" action="input" />
-				<return type="BView*" action="output" />
+				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
 			<method name="CountChildren">
 				<doc>Returns the number of views in the window's view list.</doc>

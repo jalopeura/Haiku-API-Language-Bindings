@@ -187,10 +187,11 @@ sub finalize_upgrade {
 #)
 
 sub arg_builder {
-	my ($self, $options, $repeat) = @_;
+	my ($self, $options) = @_;
 	
-	if ($repeat) {
-		return $self->array_arg_parser($options);
+	my $builtin = $self->builtin;
+	if ($options->{repeat} and $builtin ne 'char' and $builtin ne 'wchar_t') {
+		return $self->array_arg_builder($options);
 	}
 	
 	my $item = $self->format_item;
@@ -203,7 +204,6 @@ sub arg_builder {
 		);
 	}
 	
-	my $builtin = $self->builtin;
 	my $target;
 	
 	if ($item=~/^O/) {	
@@ -225,10 +225,10 @@ sub arg_builder {
 		if ($builtin eq 'char**') {
 			my $count_name = $options->{count}{name};
 			my @defs = ();
-			if ($options->{count}{type}) {
-				my $count_type = $options->{count}{type}->name;
-				push @defs, "$count_type $count_name = 0;";
-			}
+#			if ($options->{count}->has('type_name')) {
+#				my $count_type = $options->{count}->type_name;
+#				push @defs, "$count_type $count_name = 0;";
+#			}
 			return (
 				\@defs,
 				[ qq($options->{output_name} = CharArray2PyList($options->{input_name}, (int)$count_name);) ]
@@ -363,7 +363,9 @@ sub array_arg_builder {
 	
 	my $item = 'O';
 	my $arg = $options->{output_name};
-	my @defs = ("PyObject* $arg;");
+	my $repeat = delete $options->{repeat};
+#	my @defs = ("PyObject* $arg;");
+	my @defs = ('PyObject* py_element;',);
 	
 	$options->{input_name} .= '[i]';
 	$options->{output_name} = 'py_element';
@@ -371,7 +373,7 @@ sub array_arg_builder {
 	
 	my @code = (
 		qq($arg = PyList_New(0);),
-		qq(for (int i = 0; i < $options->{repeat}; i++) {),
+		qq(for (int i = 0; i < $repeat; i++) {),
 		map( { "\t$_" } @$element_defs),
 		map( { "\t$_" } @$element_code),
 		qq(\tPyList_Append($arg, py_element);),
@@ -382,9 +384,10 @@ sub array_arg_builder {
 }
 
 sub arg_parser {
-	my ($self, $options, $repeat) = @_;
+	my ($self, $options) = @_;
 	
-	if ($repeat) {
+	my $builtin = $self->builtin;
+	if ($options->{repeat} and $builtin ne 'char' and $builtin ne 'wchar_t') {
 		return $self->array_arg_parser($options);
 	}
 	
@@ -418,7 +421,6 @@ sub arg_parser {
 		);
 	}
 	
-	my $builtin = $self->builtin;
 	my $target;
 	
 	if ($item=~/^O/) {		
@@ -438,15 +440,15 @@ sub arg_parser {
 		}
 		
 		if ($builtin eq 'char**') {
-			my $count_name = $options->{count}{name};
+			my $count_name = $options->{count}->name;
 			my @defs = ();
-			if ($options->{count}{type}) {
-				my $count_type = $options->{count}{type}->name;
+			if ($options->{count}->has('type_name')) {
+				my $count_type = $options->{count}->type_name;
 				push @defs, "$count_type $count_name = 0;";
 			}
 			return (
 				\@defs,
-				[ "$options->{output_name} = PyList2CharArray($options->{input_name}, (int*)&$count_name);" ],
+				[ "$options->{output_name} = PyList2CharArray($options->{input_name}, (int*)&$count_name); // from arg_parser()" ],
 			);
 		}
 		
@@ -604,6 +606,7 @@ sub array_arg_parser {
 	
 	my $item = 'O';
 	my $arg = $options->{input_name};
+	my $repeat = delete $options->{repeat};
 	
 	$options->{input_name} = 'py_element';
 	$options->{output_name} .= '[i]';
@@ -614,7 +617,7 @@ sub array_arg_parser {
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
 	
 	my @code = (
-		qq(for (int i = 0; i < $options->{repeat}; i++) {),
+		qq(for (int i = 0; i < $repeat; i++) {),
 		map( { "\t$_ // element code" } @$element_defs),
 		qq(\t$options->{input_name} = PyList_GetItem($arg, i);),
 		qq(\tif ($options->{input_name} == NULL) {),

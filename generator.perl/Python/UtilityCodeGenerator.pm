@@ -110,7 +110,7 @@ PyObject* Char2PyString(const void* var, int num_chars, int size) {
 	Py_ssize_t pystring_length;
 	
 	pystring_length = num_chars * size;
-printf("Got size %d and string %s\\n", (int)pystring_length, (char*)var);
+//printf("Got size %d and string %s\\n", (int)pystring_length, (char*)var);
 	ret = PyString_FromStringAndSize((char*)var, (int)pystring_length);
 	
 	return ret;

@@ -52,10 +52,8 @@ sub type_options {
 	my $options = {
 		name => $self->name,
 		must_not_delete => 1,
+		repeat => $self->repeat,
 	};
-	if ($self->has('repeat')) {
-		$options->{repeat} = $self->repeat;
-	}
 	return $options;
 }
 
@@ -67,6 +65,17 @@ sub arg_builder {
 sub arg_parser {
 	my ($self, $options, $repeat) = @_;
 	return $self->type->arg_parser($options, $repeat);
+}
+
+sub repeat {
+	my ($self) = @_;
+	if ($self->{repeat}) {
+		return $self->{repeat};
+	}
+	if ($self->type->has('repeat')) {
+		return $self->type->repeat;
+	}
+	return 0;
 }
 
 sub generate {
@@ -108,15 +117,28 @@ sub generate {
 #	}
 	
 #	shift @$defs;	# because constant is already defined
-	push @{ $class->{constant_defs} },
-		"PyObject* $object_name;",
-		@$defs;
+
 	push @{ $class->{constant_code} },
 		@$code,
 #		qq($object_name = Py_BuildValue("$fmt", $arg);),
-		qq(Py_INCREF($object_name);),
-		qq(PyModule_AddObject($module_name, "$constant_name", $object_name);),
-		"";
+		qq(Py_INCREF($object_name););
+		
+#	my $obj_return;
+	if ($self->type->has('target') and my $target = $self->type->target) {
+		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+		push @{ $class->{constant_defs} }, "$objtype* $object_name;";
+#		$obj_return = 1;
+		push @{ $class->{constant_code} },
+			qq(PyModule_AddObject($module_name, "$constant_name", (PyObject*)$object_name););
+	}
+	else {
+		push @{ $class->{constant_defs} }, "PyObject* $object_name;";
+		push @{ $class->{constant_code} },
+			qq(PyModule_AddObject($module_name, "$constant_name", $object_name););
+	}
+	
+	push @{ $class->{constant_defs} }, @$defs;
+	push @{ $class->{constant_code} }, "";
 }
 
 1;
