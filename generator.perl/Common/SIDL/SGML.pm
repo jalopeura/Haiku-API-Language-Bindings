@@ -12,7 +12,7 @@ sub new {
 	
 	while (length $tag) {
 		my $key;
-		$tag=~s/(\S+)=// and $key = $1;
+		$tag=~s/([^\s=]+)=// and $key = $1;
 		
 		my $value;
 		# quoted value

@@ -1,14 +1,4 @@
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/Alert.cc: In function `struct PyObject * Haiku_Alert_Shortcut(Haiku_Alert_Object *, PyObject *)':
-In file included from /HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/Haiku.cc:24:
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/Alert.cc:146: assignment to `char' from `PyObject *' lacks a cast
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/menu_info.cc: In function `struct PyObject * Haiku_menu_info_Object_getf_family(Haiku_menu_info_Object *, void *)':
-In file included from /HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/Haiku.cc:32:
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/menu_info.cc:52: incompatible types in assignment of `PyObject *' to `char[64]'
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/menu_info.cc: In function `struct PyObject * Haiku_menu_info_Object_getf_style(Haiku_menu_info_Object *, void *)':
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/menu_info.cc:62: incompatible types in assignment of `PyObject *' to `char[64]'
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/MenuItem.cc: In function `struct PyObject * Haiku_MenuItem_Shortcut(Haiku_MenuItem_Object *, PyObject *)':
-In file included from /HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/Haiku.cc:40:
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/MenuItem.cc:217: assignment to `char' from `PyObject *' lacks a cast
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/MenuItem.cc: In function `struct PyObject * Haiku_MenuItem_Trigger(Haiku_MenuItem_Object *, PyObject *)':
-/HaikuData/Source Code/GSoC2011/bindings/generated/python/Haiku/ext/Haiku/MenuItem.cc:241: assignment to `char' from `PyObject *' lacks a cast
-error: command 'gcc' failed with exit status 1
+cc1plus: warning: command line option "-Wstrict-prototypes" is valid for C/ObjC but not for C++
+/boot/develop/abi/x86/gcc4/tools/gcc-4.4.4-haiku-101111/lib/gcc/i586-pc-haiku/4.4.4/../../../../i586-pc-haiku/bin/ld: cannot find -lpython2.6
+collect2: ld returned 1 exit status
+error: command 'g++' failed with exit status 1

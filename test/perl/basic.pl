@@ -14,7 +14,7 @@ use Haiku::InterfaceKit;
 use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 
-use Test::Simple tests =>  11;
+use Test::Simple tests =>  16;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
@@ -54,7 +54,7 @@ ok(!defined($child), "Return undef [$child] for NULL object (instead of empty pe
 my $item = new Haiku::MenuItem(
 	'test',
 	new Haiku::Message(0),
-	30,
+	'a',
 	10,
 );
 my ($char, $mod) = $item->Shortcut;
@@ -75,6 +75,7 @@ $pattern->data = $aref;
 $aref = $pattern->data;
 ok($pattern->data->[2] == 0x10, sprintf("Set an element of an array property: %s", join(' ', @{ $pattern->data })));
 
+binmode(STDOUT, ':utf8');
 my $test_string = join('', map { chr $_ } 0x100..0x109);
 my $menu_info = new Haiku::menu_info;
 $menu_info->f_family = $test_string;
@@ -96,4 +97,27 @@ print $family,"\n";
 
 # test multiple inheritance (when something multiple inherited is defined)
 
-print "\$app ($app) and \$be_app ($be_app) comparison: ", ($app == $be_app ? 'true' : 'false');
+=pod
+
+package Haiku::Application;
+use overload
+	"==" => "operator_eq",
+	'""' => sub { "Skip" };
+
+package main;
+
+=cut
+
+ok($app == $be_app, "Default equality operator");
+
+my $x = 10; my $y = 10;
+my $point = new Haiku::Point($x,$y);
+my $negpoint = -$point;
+ok(($point->x == -1 * $negpoint->x and $point->y == -1 * $negpoint->y), "Negation operator");
+
+my $opoint = $point + $negpoint;
+ok($opoint == Haiku::Point::B_ORIGIN, "Comparison operator");
+ok(($opoint->x == 0 and $opoint->y == 0), "Mathematical operator");
+
+$point += $point;
+ok(($point->x == 2 * $x and $point->y == 2 * $y), "Mutator operator");

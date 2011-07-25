@@ -6,6 +6,7 @@ use File::Spec;
 use File::Path;
 use Perl::Functions;
 use Perl::Properties;
+use Perl::Operators;
 use Perl::Constants;
 use Perl::Globals;
 use strict;
@@ -131,6 +132,14 @@ sub generate_body {
 	}
 	
 	#
+	# operators
+	#
+	
+	if ($self->has('operators')) {
+		$self->operators->generate;
+	}
+	
+	#
 	# constants
 	#
 	
@@ -234,6 +243,76 @@ PROTOTYPES: DISABLE
 TOP
 }
 
-sub generate_xs_postamble {} # nothing to do
+sub generate_xs_postamble {
+	my ($self) = @_;
+	
+	my ($op_eq, $op_ne);
+	
+	if ($self->has('operators') and $self->operators->has('operators')) {
+		for my $operator ($self->operators->operators) {
+			if ($operator->name eq "==") {
+				$op_eq = 1;
+			}
+			elsif ($operator->name eq "!=") {
+				$op_ne = 1;
+			}
+		}
+	}
+	
+	unless ($op_eq and $op_ne) {
+		my $cpp_class_name = $self->cpp_name;
+		my $fh = $self->xsh;
+		
+		if (not $op_eq) {
+			print $fh <<OP_EQ;
+bool
+${cpp_class_name}::operator_eq(object, swap)
+	INPUT:
+		$cpp_class_name* object;
+		IV swap;
+	OVERLOAD: ==
+	CODE:
+		RETVAL = THIS == object;
+	OUTPUT:
+		RETVAL
+
+OP_EQ
+		}
+		
+		if (not $op_ne) {
+			print $fh <<OP_NE;
+bool
+${cpp_class_name}::operator_ne(object, swap)
+	INPUT:
+		$cpp_class_name* object;
+		IV swap;
+	OVERLOAD: !=
+	CODE:
+		RETVAL = THIS != object;
+	OUTPUT:
+		RETVAL
+
+OP_NE
+		}
+		
+		my $perl_class_name = $self->perl_name;
+		(my $nil = $self->module_name)=~s/:/_/g;
+		$nil = 'XS_' . $nil . '_nil';
+		
+		print $fh <<OVERLOAD;
+# xsubpp only enables overloaded operators for the initial module; additional
+# modules are out of luck unless they roll their own, so that's what we do
+# ($nil defined automatically by xsubpp)
+BOOT:
+	sv_setsv(
+		get_sv("${perl_class_name}::()", TRUE),
+		&PL_sv_yes	// so we don't get fallback errors
+	);
+    newXS("${perl_class_name}::()", $nil, file);
+
+OVERLOAD
+
+	}
+}
 
 1;

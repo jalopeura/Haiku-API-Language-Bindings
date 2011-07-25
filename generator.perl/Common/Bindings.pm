@@ -69,6 +69,10 @@ my %children = (
 		key => 'properties',
 		class => 'Properties',
 	},
+	operators  => {
+		key => 'operators',
+		class => 'Operators',
+	},
 	constants  => {
 		key => 'constants',
 		class => 'Constants',

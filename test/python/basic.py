@@ -1,3 +1,8 @@
+import inspect
+def dump(object):
+	for item in inspect.getmembers(object):
+		print "ITEM:", item,"\n\n"
+
 import Haiku
 from Haiku.WindowConstants import \
 	B_TITLED_WINDOW, \
@@ -67,4 +72,18 @@ print "Should get 'Test String'; got", menu_info.f_family
 
 # test multiple inheritance (when something multiple inherited is defined)
 
-print "app and be_app comparison: ", (app == be_app)
+print "app and be_app comparison:", (app == be_app)
+
+x = 10
+y = 10
+point = Haiku.Point(x,y)
+#negpoint = -point
+negpoint = Haiku.Point(-x,-y)
+#print "Should get negated values:", point.PrintToStream(), "vs", negpoint.PrintToStream()
+
+opoint = point + negpoint
+print "Should get a true value:", opoint == Haiku.PointConstants.B_ORIGIN
+print "Should get all zeros: got:", opoint.x, opoint.y
+
+point += point;
+print "Should get doubled values; got", point.x, point.y

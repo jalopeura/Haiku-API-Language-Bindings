@@ -240,6 +240,10 @@ you need to define those types in this section.
 			<constructor />
 			<destructor />
 		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
 	</binding>
 	<binding source="color_map" target="Haiku::color_map">
 		<doc>Exposes the color_map struct</doc>
@@ -266,6 +270,10 @@ you need to define those types in this section.
 			<constructor />
 			<destructor />
 		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
 	</binding>
 	
 <!-- print_file_header from PrintJob -->

@@ -24,7 +24,7 @@ sub generate {
 	mkpath($target);
 print "Generating $target\n";
 	
-#	File::Path->remove_tree($target);
+	File::Path->remove_tree($target);
 	
 	# create this now so we can pass it in
 	my $package = new Python::Package($bindings, $options{parent});

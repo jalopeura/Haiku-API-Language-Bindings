@@ -6,10 +6,56 @@ use File::Spec;
 use File::Path;
 use Python::Functions;
 use Python::Properties;
+use Python::Operators;
 use Python::Constants;
 use Python::Globals;
 use strict;
 our @ISA = qw(Binding Python::BaseObject);
+
+my @number_methods = qw(
+	nb_add
+	nb_subtract
+	nb_multiply
+	nb_divide
+	nb_remainder
+	nb_divmod
+	nb_power
+	nb_negative
+	nb_positive
+	nb_absolute
+	nb_nonzero
+	nb_invert
+	nb_lshift
+	nb_rshift
+	nb_and
+	nb_xor
+	nb_or
+	nb_coerce
+	nb_int
+	nb_long
+	nb_float
+	nb_oct
+	nb_hex
+	
+	nb_inplace_add
+	nb_inplace_subtract
+	nb_inplace_multiply
+	nb_inplace_divide
+	nb_inplace_remainder
+	nb_inplace_power
+	nb_inplace_lshift
+	nb_inplace_rshift
+	nb_inplace_and
+	nb_inplace_xor
+	nb_inplace_or
+	
+	nb_floor_divide
+	nb_true_divide
+	nb_inplace_floor_divide
+	nb_inplace_true_divide
+	
+	nb_index
+);
 
 sub is_responder { 0 }
 
@@ -54,6 +100,20 @@ sub finalize_upgrade {
 sub add_method_table_entry {
 	my ($self, $python_name, $function_pointer, $flags, $doc) = @_;
 	push @{ $self->{method_table} }, qq({"$python_name", (PyCFunction)$function_pointer, $flags, "$doc"});
+}
+
+sub add_richcompare_block {
+	my ($self, $constant, $defs, $code) = @_;
+	
+	$self->{richcompare_blocks} ||= [];
+	push @{ $self->{richcompare_blocks} }, [ $constant, $defs, $code ];
+}
+
+sub add_as_number_op {
+	my ($self, $key, $funcname) = @_;
+	
+	$self->{as_number_ops} ||= [];
+	push @{ $self->{as_number_ops} }, [ $key, $funcname ];
 }
 
 sub generate {
@@ -121,6 +181,14 @@ sub generate_body {
 	
 	if ($self->has('properties')) {
 		$self->properties->generate;
+	}
+	
+	#
+	# operators
+	#
+	
+	if ($self->has('operators')) {
+		$self->operators->generate;
 	}
 	
 	#
@@ -196,16 +264,51 @@ METHODS
 sub generate_cc_postamble {
 	my ($self) = @_;
 	
+	$self->generate_default_operators;
+	
 	my $fh = $self->cch;
 	
 	(my $name = $self->{name})=~s/\./_/g; $name .= '_';
 	
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	my ($init_function, $dealloc_function, $parent, $doc, $property_table, $method_table);
+	my ($init_function, $dealloc_function, $parent, $doc,
+		$property_table, $method_table, $richcompare, $as_number);
 	
 	$init_function = $self->constructor_name;
 	$dealloc_function = $self->destructor_name;
+	
+	# richcompare
+	$richcompare = '0';
+	if ($self->has('richcompare_blocks')) {
+		$richcompare = $python_object_prefix . '_RichCompare';
+		print $fh <<CMP;
+static PyObject* $richcompare(PyObject* a, PyObject* b, int op) {
+	bool retval;
+	
+	switch (op) {
+CMP
+		for my $block ($self->richcompare_blocks) {
+			my ($constant, $defs, $code) = @$block;
+			print $fh "\t\tcase $constant:\n";
+		
+			if (@$defs) {
+				print $fh map { "\t\t\t$_\n"; } @$defs;
+				print $fh "\t\t\t\n";
+			}
+			
+			print $fh map { "\t\t\t$_\n"; } @$code;
+			print $fh "\t\t\t\n";
+		}
+		
+		print $fh <<CMP;
+		default:
+			return Py_NotImplemented;
+	}
+}
+
+CMP
+	}
 	
 	# getter/setter
 	$property_table = '0';
@@ -227,6 +330,23 @@ sub generate_cc_postamble {
 			print $fh "\t$def,\n";
 		}
 		print $fh "\t{NULL} /* Sentinel */\n};\n\n";
+	}
+	
+	# as_number
+	$as_number = '0';
+	if ($self->has('as_number_ops')) {
+		$as_number = $python_object_prefix . '_AsNumber';
+		my %ops;
+		for my $op ($self->as_number_ops) {
+			my ($key, $funcname) = @$op;
+			$ops{$key} = $funcname;
+		}
+		
+		print $fh "static PyNumberMethods $as_number = {\n\t";
+		print $fh join(",\n\t", map { "/* $_ */\t" . ($ops{$_} || '0') } @number_methods);
+		print $fh "\n};\n\n";
+		
+		$as_number =  '&' . $as_number;
 	}
 	
 	if ($self->has('python_parent')) {
@@ -251,6 +371,12 @@ sub generate_cc_postamble {
 		$doc = $self->doc;
 	}
 	
+	# build a tp_richcompare function
+	#*tp_richcompare(PyObject *a, PyObject *b, int op).
+	# build a tp_as_number structure
+	
+	my $flags = 'Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE';
+	
 	# type object
 	print $fh <<TYPE;
 PyTypeObject $self->{pytype_name} = {
@@ -265,7 +391,7 @@ PyTypeObject $self->{pytype_name} = {
 	0,                         /*tp_setattr*/
 	0,                         /*tp_compare*/
 	0,                         /*tp_repr*/
-	0,                         /*tp_as_number*/
+	$as_number,                         /*tp_as_number*/
 	0,                         /*tp_as_sequence*/
 	0,                         /*tp_as_mapping*/
 	0,                         /*tp_hash */
@@ -274,11 +400,11 @@ PyTypeObject $self->{pytype_name} = {
 	0,                         /*tp_getattro*/
 	0,                         /*tp_setattro*/
 	0,                         /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
+	$flags,                    /*tp_flags*/
 	"...",                     /* tp_doc */
 	0,                         /* tp_traverse */
 	0,                         /* tp_clear */
-	0,                         /* tp_richcompare */
+	$richcompare,              /* tp_richcompare */
 	0,                         /* tp_weaklistoffset */
 	0,                         /* tp_iter */
 	0,                         /* tp_iternext */
@@ -299,8 +425,43 @@ PyTypeObject $self->{pytype_name} = {
 };
 
 TYPE
+}
 
-
+sub generate_default_operators {
+	my ($self) = @_;
+	
+	$self->{richcompare_blocks} ||= [];
+	
+	my ($found_eq, $found_ne);
+	for my $block (@{ $self->{richcompare_blocks} }) {
+		if ($block->[0] eq 'Py_EQ') {
+			$found_eq = 1;
+		}
+		elsif ($block->[0] eq 'Py_NE') {
+			$found_ne = 1;
+		}
+	}
+	
+	return if ($found_eq and $found_ne);
+	
+	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
+	my $pyobj_type = "${python_object_prefix}_Object";
+	
+	if (not $found_eq) {
+		push @{ $self->{richcompare_blocks} },
+			[ 'Py_EQ', [], [
+				qq(retval = (($pyobj_type*)a)->cpp_object == (($pyobj_type*)b)->cpp_object;),
+				qq(return Py_BuildValue("b", retval ? 1 : 0);),
+			]];
+	}
+	
+	if (not $found_ne) {
+		push @{ $self->{richcompare_blocks} },
+			[ 'Py_NE', [], [
+				qq(retval = (($pyobj_type*)a)->cpp_object != (($pyobj_type*)b)->cpp_object;),
+				qq(return Py_BuildValue("b", retval ? 1 : 0);),
+			]],
+	}
 }
 
 1;

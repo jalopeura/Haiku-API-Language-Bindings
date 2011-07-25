@@ -81,6 +81,7 @@ sub _import {
 package SIDL::Binding;
 use Common::SIDL::Functions;
 use Common::SIDL::Properties;
+use Common::SIDL::Operators;
 use Common::SIDL::Constants;
 use Common::SIDL::Globals;
 use strict;

@@ -53,5 +53,11 @@
 			<!-- Height -->
 			<!-- IntegerHeight -->
 		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+			<operator name="&" />
+			<operator name="|" />
+		</operators>
 	</binding>
 </bindings>

@@ -100,6 +100,28 @@ my %class_map = (
 		},
 	},
 	
+	Properties => {
+		key   => 'properties',
+		class => 'Perl::Properties',
+	},
+	Property   => {
+		key   => 'properties',
+		class => 'Perl::Property',
+		attr_map => {
+			type    => 'type_name',
+		},
+	},
+	
+	Operators => {
+		key   => 'operators',
+		class => 'Perl::Operators',
+	},
+	Operator   => {
+		key   => 'operators',
+		class => 'Perl::Operator',
+		attr_map => {},
+	},
+	
 	Constants => {
 		key   => 'constants',
 		class => 'Perl::Constants',
@@ -119,18 +141,6 @@ my %class_map = (
 	Global  => {
 		key   => 'globals',
 		class => 'Perl::Global',
-		attr_map => {
-			type    => 'type_name',
-		},
-	},
-	
-	Properties => {
-		key   => 'properties',
-		class => 'Perl::Properties',
-	},
-	Property   => {
-		key   => 'properties',
-		class => 'Perl::Property',
 		attr_map => {
 			type    => 'type_name',
 		},

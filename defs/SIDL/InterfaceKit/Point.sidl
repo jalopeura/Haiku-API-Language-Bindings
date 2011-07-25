@@ -35,5 +35,14 @@
 		<constants>
 			<constant name="B_ORIGIN" type="BPoint" group="" />
 		</constants>
+		<operators>
+			<operator name="neg" />
+			<operator name="==" />
+			<operator name="!=" />
+			<operator name="+" />
+			<operator name="-" />
+			<operator name="+=" />
+			<operator name="-=" />
+		</operators>
 	</binding>
 </bindings>
