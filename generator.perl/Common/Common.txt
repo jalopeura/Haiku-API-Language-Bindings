@@ -1,0 +1,1 @@
+The classes in these files are used as data holders. The parsers use them as base classes and fill the data slots. Then the generators rebless the underlying hashes into another class and use the data.

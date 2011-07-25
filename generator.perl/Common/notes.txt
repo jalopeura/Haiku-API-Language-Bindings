@@ -1,0 +1,328 @@
+<object>
+	<attribute>=... (accepts \ as last char to continue to next line and \n to insert a newline)
+	<subobject>
+
+https://gist.github.com/1076454
+
+XP Pro SP3
+Intel Atom N270 1.60 GHz
+1.99 G RAM
+
+need to handle NULL returns for object pointers
+
+need to handle error returns and multiple outputs
+	glue methods
+		called by script
+		call c++
+		get c++ return
+		return values to script
+	events
+		called by c++
+		call script
+		get script return (always take a single return, because that's what c++ wants)
+		return values to c++
+
+need to handle structs
+	Message (entry_ref)
+	InterfaceKit
+	Font
+	Screen
+	View (rgb_color)
+
+need to create a globals tag (can be done by expanding constants to handle different types)
+	Application
+	Clipboard
+	Font
+	Point
+
+need to handle overloaded operators
+	Message
+	Point
+	Rect
+
+Interface
+	CheckBox
+	RadioButton
+	StringView
+	SeparatorItem
+	ListView
+	ListItem
+	StringItem
+	OutlineListView
+	Tab
+	TabView
+	ScrollView
+	Slider
+	StatusBar
+	Font
+	ColorControl
+	Bitmap
+	Picture
+	PictureButton
+	Polygon
+	Shape
+	ShapeIterator
+	Dragger
+	Shelf
+	Region
+	Screen
+	PrintJob
+	ScrollBar
+
+Storage
+	Node
+	FilePanel
+	FindDirectory
+	NodeInfo
+	NodeMonitor
+	Path
+	Query
+	Volume
+	VolumeRoster
+
+Document generator base classes
+Document bindings
+
+
+
+Expectations from Mentors:
+    I hope that more programmers more experienced with the Haiku API will help me find dependencies (for example, I had to include BRect earlier than I otherwise would have, because the BWindow constructor needs it).
+    I will also need help with how Haiku threads work, although I suspect that most likely Perl threads (and Python threads, if they exist) are not compatible, so most work will have to be done in the main thread anyway.
+
+
+The following objects have at least partial bindings:
+
+From the Application Kit:
+	Application
+	Clipboard
+	Cursor
+	Handler
+	Invoker
+	Looper
+	Message
+From the Interface Kit:
+	Alert
+	Box
+	Button
+	Control
+	Font
+	Menu
+	MenuBar
+	MenuField
+	MenuItem
+	Point
+	PopUpMenu
+	Rect
+	Screen
+	StringView
+	TextControl
+	TextView
+	View
+	Window
+From the Support Kit:
+	Archivable
+
+Some of these objects only serve as base classes at the moment, although they will later be expanded to allow creation of custom objects based on them.
+
+Python has a minimal test program that uses Application, Window, and Button, but the other objects have not been tested. It would be helpful if interested Python programmers could start coding (and thereby discovering bugs). In addition, I get a large number of warnings about multi-character constants when compiling. Despite following the documentation, I cannot get the installer to pass options to the compiler to turn these off. There are also a few other warnings I'm working on eliminating, but the extensions sucessfully compile and the test program runs.
+
+For the time being, the Python objects are all named Haiku.<Object> instead of Haiku.<Kit>.<Object>. This allows me to split up the kits into different extensions. As this naming scheme is apparently not good Python practice, I am still looking into alternatives; cuurently I am considering either placing everything into a single extension or adding some data to my definition files that lets me know what kit/extension a foreign object belongs to.
+
+Perl has the minimal test program and it also has a slightly more substantial test program (a small Person viewer app). There are also a few compiler warnings I'm still working on eliminating.
+
+The bindings can be found at http://dev.osdrawer.net/projects/perl-haiku-kits. The downloadable files are under "Files"; there are also Forums and a Wiki, and (under "Issues") a bug tracker. Anyone can download the files and look at the other content, but if you want to report bugs, post to the forums, or edit the wiki, you need to be added to the project. Interested users with an OsDrawer account can email me or post a comment here, and I will add you as a member of the project.
+
+There may be some trial and error involved in adding members; OsDrawer has defined some roles for members of a project, but I can't find any documentation on what permissions each role has. There is a role called "Reporter" that I assume lets the user post new bugs, and there's one called "Wiki editor" that's self-explanatory. But there's no role for Forum poster, so I assume one or more of the other roles has that permission included. But I don't know which one(s).
+
+Okay, let's take a look at my second-quarter goals:
+
+- Bring the Python bindings to minimal functionality
+- Write a minimal Python test program
+These have been completed
+- Continue to test threading issues
+I have found several issues I thought might be threading issues, but upon closer examination, they were not. I did find one genuine threading issue - but it was because I forgot to lock a window before updating data.
+- Expand preliminary bindings and add new bindings
+This has also been completed, but adding new bindings will continue into the next quarter.
+- Write test programs for the bindings
+I have written one minimal test program for each language, and a slightly more complex program for Perl. I will be writing more in the next quarter.
+- Write documentation for the bindings
+I have written some documentation and I am working on programmatically adding it to the bindings. Python has fields in the underlying C++ structures to add documentation, and Perl allows documentation to be mixed in with the code.
+- If there is sufficient time, select a third target language
+I did not have time for this.
+
+Now for my upcoming goals. In general, during the next quarter I will continue to keep an eye out for threading issues, add new bindings, and fix reported bugs. There are also a few more specific things I want to work on:
+
+There are a number of methods that haven't been implemented yet because they have structs as input or output, and the bindings do not handle structs yet. It should not be too difficult to map these to appropriate data types in the target language (Perl hash, Python dictionary).
+
+I'm not sure what to do about globals like be_app and be_clipboard; on the one hand, they could be treated like constants and restricted to a particular namespace, in order to not pollute the global namespace. This is the way I'm leaning right now. On the other hand, there are relatively few of them, and so it would probably not result in a great deal of pollution if I were to put them in the global namespace.
+
+Several of the C++ objects have overloaded operators. I would like to expand the bindings to support these overloaded operators. I'm not sure how much time I want to spend on this issue right now, though. It depends on how much users want this feature.
+
+- Continue to test threading issues
+- Expand existing bindings and add new bindings
+ -Fix bugs reported by users
+- Enable structs
+- Expose globals
+- Add documentation
+- Write additional and more complex test programs
+- If there is sufficient time, select a third target language
+- If there is sufficient time and user interest, work on overloaded operators
+
+1310252503-60*60*1.5=
+1310243503
+
+need to handle NULL returns for object pointers
+
+need to handle error returns and multiple outputs
+	glue methods
+		called by script
+		call c++
+		get c++ return
+		return values to script
+	events
+		called by c++
+		call script
+		get script return (always take a single return, because that's what c++ wants)
+		return values to c++
+
+need to handle structs
+	Message (entry_ref)
+	InterfaceKit
+	Font
+	Screen
+	View (rgb_color)
+
+need to create a globals tag (can be done by expanding constants to handle different types)
+	Application
+	Clipboard
+	Font
+	Point
+
+need to handle overloaded operators
+	Message
+	Point
+	Rect
+
+Interface
+	ScrollView
+	ListView
+	ListItem
+
+Storage
+	Node
+	FilePanel
+	FindDirectory
+	NodeInfo
+	NodeMonitor
+	Path
+	Query
+	Volume
+	VolumeRoster
+
+Bindings="...doc..." - top-level object
+	attributes: name
+	children: Bundle Include Import Link Types Binding+
+Binding="...doc..."
+	attributes: source source-inherits target target-inherits must-not-delete version
+	children: Functions, Properties, Constants
+
+Constants
+	children: Constant+
+Constant="...doc..."
+
+Functions
+	children: Constructor+, Destructor, Method+, Event+, Static+, Plain+
+Constructor="...doc..."
+	attributes: name overload-name
+	children: Param+
+Destructor="...doc..."
+	attributes: name overload-name
+Event="...doc..."
+	attributes: name overload-name
+	children: Param+, Return
+Method="...doc..."
+	attributes: name overload-name
+	children: Param+, Return
+Plain="...doc..."
+	attributes: name overload-name
+	children: Param+, Return
+Static="...doc..."
+	attributes: name overload-name
+	children: Param+, Return
+	
+Bundle
+	children: BundledBindings+
+BundledBinding (is a Bindings with extra stuff)
+
+File
+	attributes:name
+Include
+	children: File+
+
+Lib
+	attributes:name
+Link
+	children: Lib+
+	
+Param="...doc..."
+	attributes:name type deref action default success must-not-delete
+Return="...doc..."
+	attributes:name type action must-not-delete
+	
+Properties
+	children: Property+
+Property="...doc..."
+	attributes:name type
+
+Types
+	children:Type+
+Type
+	attributes:name builtin target
+
+The Parser objects know what class each element should be mapped to
+
+
+[quote=P2501]As for namespaces, you unfortunately seem to have misunderstood the Python concept, which is very different from the one used by Perl.[/quote]
+
+If by "misunderstood the concept" you mean "were not aware of the conventions", then yes, I agree. Otherwise, I don't know what you mean. I have become all too familiar with the "everything is an object" mentality of Python.
+
+[quote]Unlike C++ oder Perl, Python packages and modules have implicit namespaces, and modules may (do) contain multiple classes. The Pythonic way would be to have a package "Haiku" containing one module for each kit. Each of these modules should contain all the kit's classes. Also, please don't put the classes in the package global namespace. They belong in their respective kit's namespace.[/quote]
+
+Yes, I'm already putting multiple classes into a single module; for example, <code>Window</code> (the base object) and <code>CustomWindow</code> (the one you can subclass to respond to events)* live in the same module. The difficult part is that <code>Window</code> (the object) and <code>Window</code> (the namespace/module) cannot have the same name. This leads to rather long class names.
+
+*Before you ask, the reason I have two versions of <code>Window</code> is to avoid overhead. Every time an object responds to an event, the extension has to determine the Python object, translate the arguments into Python objects, look up the Python method. If there's no subclass, it's just going to find the extension-defined base method, which will translate he arguments into C++ data types and call the base class version. So if the user isn't subclassing it, it makes no sense to bother with all that.
+
+[quote]In the test program, it would look like this:
+
+<code>
+import Haiku.ApplicationKit
+
+class MyApplication(Haiku.ApplicationKit.Application):
+</code>
+
+or:
+
+<code>
+from Haiku.ApplicationKit import Application
+
+class MyApplication(Application):
+</code>[/quote]
+
+Thank you. Now I have an organizing principle to follow, although the long class names (</code>Package.Module.Class<code>, rather than simply <code>Package.Class</code>) really stick out, in my opinion. Of course, they were already that long the way I'm currently handling it; it just seems odd to me (as an outsider) that Python forces this on users. But I'm willing to follow Python conventions and give the user what they want.
+
+However, I still have the problem of constants. For example, there are constants, enums, and in some cases plain functions (i.e., not object or class methods) defined in the header files for the various objects. They logically belong with that object. But Python won't let me place, for example, <code>B_NO_SPECIFIER</code> into the same namespace with the <code>Message</code> object, because that namespace holds a class.
+
+So which follows Python convention better: Putting them into the package (<code>Haiku</code>), putting them into the kit module (<code>Haiku.ApplicationKit</code>), or putting them into a separate module (either <code>Haiku.MessageConstants</code> or <code>Haiku.ApplicationKit.MessageConstants</code>)?
+
+<b>Edit:</b> The following paragraph required correction:
+
+Also, as you noticed, dependencies across Python packages are a problem inside C/C++ extensions. Extensions should be self contained. This is not possible with the Haiku API, if you split it up.[/quote]
+
+I ws trying to avoid putting all the kits into the same extensions. For example, why should a user be required to load the Storage kit is he's not going to use it? But the Storage kit uses elements from the Application and Interface kits, so it needs access to them.
+
+And yes, I know a Python user can from-import and only get the desired modules/classes, but Python still has to load the entire <code>.so</code> into memory.
+
+
+morpheme type="root|inflectional|derivational"
+lexeme lemma="..."
+	forms
