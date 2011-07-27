@@ -16,20 +16,24 @@
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
 			</constructor>
+			<constructor overload-name="FromPoint">
+				<doc>...</doc>
+				<param name="point" type="BPoint" action="input" />
+			</constructor>
 			<constructor overload-name="Empty">
 				<doc>...</doc>
 			</constructor>
 			<destructor />
+			<method name="Set">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
 			<method name="ConstrainTo">
 				<doc>Forces the Point within the Rect if it is not already there.</doc>
 				<param name="rect" type="BRect" action="input" />
 			</method>
 			<method name="PrintToStream">
 				<doc>Prints the contents to standard out as [code]BRect(left, top, right, bottom)[/code]</doc>
-			</method>
-			<method name="Set">
-				<param name="x" type="float" action="input" />
-				<param name="y" type="float" action="input" />
 			</method>
 		</functions>
 		<constants>

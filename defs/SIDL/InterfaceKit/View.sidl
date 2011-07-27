@@ -6,86 +6,887 @@
 			<constructor>
 				<doc>Creates a View.</doc>
 				<param name="frame" type="BRect" action="input" />
-				<param name="name" type="const char*" action="input" default="NULL" />
-				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
-				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP" />
+				<param name="name" type="const char*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" />
+				<param name="flags" type="uint32" action="input" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+<!-- BLayout object not yet implemented
+			<constructor overload-name="WithoutFrame">
+				<doc>Creates a View.</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="layout" type="BLayout*" action="input" default="NULL" />
+			</constructor>
+-->
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllUnarchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllArchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!--
+			<event name="AttachedToWindow" />
+			<event name="AllAttached" />
+			<event name="DetachedFromWindow" />
+			<event name="AllDetached" />
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="AddChild">
+				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<param name="sibling" type="BView*" action="input" default="NULL" />
+				<return type="void" />
+			</method>
+<!-- BLayoutItem object not yet implemented
+			<method name="AddChild" overload-name="AddLayoutItem">
+				<param name="child" type="BLayoutItem*" action="input" />
+				<return type="void" />
+			</method>
+-->
+			<method name="RemoveChild">
+				<doc>Removes [code]view[/code] from the Views's child view list.</doc>
+				<param name="view" type="BView*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="CountChildren">
+				<doc>Returns the number of views in the Views's child view list.</doc>
+				<return type="int32" action="output" />
+			</method>
+			<method name="ChildAt">
+				<doc>Returns the [code]index[/code]th view from the Views's child view list.</doc>
+				<param name="index" type="int32" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+			<method name="NextSibling">
+				<doc>Returns the next child View of the parent.</doc>
+				<return type="BView*" action="output" />
+			</method>
+			<method name="PreviousSibling">
+				<doc>Returns the previous child View of the parent.</doc>
+				<return type="BView*" action="output" />
+			</method>
+			<method name="RemoveSelf">
+				<doc>Removes the View from its parent's child View list. Returns true if successful, false if unsuccessful or if the View doesn't have a parent.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="Window">
+				<doc>Gets the View's owning Window (which may or may not be its immediate parent).</doc>
+				<return type="BWindow*" />
+			</method>
+<!--
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="KeyUp">
+				<param name="bytes" type="const char*" action="input" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="Pulse" />
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="TargetedByScrollView">
+				<param name="scrollView" type="BScrollView*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="BeginRectTracking">
+				<doc>Starts displaying a rectangular outline that follows the cursor.</doc>
+				<param name="rect" type="BRect" action="input" />
+				<param name="how" type="uint32" action="input" default="B_TRACK_WHOLE_RECT" />
+			</method>
+			<method name="EndRectTracking">
+				<doc>Stops displaying the rectangular outline that follows the cursor.</doc>
+			</method>
+			<method name="GetMouse">
+				<doc>Starts displaying a rectangular outline that follows the cursor.</doc>
+				<param name="location" type="BPoint*" deref="true" action="output" />
+				<param name="buttons" type="uint32*" deref="true" action="output" />
+				<param name="checkMessageQueue" type="bool" action="input" default="true" />
+			</method>
+			<method name="DragMessage" overload-name="WithRect">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="rect" type="BRect" action="input">
+					<doc>A rectangle (in the View's coordinate system) to be used as the drag image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+<!-- BBitmap object not yet implemented
+			<method name="DragMessage" overload-name="DragMessageWithBitmap">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="bitmap" type="BBitmap*" action="input">
+					<doc>A bitmap to be used as the drag image.</doc>
+				</param>
+				<param name="point" type="BPoint" action="input">
+					<doc>The hotspot within the image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+			<method name="DragMessage" overload-name="DragMessageWithDrawingMode">
+				<doc>Starts a drag-and-drop session.</doc>
+				<param name="message" type="BMessage*" action="input">
+					<doc>Contains the information for the destination View.</doc>
+				</param>
+				<param name="image" type="BBitmap*" action="input">
+					<doc>A bitmap to be used as the drag image.</doc>
+				</param>
+				<param name="dragMode" type="drawing_mode" action="input">
+					<doc>A drawing mode.</doc>
+				</param>
+				<param name="offset" type="BPoint" action="input">
+					<doc>The hotspot within the image.</doc>
+				</param>
+				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
+					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
+				</param>
+			</method>
+-->
+			<method name="FindView">
+				<doc>Finds a child View by name.</doc>
+				<param name="name" type="const char*" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+			<method name="Parent">
+				<doc>Returns the View's parent View, or NULL if the View's immediate parent is a Window.</doc>
+				<return type="BView*" action="output" />
+			</method>
 			<method name="Bounds">
 				<doc>Returns the View's bounding rectangle in the View's coordinate system.</doc>
-				<return type="BRect" action="output" />
-			</method>
-			<method name="ConvertToParent" overload-name="_Point">
-				<doc>Converts a Point from the View's coordinate system to the parent's coordinate system.</doc>
-				<param name="localPoint" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
-			</method>
-			<method name="ConvertToParent" overload-name="_Rect">
-				<doc>Converts a Rect from the View's coordinate system to the parent's coordinate system.</doc>
-				<param name="localRect" type="BRect" action="input" />
-				<return type="BRect" action="output" />
-			</method>
-			<method name="ConvertFromParent" overload-name="_Point">
-				<doc>Converts a Point from the parent's coordinate system to the View's coordinate system.</doc>
-				<param name="parentPoint" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
-			</method>
-			<method name="ConvertFromParent" overload-name="_Rect">
-				<doc>Converts a Rect from the parent's coordinate system to the View's coordinate system.</doc>
-				<param name="parentRect" type="BRect" action="input" />
-				<return type="BRect" action="output" />
-			</method>
-			<method name="ConvertToScreen" overload-name="_Point">
-				<doc>Converts a Point from the View's coordinate system to the screen's coordinate system.</doc>
-				<param name="localPoint" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
-			</method>
-			<method name="ConvertToScreen" overload-name="_Rect">
-				<doc>Converts a Rect from the View's coordinate system to the screen's coordinate system.</doc>
-				<param name="localRect" type="BRect" action="input" />
-				<return type="BRect" action="output" />
-			</method>
-			<method name="ConvertFromScreen" overload-name="_Point">
-				<doc>Converts a Point from the screen's coordinate system to the View's coordinate system.</doc>
-				<param name="screenPoint" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
-			</method>
-			<method name="ConvertFromScreen" overload-name="_Rect">
-				<doc>Converts a Rect from the screen's coordinate system to the View's coordinate system.</doc>
-				<param name="screenRect" type="BRect" action="input" />
 				<return type="BRect" action="output" />
 			</method>
 			<method name="Frame">
 				<doc>Returns the View's bounding rectangle in the parent's coordinate system.</doc>
 				<return type="BRect" action="output" />
 			</method>
-			<method name="Hide">
-				<doc>Hides the View.</doc>
-				<return type="void" />
+			<method name="ConvertToScreen" overload-name="ConvertPointToScreen">
+				<doc>Converts a Point from the View's coordinate system to the screen's coordinate system.</doc>
+				<param name="localPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
 			</method>
-			<method name="Show">
-				<doc>Shows the View.</doc>
-				<return type="void" />
+			<method name="ConvertFromScreen" overload-name="ConvertPointFromScreen">
+				<doc>Converts a Point from the screen's coordinate system to the View's coordinate system.</doc>
+				<param name="screenPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
 			</method>
-			<method name="IsFocus">
-				<doc>Returns true if the View has the focus in its Window.</doc>
-				<return type="bool" />
+			<method name="ConvertToScreen" overload-name="ConvertRectToScreen">
+				<doc>Converts a Rect from the View's coordinate system to the screen's coordinate system.</doc>
+				<param name="localRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
 			</method>
-			<method name="IsHidden">
-				<doc>Returns true if the View is hidden.</doc>
-				<return type="bool" />
+			<method name="ConvertFromScreen" overload-name="ConvertRectFromScreen">
+				<doc>Converts a Rect from the screen's coordinate system to the View's coordinate system.</doc>
+				<param name="screenRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
 			</method>
-			<method name="IsPrinting">
-				<doc>Returns true if the View is printing.</doc>
-				<return type="bool" />
+			<method name="ConvertToParent" overload-name="ConvertPointToParent">
+				<doc>Converts a Point from the View's coordinate system to the parent's coordinate system.</doc>
+				<param name="localPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertFromParent" overload-name="ConvertPointFromParent">
+				<doc>Converts a Point from the parent's coordinate system to the View's coordinate system.</doc>
+				<param name="parentPoint" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConvertToParent" overload-name="ConvertRectToParent">
+				<doc>Converts a Rect from the View's coordinate system to the parent's coordinate system.</doc>
+				<param name="localRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertFromParent" overload-name="ConvertRectFromParent">
+				<doc>Converts a Rect from the parent's coordinate system to the View's coordinate system.</doc>
+				<param name="parentRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="LeftTop">
 				<doc>Returns the upper left coordinate of the View as a Point.</doc>
 				<return type="BPoint" action="output" />
+			</method>
+<!-- BRegion object note yet implemented
+			<method name="GetClippingRegion">
+				<param name="region" type="BRegion*" deref="true" action="output" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="ConstrainClippingRegion">
+				<param name="region" type="BRegion*" deref="true" action="output" />
+			</method>
+-->
+<!-- BPicture object note yet implemented
+			<method name="ClipToPicture">
+				<param name="picture" type="BPicture*" action="input" />
+				<param name="where" type="BPoint" default="B_ORIGIN" action="input" />
+				<param name="sync" type="bool" default="true" action="input" />
+			</method>
+			<method name="ClipToInversePicture">
+				<param name="picture" type="BPicture*" action="input" />
+				<param name="where" type="BPoint" default="B_ORIGIN" action="input" />
+				<param name="sync" type="bool" default="true" action="input" />
+			</method>
+-->
+			<method name="SetDrawingMode">
+				<param name="mode" type="drawing_mode" action="input" />
+			</method>
+			<method name="DrawingMode">
+				<return type="drawing_mode" action="output" />
+			</method>
+			<method name="SetBlendingMode">
+				<param name="srcAlpha" type="source_alpha" action="input" />
+				<param name="alphaFunc" type="alpha_function" action="input" />
+			</method>
+			<method name="GetBlendingMode">
+				<param name="srcAlpha" type="source_alpha*" deref="true" action="output" />
+				<param name="alphaFunc" type="alpha_function*" deref="true" action="output" />
+			</method>
+			<method name="SetPenSize">
+				<param name="size" type="float" action="input" />
+			</method>
+			<method name="PenSize">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetViewCursor">
+				<doc>Sets the View's cursor.</doc>
+				<param name="cursor" type="BCursor*" action="input" />
+				<param name="sync" type="bool" action="input" default="true">
+					<doc>If true, forces a sync with the Application Server so the cursor changes immediately.</doc>
+				</param>
+			</method>
+			<method name="SetViewColor">
+				<param name="c" type="rgb_color" action="input" />
+			</method>
+			<method name="SetViewColor" overload-name="SetViewColorWithRGBA">
+				<param name="r" type="uchar" action="input" />
+				<param name="g" type="uchar" action="input" />
+				<param name="b" type="uchar" action="input" />
+				<param name="a" type="uchar" default="255" action="input" />
+			</method>
+			<method name="ViewColor">
+				<return type="rgb_color" action="output" />
+			</method>
+<!-- BBitmap object not yet implemented
+			<method name="SetViewBitmap">
+				<param name="bitmap" type="BBitmap" action="input" />
+				<param name="srcRect" type="BRect" action="input" />
+				<param name="dstRect" type="BRect" action="input" />
+				<param name="followFlags" type="uint32" default="B_FOLLOW_TOP | B_FOLLOW_LEFT" action="input" />
+				<param name="options" type="uint32" default="B_TILE_BITMAP" action="input" />
+			</method>
+			<method name="SetViewBitmap" overload-name="SetEntireViewBitmap">
+				<param name="bitmap" type="BBitmap" action="input" />
+				<param name="followFlags" type="uint32" default="B_FOLLOW_TOP | B_FOLLOW_LEFT" action="input" />
+				<param name="options" type="uint32" default="B_TILE_BITMAP" action="input" />
+			</method>
+			<method name="ClearViewBitmap" />
+			<method name="SetViewOverlay">
+				<param name="overlay" type="BBitmap" action="input" />
+				<param name="srcRect" type="BRect" action="input" />
+				<param name="dstRect" type="BRect" action="input" />
+				<param name="colorKey" type="rgb_color*" action="input" />
+				<param name="followFlags" type="uint32" default="B_FOLLOW_TOP | B_FOLLOW_LEFT" action="input" />
+				<param name="options" type="uint32" default="0" action="input" />
+			</method>
+			<method name="SetViewOverlay" overload-name="SetEntireViewOverlay">
+				<param name="overlay" type="BBitmap" action="input" />
+				<param name="colorKey" type="rgb_color*" action="input" />
+				<param name="followFlags" type="uint32" default="B_FOLLOW_TOP | B_FOLLOW_LEFT" action="input" />
+				<param name="options" type="uint32" default="0" action="input" />
+			</method>
+-->
+			<method name="ClearViewOverlay" />
+			<method name="SetHighColor">
+				<param name="c" type="rgb_color" action="input" />
+			</method>
+			<method name="SetHighColor" overload-name="SetHighColorWithRGBA">
+				<param name="r" type="uchar" action="input" />
+				<param name="g" type="uchar" action="input" />
+				<param name="b" type="uchar" action="input" />
+				<param name="a" type="uchar" default="255" action="input" />
+			</method>
+			<method name="HighColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="SetLowColor">
+				<param name="c" type="rgb_color" action="input" />
+			</method>
+			<method name="SetLowColor" overload-name="SetLowColorWithRGBA">
+				<param name="r" type="uchar" action="input" />
+				<param name="g" type="uchar" action="input" />
+				<param name="b" type="uchar" action="input" />
+				<param name="a" type="uchar" default="255" action="input" />
+			</method>
+			<method name="LowColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="SetLineMode">
+				<param name="lineCap" type="cap_mode" action="input" />
+				<param name="lineJoin" type="join_mode" action="input" />
+				<param name="miterLimit" type="float" default="B_DEFAULT_MITER_LIMIT" action="input" />
+			</method>
+			<method name="LineJoinMode">
+				<return type="join_mode" action="output" />
+			</method>
+			<method name="LineCapMode">
+				<return type="cap_mode" action="output" />
+			</method>
+			<method name="LineMiterLimit">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetOrigin">
+				<param name="point" type="BPoint" action="input" />
+			</method>
+			<method name="SetOrigin" overload-name="SetOriginWithXY">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="Origin">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="PushState" />
+			<method name="PopState" />
+			<method name="MovePenTo">
+				<param name="point" type="BPoint" action="input" />
+			</method>
+			<method name="MovePenTo" overload-name="MovePenToXY">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="MovePenBy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="PenLocation">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="StrokeLine" overload-name="StrokeLineFromPenLocation">
+				<param name="toPoint" type="BPoint" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="StrokeLine">
+				<param name="a" type="BPoint" action="input" />
+				<param name="b" type="BPoint" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="BeginLineArray">
+				<param name="count" type="int32" action="input" />
+			</method>
+			<method name="AddLine">
+				<param name="a" type="BPoint" action="input" />
+				<param name="b" type="BPoint" action="input" />
+				<param name="color" type="rgb_color" action="input" />
+			</method>
+			<method name="EndLineArray" />
+<!-- BPolygon object not yet implemented
+			<method name="StrokePolygon">
+				<param name="polygon" type="BPolygon*" action="input" />
+				<param name="closed" type="bool" default="true" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+-->
+			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="closed" type="bool" default="true" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArrayWithinBounds">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="closed" type="bool" default="true" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BPolygon object not yet implemented
+			<method name="FillPolygon">
+				<param name="polygon" type="BPolygon*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+-->
+			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillPolygon" overload-name="FillPolygonFromPointArrayWithinBounds">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BPolygon object not yet implemented, BGradient object not yet implemented
+			<method name="FillPolygon" overload-name="GradientFillPolygon">
+				<param name="polygon" type="BPolygon*" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithGradient">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithinBounds">
+				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="numPoints" type="int32" action="count[pointArray]" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+			<method name="StrokeTriangle">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="StrokeTriangle" overload-name="StrokeTriangleWithinBounds">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillTriangle">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillTriangle" overload-name="FillTriangleWithinBounds">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillTriangle" overload-name="GradientFillTriangle">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+			<method name="FillTriangle" overload-name="GradientFillTriangleWithinBounds">
+				<param name="point1" type="BPoint" action="input" />
+				<param name="point2" type="BPoint" action="input" />
+				<param name="point3" type="BPoint" action="input" />
+				<param name="bounds" type="BRect" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+			<method name="StrokeRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillRect" overload-name="GradientFillRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+<!-- BRegion object not yet implemented, BGradient object not yet implemented
+			<method name="FillRegion">
+				<param name="rect" type="BRegion*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillRegion" overload-name="GradientFillRegion">
+				<param name="rect" type="BRegion*" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+			<method name="InvertRect">
+				<param name="rect" type="BRect" action="input" />
+			</method>
+			<method name="StrokeRoundRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillRoundRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillRoundRect" overload-name="GradientFillRoundRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->			<method name="StrokeEllipse">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="StrokeEllipse" overload-name="StrokeEllipseFromRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillEllipse">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillEllipse" overload-name="FillEllipseFromRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillEllipse" overload-name="GradientFillEllipse">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+			<method name="FillEllipse" overload-name="GradientFillEllipseFromRect">
+				<param name="rect" type="BRect" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->			<method name="StrokeArc">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="StrokeArc" overload-name="StrokeArcFromRect">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillArc">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillArc" overload-name="FillArcFromRect">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillArc" overload-name="GradientFillArc">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+			<method name="FillArc" overload-name="GradientFillArcFromRect">
+				<param name="center" type="BPoint" action="input" />
+				<param name="xRadius" type="float" action="input" />
+				<param name="yRadius" type="float" action="input" />
+				<param name="startAngle" type="float" action="input" />
+				<param name="arcAngle" type="float" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+			<method name="StrokeBezier">
+				<param name="controlPoints" type="BPoint*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillBezier">
+				<param name="controlPoints" type="BPoint*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+<!-- BGradient object not yet implemented
+			<method name="FillBezier" overload-name="GradientFillBezier">
+				<param name="controlPoints" type="BPoint*" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+<!-- BShape object not yet implemented, BGradient object not yet implemented
+			<method name="StrokeShape">
+				<param name="shape" type="BShape*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillShape">
+				<param name="shape" type="BShape*" action="input" />
+				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
+			</method>
+			<method name="FillShape" overload-name="GradientFillShape">
+				<param name="shape" type="BShape*" action="input" />
+				<param name="gradient" type="BGradient" action="input" />
+			</method>
+-->
+			<method name="CopyBits">
+				<param name="src" type="BRect" action="input" />
+				<param name="dst" type="BRect" action="input" />
+			</method>
+<!-- BBitmap object not yet implemented
+			<method name="DrawBitmapAsync" overload-name="DrawBitmapAsyncWithOptions">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="bitmapRect" type="BRect" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+				<param name="options" type="uint32" action="input" />
+			</method>
+			<method name="DrawBitmapAsync">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="bitmapRect" type="BRect" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+			</method>
+			<method name="DrawBitmapAsync" overload-name="DrawEntireBitmapAsync">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+			</method>
+			<method name="DrawBitmapAsync" overload-name="DrawBitmapAsyncToPoint">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="DrawBitmapAsync" overload-name="DrawBitmapAsyncToPenLocation">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+			</method>
+			<method name="DrawBitmap" overload-name="DrawBitmapWithOptions">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="bitmapRect" type="BRect" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+				<param name="options" type="uint32" action="input" />
+			</method>
+			<method name="DrawBitmap">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="bitmapRect" type="BRect" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+			</method>
+			<method name="DrawBitmap" overload-name="DrawEntireBitmap">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="viewRect" type="BRect" action="input" />
+			</method>
+			<method name="DrawBitmap" overload-name="DrawBitmapToPoint">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="DrawBitmap" overload-name="DrawBitmapToPenLocation">
+				<param name="aBitmap" type="BBitmap*" action="input" />
+			</method>
+-->
+			<method name="DrawChar">
+				<param name="aChar" type="char" action="input" />
+			</method>
+			<method name="DrawChar" overload-name="DrawCharToPoint">
+				<param name="aChar" type="char" action="input" />
+				<param name="location" type="BPoint" action="input" />
+			</method>
+			<method name="DrawString">
+				<param name="string" type="char*" action="input" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="DrawString" overload-name="DrawStringToPoint">
+				<param name="string" type="char*" action="input" />
+				<param name="location" type="BPoint" action="input" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="DrawString" overload-name="DrawStringWithLength">
+				<param name="string" type="char*" action="input" />
+				<param name="length" type="char*" action="length[string]" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="DrawString" overload-name="DrawStringWithLengthToPoint">
+				<param name="string" type="char*" action="input" />
+				<param name="length" type="char*" action="length[string]" />
+				<param name="location" type="BPoint" action="input" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="DrawString" overload-name="DrawStringToPointArray">
+				<param name="string" type="char*" action="input" />
+				<param name="locations" type="BPoint*" action="input" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="DrawString" overload-name="DrawStringWithLengthToPointArray">
+				<param name="string" type="char*" action="input" />
+				<param name="length" type="char*" action="length[string]" />
+				<param name="locations" type="BPoint*" action="input" />
+				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+			</method>
+			<method name="SetFont">
+				<param name="font" type="BFont*" action="input" />
+				<param name="mask" type="uint32" default="B_FONT_ALL" action="input" />
+			</method>
+			<method name="GetFont">
+				<param name="font" type="BFont*" action="output" />
+			</method>
+<!-- BString object not implemented yet
+			<method name="TruncateString">
+				<param name="in_out" type="BString*" action="input" />
+				<param name="mode" type="uint32" action="input" />
+				<param name="width" type="float" action="input" />
+			</method>
+-->
+			<method name="StringWidth">
+				<param name="string" type="const char*" action="input" />
+				<return type="float" action="output" />
+			</method>
+			<method name="StringWidth" overload-name="StringWidthWithLength">
+				<param name="string" type="const char*" action="input" />
+				<param name="length" type="int32" action="length[string]" />
+				<return type="float" action="output" />
+			</method>
+			<method name="GetStringWidths">
+				<param name="stringArray" type="char*" repeat="numStrings" action="input" />
+				<param name="lengthArray" type="int32" repeat="numStrings" action="input" />
+				<param name="numStrings" type="int32" action="input" />
+				<param name="widthArray" type="float" repeat="numStrings" action="output" />
+			</method>
+			<method name="SetFontSize">
+				<param name="size" type="float" action="input" />
+			</method>
+			<method name="ForceFontAliasing">
+				<param name="enable" type="bool" action="input" />
+			</method>
+			<method name="GetFontHeight">
+				<param name="height" type="font_height*" action="output" />
+			</method>
+			<method name="Invalidate" />
+			<method name="Invalidate" overload-name="InavlidateRect">
+				<param name="invalRect" type="BRect" action="input" />
+			</method>
+<!-- BRegion object not yet implemented
+			<method name="Invalidate" overload-name="InvalidateRegion">
+				<param name="invalRegion" type="BRect" action="input" />
+			</method>
+-->
+			<method name="SetDiskMode">
+				<param name="filename" type="char*" action="input" />
+				<param name="offset" type="long" action="input" />
+			</method>
+<!-- BPicture object not yet implemented
+			<method name="BeginPicture">
+				<param name="aPicture" type="BPicture*" action="input" />
+			</method>
+			<method name="AppendToPicture">
+				<param name="aPicture" type="BPicture*" action="input" />
+			</method>
+			<method name="EndPicture">
+				<return type="BPicture*" action="output" />
+			</method>
+			<method name="DrawPicture">
+				<param name="aPicture" type="BPicture*" action="input" />
+			</method>
+			<method name="DrawPicture" overload-name="DrawPictureToPoint">
+				<param name="aPicture" type="BPicture*" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="DrawPicture" overload-name="DrawPictureFromFile">
+				<param name="filename" type="const char*" action="input" />
+				<param name="offset" type="long" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="DrawPictureAsync">
+				<param name="aPicture" type="BPicture*" action="input" />
+			</method>
+			<method name="DrawPictureAsync" overload-name="DrawPictureAsyncToPoint">
+				<param name="aPicture" type="BPicture*" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="DrawPictureAsync" overload-name="DrawPictureAsyncFromFile">
+				<param name="filename" type="const char*" action="input" />
+				<param name="offset" type="long" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</method>
+-->
+			<method name="SetEventMask">
+				<param name="mask" type="uint32" action="input" />
+				<param name="options" type="uint32" default="0" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="EventMask">
+				<return type="uint32" action="input" />
+			</method>
+			<method name="SetMouseEventMask">
+				<param name="mask" type="uint32" action="input" />
+				<param name="options" type="uint32" default="0" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetFlags">
+				<doc>Sets the View's flags.</doc>
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="Flags">
+				<doc>Gets the View's flags.</doc>
+				<return type="uint32" />
+			</method>
+			<method name="SetResizingMode">
+				<doc>Sets the View's resizing mode.</doc>
+				<param name="mode" type="uint32" action="input" />
+			</method>
+			<method name="ResizingMode">
+				<doc>Gets the View's resizing mode.</doc>
+				<return type="uint32" />
 			</method>
 			<method name="MoveBy">
 				<doc>Moves the View by the given coordinates.</doc>
@@ -111,142 +912,6 @@
 				<param name="height" type="float" action="input" />
 				<return type="void" />
 			</method>
-			<method name="SetFlags">
-				<doc>Sets the View's flags.</doc>
-				<param name="flags" type="uint32" action="input" />
-			</method>
-			<method name="Flags">
-				<doc>Gets the View's flags.</doc>
-				<return type="uint32" />
-			</method>
-			<!-- SetOrigin -->
-			<!-- Origin -->
-			<method name="SetResizingMode">
-				<doc>Sets the View's resizing mode.</doc>
-				<param name="mode" type="uint32" action="input" />
-			</method>
-			<method name="ResizingMode">
-				<doc>Gets the View's resizing mode.</doc>
-				<return type="uint32" />
-			</method>
-			<method name="SetViewCursor">
-				<doc>Sets the View's cursor.</doc>
-				<param name="cursor" type="BCursor*" action="input" />
-				<param name="sync" type="bool" action="input" default="true">
-					<doc>If true, forces a sync with the Application Server so the cursor changes immediately.</doc>
-				</param>
-			</method>
-			<method name="Window">
-				<doc>Gets the View's owning Window (which may or may not be its immediate parent).</doc>
-				<return type="BWindow*" />
-			</method>
-			<method name="AddChild">
-				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
-				<param name="view" type="BView*" action="input" />
-				<param name="sibling" type="BView*" action="input" default="NULL" />
-				<return type="void" />
-			</method>
-			<method name="RemoveChild">
-				<doc>Removes [code]view[/code] from the Views's child view list.</doc>
-				<param name="view" type="BView*" action="input" />
-				<return type="bool" action="output" />
-			</method>
-			<method name="FindView">
-				<doc>Finds a child View by name.</doc>
-				<param name="name" type="const char*" action="input" />
-				<return type="BView*" action="output" />
-			</method>
-			<method name="Parent">
-				<doc>Returns the View's parent View, or NULL if the View's immediate parent is a Window.</doc>
-				<return type="BView*" action="output" />
-			</method>
-			<method name="NextSibling">
-				<doc>Returns the next child View of the parent.</doc>
-				<return type="BView*" action="output" />
-			</method>
-			<method name="PreviousSibling">
-				<doc>Returns the previous child View of the parent.</doc>
-				<return type="BView*" action="output" />
-			</method>
-			<method name="ChildAt">
-				<doc>Returns the [code]index[/code]th view from the Views's child view list.</doc>
-				<param name="index" type="int32" action="input" />
-				<return type="BView*" action="output" />
-			</method>
-			<method name="CountChildren">
-				<doc>Returns the number of views in the Views's child view list.</doc>
-				<return type="int32" action="output" />
-			</method>
-			<method name="RemoveSelf">
-				<doc>Removes the View from its parent's child View list. Returns true if successful, false if unsuccessful or if the View doesn't have a parent.</doc>
-				<return type="bool" action="output" />
-			</method>
-			<method name="BeginRectTracking">
-				<doc>Starts displaying a rectangular outline that follows the cursor.</doc>
-				<param name="rect" type="BRect" action="input" />
-				<param name="how" type="uint32" action="input" default="B_TRACK_WHOLE_RECT" />
-			</method>
-			<method name="EndRectTracking">
-				<doc>Stops displaying the rectangular outline that follows the cursor.</doc>
-			</method>
-			<!--
-			<method name="DragMessage" overload-name="WithRect">
-				<doc>Starts a drag-and-drop session.</doc>
-				<param name="message" type="BMessage*" action="input">
-					<doc>Contains the information for the destination View.</doc>
-				</param>
-				<param name="rect" type="BRect" action="input">
-					<doc>A rectangle (in the View's coordinate system) to be used as the drag image.</doc>
-				</param>
-				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
-					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
-				</param>
-			</method>
-			<method name="DragMessage">
-				<doc>Starts a drag-and-drop session.</doc>
-				<param name="message" type="BMessage*" action="input">
-					<doc>Contains the information for the destination View.</doc>
-				</param>
-				<param name="bitmap" type="BBitmap*" action="input">
-					<doc>A bitmap to be used as the drag image.</doc>
-				</param>
-				<param name="point" type="BPoint" action="input">
-					<doc>The hotspot within the image.</doc>
-				</param>
-				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
-					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
-				</param>
-			</method>
-			<method name="DragMessage" overload-name="WithDrawingMode">
-				<doc>Starts a drag-and-drop session.</doc>
-				<param name="message" type="BMessage*" action="input">
-					<doc>Contains the information for the destination View.</doc>
-				</param>
-				<param name="image" type="BBitmap*" action="input">
-					<doc>A bitmap to be used as the drag image.</doc>
-				</param>
-				<param name="dragMode" type="drawing_mode" action="input">
-					<doc>A drawing mode.</doc>
-				</param>
-				<param name="offset" type="BPoint" action="input">
-					<doc>The hotspot within the image.</doc>
-				</param>
-				<param name="replyTarget" type="BHandler*" action="input" default="NULL">
-					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
-				</param>
-			</method>
-			-->
-			<!-- GetMouse -->
-			<method name="MakeFocus">
-				<doc>Makes the view focused (or not focused) within its Window.</doc>
-				<param name="focused" type="bool" action="input" default="true" />
-			</method>
-			<!--
-			<method name="ScrollBar">
-				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
-				<return type="BScrollBar*" action="output" />
-			</method>
-			-->
 			<method name="ScrollBy">
 				<doc>Scrolls the View by the given coordinates.</doc>
 				<param name="horizontal" type="float" action="input" />
@@ -259,128 +924,257 @@
 				<param name="y" type="float" action="input" />
 				<return type="void" />
 			</method>
-			<!-- SetEventMask -->
-			<!-- SetMouseEventMask -->
-			<!-- EventMask -->
-			<!-- MovePenBy -->
-			<!-- MovePenTo -->
-			<!-- PenLocation -->
-			<!-- PushState -->
-			<!-- PopState -->
-			<!-- SetLineMode -->
-			<!-- LineJoinMode -->
-			<!-- LineCapMode -->
-			<!-- LineMiterLimit -->
-			<!-- SetScale -->
-			<!-- SetPenSize -->
-			<!-- PenSize -->
-			<!-- SetHighColor -->
-			<!-- HighColor -->
-			<!-- SetLowColor -->
-			<!-- LowColor -->
-			<!-- SetViewColor -->
-			<!-- ViewColor -->
-			<!-- SetBlendingMode -->
-			<!-- GetBlendingMode -->
-			<!-- SetDrawingMode -->
-			<!-- DrawingMode -->
-			<!-- ForceFontAliasing -->
-			<!-- GetFontHeight -->
-			<!-- SetFont -->
-			<!-- GetFont -->
-			<!-- SetFontSize -->
-			<!-- StringWidth -->
-			<!-- GetStringWidths -->
-			<!-- TruncateString -->
-			<!-- ClipToPicture -->
-			<!-- ClipToInversePicture -->
-			<!-- ConstrainClippingRegion -->
-			<!-- GetClippingRegion -->
-			<!-- DrawBitmap -->
-			<!-- DrawBitmapAsync -->
-			<!-- DrawChar -->
-			<!-- DrawString -->
-			<!-- FillRegion -->
-			<!-- StrokeBezier -->
-			<!-- FillBezier -->
-			<!-- StrokeEllipse -->
-			<!-- FillEllipse -->
-			<!-- StrokeArc -->
-			<!-- FillArc -->
-			<!-- StrokeLine -->
-			<!-- StrokePolygon -->
-			<!-- FillPolygon -->
-			<!-- StrokeRect -->
-			<!-- FillRect -->
-			<!-- StrokeRoundRect -->
-			<!-- FillRoundRect -->
-			<!-- StrokeShape -->
-			<!-- FillShape -->
-			<!-- StrokeTriangle -->
-			<!-- FillTriangle -->
-			<!-- BeginLineArray -->
-			<!-- AddLine -->
-			<!-- EndLineArray -->
-			<!-- BeginPicture -->
-			<!-- AppendToPicture -->
-			<!-- EndPicture -->
-			<!-- CopyBits -->
-			<!-- DrawPicture -->
-			<!-- DrawPictureAsync -->
+			<method name="MakeFocus">
+				<doc>Makes the view focused (or not focused) within its Window.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<method name="IsFocus">
+				<doc>Returns true if the View has the focus in its Window.</doc>
+				<return type="bool" />
+			</method>
+			<method name="Show">
+				<doc>Shows the View.</doc>
+				<return type="void" />
+			</method>
+			<method name="Hide">
+				<doc>Hides the View.</doc>
+				<return type="void" />
+			</method>
+			<method name="IsHidden">
+				<doc>Returns true if the View is hidden.</doc>
+				<return type="bool" />
+			</method>
 			<method name="Flush">
 				<doc>Sends all pending messages to the Application Server and immediately returns.</doc>
 			</method>
 			<method name="Sync">
 				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
 			</method>
-			<!-- Invalidate -->
-			<!-- InvertRect -->
-			<!-- SetViewBitmap -->
-			<!-- ClearViewBitmap -->
-			<!-- SetViewOverlay -->
-			<!-- ClearViewOverlay -->			
-			<!-- AttachedToWindow -->
-			<!-- AllAttached -->
-			<!-- DetachedFromWindow -->
-			<!-- AllDetached -->
-			<!-- Draw -->
-			<!-- DrawAfterChildren -->
-			<!-- FrameMoved -->
-			<!-- FrameResized -->
-			<!-- GetPreferredSize -->
-			<!-- ResizeToPreferred -->
-			<!-- KeyDown -->
-			<!-- KeyUp -->
-			<!--
-			<event name="MessageReceived">
-				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
-				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
 				<return type="void" />
-			</event>
-			-->
-			<!-- MouseDown -->
-			<!-- MouseMoved -->
-			<!-- MouseUp -->
-			<!-- Pulse -->
-			<!-- TargetedByScrollView -->
-			<!-- WindowActivated -->
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- BScrollBar object not yet implemented
+			<method name="ScrollBar">
+				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
+				<return type="BScrollBar*" action="output" />
+			</method>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsPrinting">
+				<doc>Returns true if the View is printing.</doc>
+				<return type="bool" />
+			</method>
+			<method name="SetScale">
+				<param name="scale" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Scale">
+				<return type="float" action="output" />
+			</method>
+			<method name="DrawAfterChildren">
+				<param name="rect" type="BRect" action="input" />
+				<return type="void" />
+			</method>
+<!-- layout related -->
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+<!-- BAlignment object not yet implemented
+			<method name="LayoutAlignment">
+				<return type="BAlignment" action="output" />
+			</method>
+-->
+<!-- BSize object not yet implemented
+			<method name="SetExplicitMinSize">
+				<param name="size" type="BSize" action="output" />
+			</method>
+			<method name="SetExplicitMaxSize">
+				<param name="size" type="BSize" action="output" />
+			</method>
+			<method name="SetExplicitPreferredSize">
+				<param name="size" type="BSize" action="output" />
+			</method>
+-->
+<!-- BAlignment object not yet implemented
+			<method name="SetExplicitAlignment">
+				<param name="alignment" type="BAlignment" action="output" />
+			</method>
+-->
+<!-- BSize object not yet implemented
+			<method name="ExplicitMinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="ExplicitMaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="ExplicitPreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+<!-- BAlignment object not yet implemented
+			<method name="ExplicitAlignment">
+				<return type="BAlignment" action="output" />
+			</method>
+-->
+			<method name="HasHeightForWidth">
+				<return type="bool" />
+			</method>
+			<method name="GetHeightForWidth">
+				<param name="width" type="float" action="input" />
+				<param name="min" type="float*" deref="true" action="output" />
+				<param name="max" type="float*" deref="true" action="output" />
+				<param name="preferred" type="float*" deref="true" action="output" />
+				<return type="bool" />
+			</method>
+<!-- BLayout object not yet implemented
+			<method name="SetLayout">
+				<param name="layout" type="BLayout*" action="input" />
+			</method>
+			<method name="GetLayout">
+				<preturn type="BLayout*" action="outnput" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+			<method name="EnableLayoutInvalidation" />
+			<method name="DisableLayoutInvalidation" />
+			<method name="IsLayoutValid">
+				<return type="bool" />
+			</method>
+			<method name="ResetLayoutInvalidation" />
+<!-- BLayoutContext object not yet implemented
+			<method name="LayoutContext">
+				<preturn type="BLayoutContext*" action="output" />
+			</method>
+-->
+			<method name="Layout">
+				<param name="force" type="bool" action="input" />
+			</method>
+			<method name="Relayout" />
+<!-- tooltip support -->
+			<method name="SetToolTip" overload-name="SetTooltipWithText">
+				<param name="text" type="const char*" action="input" />
+			</method>
+<!-- BToolTIp object not yet implemented
+			<method name="SetToolTip">
+				<param name="tip" type="BToolTip*" action="input" />
+			</method>
+			<method name="ToolTip">
+				<return type="BToolTip*" action="output" />
+			</method>
+			<method name="ShowToolTip">
+				<param name="tip" type="BToolTip*" default="NULL" action="input" />
+			</method>
+-->
+<!-- versions of ShowToolTip to be used until BToolTip object is implemented -->
+			<method name="ShowToolTip" />
+			<method name="HideToolTip" />
 		</functions>
 		<constants>
-			<constant name="B_ENTERED_VIEW" type="int" group="cursor_transit">
+<!-- mouse button -->
+			<constant name="B_PRIMARY_MOUSE_BUTTON" type="int" group="mouse_buttons" />
+			<constant name="B_SECONDARY_MOUSE_BUTTON" type="int" group="mouse_buttons" />
+			<constant name="B_TERTIARY_MOUSE_BUTTON" type="int" group="mouse_buttons" />
+<!-- mouse transit -->
+			<constant name="B_ENTERED_VIEW" type="int" group="mouse_transit">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_INSIDE_VIEW" type="int" group="cursor_transit">
+			<constant name="B_INSIDE_VIEW" type="int" group="mouse_transit">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_EXITED_VIEW" type="int" group="cursor_transit">
+			<constant name="B_EXITED_VIEW" type="int" group="mouse_transit">
 				<doc>...</doc>
 			</constant>
-			<!-- mouse button constants -->
-<!--
-B_PRIMARY_MOUSE_BUTTON
-B_SECONDARY_MOUSE_BUTTON
-B_TERTIARY_MOUSE_BUTTON
--->
+			<constant name="B_OUTSIDE_VIEW" type="int" group="mouse_transit" />
+<!-- event mask -->
+			<constant name="B_POINTER_EVENTS" type="int" group="event_mask" />
+			<constant name="B_KEYBOARD_EVENTS" type="int" group="event_mask" />
+<!-- event mask options -->
+			<constant name="B_LOCK_WINDOW_FOCUS" type="int" group="event_mask_options" />
+			<constant name="B_SUSPEND_VIEW_FOCUS" type="int" group="event_mask_options" />
+			<constant name="B_NO_POINTER_HISTORY" type="int" group="event_mask_options" />
+			<constant name="B_FULL_POINTER_HISTORY" type="int" group="event_mask_options" />
+<!-- tracking -->
+			<constant name="B_TRACK_WHOLE_RECT" type="int" group="tracking">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_TRACK_RECT_CORNER" type="int" group="tracking">
+				<doc>...</doc>
+			</constant>
+<!-- font mask -->
+			<constant name="B_FONT_FAMILY_AND_STYLE" type="int" group="font_mask" />
+			<constant name="B_FONT_SIZE" type="int" group="font_mask" />
+			<constant name="B_FONT_SHEAR" type="int" group="font_mask" />
+			<constant name="B_FONT_ROTATION" type="int" group="font_mask" />
+			<constant name="B_FONT_SPACING" type="int" group="font_mask" />
+			<constant name="B_FONT_ENCODING" type="int" group="font_mask" />
+			<constant name="B_FONT_FACE" type="int" group="font_mask" />
+			<constant name="B_FONT_FLAGS" type="int" group="font_mask" />
+			<constant name="B_FONT_FALSE_BOLD_WIDTH" type="int" group="font_mask" />
+			<constant name="B_FONT_ALL" type="int" group="font_mask" />
+<!-- view flags -->
+			<constant name="B_FULL_UPDATE_ON_RESIZE" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_WILL_DRAW" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_PULSE_NEEDED" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE_JUMP" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FRAME_EVENTS" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NAVIGABLE" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_SUBPIXEL_PRECISE" type="int" group="flags">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_DRAW_ON_CHILDREN" type="uint32" group="flags" />
+			<constant name="B_INPUT_METHOD_AWARE" type="uint32" group="flags" />
+			<constant name="B_SUPPORTS_LAYOUT" type="uint32" group="flags" />
+			<constant name="B_INVALIDATE_AFTER_LAYOUT" type="uint32" group="flags" />
+<!-- resizing -->
+			<constant name="B_FOLLOW_NONE" type="int" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL_SIDES" type="int" group="resizing">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FOLLOW_ALL" type="int" group="resizing">
+				<doc>...</doc>
+			</constant>
 			<constant name="B_FOLLOW_LEFT" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
@@ -405,50 +1199,13 @@ B_TERTIARY_MOUSE_BUTTON
 			<constant name="B_FOLLOW_V_CENTER" type="int" group="resizing">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FOLLOW_ALL_SIDES" type="int" group="resizing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_ALL" type="int" group="resizing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FOLLOW_NONE" type="int" group="resizing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FULL_UPDATE_ON_RESIZE" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_WILL_DRAW" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_PULSE_NEEDED" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FRAME_EVENTS" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_NAVIGABLE" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_NAVIGABLE_JUMP" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_SUBPIXEL_PRECISE" type="int" group="flags">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_TRACK_WHOLE_RECT" type="int" group="tracking">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_TRACK_RECT_CORNER" type="int" group="tracking">
-				<doc>...</doc>
-			</constant>
 		</constants>
 	</binding>
 	<binding source="key_info" target="Haiku::key_info">
 		<doc>Exposes the key_info struct</doc>
 		<properties>
 			<property name="modifiers"  type="uint32" />
-<!-- Commented out until repeats are enabled -->
-<!--			<property name="key_states" type="uint8" repeat="16" /> -->
+			<property name="key_states" type="uint8" repeat="16" />
 		</properties>
 		<functions>
 			<constructor />

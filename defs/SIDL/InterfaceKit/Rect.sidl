@@ -24,34 +24,166 @@
 				<param name="right" type="float" action="input" />
 				<param name="bottom" type="float" action="input" />
 			</constructor>
+			<constructor overload-name="FromRect">
+				<param name="rect" type="BRect" action="input" />
+			</constructor>
+			<constructor overload-name="FromPoints">
+				<param name="leftTop" type="BPoint" action="input" />
+				<param name="rightBottom" type="BPoint" action="input" />
+			</constructor>
+<!-- BSize object not yet implemented
+			<constructor overload-name="FromPointAndSize">
+				<param name="leftTop" type="BPoint" action="input" />
+				<param name="size" type="BSize" action="input" />
+			</constructor>
+-->
+			<constructor overload-name="FromSide">
+				<param name="side" type="float" action="input" />
+			</constructor>
 			<constructor overload-name="Empty">
 				<doc>...</doc>
 			</constructor>
 			<destructor />
-			<!-- Contains -->
-			<!-- Intersects -->
-			<!-- InsetBy -->
-			<!-- InsetBySelf -->
-			<!-- InsetByCopy -->
-			<!-- OffsetBy -->
-			<!-- OffsetBySelf -->
-			<!-- OffsetByCopy -->
-			<!-- OffsetTo -->
-			<!-- OffsetToSelf -->
-			<!-- OffsetToCopy -->
-			<!-- IsValid -->
+			<method name="Set">
+				<param name="left"  type="float" action="input" />
+				<param name="top"    type="float" action="input" />
+				<param name="right"  type="float" action="input" />
+				<param name="bottom" type="float" action="input" />
+			</method>
 			<method name="PrintToStream">
 				<doc>Prints the contents to standard out as [code]BRect(left, top, right, bottom)[/code]</doc>
 			</method>
-			<!-- Set -->
-			<!-- SetLeftTop -->
-			<!-- SetLeftBottom -->
-			<!-- SetRightTop -->
-			<!-- SetRightBottom -->
-			<!-- Width -->
-			<!-- IntegerWidth -->
-			<!-- Height -->
-			<!-- IntegerHeight -->
+			<method name="LeftTop">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="RightBottom">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="LeftBottom">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="RightTop">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetLeftTop">
+				<param name="leftTop" type="BPoint" action="input" />
+			</method>
+			<method name="SetRightBottom">
+				<param name="rightBottom" type="BPoint" action="input" />
+			</method>
+			<method name="SetLeftBottom">
+				<param name="leftBottom" type="BPoint" action="input" />
+			</method>
+			<method name="SetRightTop">
+				<param name="rightTop" type="BPoint" action="input" />
+			</method>
+			<method name="InsetBy" overload-name="InsetByPoint">
+				<param name="inset" type="BPoint" action="input" />
+			</method>
+			<method name="InsetBy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="OffsetBy" overload-name="OffsetByPoint">
+				<param name="delta" type="BPoint" action="input" />
+			</method>
+			<method name="OffsetBy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="OffsetTo" overload-name="OffsetToPoint">
+				<param name="offset" type="BPoint" action="input" />
+			</method>
+			<method name="OffsetTo">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="InsetBySelf" overload-name="InsetByPointSelf">
+				<param name="inset" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="InsetBySelf">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetBySelf" overload-name="OffsetByPointSelf">
+				<param name="delta" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetBySelf">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetToSelf" overload-name="OffsetToPointSelf">
+				<param name="offset" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetToSelf">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="InsetByCopy" overload-name="InsetByPointCopy">
+				<param name="inset" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="InsetByCopy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetByCopy" overload-name="OffsetByPointCopy">
+				<param name="delta" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetByCopy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetToCopy" overload-name="OffsetToPointCopy">
+				<param name="offset" type="BPoint" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetToCopy">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="IsValid">
+				<return type="bool" action="output" />
+			</method>
+			<method name="Width">
+				<return type="float" action="output" />
+			</method>
+			<method name="IntegerWidth">
+				<return type="int32" action="output" />
+			</method>
+			<method name="Height">
+				<return type="float" action="output" />
+			</method>
+			<method name="IntegerHeight">
+				<return type="int32" action="output" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="IntegerHeight">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="Intersects">
+				<param name="rect" type="BRect" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="Contains">
+				<param name="rect" type="BPoint" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="Contains" overload-name="ContainsRect">
+				<param name="rect" type="BRect" action="input" />
+				<return type="bool" action="output" />
+			</method>
 		</functions>
 		<operators>
 			<operator name="==" />

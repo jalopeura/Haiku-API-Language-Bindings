@@ -15,27 +15,43 @@
 		<lib name="libbe" />
 	</link>
 	<types>
-		<type name="int8"       builtin="intchar" />
-		<type name="int16"      builtin="int" />
-		<type name="uint32"     builtin="unsigned long" />
-		<type name="int32"      builtin="long" />
-		<type name="int64"      builtin="long" />
-		<type name="thread_id"  builtin="long" />
-		<type name="status_t"   builtin="long" />
-		<type name="bigtime_t"  builtin="long" />
-		<type name="type_code"  builtin="long" /><!-- is this right? -->
-		<type name="dev_t"      builtin="long" /><!-- is this right? -->
-		<type name="ino_t"      builtin="long" /><!-- is this right? -->
+<!--	
+(u)intX maps to __haiku_(u)intX
+	which maps to __haiku_std_(u)intX
+	which maps to (u)intX_t
+We are currently mapping int64 to a long; this may not be big enough
+(How does Haiku's gcc interpret long?)
+-->
+		<type name="int8"       builtin="intchar" /><!-- __haiku_int8 -->
+		<type name="uint8"      builtin="unsigned char" /><!-- __haiku_uint8 -->
+		<type name="int16"      builtin="int" /><!-- __haiku_int16 -->
+		<type name="uint16"     builtin="unsigned int" /><!-- __haiku_uint16 -->
+		<type name="int32"      builtin="long" /><!-- __haiku_int32 -->
+		<type name="uint32"     builtin="unsigned long" /><!-- __haiku_uint32 -->
+		<type name="int64"      builtin="long" /><!-- __haiku_int64 -->
+		<type name="uint64"     builtin="unsigned long" /><!-- __haiku_uint64 -->
+		<type name="bigtime_t"  builtin="long" /><!-- int64 -->
+		<type name="dev_t"      builtin="long" /><!-- __haiku_int64 -->
+		<type name="ino_t"      builtin="long" /><!-- __haiku_int32 -->
 		<type name="ssize_t"    builtin="long" />
+		<type name="status_t"   builtin="long" /><!-- int32 -->
+		<type name="team_id"    builtin="long" /><!-- int32 -->
+		<type name="thread_id"  builtin="long" /><!-- int32 -->
+		<type name="type_code"  builtin="long" /><!-- uint32 -->
 <!--
 Objects defined by this interface automatically have data types (plain and
 pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
-		<type name="BWindow*"   builtin="object_ptr" target="Haiku::Window" />
-		<!-- <type name="BMessenger" builtin="object"     target="Haiku::Messenger" /> -->
-		<type name="BPoint"     builtin="object"     target="Haiku::Point" />
-		<type name="BRect"      builtin="object"     target="Haiku::Rect" />
+		<type name="BArchivable*" builtin="object_ptr" target="Haiku::Archivable" />
+		<type name="BPoint"       builtin="object"     target="Haiku::Point" />
+		<type name="BRect"        builtin="object"     target="Haiku::Rect" />
+		<type name="BWindow*"     builtin="object_ptr" target="Haiku::Window" />
+<!--
+This is a workaround; these types are never passed between the target language
+and C++, but the generator complains if they're not defined
+-->
+		<type name="bool*"      builtin="void*" />
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -50,56 +66,105 @@ you need to define those types in this section.
 	<binding source="ApplicationKit" target="Haiku::ApplicationKit">
 		<doc>Exposes the Haiku Application Kit.</doc>
 		<constants>
-			<!-- interface message constants (see Interface Kit docs) -->
-			<!-- application message constants -->
-			<constant name="B_DUPLICATE_REPLY" type="int" group="error">
-				<doc>A reply message has already been sent</doc>
-			</constant>
-			<constant name="B_BAD_REPLY" type="int" group="error">
-				<doc>The reply message is inappropriate and can't be sent</doc>
-			</constant>
-			<constant name="B_BAD_HANDLER" type="int" group="error">
-				<doc>The designated message handler isn't valid</doc>
-			</constant>
-			<constant name="B_MESSAGE_TO_SELF" type="int" group="error">
-				<doc>A thread is trying to send a message to itself</doc>
-			</constant>
-			<constant name="B_ALREADY_RUNNING" type="int" group="error">
-				<doc>The application can't be launched again</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED" type="int" group="error">
-				<doc>The attempt to launch the application failed</doc>
-			</constant>
-			<constant name="B_AMBIGUOUS_APP_LAUNCH" type="int" group="error">
-				<doc>Odd things happening in app land</doc>
-			</constant>
-			<constant name="B_UNKNOWN_MIME_TYPE" type="int" group="error">
-				<doc>Application signature unknown</doc>
-			</constant>
-			<constant name="B_BAD_SCRIPT_SYNTAX" type="int" group="error">
-				<doc>Script syntax malformed</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" type="int" group="error">
-				<doc>Unable to resolve a link to the application to be launched</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_EXECUTABLE" type="int" group="error">
-				<doc>The attempt to launch the application failed because the application isn't a valid executable</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" type="int" group="error">
-				<doc>The attempt to launch the application failed because the application wasn't found</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" type="int" group="error">
-				<doc>The attempt to launch the application failed because the application was in the trash</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" type="int" group="error">
-				<doc>The attempt to launch the application failed because there is no preferred application for the document</doc>
-			</constant>
-			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" type="int" group="error">
-				<doc>The attempt to launch the application failed because the document's application is missing</doc>
-			</constant>
-			<constant name="B_BAD_MIME_SNIFFER_RULE" type="int" group="error">
-				<doc>A MIME type sniffer rule is invalid</doc>
-			</constant>
+<!-- cursor -->
+			<constant name="B_CURSOR_SYSTEM_DEFAULT" type="BCursor*" group="cursor" />
+			<constant name="B_CURSOR_I_BEAM" type="BCursor*" group="cursor" />
+<!-- system messages -->
+			<constant name="B_ABOUT_REQUESTED" type="int" group="system_messages" />
+			<constant name="B_WINDOW_ACTIVATED" type="int" group="system_messages" />
+			<constant name="B_APP_ACTIVATED" type="int" group="system_messages" />
+			<constant name="B_ARGV_RECEIVED" type="int" group="system_messages" />
+			<constant name="B_QUIT_REQUESTED" type="int" group="system_messages" />
+			<constant name="B_CLOSE_REQUESTED" type="int" group="system_messages" />
+			<constant name="B_CANCEL" type="int" group="system_messages" />
+			<constant name="B_INVALIDATE" type="int" group="system_messages" />
+			<constant name="B_KEY_DOWN" type="int" group="system_messages" />
+			<constant name="B_KEY_UP" type="int" group="system_messages" />
+			<constant name="B_UNMAPPED_KEY_DOWN" type="int" group="system_messages" />
+			<constant name="B_UNMAPPED_KEY_UP" type="int" group="system_messages" />
+			<constant name="B_LAYOUT_WINDOW" type="int" group="system_messages" />
+			<constant name="B_MODIFIERS_CHANGED" type="int" group="system_messages" />
+			<constant name="B_MINIMIZE" type="int" group="system_messages" />
+			<constant name="B_MOUSE_DOWN" type="int" group="system_messages" />
+			<constant name="B_MOUSE_MOVED" type="int" group="system_messages" />
+			<constant name="B_MOUSE_ENTER_EXIT" type="int" group="system_messages" />
+			<constant name="B_MOUSE_IDLE" type="int" group="system_messages" />
+			<constant name="B_MOUSE_UP" type="int" group="system_messages" />
+			<constant name="B_MOUSE_WHEEL_CHANGED" type="int" group="system_messages" />
+			<constant name="B_OPEN_IN_WORKSPACE" type="int" group="system_messages" />
+			<constant name="B_PRINTER_CHANGED" type="int" group="system_messages" />
+			<constant name="B_PULSE" type="int" group="system_messages" />
+			<constant name="B_READY_TO_RUN" type="int" group="system_messages" />
+			<constant name="B_REFS_RECEIVED" type="int" group="system_messages" />
+			<constant name="B_RELEASE_OVERLAY_LOCK" type="int" group="system_messages" />
+			<constant name="B_ACQUIRE_OVERLAY_LOCK" type="int" group="system_messages" />
+			<constant name="B_SCREEN_CHANGED" type="int" group="system_messages" />
+			<constant name="B_VALUE_CHANGED" type="int" group="system_messages" />
+			<constant name="B_TRANSLATOR_ADDED" type="int" group="system_messages" />
+			<constant name="B_TRANSLATOR_REMOVED" type="int" group="system_messages" />
+			<constant name="B_VIEW_MOVED" type="int" group="system_messages" />
+			<constant name="B_VIEW_RESIZED" type="int" group="system_messages" />
+			<constant name="B_WINDOW_MOVED" type="int" group="system_messages" />
+			<constant name="B_WINDOW_RESIZED" type="int" group="system_messages" />
+			<constant name="B_WORKSPACES_CHANGED" type="int" group="system_messages" />
+			<constant name="B_WORKSPACE_ACTIVATED" type="int" group="system_messages" />
+			<constant name="B_ZOOM" type="int" group="system_messages" />
+			<constant name="_COLORS_UPDATED" type="int" group="system_messages" />
+			<constant name="_FONTS_UPDATED" type="int" group="system_messages" />
+			<constant name="_APP_MENU_" type="int" group="system_messages" />
+			<constant name="_BROWSER_MENUS_" type="int" group="system_messages" />
+			<constant name="_MENU_EVENT_" type="int" group="system_messages" />
+			<constant name="_PING_" type="int" group="system_messages" />
+			<constant name="_QUIT_" type="int" group="system_messages" />
+			<constant name="_VOLUME_MOUNTED_" type="int" group="system_messages" />
+			<constant name="_VOLUME_UNMOUNTED_" type="int" group="system_messages" />
+			<constant name="_MESSAGE_DROPPED_" type="int" group="system_messages" />
+			<constant name="_DISPOSE_DRAG_" type="int" group="system_messages" />
+			<constant name="_MENUS_DONE_" type="int" group="system_messages" />
+			<constant name="_SHOW_DRAG_HANDLES_" type="int" group="system_messages" />
+			<constant name="_EVENTS_PENDING_" type="int" group="system_messages" />
+			<constant name="_UPDATE_" type="int" group="system_messages" />
+			<constant name="_UPDATE_IF_NEEDED_" type="int" group="system_messages" />
+			<constant name="_PRINTER_INFO_" type="int" group="system_messages" />
+			<constant name="_SETUP_PRINTER_" type="int" group="system_messages" />
+			<constant name="_SELECT_PRINTER_" type="int" group="system_messages" />
+			<constant name="B_SET_PROPERTY" type="int" group="commands" />
+			<constant name="B_GET_PROPERTY" type="int" group="commands" />
+			<constant name="B_CREATE_PROPERTY" type="int" group="commands" />
+			<constant name="B_DELETE_PROPERTY" type="int" group="commands" />
+			<constant name="B_COUNT_PROPERTIES" type="int" group="commands" />
+			<constant name="B_EXECUTE_PROPERTY" type="int" group="commands" />
+			<constant name="B_GET_SUPPORTED_SUITES" type="int" group="commands" />
+			<constant name="B_UNDO" type="int" group="commands" />
+			<constant name="B_REDO" type="int" group="commands" />
+			<constant name="B_CUT" type="int" group="commands" />
+			<constant name="B_COPY" type="int" group="commands" />
+			<constant name="B_PASTE" type="int" group="commands" />
+			<constant name="B_SELECT_ALL" type="int" group="commands" />
+			<constant name="B_SAVE_REQUESTED" type="int" group="commands" />
+			<constant name="B_MESSAGE_NOT_UNDERSTOOD" type="int" group="commands" />
+			<constant name="B_NO_REPLY" type="int" group="commands" />
+			<constant name="B_REPLY" type="int" group="commands" />
+			<constant name="B_SIMPLE_DATA" type="int" group="commands" />
+			<constant name="B_MIME_DATA" type="int" group="commands" />
+			<constant name="B_ARCHIVED_OBJECT" type="int" group="commands" />
+			<constant name="B_UPDATE_STATUS_BAR" type="int" group="commands" />
+			<constant name="B_RESET_STATUS_BAR" type="int" group="commands" />
+			<constant name="B_NODE_MONITOR" type="int" group="commands" />
+			<constant name="B_QUERY_UPDATE" type="int" group="commands" />
+			<constant name="B_ENDORSABLE" type="int" group="commands" />
+			<constant name="B_COPY_TARGET" type="int" group="commands" />
+			<constant name="B_MOVE_TARGET" type="int" group="commands" />
+			<constant name="B_TRASH_TARGET" type="int" group="commands" />
+			<constant name="B_LINK_TARGET" type="int" group="commands" />
+			<constant name="B_INPUT_DEVICES_CHANGED" type="int" group="commands" />
+			<constant name="B_INPUT_METHOD_EVENT" type="int" group="commands" />
+			<constant name="B_WINDOW_MOVE_TO" type="int" group="commands" />
+			<constant name="B_WINDOW_MOVE_BY" type="int" group="commands" />
+			<constant name="B_SILENT_RELAUNCH" type="int" group="commands" />
+			<constant name="B_OBSERVER_NOTICE_CHANGE" type="int" group="commands" />
+			<constant name="B_CONTROL_INVOKED" type="int" group="commands" />
+			<constant name="B_CONTROL_MODIFIED" type="int" group="commands" />
 		</constants>
 	</binding>
 <!-- move entry_ref to Storage Kit when Storage Kit is defined -->

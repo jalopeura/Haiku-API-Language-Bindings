@@ -15,72 +15,95 @@
 				<param name="submenu" type="BMenu*" action="input" />
 				<param name="message" type="BMessage*" action="input" default="NULL" must-not-delete="true" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
-			<!-- ContentLocation -->
-			<method name="Frame">
-				<doc>Gets the frame.</doc>
-				<return type="BRect" action="output" />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
 			</method>
-			<!-- GetContentSize -->
-			<!-- Highlight -->
-			<!-- Invoke -->
-			<!-- IsSelected -->
-			<method name="Menu">
-				<doc>Gets the parent Menu.</doc>
-				<return type="BMenu*" action="output" />
-			</method>
-			<method name="SetEnabled">
-				<doc>Enables or disables the MenuItem.</doc>
-				<param name="enabled" type="bool" action="input" />
-			</method>
-			<method name="IsEnabled">
-				<doc>Returns true if the MenuItem is enabled.</doc>
-				<return type="bool" action="output" />
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetLabel">
 				<doc>Sets the label.</doc>
 				<param name="string" type="const char*" action="input" />
 			</method>
-			<method name="Label">
-				<doc>Gets the label.</doc>
-				<return type="const char*" action="output" />
+			<method name="SetEnabled">
+				<doc>Enables or disables the MenuItem.</doc>
+				<param name="enabled" type="bool" action="input" />
 			</method>
 			<method name="SetMarked">
 				<doc>Sets whether the MenuItem is marked.</doc>
 				<param name="flag" type="bool" action="input" />
 			</method>
-			<method name="IsMarked">
-				<doc>Sets the shortcut.</doc>
-				<return type="bool" action="output" />
+			<method name="SetTrigger">
+				<doc>Sets the trigger.</doc>
+				<param name="trigger" type="char" action="input" />
 			</method>
 			<method name="SetShortcut">
 				<doc>Sets the shortcut.</doc>
 				<param name="shortcut" type="char" action="input" />
 				<param name="modifiers" type="uint32" action="input" />
 			</method>
-			<method name="Shortcut">
-				<doc>Returns the shortcut.</doc>
-				<param name="modifiers" type="uint32*" deref="true" action="output" />
-				<return type="char" action="output" />
+			<method name="Label">
+				<doc>Gets the label.</doc>
+				<return type="const char*" action="output" />
 			</method>
-			<method name="SetTrigger">
-				<doc>Sets the trigger.</doc>
-				<param name="trigger" type="char" action="input" />
+			<method name="IsEnabled">
+				<doc>Returns true if the MenuItem is enabled.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsMarked">
+				<doc>Sets the shortcut.</doc>
+				<return type="bool" action="output" />
 			</method>
 			<method name="Trigger">
 				<doc>Returns the trigger.</doc>
+				<return type="char" action="output" />
+			</method>
+			<method name="Shortcut">
+				<doc>Returns the shortcut.</doc>
+				<param name="modifiers" type="uint32*" deref="true" action="output" />
 				<return type="char" action="output" />
 			</method>
 			<method name="Submenu">
 				<doc>Returns the associated submenu.</doc>
 				<return type="BMenu*" action="output" />
 			</method>
-			<!-- Draw -->
-			<!-- DrawContent -->
+			<method name="Menu">
+				<doc>Gets the parent Menu.</doc>
+				<return type="BMenu*" action="output" />
+			</method>
+			<method name="Frame">
+				<doc>Gets the frame.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="GetContentSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+			</method>
+			<method name="TruncateLabel">
+				<param name="maxWidth" type="float" action="input" />
+				<param name="newLabel" type="char*" action="output" />
+			</method>
+<!--
+			<event name="Draw" />
+			<event name="DrawContent" />
+-->
+			<method name="Highlight">
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsSelected">
+				<return type="bool" action="output" />
+			</method>
+			<method name="ContentLocation">
+				<return type="BPoint" action="output" />
+			</method>
 		</functions>
 	</binding>
 </bindings>

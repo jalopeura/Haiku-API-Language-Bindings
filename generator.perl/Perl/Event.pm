@@ -30,7 +30,7 @@ sub generate_xs {
 	);
 }
 
-sub generate_xs_function {
+sub Xgenerate_xs_function {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
 	$options->{cpp_call_name} = "THIS->${cpp_class_name}::" . $self->name;

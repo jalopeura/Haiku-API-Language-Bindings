@@ -8,8 +8,12 @@ sub generate_xs {
 	
 	my $cpp_class_name = $self->cpp_class_name;
 	
+	my $perl_name = $self->has('overload_name') ?
+		$self->overload_name : $self->name;
+	
 	$self->SUPER::generate_xs(
 		cpp_call => "$cpp_class_name}::" . $self->name,
+		perl_name => $perl_name,
 		add_CLASS => 1,
 		extra_items => [
 			'// item 0: CLASS',	# added variable
@@ -17,7 +21,7 @@ sub generate_xs {
 	);
 }
 
-sub generate_xs_function {
+sub Xgenerate_xs_function {
 	my ($self, $options) = @_;
 	
 	my $cpp_class_name = $self->cpp_class_name;

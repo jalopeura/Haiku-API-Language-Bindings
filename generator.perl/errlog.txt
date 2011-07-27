@@ -1,4 +1,0 @@
-cc1plus: warning: command line option "-Wstrict-prototypes" is valid for C/ObjC but not for C++
-/boot/develop/abi/x86/gcc4/tools/gcc-4.4.4-haiku-101111/lib/gcc/i586-pc-haiku/4.4.4/../../../../i586-pc-haiku/bin/ld: cannot find -lpython2.6
-collect2: ld returned 1 exit status
-error: command 'g++' failed with exit status 1

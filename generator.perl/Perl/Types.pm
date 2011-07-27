@@ -5,13 +5,16 @@ package Perl::Types;
 use strict;
 our @ISA = qw(Types Perl::BaseObject);
 
-# need to handle long double
+use constant ENUM_TYPE => 'int';
 
+# need to handle long double
 # map builtin types to perl types
+
+# specs say:
 # char  >=  8
-# short >= 16
-# int   >= 16
-# long  >= 32
+# short >= 16; short >= char
+# int   >= 16; int >= short
+# long  >= 32; long >= int;
 our %builtins = (
 	'char'    => 'STRING',
 	'intchar' => 'T_IV',
@@ -40,6 +43,9 @@ our %builtins = (
 	'responder_ptr' => 'RESP_OBJ_PTR',
 	'object_ptr'    => 'NORM_OBJ_PTR',
 );
+#$builtins{enum} ||= $builtins{ENUM_TYPE};	# why doesn't this work?
+my $k = ENUM_TYPE;
+$builtins{enum} ||= $builtins{$k};
 
 # map perl types to SV types
 our %perltypes = (
@@ -119,6 +125,7 @@ sub create_empty {
 
 sub finalize_upgrade {
 	my ($self) = @_;
+	
 	$self->{_typemap} = {};
 	$self->{types} ||= [];
 	for my $type ($self->types) {
@@ -129,7 +136,7 @@ sub finalize_upgrade {
 		
 		$builtin=~s/ //g;
 		my $perltype = $builtins{$builtin} or
-			warn "Type '$type' mapped to unsupported builtin type '$builtin'";
+			warn "Type '$name' mapped to unsupported builtin type '$builtin'";
 			
 		$type->{perltype} = $perltype;
 		$type->{svtype} = $perltypes{$perltype};
@@ -332,7 +339,7 @@ sub output_converter {
 	my $type = $self->name;
 	my $ntype = '$ntype';
 	
-	my $ret = eval "qq($converter)" or die $@;
+	my $ret = eval "qq($converter)" or die "$@ ($self->{name}, $self->{perltype}, $converter)" . join(':::', caller);
 	
 	if ($self->builtin eq 'char') {
 		my $length = $self->has('repeat') ? $self->repeat : 1;
@@ -383,6 +390,9 @@ sub new {
 	my ($class, $name, $perltype, $svtype) = @_;
 	if ($name eq 'intchar') {
 		$name = 'char';
+	}
+	if ($name eq 'enum') {
+		$name = Perl::Types::ENUM_TYPE;
 	}
 	my $self = bless {
 		name     => $name,

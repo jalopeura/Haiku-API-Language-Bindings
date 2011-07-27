@@ -99,7 +99,12 @@ sub generate_pm {
 	
 	my $name = $self->name;
 	if ($self->has('overload_name')) {
-		$name .= $self->overload_name;
+		if ($self->isa('Perl::Constructor')) {
+			$name .= $self->overload_name;
+		}
+		else {
+			$name = $self->overload_name;
+		}
 	}
 	my $perl_class_name = $self->perl_class_name;
 	
@@ -111,30 +116,17 @@ sub generate_pm {
 POD
 }
 
-sub Xgenerate_xs {
-	my ($self) = @_;
-	
-	my $ignore_error_return = $self->isa('Perl::Constructor');
-	my $options = $self->params->perl_to_cpp($ignore_error_return);
-	
-	$options->{name} = $self->name;
-	if ($self->has('overload_name')) {
-		$options->{name} .= $self->overload_name;
-	}
-	
-	$self->generate_xs_function($options);
-}
-
 # expects the overload function to have set some options
 sub generate_xs {
 	my ($self, %options) = @_;
 	
 	my $cpp_call = $options{cpp_call} || $self->name;
 	
-	my $perl_name = $options{perl_name} || $self->name;
-	if ($self->has('overload_name')) {
-		$perl_name .= $self->overload_name;
-	}
+	my $perl_name = $options{perl_name};
+# || $self->name;
+#	if ($self->has('overload_name')) {
+#		$perl_name .= $self->overload_name;
+#	}
 	
 	my @xsargs;		# names as they will be passed to the XS call
 	my @cppargs;	# names as they will be passed to the C++ call
@@ -399,76 +391,6 @@ OUT
 	print $fh "\n";
 }
 
-=pod
-
-	
-	# here handle the perl returns
-	if ($options->{retcount}) {
-		my $type = $self->types->type($outtype);
-		my $retname = $output->name;
-		
-		if ($options->{retcount} > 1) {
-			$options->{rettype} = 'void';
-		}
-	}
-	else {	# no returns
-		if ($options->{error_return}) {
-			my $ret = $self->params->cpp_output->name;
-			push @{ $options->{code} }, qq($ret = THIS->$name($call_args););
-		}
-		else {
-#push @{ $options->{code} }, qq(DEBUGME(4, "About to call cpp method ${cpp_class_name}::$name"););
-			push @{ $options->{code} }, qq(THIS->$name($call_args););
-#push @{ $options->{code} }, qq(DEBUGME(4,"Back from cpp call"););
-		}
-	}
-	
-	if ($retcount > 1) {
-		if ($self->has('cpp_output') and $self->cpp_output->type ne 'void') {
-			$rettype = $self->cpp_output->type;
-			if ($self->cpp_output->needs_deref) {
-				$rettype=~s/\*$//;
-			}
-		}
-		push @postcode, "EXTEND(SP, $retcount);";
-		
-		for my $i (0..$#outputs) {
-			my $param = $outputs[$i];
-			my $svname = $param->name . '_sv';
-			push @init, "SV* $svname = newSV(0);";
-			my $ptype = $param->type;
-			if ($param->needs_deref) {
-				$ptype=~s/\*$//;
-			}
-			my $type = $self->types->type($ptype);
-			
-			# if we're a target, we've already converted it
-			unless ($type->has('target')) {
-				push @postcode, @{ $param->output_converter("$svname") },
-			}
-			else {
-				push @postcode, qq(PUSHs(sv_2mortal($svname)););
-			}
-		}
-	}
-	elsif ($retcount == 1) {
-		$rettype = $outputs[0]->type;
-		if ($outputs[0]->needs_deref) {
-			$rettype=~s/\*$//;
-		}
-		push @postcode, "RETVAL = $outputs[0]->{name};";
-	}
-	# return true if no errors and no other return value
-	elsif ($has_errors and not $ignore_error_return) {
-		$rettype = 'bool';
-		$retcount ||= 1;
-		push @postcode, 'RETVAL = true;';
-	}
-	
-	# start XS def and convert XS inputs as necessary
-
-=cut
-
 sub generate_xs_function {
 	my ($self, $options) = @_;
 	
@@ -533,84 +455,5 @@ OUT
 	
 	print $fh "\n";
 }
-
-=pod
-
-sub generate_xs_body_code {
-	my ($self, $options) = @_;
-	
-	my $name = $options->{cpp_call_name};
-	
-	$options->{code} ||= [];
-	
-	# here handle the C++ call
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	if ($self->params->has('cpp_output')) {
-		my $retname = $self->params->cpp_output->name;
-		push @{ $options->{code} },
-			qq($retname = $name($call_args););
-	}
-	else {
-		push @{ $options->{code} },
-			qq($name($call_args););
-	}
-	
-	# here handle the perl returns
-	if ($options->{retcount}) {
-		my $type = $self->typeobj;
-		my $retname = $output->name;
-		if ($type->has('target')) {
-			my $svname = $retname . '_sv';
-			push @{ $options->{init} }, "SV* $svname;";
-			my $class = $type->target;
-		
-		for my $output (@{ $options->{outputs} }) {
-			my $outtype = $output->type;
-			if ($output->needs_deref) {
-				$outtype=~s/\*$//;
-			}
-		
-				my $mnd = $self->package->must_not_delete ? 'true' : 'false';
-				
-				if ($options->{rettype}=~/\*$/) {
-					push @{ $options->{code} },
-						qq{$svname = create_perl_object((void*)$retname, "$class", $mnd);};
-				}
-				else {
-					push @{ $options->{code} },
-						qq{$svname = create_perl_object((void*)&$retname, "$class", $mnd);};
-				}
-				
-				# if this is the only thing we're returning
-				if ($options->{retcount} == 1) {
-					# we're creating the object ourself, so we change the rettype
-					$options->{rettype} = 'SV*';
-					pop @{ $options->{postcode} };
-					push @{ $options->{postcode} }, "RETVAL = $svname;";
-				}
-			}
-			else {
-				push @{ $options->{code}}, qq($retname = THIS->$name($call_args););
-			}
-		}
-		
-		if ($options->{retcount} > 1) {
-			$options->{rettype} = 'void';
-		}
-	}
-	else {	# no returns
-		if ($options->{error_return}) {
-			my $ret = $self->params->cpp_output->name;
-			push @{ $options->{code} }, qq($ret = THIS->$name($call_args););
-		}
-		else {
-#push @{ $options->{code} }, qq(DEBUGME(4, "About to call cpp method ${cpp_class_name}::$name"););
-			push @{ $options->{code} }, qq(THIS->$name($call_args););
-#push @{ $options->{code} }, qq(DEBUGME(4,"Back from cpp call"););
-		}
-	}
-}
-
-=cut
 
 1;

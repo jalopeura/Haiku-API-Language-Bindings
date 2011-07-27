@@ -39,7 +39,7 @@ sub generate_xs {
 	);
 	
 	if ($self->has('overload_name')) {
-		$options{perl_name} = 'new';
+		$options{perl_name} = 'new' . $self->overload_name;
 		$options{add_CLASS} = 1;
 		$options{comment} = <<COMMENT;
 # Note that this method is not prefixed by the class name.
@@ -58,7 +58,7 @@ COMMENT
 	$self->SUPER::generate_xs(%options);
 }
 
-sub generate_xs_function {
+sub Xgenerate_xs_function {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
 	

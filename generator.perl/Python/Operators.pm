@@ -76,57 +76,41 @@ my %ops = (
 	'neg' => { 
 		name => 'neg',
 		type => 'neg',	# negation
-		as_number => 'nb_negative',
-		signature => 'unary',
 	},
 	
 	'==' => { 
 		name => 'eq',
 		type => 'cmp',	# comparison
-		richcompare => 'Py_EQ',
 	},
 	'!=' => { 
 		name => 'ne',
 		type => 'cmp',	# comparison
-		richcompare => 'Py_NE',
 	},
 	
 	'+' => { 
 		name => 'add',
 		type => 'math',	# mathematical
-		as_number => 'nb_add',
-		signature => 'binary',
 	},
 	'-' => { 
 		name => 'sub',
 		type => 'math',	# mathematical
-		as_number => 'nb_subtract',
-		signature => 'binary',
 	},
 	'&' => { 
 		name => 'and',
 		type => 'math',	# mathematical
-		as_number => 'nb_and',
-		signature => 'binary',
 	},
 	'|' => { 
 		name => 'or',
 		type => 'math',	# mathematical
-		as_number => 'nb_or',
-		signature => 'binary',
 	},
 	
 	'+=' => { 
 		name => 'iadd',
 		type => 'mut',	# mutator
-		as_number => 'nb_inplace_add',
-		signature => 'binary',
 	},
 	'-=' => { 
 		name => 'isub',
 		type => 'mut',	# mutator
-		as_number => 'nb_inplace_subtract',
-		signature => 'binary',
 	},
 );
 
@@ -146,7 +130,7 @@ sub generate {
 	
 	my $rettype;
 	if ($type eq 'neg' or $type eq 'math' or $type eq 'mut') {
-		$rettype = "$cpp_class_name*";
+		$rettype = $cpp_class_name;
 	}
 	elsif ($type eq 'cmp') {
 		$rettype = 'bool';
@@ -158,74 +142,101 @@ sub generate {
 		output_name => 'py_retval',
 	};
 	my ($defs, $code) = $type_obj->arg_builder($options);
+	push @$defs, "$rettype retval;";
+	
+	my $fh = $self->class->cch;
 
-	if ($type eq 'cmp') {
-		@$defs = ();
-		@$code = (
-			qq(retval = *((($pyobj_type*)a)->cpp_object) $name *((($pyobj_type*)b)->cpp_object);),
-			qq(return Py_BuildValue("b", retval ? 1 : 0);)
-		);
+	if ($type eq 'neg') {
+		push @$defs, "$pyobj_type* py_retval;";
+		unshift @$code, "retval = -(*python_self->cpp_object);";
+		push @$code, "return (PyObject*)py_retval;";
 	}
 	else {
-		unless ($type eq 'mut') {
-			my $class_name = $self->class->cpp_name;
-			push @$defs, "$rettype retval = new $class_name();";
-		}
-		
-		if ($type eq 'neg') {
-			push @$defs, "$pyobj_type* py_retval;";
-			unshift @$code, "*retval = -(*(($pyobj_type*)a)->cpp_object);";
-			push @$code, "return (PyObject*)py_retval;";
+		if ($type eq 'cmp') {
+			unshift @$code, "retval = *(python_self->cpp_object) $name object;";
+			push @$code, "return py_retval;";
 		}
 		elsif ($type eq 'math') {
-			push @$defs,
-				"$pyobj_type* py_retval;";
-			unshift @$code, "*retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
+			unshift @$code, "retval = *(python_self->cpp_object) $name object;";
 			push @$code, "return (PyObject*)py_retval;";
 		}
 		elsif ($type eq 'mut') {
 			@$code = (
-				"*(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;",
-				"return (PyObject*)a;",
+				"*(python_self->cpp_object) $name object;",
+				"return (PyObject*)python_self;",
 			);
 		}
 		
-#		push @$defs, "$cpp_class_name object;";
+		push @$defs, "$cpp_class_name object;";
+		unshift @$code,
+			qq(PyArg_ParseTuple(python_args, "O", &py_object);),
+			qq(object = *((($pyobj_type*)py_object)->cpp_object););
 	}
 	
-	if (my $rc_constant = $ops{$name}{richcompare}) {
-		$self->class->add_richcompare_block($rc_constant, $defs, $code);
+	print $fh "static PyObject* $fname($pyobj_type* python_self, PyObject* python_args) {\n";
+	
+	if (@$defs) {
+		print $fh map { "\t$_\n"; } @$defs;
+		print $fh "\t\n";
 	}
-	elsif (my $as_number = $ops{$name}{as_number}) {
-		my $signature = $ops{$name}{signature};
-		my $fh = $self->class->cch;
-		
-		if ($signature eq 'unary') {
-			print $fh "static PyObject* $fname(PyObject* a) {\n";
-		}
-		elsif ($signature eq 'binary') {
-			print $fh "static PyObject* $fname(PyObject* a, PyObject* b) {\n";
-		}
-		else {
-			die "Unknown operator signature: $signature";
-		}
-		
-		if (@$defs) {
-			print $fh map { "\t$_\n"; } @$defs;
-			print $fh "\t\n";
-		}
-		
-		print $fh map { "\t$_\n"; } @$code;
-		
-		print $fh "}\n\n";
+	
+	print $fh map { "\t$_\n"; } @$code;
+	
+	print $fh "}\n\n";
 
-		if ($as_number) {
-			$self->class->add_as_number_op($as_number, $fname);
-		}
+=pod
+
+${cpp_class_name}::$fname(object, swap)
+	INPUT:
+		$cpp_class_name object;
+		IV swap;
+	CODE:
+OPERATOR
+	
+	if ($type eq 'neg') {
 	}
-	else {
-		die "Unknown operator: $name";
+	elsif ($type eq 'cmp') {
+		print $fh "\t\tRETVAL = *THIS $name object;\n";
 	}
+	elsif ($type eq 'math') {
+		my $type_obj = $self->types->type($cpp_class_name);
+		my $converter = $type_obj->output_converter('result', 'RETVAL');
+		print $fh <<CODE;
+		$cpp_class_name result;
+		result = *THIS $name object;
+		RETVAL = newSV(0);
+		$converter
+CODE
+	}
+	elsif ($type eq 'mut') {
+		my $type_obj = $self->types->type("$cpp_class_name*");
+		my $converter = $type_obj->output_converter('THIS', 'RETVAL');
+		print $fh <<CODE;
+		*THIS $name object;
+		RETVAL = newSV(0);
+		$converter
+CODE
+	}
+	
+	print $fh <<OPERATOR;
+	OUTPUT:
+		RETVAL
+
+OPERATOR
+
+=cut
+	
+	my $doc;
+	if ($self->has('doc')) {
+		$doc = $self->doc;
+	}
+	$self->class->add_method_table_entry(
+		$mname,			# name as seen from Python
+		$fname,			# name of wrapper function
+		'METH_VARARGS',	# flags
+		$doc			# docs
+	);
+
 }
 
 1;

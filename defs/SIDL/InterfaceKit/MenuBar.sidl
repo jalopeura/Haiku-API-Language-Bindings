@@ -11,18 +11,104 @@
 				<param name="layout" type="menu_layout" action="input" default="B_ITEMS_IN_ROW" />
 				<param name="resizeToFit" type="bool" action="input" default="true" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="layout" type="menu_layout" action="input" default="B_ITEMS_IN_ROW" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS" />
+			</constructor>
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!--
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+<!--
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="Show">
+				<doc>Shows the MenuBar.</doc>
+				<return type="void" />
+			</method>
 			<method name="Hide">
 				<doc>Hides the MenuBar.</doc>
 				<return type="void" />
 			</method>
-			<method name="Show">
-				<doc>Shows the MenuBar.</doc>
+<!--
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
 				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetBorder">
 				<doc>Sets the maximum content width for the MenuBar.</doc>
@@ -32,18 +118,15 @@
 				<doc>Gets the maximum content width of the MenuBar.</doc>
 				<return type="menu_bar_border" action="output" />
 			</method>
-			<!-- AttachedToWindow -->
-			<!-- Draw -->
-			<!-- MouseDown -->
 		</functions>
 		<constants>
-			<constant name="B_BORDER_FRAME" type="int" group="border">
+			<constant name="B_BORDER_FRAME" type="int" group="menu_bar_border">
 				<doc>The border is drawn around the entire frame rectangle.</doc>
 			</constant>
-			<constant name="B_BORDER_CONTENTS" type="int" group="border">
+			<constant name="B_BORDER_CONTENTS" type="int" group="menu_bar_border">
 				<doc>The border is drawn around just the list of items.</doc>
 			</constant>
-			<constant name="B_BORDER_EACH_ITEM" type="int" group="border">
+			<constant name="B_BORDER_EACH_ITEM" type="int" group="menu_bar_border">
 				<doc>A border is drawn around each item.</doc>
 			</constant>
 		</constants>

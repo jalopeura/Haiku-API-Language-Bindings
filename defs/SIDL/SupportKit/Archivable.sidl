@@ -4,16 +4,174 @@
 		<doc>Exposes the Archivable object</doc>
 		<functions>
 			<constructor>
-				<doc>Creates a Archivable.</doc>
-			</constructor>
-			<constructor overload-name="FromMessage">
 				<doc>Creates an Archivable from an archive.</doc>
 				<param name="archive" type="BMessage*" action="input">
 					<doc>Contains an archived version of the Archivable.</doc>
 				</param>
 			</constructor>
+			<constructor overload-name="Empty">
+				<doc>Creates a Archivable.</doc>
+			</constructor>
 			<destructor />
-			<!-- Archive -->
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Instantiate">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="AllUnarchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllArchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
 		</functions>
+	</binding>
+	<binding source="BArchiver" target="Haiku::Archiver">
+		<functions>
+			<constructor>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="AddArchivable">
+				<param name="name" type="const char*" action="input" />
+				<param name="archivable" type="BArchivable*" action="input" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetTokenForArchivable">
+				<param name="archivable" type="BArchivable*" action="input" />
+				<param name="token" type="int32" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetTokenForArchivable" overload-name="DeepGetTokenForArchivable">
+				<param name="archivable" type="BArchivable*" action="input" />
+				<param name="deep" type="bool" action="input" />
+				<param name="token" type="int32" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsArchived">
+				<param name="archivable" type="BArchivable*" action="input" />
+				<return type="bool" />
+			</method>
+			<method name="Finish">
+				<param name="err" type="status_t" default="B_OK" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ArchiveMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+		</functions>
+	</binding>
+	<binding source="BUnarchiver" target="Haiku::Unarchiver">
+		<functions>
+			<constructor>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+<!-- templates not yet implemented
+			<method name="GetObject">
+				<param name="token" type="int32" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetObject" overload-name="GetObjectByOwnershipPolicy">
+				<param name="token" type="int32" action="input" />
+				<param name="owning" type="ownership_policy" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindObject">
+				<param name="name" type="const char*" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindObject" overload-name="FindObjectByOwnershipPolicy">
+				<param name="name" type="const char*" action="input">
+				<param name="owning" type="ownership_policy" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="FindObject" overload-name="FindObjectByIndex">
+				<param name="name" type="const char*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="EnsureUnarchived">
+				<param name="name" type="const char*" action="input" />
+				<param name="index" type="int32" default="0" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="EnsureUnarchived" overload-name="EnsureUnarchivedByToken">
+				<param name="token" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsInstantiated">
+				<param name="name" type="const char*" action="input" />
+				<param name="index" type="int32" default="0" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsInstantiated" overload-name="IsInstantiatedByToken">
+				<param name="token" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="Finish">
+				<param name="err" type="status_t" default="B_OK" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ArchiveMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="AssumeOwnership">
+				<param name="archivable" type="BArchivable*" action="input" />
+			</method>
+			<method name="RelinquishOwnership">
+				<param name="archivable" type="BArchivable*" action="input" />
+			</method>
+			<method name="IsArchiveManaged">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="bool" />
+			</method>
+			<method name="PrepareArchive">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="BMessage*" action="output" />
+			</method>
+<!-- templates not yet implemented
+			<method name="InstantiateObject">
+				<param name="archive" type="BMessage*" action="input" />
+				<param name="object" type="???(template)" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<plain name="instantiate_object">
+				<param name="from" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</plain>
+			<plain name="instantiate_object" overload-name="instantiate_object_with_id">
+				<param name="from" type="BMessage*" action="input" />
+				<param name="id" type="image_id*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</plain>
+			<plain name="validate_instantiation">
+				<param name="from" type="BMessage*" action="input" />
+				<param name="className" type="const char*" action="input" />
+				<return type="bool" action="output" />
+			</plain>
+			<!--
+				find_instantiation_func unimplemented because it returns a function pointer
+				(no good to us in a target language)
+			-->
+		</functions>
+		<constants>
+			<constant name="B_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
+			<constant name="B_DONT_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
+		</constants>
 	</binding>
 </bindings>

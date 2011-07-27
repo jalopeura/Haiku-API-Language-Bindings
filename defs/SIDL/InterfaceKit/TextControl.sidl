@@ -4,7 +4,6 @@
 		<doc>Exposes the TextControl object</doc>
 		<functions>
 			<constructor>
-				<doc>...</doc>
 				<param name="frame" type="BRect" action="input" />
 				<param name="name" type="const char*" action="input" />
 				<param name="label" type="const char*" action="input" />
@@ -13,17 +12,69 @@
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="text" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="BareBones">
+				<param name="label" type="const char*" action="input" />
+				<param name="text" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+			</constructor>
+			<constructor overload-name="FromArchive">
 				<doc>...</doc>
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
-			<method name="MakeFocus">
-				<doc>Makes the TextControl focused (or not focused) within its Window; it passes this call to its child TextView, so the TextControl itself is never the focused control.</doc>
-				<param name="focused" type="bool" action="input" default="true" />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
 			</method>
-			<!-- ResolveSpecifier -->
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllArchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllUnarchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetText">
+				<doc>Sets the text.</doc>
+				<param name="text" type="const char*" action="input" />
+			</method>
+			<method name="Text">
+				<doc>Gets the text.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<method name="SetValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="TextView">
+				<doc>Returns the child TextView.</doc>
+				<return type="BTextView*" action="output" />
+			</method>
+			<method name="SetModificationMessage">
+				<doc>Sets the message sent when the content changes.</doc>
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="ModificationMessage">
+				<doc>Returns the message sent when the content change.</doc>
+				<return type="BMessage*" action="output" />
+			</method>
 			<method name="SetAlignment">
 				<doc>Sets the alignment for the TextControl.</doc>
 				<param name="forLabel" type="alignment" action="input" />
@@ -42,37 +93,108 @@
 				<doc>Returns the divider between the label and the TextView.</doc>
 				<return type="float" action="output" />
 			</method>
+<!--
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="AttachedToWindow" />
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<doc>Makes the TextControl focused (or not focused) within its Window; it passes this call to its child TextView, so the TextControl itself is never the focused control.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
 			<method name="SetEnabled">
 				<doc>Enables or disables the TextView.</doc>
 				<param name="enabled" type="bool" action="input" />
 			</method>
-			<method name="SetModificationMessage">
-				<doc>Sets the message sent when the content changes.</doc>
+<!--
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
+			</method>
+<!--
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
 			</method>
-			<method name="ModificationMessage">
-				<doc>Returns the message sent when the content change.</doc>
-				<return type="BMessage*" action="output" />
+<!--
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetText">
-				<doc>Sets the text.</doc>
-				<param name="text" type="const char*" action="input" />
+			<!-- SetFlags -->
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
 			</method>
-			<method name="Text">
-				<doc>Gets the text.</doc>
-				<return type="const char*" action="output" />
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
 			</method>
-			<method name="TextView">
-				<doc>Returns the child TextView.</doc>
-				<return type="BTextView*" action="output" />
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
 			</method>
-			<!-- AttachedToWindow -->
-			<!-- Draw -->
-			<!-- GetPreferredSize -->
-			<!-- ResizeToPreferred -->
-			<!-- MessageReceived -->
-			<!-- MouseDown -->
-			<!-- WindowActivated -->
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+<!-- BLayoutItem object not yet implemented
+			<method name="CreateLabelLayoutItem">
+				<return type="BLayoutItem*" action="output" />
+			</method>
+			<method name="CreateTextViewLayoutItem">
+				<return type="BLayoutItem*" action="output" />
+			</method>
+-->
 		</functions>
 	</binding>
 </bindings>

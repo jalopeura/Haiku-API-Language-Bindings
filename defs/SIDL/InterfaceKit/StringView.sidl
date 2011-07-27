@@ -11,18 +11,25 @@
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
 			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<doc>Creates a StringView.</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="text" type="const char*" action="input" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
 			<constructor overload-name="FromMessage">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
-			<method name="SetAlignment">
-				<doc>Sets the alignment for the StringView.</doc>
-				<param name="flag" type="alignment" action="input" />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
 			</method>
-			<method name="Alignment">
-				<doc>Returns the alignment for the StringView.</doc>
-				<return type="alignment" action="output" />
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetText">
 				<doc>Sets the text.</doc>
@@ -32,8 +39,92 @@
 				<doc>Gets the text.</doc>
 				<return type="const char*" action="output" />
 			</method>
-			<!-- AttachedToWindow -->
-			<!-- Draw -->
+			<method name="SetAlignment">
+				<doc>Sets the alignment for the StringView.</doc>
+				<param name="flag" type="alignment" action="input" />
+			</method>
+			<method name="Alignment">
+				<doc>Returns the alignment for the StringView.</doc>
+				<return type="alignment" action="output" />
+			</method>
+<!--
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+			<method name="ResizeToPreferred" />
+<!--
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetFont">
+				<param name="font" type="BFont*" action="input" />
+				<param name="mask" type="uint32" default="B_FONT_ALL" action="input" />
+			</method>
 		</functions>
 	</binding>
 </bindings>

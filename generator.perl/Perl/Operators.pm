@@ -12,24 +12,6 @@ sub generate {
 		for my $g ($self->operators) {
 			$g->generate;
 		}
-		
-		my $perl_class_name = $self->package->perl_name;
-		(my $nil = $self->module_name)=~s/:/_/g;
-		$nil = 'XS_' . $nil . '_nil';
-		
-		print { $self->package->xsh } <<OVERLOAD;
-# xsubpp only enables overloaded operators for the initial module; additional
-# modules are out of luck unless they roll their own, so that's what we do
-# ($nil defined automatically by xsubpp)
-BOOT:
-	sv_setsv(
-		get_sv("${perl_class_name}::()", TRUE),
-		&PL_sv_yes	// so we don't get fallback errors
-	);
-    newXS("${perl_class_name}::()", $nil, file);
-
-OVERLOAD
-		
 	}
 }
 
@@ -91,11 +73,14 @@ sub generate {
 	my $type = $ops{$name}{type};
 	
 	my $rettype;
-	if ($type eq 'neg' or $type eq 'math' or $type eq 'mut') {
-		$rettype = 'SV*';
+	if ($type eq 'neg') {
+		$rettype = $cpp_class_name;
 	}
 	elsif ($type eq 'cmp') {
 		$rettype = 'bool';
+	}
+	if ($type eq 'math' or $type eq 'mut') {
+		$rettype = 'SV*';
 	}
 	
 	my $fh = $self->package->xsh;
@@ -103,55 +88,37 @@ sub generate {
 	print $fh <<OPERATOR;
 $rettype
 ${cpp_class_name}::$fname(object, swap)
-OPERATOR
-	
-	if ($type ne 'neg') {
-		print $fh <<OPERATOR;
-	$cpp_class_name object;
-	IV swap;
-OPERATOR
-	}
-#	if ($type ne 'neg') {
-#		print $fh <<OPERATOR;
-#	INPUT:
-#		$cpp_class_name object;
-#		IV swap;
-#OPERATOR
-#	}
-	
-	print $fh <<OPERATOR;
+	INPUT:
+		$cpp_class_name object;
+		IV swap;
 	OVERLOAD: $name
 	CODE:
 OPERATOR
 	
-	if ($type eq 'cmp') {
+	if ($type eq 'neg') {
+		print $fh "\t\tRETVAL = -(*THIS);\n";
+	}
+	elsif ($type eq 'cmp') {
 		print $fh "\t\tRETVAL = *THIS $name object;\n";
 	}
-	else {
-		my $type_obj = $self->types->type("$cpp_class_name*");
+	elsif ($type eq 'math') {
+		my $type_obj = $self->types->type($cpp_class_name);
 		my $converter = $type_obj->output_converter('result', 'RETVAL');
-		
-		if ($type eq 'neg') {
-			print $fh <<CODE;
-		$cpp_class_name* result = new $cpp_class_name();
-		*result = -(*THIS);
-CODE
-		}
-		elsif ($type eq 'math') {
-			print $fh <<CODE;
-		$cpp_class_name* result = new $cpp_class_name();
-		*result = *THIS $name object;
-CODE
-		}
-		elsif ($type eq 'mut') {
-			print $fh "\t\t*THIS $name object;\n";
-			$converter=~s/result/THIS/;
-		}
-		
-		print $fh <<CONVERT;
+		print $fh <<CODE;
+		$cpp_class_name result;
+		result = *THIS $name object;
 		RETVAL = newSV(0);
 		$converter
-CONVERT
+CODE
+	}
+	elsif ($type eq 'mut') {
+		my $type_obj = $self->types->type("$cpp_class_name*");
+		my $converter = $type_obj->output_converter('THIS', 'RETVAL');
+		print $fh <<CODE;
+		*THIS $name object;
+		RETVAL = newSV(0);
+		$converter
+CODE
 	}
 	
 	print $fh <<OPERATOR;

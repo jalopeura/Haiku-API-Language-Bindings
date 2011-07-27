@@ -5,6 +5,8 @@ package Python::Types;
 use strict;
 our @ISA = qw(Types Python::BaseObject);
 
+use constant ENUM_TYPE => 'int';
+
 # need to handle long double
 
 # map builtin types to python tuple format items
@@ -36,6 +38,9 @@ our %builtins = (
 	'responder_ptr' => 'O',
 	'object_ptr'    => 'O',
 );
+#$builtins{enum} ||= $builtins{ENUM_TYPE};	# why doesn't this work?
+my $k = ENUM_TYPE;
+$builtins{enum} ||= $builtins{$k};
 
 sub create_empty {
 	my ($class) = @_;
@@ -54,7 +59,7 @@ sub finalize_upgrade {
 		
 		$builtin=~s/ //g;
 		my $format_item = $builtins{$builtin} or
-			warn "Type '$type' mapped to unsupported builtin type '$builtin'";
+			warn "Type '$name' mapped to unsupported builtin type '$builtin'";
 			
 		$type->{format_item} = $format_item;
 		$type->{self_defined} = 0,
@@ -64,8 +69,6 @@ sub finalize_upgrade {
 sub register_type {
 	my ($self, $name, $builtin, $target) = @_;
 #print "Registering type $name/$builtin/$target\n";
-	
-#	$type=~s/([^\s*])*/$1 */;	# xsubpp wants this space in the typemap
 	
 	# don't register an already registered type
 	if (my $type = $self->{_typemap}{$name}) {
@@ -206,7 +209,7 @@ sub arg_builder {
 	
 	my $target;
 	
-	if ($item=~/^O/) {	
+	if ($item=~/^O/) {
 		if ($builtin eq 'bool') {
 			return (
 				[],	# empty defs
@@ -271,6 +274,15 @@ sub arg_builder {
 			return (
 				\@defs,
 				\@code,
+			);
+		}
+		
+		# this is not what we really want to do with void*, but this prevents a fatal
+		# error, which we want to ignore until we're ready to support void*
+		if ($builtin eq 'void*') {
+			return (
+				[],	# empty defs
+				[ qq($options->{output_name} = Py_BuildValue("I", (int)$options->{input_name});) ]
 			);
 		}
 	}

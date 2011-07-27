@@ -11,7 +11,6 @@
 				<param name="resizingMode" type="uint32" action="input" />
 				<param name="flags" type="uint32" action="input" />
 			</constructor>
-<!-- rgb_color struct not yet implemented
 			<constructor overload-name="WithFontAndColor">
 				<doc>Creates a TextView.</doc>
 				<param name="frame" type="BRect" action="input" />
@@ -22,26 +21,149 @@
 				<param name="resizingMode" type="uint32" action="input" />
 				<param name="flags" type="uint32" action="input" />
 			</constructor>
--->
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+			</constructor>
+			<constructor overload-name="WithFontAndColorAndNoFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="font" type="BFont*" action="input" />
+				<param name="color" type="rgb_color*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<method name="AcceptsDrop">
-				<doc>Returns true if the TextView will accept dropped data.</doc>
-				<param name="archive" type="BMessage*" action="input" />
-				<return type="bool" action="output" />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
 			</method>
-			<method name="AcceptsPaste">
-				<doc>Returns true if the TextView will accept pasted data.</doc>
-				<param name="clipboard" type="BClipboard*" action="input" />
-				<return type="bool" action="output" />
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<!-- Archive -->
-			<method name="CanEndLine">
+<!--
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="Pulse" />
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+<!--
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetText">
+				<param name="inText" type="const char*" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+			<method name="SetText" overload-name="SetTextWithLength">
+				<param name="inText" type="const char*" action="input" />
+				<param name="inLength" type="int32" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+<!-- BFile object not yet implemented
+			<method name="SetText" overload-name="SetTextFromFile">
+				<param name="inFile" type="BFile*" action="input" />
+				<param name="startOffset" type="int32" action="input" />
+				<param name="inLength" type="int32" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+-->
+			<method name="Insert">
+				<param name="inText" type="const char*" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+			<method name="Insert" overload-name="InsertWithLength">
+				<param name="inText" type="const char*" action="input" />
+				<param name="inLength" type="int32" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+			<method name="Insert" overload-name="InsertWithOffset">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="inText" type="const char*" action="input" />
+				<param name="inLength" type="int32" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+			<method name="Delete" />
+			<method name="Delete" overload-name="DeleteWithOffset">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+			</method>
+			<method name="Text">
+				<return type="const char*" action="output" />
+			</method>
+			<method name="TextLength">
+				<return type="int32" action="output" />
+			</method>
+			<method name="GetText">
 				<param name="offset" type="int32" action="input" />
-				<doc>Returns true if the character at the given offset can end a line; used for word wrapping.</doc>
-				<return type="bool" action="output" />
+				<param name="length" type="int32" action="input" />
+				<param name="buffer" type="char*" action="output" />
+			</method>
+			<method name="ByteAt">
+				<param name="offset" type="int32" action="input" />
+				<return type="uint8" action="output" />
+			</method>
+			<method name="CountLines">
+				<return type="int32" action="output" />
+			</method>
+			<method name="CurrentLine">
+				<return type="int32" action="output" />
+			</method>
+			<method name="GoToLine">
+				<param name="lineIndex" type="int32" action="input" />
 			</method>
 			<method name="Cut">
 				<doc>Cuts the current selection to the given Clipboard.</doc>
@@ -58,6 +180,173 @@
 			<method name="Clear">
 				<doc>Removes the current selection.</doc>
 			</method>
+			<method name="AcceptsPaste">
+				<doc>Returns true if the TextView will accept pasted data.</doc>
+				<param name="clipboard" type="BClipboard*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="AcceptsDrop">
+				<doc>Returns true if the TextView will accept dropped data.</doc>
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="Select">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+			</method>
+			<method name="SelectAll" />
+			<method name="GetSelection">
+				<param name="outStart" type="int32*" deref="true" action="output" />
+				<param name="outEnd" type="int32*" deref="true" action="output" />
+			</method>
+			<method name="SetFontAndColor">
+				<param name="inFont" type="BFont*" action="input" />
+				<param name="inMode" type="uint32" default="B_FONT_ALL" action="input" />
+				<param name="inColor" type="rgb_color*" default="NULL" action="input" />
+			</method>
+			<method name="SetFontAndColor" overload-name="SetFontAndColorBetweenOffsets">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+				<param name="inFont" type="BFont*" action="input" />
+				<param name="inMode" type="uint32" default="B_FONT_ALL" action="input" />
+				<param name="inColor" type="rgb_color*" default="NULL" action="input" />
+			</method>
+			<method name="GetFontAndColor">
+				<param name="inOffset" type="int32" action="input" />
+				<param name="outFont" type="BFont*" action="output" />
+				<param name="outColor" type="rgb_color*" default="NULL" action="input" />
+			</method>
+			<method name="GetFontAndColor" overload-name="GetFontAndColorAtSelection">
+				<param name="inOffset" type="int32" action="input" />
+				<param name="outFont" type="BFont*" action="output" />
+				<param name="sameProperties" type="uint32*" deref="true" action="output" />
+				<param name="outColor" type="rgb_color*" default="NULL" action="output" />
+				<param name="sameColor" type="bool*" deref="true" default="NULL" action="output" />
+			</method>
+			<method name="SetRunArray">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+				<param name="inRuns" type="text_run_array*" default="NULL" action="input" />
+			</method>
+			<method name="RunArray">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+				<param name="outSize" type="int32*" deref="true" action="output" />
+				<return type="text_run_array*" action="output" />
+			</method>
+			<method name="LineAt">
+				<param name="offset" type="int32" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="LineAt" overload-name="LineAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="PointAt">
+				<param name="offset" type="int32" action="input" />
+				<param name="outHeight" type="float*" deref="true" default="NULL" action="output" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="OffsetAt">
+				<param name="line" type="int32" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="OffsetAt" overload-name="OffsetAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="FindWord">
+				<param name="inOffset" type="int32" action="input" />
+				<param name="outFromOffset" type="int32*" deref="true" action="output" />
+				<param name="outToOffset" type="int32*" deref="true" action="output" />
+			</method>
+			<method name="CanEndLine">
+				<param name="offset" type="int32" action="input" />
+				<doc>Returns true if the character at the given offset can end a line; used for word wrapping.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="LineWidth">
+				<param name="lineIndex" type="int32" default="0" action="input" />
+				<return type="float" action="output" />
+			</method>
+			<method name="LineHeight">
+				<param name="lineIndex" type="int32" default="0" action="input" />
+				<return type="float" action="output" />
+			</method>
+			<method name="TextHeight">
+				<param name="startLine" type="int32" default="0" action="input" />
+				<param name="endLine" type="int32" default="0" action="input" />
+				<return type="float" action="output" />
+			</method>
+<!-- BRegion object not yet implemented
+			<method name="GetTextRegion">
+				<param name="startLine" type="int32" default="0" action="input" />
+				<param name="endLine" type="int32" default="0" action="input" />
+				<param name="outRegion" type="BRegion*" deref="true" action="output" />
+			</method>
+-->
+			<method name="ScrollToOffset">
+				<param name="offset" type="int32" action="input" />
+			</method>
+			<method name="ScrollToSelection" />
+			<method name="Highlight">
+				<param name="startOffset" type="int32" action="input" />
+				<param name="endOffset" type="int32" action="input" />
+			</method>
+			<method name="SetTextRect">
+				<param name="rect" type="BRect" action="input" />
+			</method>
+			<method name="TextRect">
+				<return type="BRect" action="input" />
+			</method>
+			<method name="SetInsets">
+				<param name="left" type="float" action="input" />
+				<param name="top" type="float" action="input" />
+				<param name="right" type="float" action="input" />
+				<param name="bottom" type="float" action="input" />
+			</method>
+			<method name="GetInsets">
+				<param name="left" type="float*" deref="true" action="output" />
+				<param name="top" type="float*" deref="true" action="output" />
+				<param name="right" type="float*" deref="true" action="output" />
+				<param name="bottom" type="float*" deref="true" action="output" />
+			</method>
+			<method name="SetStylable">
+				<param name="stylable" type="bool" action="input" />
+			</method>
+			<method name="IsStylable">
+				<return type="bool" action="input" />
+			</method>
+			<method name="SetTabWidth">
+				<param name="width" type="float" action="input" />
+			</method>
+			<method name="TaWidth">
+				<return type="float" action="input" />
+			</method>
+			<method name="MakeSelectable">
+				<param name="selectable" type="bool" action="input" />
+			</method>
+			<method name="IsSelectable">
+				<return type="bool" action="input" />
+			</method>
+			<method name="MakeEditable">
+				<param name="editable" type="bool" action="input" />
+			</method>
+			<method name="IsEditable">
+				<return type="bool" action="input" />
+			</method>
+			<method name="SetWordWrap">
+				<param name="wrap" type="bool" action="input" />
+			</method>
+			<method name="DoesWordWrap">
+				<return type="bool" action="input" />
+			</method>
+			<method name="SetMaxBytes">
+				<param name="max" type="int32" action="input" />
+			</method>
+			<method name="MaxBytes">
+				<return type="int32" action="input" />
+			</method>
 			<method name="DisallowChar">
 				<doc>Prevents the TextView from accepting a (single-byte) character.</doc>
 				<param name="aChar" type="uint32" action="input" />
@@ -66,80 +355,118 @@
 				<doc>Allows the TextView to accept a (single-byte) character.</doc>
 				<param name="aChar" type="uint32" action="input" />
 			</method>
-			<!-- FindWord -->
-			<!-- GetDragParameters -->
-			<!-- GetSelection -->
-			<!-- GetTextRegion -->
-			<!-- GoToLine -->
-			<!-- CountLines -->
-			<!-- CurrentLine -->
-			<!-- HideTyping -->
-			<!-- IsTypingHidden -->
-			<!-- Highlight -->
-			<!-- Insert -->
-			<!-- Delete -->
-			<!-- InsertText -->
-			<!-- DeleteText -->
-			<!-- LineAt -->
-			<!-- PointAt -->
-			<!-- OffsetAt -->
-			<!-- LineHeight -->
-			<!-- TextHeight -->
-			<!-- LineWidth -->
-			<!-- MakeEditable -->
-			<!-- IsEditable -->
-			<!-- MakeFocus -->
-			<!-- MakeResizable -->
-			<!-- IsResizable -->
-			<!-- MakeSelectable -->
-			<!-- IsSelectable -->
-			<!-- ResolveSpecifier -->
-			<!-- ScrollToOffset -->
-			<!-- ScrollToSelection -->
-			<!-- Select -->
-			<!-- SelectAll -->
-			<!-- SetAlignment -->
-			<!-- Alignment -->
-			<!-- SetAutoindent -->
-			<!-- DoesAutoindent -->
-			<!-- SetColorSpace -->
-			<!-- ColorSpace -->
-			<!-- SetDoesUndo -->
-			<!-- DoesUndo -->
-			<!-- UndoState -->
-			<!-- Undo -->
-			<!-- SetFontAndColor -->
-			<!-- GetFontAndColor -->
-			<!-- SetMaxBytes -->
-			<!-- MaxBytes -->
-			<!-- SetRunArray -->
-			<!-- RunArray -->
-			<!-- SetStylable -->
-			<!-- IsStylable -->
-			<!-- SetTabWidth -->
-			<!-- TabWidth -->
-			<!-- SetText -->
-			<!-- SetTextRect -->
-			<!-- TextRect -->
-			<!-- SetWordWrap -->
-			<!-- DoesWordWrap -->
-			<!-- Text -->
-			<!-- GetText -->
-			<!-- ByteAt -->
-			<!-- TextLength -->
-			<!-- AttachedToWindow -->
-			<!-- DetachedFromWindow -->
-			<!-- Draw -->
-			<!-- FrameResized -->
-			<!-- KeyDown -->
-			<!-- MessageReceived -->
-			<!-- MouseDown -->
-			<!-- MouseMoved -->
-			<!-- Pulse -->
-			<!-- WindowActivated -->
-			<!-- FlattenRunArray -->
-			<!-- UnflattenRunArray -->
+			<method name="SetAlignment">
+				<param name="flag" type="alignment" action="input" />
+			</method>
+			<method name="Alignment">
+				<return type="alignment" action="input" />
+			</method>
+			<method name="SetAutoIndent">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="DoesAutoIndent">
+				<return type="bool" action="input" />
+			</method>
+			<method name="SetColorSpace">
+				<param name="colors" type="color_space" action="input" />
+			</method>
+			<method name="ColorSpace">
+				<return type="color_space" action="input" />
+			</method>
+			<method name="MakeResizable">
+				<param name="resize" type="bool" action="input" />
+				<param name="resizeView" type="BView*" default="NULL" action="input" />
+			</method>
+			<method name="IsResizable">
+				<return type="bool" action="input" />
+			</method>
+			<method name="SetDoesUndo">
+				<param name="undo" type="bool" action="input" />
+			</method>
+			<method name="DoesUndo">
+				<return type="bool" action="input" />
+			</method>
+			<method name="HideTyping">
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsTypingHidden">
+				<return type="bool" action="input" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="HasHeightForWidth">
+				<return type="bool" />
+			</method>
+			<method name="GetHeightForWidth">
+				<param name="width" type="float" action="input" />
+				<param name="min" type="float*" deref="true" action="output" />
+				<param name="max" type="float*" deref="true" action="output" />
+				<param name="preferred" type="float*" deref="true" action="output" />
+				<return type="bool" />
+			</method>
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+<!--
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+			<method name="AllocRunArray">
+				<param name="entryCount" type="int32" action="input" />
+				<param name="outSize" type="int32*" deref="true" default="NULL" action="output" />
+				<return type="text_run_array*" />
+			</method>
+			<method name="CopyRunArray">
+				<param name="orig" type="text_run_array*" action="input" />
+				<param name="countDelta" type="int32" action="input" />
+				<return type="text_run_array*" />
+			</method>
+			<method name="FreeRunArray">
+				<param name="array" type="int32" action="input" />
+			</method>
+<!-- void* type not yet implemented
+			<method name="FlattenRunArray">
+				<param name="inArray" type="int32" action="input" />
+				<param name="outSize" type="int32*" deref="true" default="NULL" action="output" />
+				<return type="void*" />
+			</method>
+			<method name="FlattenRunArray">
+				<param name="data" type="void*" action="input" />
+				<param name="outSize" type="int32*" deref="true" default="NULL" action="output" />
+				<return type="text_run_array*" />
+			</method>
+-->
+			<method name="Undo">
+				<param name="clipoard" type="BClipboard*" action="input" />
+			</method>
+			<method name="UndoState">
+				<param name="isRedo" type="bool*" deref="true" action="output" />
+				<return type="undo_state" />
+			</method>
 		</functions>
+		<constants>
+			<constant name="B_UNDO_UNAVAILABLE" type="int" group="undo_state" />
+			<constant name="B_UNDO_TYPING" type="int" group="undo_state" />
+			<constant name="B_UNDO_CUT" type="int" group="undo_state" />
+			<constant name="B_UNDO_PASTE" type="int" group="undo_state" />
+			<constant name="B_UNDO_CLEAR" type="int" group="undo_state" />
+			<constant name="B_UNDO_DROP" type="int" group="undo_state" />
+		</constants>
 	</binding>
 	<binding source="text_run" target="Haiku::text_run">
 		<doc>Exposes the text_run struct</doc>
@@ -157,8 +484,7 @@
 		<doc>Exposes the text_run_array struct</doc>
 		<properties>
 			<property name="count" type="int32" />
-<!-- Commented out until repeats are enabled -->
-<!--			<property name="runs"  type="text_run" repeat="count"/> -->
+			<property name="runs"  type="text_run" repeat="count"/>
 		</properties>
 		<functions>
 			<constructor />

@@ -9,49 +9,178 @@
 				<param name="priority" type="int32" action="input" default="B_NORMAL_PRIORITY" />
 				<param name="portCapacity" type="int32" action="input" default="B_LOOPER_PORT_DEFAULT_CAPACITY" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<destructor />
+<!-- Archiving -->
+			<constructor overload-name="FromArchive">
 				<doc>Creates an Looper from an archive.</doc>
 				<param name="archive" type="BMessage*" action="input">
 					<doc>Contains an archived version of the Looper.</doc>
 				</param>
 			</constructor>
-			<destructor />
-			<!-- AddCommonFilter -->
-			<!-- RemoveCommonFilter -->
-			<!-- SetCommonFilterList -->
-			<!-- CommonFilterList -->
-			<!-- AddHandler -->
-			<!-- RemoveHandler -->
-			<!-- HandlerAt -->
-			<!-- CountHandlers -->
-			<!-- IndexOf -->
-			<!-- CurrentMessage -->
-			<!-- DetachCurrentMessage -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Message transmission -->
+			<method name="PostMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PostMessage" overload-name="PostMessageCommand">
+				<param name="command" type="uint32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PostMessage" overload-name="PostMessageToHandler">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="handler" type="BHandler*" action="input" />
+				<param name="replyTo" type="BHandler*" default="NULL" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PostMessage" overload-name="PostMessageCommandToHandler">
+				<param name="command" type="uint32" action="input" />
+				<param name="handler" type="BHandler*" action="input" />
+				<param name="replyTo" type="BHandler*" default="NULL" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="DispatchMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="handler" type="BHandler*" action="input" />
+			</method>
+<!--
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="CurrentMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="DetachCurrentMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+<!-- BMessageQueue not yet implemented
+			<method name="MessageQueue">
+				<return type="BMessageQueue*" action="output">
+			</method>
+-->
+			<method name="IsMessageWaiting">
+				<return type="bool" action="output" />
+			</method>
+<!-- Message handlers -->
+			<method name="AddHandler">
+				<param name="handler" type="BHandler*" action="input" />
+			</method>
+			<method name="RemoveHandler">
+				<param name="handler" type="BHandler*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="CountHandlers">
+				<return type="int32" action="output" />
+			</method>
+			<method name="HandlerAt">
+				<param name="index" type="int32" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="IndexOf">
+				<param name="handler" type="BHandler*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="PreferredHandler">
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="SetPreferredHandler">
+				<param name="handler" type="BHandler*" action="input" />
+			</method>
+<!-- Loop control -->
+			<method name="Run">
+				<return type="thread_id" action="output" />
+			</method>
+			<method name="Quit">
+				<return type="void" />
+			</method>
+<!--
+			<event name="QuitRequested">
+				<return type="bool" />
+			</event>
+-->
 			<method name="Lock">
+				<return type="bool" />
+			</method>
+			<method name="Unlock" />
+			<method name="IsLocked">
 				<return type="bool" />
 			</method>
 			<method name="LockWithTimeout">
 				<param name="timeout" type="bigtime_t" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="Unlock" />
-			<!-- LockingThread -->
-			<!-- IsLocked -->
-			<!-- CountLocks -->
-			<!-- CountLockRequests -->
-			<!-- Sem -->
-			<!-- MessageQueue -->
-			<!-- PostMessage -->
-			<!-- Quit -->
-			<!-- Run -->
-			<!-- SetPreferredHandler -->
-			<!-- PreferredHandler -->
-			<!-- Thread -->
-			<!-- Team -->
-			<!-- DispatchMessage -->
-			<!-- QuitRequested -->
-			<!-- MessageReceived -->
-			<!-- LooperForThread -->
+			<method name="Thread">
+				<return type="thread_id" />
+			</method>
+			<method name="Team">
+				<return type="team_id" />
+			</method>
+<!-- team_id type not yet implemented
+			<method name="LooperForThread" />
+				<param name="thread" type="thread_id" action="input" />
+				<return type="BLooper*" />
+			</method>
+-->
+<!-- Loop debugging -->
+			<method name="LockingThread">
+				<return type="thread_id" />
+			</method>
+			<method name="CountLocks">
+				<return type="int32" />
+			</method>
+			<method name="CountLockRequests">
+				<return type="int32" />
+			</method>
+<!-- sem_id type not yet implemented
+			<method name="Sem" />
+				<return type="sem_id" />
+			</method>
+-->
+<!-- Scripting -->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Message filters -->
+<!-- BMessageFilter object not yet implemented
+			<method name="AddCommonFilter">
+				<param name="filter" type="BMessageFilter*" action="input" />
+			</method>
+			<method name="RemoveCommonFilter">
+				<param name="filter" type="BMessageFilter*" action="input" />
+				<return type="bool" />
+			</method>
+-->
+<!-- BList object not yet implemented
+			<method name="SetCommonFilterList">
+				<param name="filters" type="BList*" action="input" />
+			</method>
+			<method name="CommonFilterList">
+				<return type="BList*" action="output" />
+			</method>
+-->
 		</functions>
+		<constants>
+			<constant name="B_LOOPER_PORT_DEFAULT_CAPACITY" type="int" group="" />
+		</constants>
 	</binding>
 </bindings>

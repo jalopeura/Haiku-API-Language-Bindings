@@ -3,39 +3,87 @@
 	<binding source="BInvoker" target="Haiku::Invoker">
 		<doc>Exposes the Invoker object</doc>
 		<functions>
-<!-- BMessenger object not yet implemented
-			<constructor>
-				<doc>Creates an Invoker.</doc>
-				<param name="message" type="BMessage*" action="input" />
-				<param name="messenger" type="BMessenger*" action="input" />
-			</constructor>
--->
 			<constructor>
 				<doc>Creates an Invoker.</doc>
 				<param name="message" type="BMessage*" action="input" />
 				<param name="handler" type="BHandler*" action="input" />
 				<param name="looper" type="BLooper*" action="input" default="NULL" />
 			</constructor>
+<!-- BMessenger object not yet implemented
+			<constructor overload-name="WithMessenger">
+				<doc>Creates an Invoker.</doc>
+				<param name="message" type="BMessage*" action="input" />
+				<param name="messenger" type="BMessenger*" action="input" />
+			</constructor>
+-->
 			<constructor overload-name="Empty">
 				<doc>Creates an empty Invoker.</doc>
 			</constructor>
 			<destructor />
-			<!-- BeginInvokeNotify -->
-			<!-- EndInvokeNotify -->
-			<!-- Invoke -->
-			<!-- InvokeNotify -->
-			<!-- InvokeKind -->
-			<!-- SetHandlerForReply -->
-			<!-- HandlerForReply -->
-			<!-- SetMessage -->
-			<!-- Message -->
-			<!-- Command -->
-			<!-- SetTarget -->
-			<!-- Target -->
-			<!-- IsTargetLocal -->
-			<!-- Messenger -->
-			<!-- SetTimeout -->
-			<!-- Timeout -->
+			<method name="SetMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Message">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="Command">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetTarget">
+				<param name="handler" type="BHandler*" action="input" />
+				<param name="looper" type="BLooper*" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- BMessenger object not yet implemented
+			<method name="SetTarget" overload-name="SetTargetMessenger">
+				<param name="messenger" type="BMessenger*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="IsTargetLocal">
+				<return type="bool" action="output" />
+			</method>
+			<method name="Target">
+				<param name="looper" type="BLooper**" deref="true" default="NULL" action="output" />
+				<return type="BHandler*" action="output" />
+			</method>
+<!-- BMessenger object not yet implemented
+			<method name="Messenger">
+				<return type="BMessenger*" action="output" />
+			</method>
+-->
+			<method name="SetHandlerForReply">
+				<param name="handler" type="BHandler*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="HandlerForReply">
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="InvokeNotify">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="kind" type="uint32" default="B_CONTROL_INVOKED" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTimeout">
+				<param name="timeout" type="bigtime_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Timeout">
+				<return type="bigtime_t" action="output" />
+			</method>
+			<method name="InvokeKind">
+				<param name="notify" type="bool*" default="NULL" action="output" />
+				<return type="uint32" action="output" />
+			</method>
+			<method name="BeginInvokeNotify">
+				<param name="kind" type="uint32" default="B_CONTROL_INVOKED" action="input" />
+			</method>
+			<method name="EndInvokeNotify" />
 		</functions>
 	</binding>
 </bindings>

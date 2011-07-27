@@ -13,7 +13,6 @@
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
 			</constructor>
 			<constructor overload-name="FixedSize">
-				<doc>Creates a MenuField.</doc>
 				<param name="frame" type="BRect" action="input" />
 				<param name="name" type="const char*" action="input" />
 				<param name="label" type="const char*" action="input" />
@@ -22,15 +21,93 @@
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="menu" type="BMenu*" action="input" />
+				<param name="message" type="BMessage*" default="NULL" action="input" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="BareBones">
+				<param name="label" type="const char*" action="input" />
+				<param name="menu" type="BMenu*" action="input" />
+				<param name="message" type="BMessage*" default="NULL" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllArchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllUnarchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!--
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="AttachedToWindow" />
+			<event name="AllAttached" />
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+-->
 			<method name="MakeFocus">
 				<doc>Makes the MenuField focused (or not focused) within its Window.</doc>
 				<param name="focused" type="bool" action="input" default="true" />
 			</method>
+<!--
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DetachedFromWindow" />
+			<event name="AllDetached" />
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
 			<method name="Menu">
 				<doc>Returns the Menu associated with the MenuField.</doc>
 				<return type="BMenu*" action="output" />
@@ -42,6 +119,22 @@
 			<method name="MenuItem">
 				<doc>Returns the first MenuItem from the Menu.</doc>
 				<return type="BMenuItem*" action="output" />
+			</method>
+			<method name="SetLabel">
+				<doc>Sets the label.</doc>
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="Label">
+				<doc>Gets the label.</doc>
+				<return type="const char*" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<doc>Enables or disables the MenuField.</doc>
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<doc>Returns true if the MenuField is enabled.</doc>
+				<return type="bool" action="output" />
 			</method>
 			<method name="SetAlignment">
 				<doc>Sets the alignment for the label.</doc>
@@ -59,28 +152,48 @@
 				<doc>Returns the divider between the label and the menu.</doc>
 				<return type="float" action="output" />
 			</method>
-			<method name="SetEnabled">
-				<doc>Enables or disables the MenuField.</doc>
-				<param name="enabled" type="bool" action="input" />
+			<method name="ShowPopUpMarker" />
+			<method name="HidePopUpMarker" />
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
 			</method>
-			<method name="IsEnabled">
-				<doc>Returns true if the MenuField is enabled.</doc>
-				<return type="bool" action="output" />
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetLabel">
-				<doc>Sets the label.</doc>
-				<param name="string" type="const char*" action="input" />
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
 			</method>
-			<method name="Label">
-				<doc>Gets the label.</doc>
-				<return type="const char*" action="output" />
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
 			</method>
-			<!-- AttachedToWindow -->
-			<!-- AllAttached -->
-			<!-- Draw -->
-			<!-- KeyDown -->
-			<!-- MouseDown -->
-			<!-- WindowActivated -->
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+<!-- BLayoutItem object not yet implemented
+			<method name="CreateLabelLayoutItem">
+				<return type="BLayoutItem*" action="output" />
+			</method>
+			<method name="CreateMenuBarLayoutItem">
+				<return type="BLayoutItem*" action="output" />
+			</method>
+-->
 		</functions>
 	</binding>
 </bindings>

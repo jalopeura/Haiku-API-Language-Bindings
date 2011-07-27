@@ -100,7 +100,7 @@ package Param;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name type deref action default success must-not-delete);
+my @attributes = qw(name type deref repeat action default success must-not-delete);
 my @required_data = qw(name type action);
 my @bool_attrs = qw(deref must-not-delete);
 

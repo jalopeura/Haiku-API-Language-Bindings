@@ -160,8 +160,7 @@ sub addhandle {
 
 sub addfilename {
 	my ($self, $filename) = @_;
-	open my $fh, $filename or die "Unable to open filename '$filename': $!";
-	push @{ $self->{input} }, $fh;
+	push @{ $self->{input} }, $filename;
 }
 
 sub parse {
@@ -197,7 +196,7 @@ sub parse {
 			if ($tag=~s:^/::) {
 				my $current = $elements[-1]->name;
 				if ($current ne $tag) {
-					die "Bad SGML: current element is $current, but found closing tag for $tag";
+					die "Bad SGML in $self->{current_filename}: current element is $current, but found closing tag for $tag";
 				}
 #print "Popping an element from the stack: $current ($tag)\n";
 				pop @elements;
@@ -246,11 +245,21 @@ sub extend_buffer {
 	}
 	
 	my $next = $self->{input}[0];
+	$self->{current_filename} ||= ref($next);
+	
+	if (not ref $next) {
+		open my $fh, $next or die "Unable to open filename '$next': $!";
+		$self->{current_filename} = $next;
+		$self->{input}[0] = $fh;
+		$next = $fh;
+	}
 	
 	# if this is a filehandle, read a line and add it to the buffer
 	if (ref($next) eq 'GLOB') {
 		my $line = <$next>;
 		if (not defined $line) {
+			close $next;
+			undef $self->{current_filename};
 			shift @{ $self->{input} };
 		}
 		$self->{buffer} .= $line;

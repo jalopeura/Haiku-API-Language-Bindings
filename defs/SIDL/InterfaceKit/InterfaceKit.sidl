@@ -26,42 +26,64 @@
 	</link>
 	<types>
 		<type name="uchar"            builtin="unsigned char" />
-		<type name="uint8"            builtin="unsigned char" />
-		<type name="uint16"           builtin="unsigned short" />
-		<type name="int16"            builtin="short" />
-		<type name="uint32"           builtin="unsigned long" />
-		<type name="int32"            builtin="long" />
-		<type name="uint64"           builtin="unsigned long" />
-		<type name="window_type"      builtin="int" />
-		<type name="window_look"      builtin="int" />
-		<type name="window_feel"      builtin="int" />
-		<type name="status_t"         builtin="long" />
-		<type name="bigtime_t"        builtin="long" />
+		<type name="uint8"            builtin="unsigned char" /><!-- __haiku_uint8 -->
+		<type name="uint16"           builtin="unsigned short" /><!-- __haiku_uint16 -->
+		<type name="int16"            builtin="short" /><!-- __haiku_int16 -->
+		<type name="uint32"           builtin="unsigned long" /><!-- __haiku_uint32 -->
+		<type name="int32"            builtin="long" /><!-- __haiku_int32 -->
+		<type name="uint64"           builtin="unsigned long" /><!-- __haiku_uint64 -->
+		<type name="add_state"        builtin="enum" />
+		<type name="alert_type"       builtin="enum" />
+		<type name="alignment"        builtin="enum" />
+		<type name="alpha_function"   builtin="enum" />
+		<type name="bigtime_t"        builtin="long" /><!-- int64 -->
+		<type name="border_style"     builtin="enum" />
+		<type name="button_spacing"   builtin="enum" />
+		<type name="button_width"     builtin="enum" />
+		<type name="cap_mode"         builtin="enum" />
+		<type name="color_space"      builtin="enum" />
+		<type name="color_which"      builtin="enum" />
+		<type name="drawing_mode"     builtin="enum" />
+		<type name="font_direction"   builtin="enum" />
 		<type name="font_family"      builtin="char" repeat="B_FONT_FAMILY_LENGTH + 1" />
+		<type name="font_file_format" builtin="enum" />
 		<type name="font_style"       builtin="char" repeat="B_FONT_STYLE_LENGTH + 1" />
-		<type name="button_width"     builtin="long" /><!-- is this right? -->
-		<type name="button_spacing"   builtin="long" /><!-- is this right? -->
-		<type name="alert_type"       builtin="long" /><!-- is this right? -->
-		<type name="border_style"     builtin="long" /><!-- is this right? -->
-		<type name="font_direction"   builtin="long" /><!-- is this right? -->
-		<type name="font_file_format" builtin="long" /><!-- is this right? -->
-		<type name="menu_layout"      builtin="long" /><!-- is this right? -->
-		<type name="menu_bar_border"  builtin="long" /><!-- is this right? -->
-		<type name="alignment"        builtin="long" /><!-- is this right? -->
-		<type name="font_name"        builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
-		<type name="color_space"      builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
-		<type name="color_list"       builtin="int" /><!-- almost certainly not right; but use as a placeholder -->
+		<type name="join_mode"        builtin="enum" />
+		<type name="menu_bar_border"  builtin="enum" />
+		<type name="menu_layout"      builtin="enum" />
+		<type name="mode_focus_follows_mouse" builtin="enum" />
+		<type name="mode_mouse"       builtin="enum" />
+		<type name="size_t"           builtin="long" /><!-- __SIZE_TYPE__ -->
+		<type name="source_alpha"     builtin="enum" />
+		<type name="status_t"         builtin="long" /><!-- int32 -->
+		<type name="undo_state"       builtin="enum" />
+		<type name="window_alignment" builtin="enum" />
+		<type name="window_look"      builtin="enum" />
+		<type name="window_feel"      builtin="enum" />
+		<type name="window_type"      builtin="enum" />
 <!--
 Objects defined by this interface automatically have data types (plain and
 pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
-		<type name="BClipboard*" builtin="object_ptr" target="Haiku::Clipboard" />
-		<type name="BCursor*"    builtin="object_ptr" target="Haiku::Cursor" />
-		<type name="BHandler*"   builtin="object_ptr" target="Haiku::Handler" />
-		<type name="BInvoker*"   builtin="object_ptr" target="Haiku::Invoker" />
-		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
-<!-- get an error without this; some problem with order of definitions; need to figure it out -->
+		<type name="BArchivable*" builtin="object_ptr" target="Haiku::Archivable" />
+		<type name="BClipboard*"  builtin="object_ptr" target="Haiku::Clipboard" />
+		<type name="BCursor*"     builtin="object_ptr" target="Haiku::Cursor" />
+		<type name="BHandler*"    builtin="object_ptr" target="Haiku::Handler" />
+		<type name="BInvoker*"    builtin="object_ptr" target="Haiku::Invoker" />
+		<type name="BMessage"     builtin="object"     target="Haiku::Message" />
+		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
+<!-- This fixes an issue with order of definition -->
+		<type name="BMenu*"       builtin="object_ptr" target="Haiku::Menu" />
+<!--
+This is a workaround; these types are never passed between the target language
+and C++, but the generator complains if they're not defined
+-->
+
+		<type name="bool*"            builtin="void*" />
+		<type name="float*"           builtin="void*" />
+		<type name="key_map**"        builtin="void*" />
+		<type name="size_t*"          builtin="void*" />
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -71,6 +93,8 @@ you need to define those types in this section.
 			<file name="Box.sidl" />
 			<file name="Control.sidl" />
 				<file name="Button.sidl" />
+				<file name="CheckBox.sidl" />
+				<file name="RadioButton.sidl" />
 				<file name="TextControl.sidl" />
 			<file name="Menu.sidl" />
 				<file name="MenuBar.sidl" />
@@ -80,6 +104,7 @@ you need to define those types in this section.
 			<file name="TextView.sidl" />
 		<!-- Invoker (defined in ApplicationKit) -->
 			<file name="MenuItem.sidl" />
+				<file name="SeparatorItem.sidl" />
 		<file name="Font.sidl" />
 		<file name="Point.sidl" />
 		<file name="Rect.sidl" />
@@ -87,7 +112,300 @@ you need to define those types in this section.
 	</import>
 	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
 		<doc>Exposes the Haiku Interface Kit</doc>
+		<functions>
+			<plain name="get_deskbar_frame">
+				<param name="frame" type="BRect*" deref="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="system_colors">
+				<return type="color_map*" action="output" />
+			</plain>
+			<plain name="get_scroll_bar_info">
+				<param name="info" type="scroll_bar_info*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_scroll_bar_info">
+				<param name="info" type="scroll_bar_info*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_mouse_type">
+				<param name="type" type="int32*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_mouse_type">
+				<param name="type" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_mouse_map">
+				<param name="map" type="mouse_map*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_mouse_map">
+				<param name="map" type="mouse_map*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_click_speed">
+				<param name="speed" type="bigtime_t*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_click_speed">
+				<param name="speed" type="bigtime_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_mouse_speed">
+				<param name="speed" type="int32*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_mouse_speed">
+				<param name="speed" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_mouse_acceleration">
+				<param name="speed" type="int32*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_mouse_acceleration">
+				<param name="speed" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_key_repeat_rate">
+				<param name="rate" type="int32*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_key_repeat_rate">
+				<param name="rate" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_key_repeat_delay">
+				<param name="delay" type="bigtime_t*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_key_repeat_delay">
+				<param name="delay" type="bigtime_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="modifiers">
+				<return type="uint32" action="output" />
+			</plain>
+			<plain name="get_key_info">
+				<param name="info" type="key_info*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_key_map">
+				<param name="map" type="key_map**" action="output" />
+				<param name="keyBuffer" type="char**" action="output" />
+			</plain>
+			<plain name="get_keyboard_id">
+				<param name="id" type="uint16*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_modifier_key">
+				<param name="modifier" type="uint32" action="input" />
+				<param name="key" type="uint32*" deref="true" action="output" />
+				<return type="rgb_color" action="error" success="B_OK" />
+			</plain>
+			<plain name="set_modifier_key">
+				<param name="modifier" type="uint32" action="input" />
+				<param name="key" type="uint32" action="input" />
+			</plain>
+			<plain name="set_keyboard_locks">
+				<param name="modifiers" type="uint32" action="input" />
+			</plain>
+			<plain name="keyboard_navigation_color">
+				<return type="rgb_color" action="output" />
+			</plain>
+			<plain name="count_workspaces">
+				<return type="int32" action="output" />
+			</plain>
+			<plain name="set_workspace_count">
+				<param name="count" type="int32" action="input" />
+			</plain>
+			<plain name="current_workspace">
+				<return type="int32" action="output" />
+			</plain>
+			<plain name="activate_workspace">
+				<param name="workspace" type="int32" action="input" />
+			</plain>
+			<plain name="idle_time">
+				<return type="bigtime_t" action="output" />
+			</plain>
+			<plain name="run_select_printer_panel" />
+			<plain name="run_add_printer_panel" />
+			<plain name="run_be_about" />
+			<plain name="set_focus_follows_mouse">
+				<param name="follow" type="bool" action="input" />
+			</plain>
+			<plain name="focus_follows_mouse">
+				<return type="bool" action="output" />
+			</plain>
+			<plain name="set_mouse_mode">
+				<param name="mode" type="mode_mouse" action="input" />
+			</plain>
+			<plain name="mouse_mode">
+				<return type="mode_mouse" action="output" />
+			</plain>
+			<plain name="set_focus_follows_mouse_mode">
+				<param name="mode" type="mode_focus_follows_mouse" action="input" />
+			</plain>
+			<plain name="focus_follows_mouse_mode">
+				<return type="mode_focus_follows_mouse" action="output" />
+			</plain>
+			<plain name="get_mouse">
+				<param name="screenWhere" type="BPoint*" action="output" />
+				<param name="buttons" type="uint32*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+<!-- BBitmap object not yet implemented
+			<plain name="get_mouse_bitmap">
+				<param name="bitmap" type="BBitmap**" deref="true" action="output" />
+				<param name="hotspot" type="BPoint*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+-->
+			<plain name="set_accept_first_click">
+				<param name="acceptFirstClick" type="bool" action="input" />
+			</plain>
+			<plain name="accept_first_click">
+				<return type="bool" action="output" />
+			</plain>
+			<plain name="ui_color">
+				<param name="which" type="color_which" action="input" />
+				<return type="rgb_color" action="output" />
+			</plain>
+			<plain name="set_ui_color">
+				<param name="which" type="color_which" action="input" />
+				<param name="color" type="rgb_color" action="input" />
+			</plain>
+			<plain name="tint_color">
+				<param name="color" type="rgb_color" action="input" />
+				<param name="tint" type="float" action="input" />
+				<return type="rgb_color" action="output" />
+			</plain>
+<!--
+*
+* Defined in GraphicsDefs.h
+*
+-->
+			<plain name="make_color">
+				<param name="red"   type="uint8" action="input" />
+				<param name="green" type="uint8" action="input" />
+				<param name="blue"  type="uint8" action="input" />
+				<param name="alpha" type="uint8" default="255" action="input" />
+				<return type="rgb_color" action="output" />
+			</plain>
+			<plain name="bitmaps_support_space">
+				<param name="space" type="color_space" action="input" />
+				<param name="flags" type="uint32*" deref="true" action="output" />
+				<return type="bool" action="output" />
+			</plain>
+			<plain name="get_pixel_size_for">
+				<param name="space" type="color_space" action="input" />
+				<param name="pixelChunk" type="size_t*" deref="true" action="output" />
+				<param name="rowAlignment" type="size_t*" deref="true" action="output" />
+				<param name="pixelsPerChunk" type="size_t*" deref="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+		</functions>
 		<constants>
+<!-- some handy UTF-8 characters -->
+			<constant name="B_UTF8_BULLET" type="char*" group="utf8" />
+			<constant name="B_UTF8_ELLIPSIS" type="char*" group="utf8" />
+			<constant name="B_UTF8_OPEN_QUOTE" type="char*" group="utf8" />
+			<constant name="B_UTF8_CLOSE_QUOTE" type="char*" group="utf8" />
+			<constant name="B_UTF8_COPYRIGHT" type="char*" group="utf8" />
+			<constant name="B_UTF8_REGISTERED" type="char*" group="utf8" />
+			<constant name="B_UTF8_TRADEMARK" type="char*" group="utf8" />
+			<constant name="B_UTF8_SMILING_FACE" type="char*" group="utf8" />
+			<constant name="B_UTF8_HIROSHI" type="char*" group="utf8" />
+<!-- key definitions -->
+			<constant name="B_BACKSPACE" type="int" group="keys" />
+			<constant name="B_RETURN" type="int" group="keys" />
+			<constant name="B_ENTER" type="int" group="keys" />
+			<constant name="B_SPACE" type="int" group="keys" />
+			<constant name="B_TAB" type="int" group="keys" />
+			<constant name="B_ESCAPE" type="int" group="keys" />
+			<constant name="B_SUBSTITUTE" type="int" group="keys" />
+			<constant name="B_LEFT_ARROW" type="int" group="keys" />
+			<constant name="B_RIGHT_ARROW" type="int" group="keys" />
+			<constant name="B_UP_ARROW" type="int" group="keys" />
+			<constant name="B_DOWN_ARROW" type="int" group="keys" />
+			<constant name="B_INSERT" type="int" group="keys" />
+			<constant name="B_DELETE" type="int" group="keys" />
+			<constant name="B_HOME" type="int" group="keys" />
+			<constant name="B_END" type="int" group="keys" />
+			<constant name="B_PAGE_UP" type="int" group="keys" />
+			<constant name="B_PAGE_DOWN" type="int" group="keys" />
+			<constant name="B_FUNCTION_KEY" type="int" group="keys" />
+			<constant name="B_KATAKANA_HIRAGANA" type="int" group="keys" />
+			<constant name="B_HANKAKU_ZENKAKU" type="int" group="keys" />
+			<constant name="B_F1_KEY" type="int" group="keys" />
+			<constant name="B_F2_KEY" type="int" group="keys" />
+			<constant name="B_F3_KEY" type="int" group="keys" />
+			<constant name="B_F4_KEY" type="int" group="keys" />
+			<constant name="B_F5_KEY" type="int" group="keys" />
+			<constant name="B_F6_KEY" type="int" group="keys" />
+			<constant name="B_F7_KEY" type="int" group="keys" />
+			<constant name="B_F8_KEY" type="int" group="keys" />
+			<constant name="B_F9_KEY" type="int" group="keys" />
+			<constant name="B_F10_KEY" type="int" group="keys" />
+			<constant name="B_F11_KEY" type="int" group="keys" />
+			<constant name="B_F12_KEY" type="int" group="keys" />
+			<constant name="B_PRINT_KEY" type="int" group="keys" />
+			<constant name="B_SCROLL_KEY" type="int" group="keys" />
+			<constant name="B_PAUSE_KEY" type="int" group="keys" />
+<!-- key map stuff -->
+			<constant name="B_CONTROL_TABLE" type="int" group="keymap" />
+			<constant name="B_OPTION_CAPS_SHIFT_TABLE" type="int" group="keymap" />
+			<constant name="B_OPTION_CAPS_TABLE" type="int" group="keymap" />
+			<constant name="B_OPTION_SHIFT_TABLE" type="int" group="keymap" />
+			<constant name="B_OPTION_TABLE" type="int" group="keymap" />
+			<constant name="B_CAPS_SHIFT_TABLE" type="int" group="keymap" />
+			<constant name="B_CAPS_TABLE" type="int" group="keymap" />
+			<constant name="B_SHIFT_TABLE" type="int" group="keymap" />
+			<constant name="B_NORMAL_TABLE" type="int" group="keymap" />
+<!-- modifiers -->
+			<constant name="B_SHIFT_KEY" type="int" group="modifiers" />
+			<constant name="B_COMMAND_KEY" type="int" group="modifiers" />
+			<constant name="B_CONTROL_KEY" type="int" group="modifiers" />
+			<constant name="B_CAPS_LOCK" type="int" group="modifiers" />
+			<constant name="B_SCROLL_LOCK" type="int" group="modifiers" />
+			<constant name="B_NUM_LOCK" type="int" group="modifiers" />
+			<constant name="B_OPTION_KEY" type="int" group="modifiers" />
+			<constant name="B_MENU_KEY" type="int" group="modifiers" />
+			<constant name="B_LEFT_SHIFT_KEY" type="int" group="modifiers" />
+			<constant name="B_RIGHT_SHIFT_KEY" type="int" group="modifiers" />
+			<constant name="B_LEFT_COMMAND_KEY" type="int" group="modifiers" />
+			<constant name="B_RIGHT_COMMAND_KEY" type="int" group="modifiers" />
+			<constant name="B_LEFT_CONTROL_KEY" type="int" group="modifiers" />
+			<constant name="B_RIGHT_CONTROL_KEY" type="int" group="modifiers" />
+			<constant name="B_LEFT_OPTION_KEY" type="int" group="modifiers" />
+			<constant name="B_RIGHT_OPTION_KEY" type="int" group="modifiers" />
+<!-- mouse definitions -->
+			<constant name="B_MAX_MOUSE_BUTTONS" type="int" group="" />
+			<constant name="B_NORMAL_MOUSE" type="int" group="mode_mouse" />
+			<constant name="B_CLICK_TO_FOCUS_MOUSE" type="int" group="mode_mouse" />
+			<constant name="B_FOCUS_FOLLOWS_MOUSE" type="int" group="mode_mouse" />
+			<constant name="B_NORMAL_FOCUS_FOLLOWS_MOUSE" type="int" group="mode_focus_follows_mouse" />
+			<constant name="B_WARP_FOCUS_FOLLOWS_MOUSE" type="int" group="mode_focus_follows_mouse" />
+			<constant name="B_INSTANT_WARP_FOCUS_FOLLOWS_MOUSE" type="int" group="mode_focus_follows_mouse" />
+<!-- view border -->
+			<constant name="B_PLAIN_BORDER" type="int" group="border_style">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_FANCY_BORDER" type="int" group="border_style">
+				<doc>...</doc>
+			</constant>
+			<constant name="B_NO_BORDER" type="int" group="border_style">
+				<doc>...</doc>
+			</constant>
+<!-- view orientation -->
+			<constant name="B_HORIZONTAL" type="int" group="orientation" />
+			<constant name="B_VERTICAL" type="int" group="orientation" />
+<!-- button_width -->
+			<constant name="B_WIDTH_AS_USUAL" type="int" group="button_width" />
+			<constant name="B_WIDTH_FROM_WIDEST" type="int" group="button_width" />
+			<constant name="B_WIDTH_FROM_LABEL" type="int" group="button_width" />
+<!-- view alignment -->
 			<constant name="B_ALIGN_LEFT" type="int" group="alignment">
 				<doc>...</doc>
 			</constant>
@@ -97,45 +415,223 @@ you need to define those types in this section.
 			<constant name="B_ALIGN_CENTER" type="int" group="alignment">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_PLAIN_BORDER" type="int" group="border">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FANCY_BORDER" type="int" group="border">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_NO_BORDER" type="int" group="border">
-				<doc>...</doc>
-			</constant>
-			<!-- character constants -->
-			<!-- control value constants -->
-			<constant name="B_CONTROL_ON" type="int" group="">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_CONTROL_OFF" type="int" group="">
-				<doc>...</doc>
-			</constant>
-			<!-- dead-key mapping constants -->
-			<!-- function key constants -->
-			<!-- modifier state constants -->
-			<!-- orientation constants -->
-			<!-- tint_color constants -->
-			<!-- color_which constants -->
-			
-			<!-- message constants -->
-			
-		<!-- Defined in GraphicsDefs.h -->
-			<!-- color space constants -->
-			<!-- drawing mode constants -->
-			<!-- pattern constants -->
-			<!-- screen space constants -->
-			<!-- transparency constants -->
-			
-			<!-- Defined in ListView.h -->
-			<!-- list view type constants -->
-			
-			<!-- Defined in ScrollBar.h -->
-			<!-- scrollbar constants -->
+			<constant name="B_ALIGN_HORIZONTAL_CENTER" type="int" group="alignment" />
+			<constant name="B_ALIGN_HORIZONTAL_UNSET" type="int" group="alignment" />
+			<constant name="B_ALIGN_USE_FULL_WIDTH" type="int" group="alignment" />
+			<constant name="B_ALIGN_TOP" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_MIDDLE" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_BOTTOM" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_VERTICAL_CENTER" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_VERTICAL_UNSET" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_NO_VERTICAL" type="int" group="vertical_alignment" />
+			<constant name="B_ALIGN_USE_FULL_HEIGHT" type="int" group="vertical_alignment" />
+<!-- singleton -->
+			<constant name="B_USE_DEFAULT_SPACING" type="float" group="" />
+<!-- join -->
+			<constant name="B_ROUND_JOIN" type="int" group="join_mode" />
+			<constant name="B_MITER_JOIN" type="int" group="join_mode" />
+			<constant name="B_BEVEL_JOIN" type="int" group="join_mode" />
+			<constant name="B_BUTT_JOIN" type="int" group="join_mode" />
+			<constant name="B_SQUARE_JOIN" type="int" group="join_mode" />
+			<constant name="B_ROUND_CAP" type="int" group="cap_mode" />
+			<constant name="B_BUTT_CAP" type="int" group="cap_mode" />
+			<constant name="B_SQUARE_CAP" type="int" group="cap_mode" />
+			<constant name="B_DEFAULT_MITER_LIMIT" type="float" group="" />
+<!-- bitmap -->
+			<constant name="B_TILE_BITMAP_X" type="int" group="bitmap_tiling" />
+			<constant name="B_TILE_BITMAP_Y" type="int" group="bitmap_tiling" />
+			<constant name="B_TILE_BITMAP" type="int" group="bitmap_tiling" />
+			<constant name="B_FILTER_BITMAP_BILINEAR" type="int" group="bitmap_drawing_options" />
+			<constant name="B_WAIT_FOR_RETRACE" type="int" group="bitmap_drawing_options" />
+<!-- overlay -->
+			<constant name="B_OVERLAY_FILTER_HORIZONTAL" type="int" group="overlay_options" />
+			<constant name="B_OVERLAY_FILTER_VERTICAL" type="int" group="overlay_options" />
+			<constant name="B_OVERLAY_MIRROR" type="int" group="overlay_options" />
+			<constant name="B_OVERLAY_TRANSFER_CHANNEL" type="int" group="overlay_options" />
+<!-- color -->
+			<constant name="B_PANEL_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_PANEL_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_DOCUMENT_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_DOCUMENT_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_CONTROL_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_CONTROL_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_CONTROL_BORDER_COLOR" type="int" group="color_which" />
+			<constant name="B_CONTROL_HIGHLIGHT_COLOR" type="int" group="color_which" />
+			<constant name="B_NAVIGATION_BASE_COLOR" type="int" group="color_which" />
+			<constant name="B_NAVIGATION_PULSE_COLOR" type="int" group="color_which" />
+			<constant name="B_SHINE_COLOR" type="int" group="color_which" />
+			<constant name="B_SHADOW_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_SELECTED_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_ITEM_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_SELECTED_ITEM_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_SELECTED_BORDER_COLOR" type="int" group="color_which" />
+			<constant name="B_TOOL_TIP_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_TOOL_TIP_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_SUCCESS_COLOR" type="int" group="color_which" />
+			<constant name="B_FAILURE_COLOR" type="int" group="color_which" />
+			<constant name="B_KEYBOARD_NAVIGATION_COLOR" type="int" group="color_which" />
+			<constant name="B_MENU_SELECTION_BACKGROUND_COLOR" type="int" group="color_which" />
+			<constant name="B_DESKTOP_COLOR" type="int" group="color_which" />
+			<constant name="B_WINDOW_TAB_COLOR" type="int" group="color_which" />
+			<constant name="B_WINDOW_TEXT_COLOR" type="int" group="color_which" />
+			<constant name="B_WINDOW_INACTIVE_TAB_COLOR" type="int" group="color_which" />
+			<constant name="B_WINDOW_INACTIVE_TEXT_COLOR" type="int" group="color_which" />
+<!-- tinting -->
+			<constant name="B_LIGHTEN_MAX_TINT" type="float" group="tinting" />
+			<constant name="B_LIGHTEN_2_TINT" type="float" group="tinting" />
+			<constant name="B_LIGHTEN_1_TINT" type="float" group="tinting" />
+			<constant name="B_NO_TINT" type="float" group="tinting" />
+			<constant name="B_DARKEN_1_TINT" type="float" group="tinting" />
+			<constant name="B_DARKEN_2_TINT" type="float" group="tinting" />
+			<constant name="B_DARKEN_3_TINT" type="float" group="tinting" />
+			<constant name="B_DARKEN_4_TINT" type="float" group="tinting" />
+			<constant name="B_DARKEN_MAX_TINT" type="float" group="tinting" />
+			<constant name="B_DISABLED_LABEL_TINT" type="float" group="tinting" />
+			<constant name="B_HIGHLIGHT_BACKGROUND_TINT" type="float" group="tinting" />
+			<constant name="B_DISABLED_MARK_TINT" type="float" group="tinting" />
+<!--
+*
+* Defined in GraphicsDefs.h
+*
+-->
+<!-- patterns -->
+			<constant name="B_SOLID_HIGH" type="pattern" group="patterns" />
+			<constant name="B_MIXED_COLORS" type="pattern" group="patterns" />
+			<constant name="B_SOLID_LOW" type="pattern" group="patterns" />
+<!-- transparency -->
+			<constant name="B_TRANSPARENT_COLOR" type="rgb_color" group="transparency" />
+			<constant name="B_TRANSPARENT_MAGIC_CMAP8" type="uint8" group="transparency" />
+			<constant name="B_TRANSPARENT_MAGIC_RGBA15" type="uint16" group="transparency" />
+			<constant name="B_TRANSPARENT_MAGIC_RGBA15_BIG" type="uint16" group="transparency" />
+			<constant name="B_TRANSPARENT_MAGIC_RGBA32" type="uint32" group="transparency" />
+			<constant name="B_TRANSPARENT_MAGIC_RGBA32_BIG" type="uint32" group="transparency" />
+			<constant name="B_TRANSPARENT_8_BIT" type="uint8" group="transparency" />
+<!-- screen -->
+			<constant name="B_MAIN_SCREEN_ID" type="screen_id" group="" />
+<!-- color spaces -->
+			<constant name="B_NO_COLOR_SPACE" type="int" group="color_space" />
+			<constant name="B_RGB32" type="int" group="color_space" />
+			<constant name="B_RGBA32" type="int" group="color_space" />
+			<constant name="B_RGB24" type="int" group="color_space" />
+			<constant name="B_RGB16" type="int" group="color_space" />
+			<constant name="B_RGB15" type="int" group="color_space" />
+			<constant name="B_RGBA15" type="int" group="color_space" />
+			<constant name="B_CMAP8" type="int" group="color_space" />
+			<constant name="B_GRAY8" type="int" group="color_space" />
+			<constant name="B_GRAY1" type="int" group="color_space" />
+			<constant name="B_RGB32_BIG" type="int" group="color_space" />
+			<constant name="B_RGBA32_BIG" type="int" group="color_space" />
+			<constant name="B_RGB24_BIG" type="int" group="color_space" />
+			<constant name="B_RGB16_BIG" type="int" group="color_space" />
+			<constant name="B_RGB15_BIG" type="int" group="color_space" />
+			<constant name="B_RGBA15_BIG" type="int" group="color_space" />
+			<constant name="B_RGB32_LITTLE" type="int" group="color_space" />
+			<constant name="B_RGBA32_LITTLE" type="int" group="color_space" />
+			<constant name="B_RGB24_LITTLE" type="int" group="color_space" />
+			<constant name="B_RGB16_LITTLE" type="int" group="color_space" />
+			<constant name="B_RGB15_LITTLE" type="int" group="color_space" />
+			<constant name="B_RGBA15_LITTLE" type="int" group="color_space" />
+			<constant name="B_YCbCr422" type="int" group="color_space" />
+			<constant name="B_YCbCr411" type="int" group="color_space" />
+			<constant name="B_YCbCr444" type="int" group="color_space" />
+			<constant name="B_YCbCr420" type="int" group="color_space" />
+			<constant name="B_YUV422" type="int" group="color_space" />
+			<constant name="B_YUV411" type="int" group="color_space" />
+			<constant name="B_YUV444" type="int" group="color_space" />
+			<constant name="B_YUV420" type="int" group="color_space" />
+			<constant name="B_YUV9" type="int" group="color_space" />
+			<constant name="B_YUV12" type="int" group="color_space" />
+			<constant name="B_UVL24" type="int" group="color_space" />
+			<constant name="B_UVL32" type="int" group="color_space" />
+			<constant name="B_UVLA32" type="int" group="color_space" />
+			<constant name="B_LAB24" type="int" group="color_space" />
+			<constant name="B_LAB32" type="int" group="color_space" />
+			<constant name="B_LABA32" type="int" group="color_space" />
+			<constant name="B_HSI24" type="int" group="color_space" />
+			<constant name="B_HSI32" type="int" group="color_space" />
+			<constant name="B_HSIA32" type="int" group="color_space" />
+			<constant name="B_HSV24" type="int" group="color_space" />
+			<constant name="B_HSV32" type="int" group="color_space" />
+			<constant name="B_HSVA32" type="int" group="color_space" />
+			<constant name="B_HLS24" type="int" group="color_space" />
+			<constant name="B_HLS32" type="int" group="color_space" />
+			<constant name="B_HLSA32" type="int" group="color_space" />
+			<constant name="B_CMY24" type="int" group="color_space" />
+			<constant name="B_CMY32" type="int" group="color_space" />
+			<constant name="B_CMYA32" type="int" group="color_space" />
+			<constant name="B_CMYK32" type="int" group="color_space" />
+			<constant name="B_MONOCHROME_1_BIT" type="int" group="color_space" />
+			<constant name="B_GRAYSCALE_8_BIT" type="int" group="color_space" />
+			<constant name="B_COLOR_8_BIT" type="int" group="color_space" />
+			<constant name="B_RGB_32_BIT" type="int" group="color_space" />
+			<constant name="B_RGB_16_BIT" type="int" group="color_space" />
+			<constant name="B_BIG_RGB_32_BIT" type="int" group="color_space" />
+			<constant name="B_BIG_RGB_16_BIT" type="int" group="color_space" />
+<!-- bitmap support -->
+			<constant name="B_VIEWS_SUPPORT_DRAW_BITMAP" type="int" group="bitmap_support" />
+			<constant name="B_BITMAPS_SUPPORT_ATTACHED_VIEWS" type="int" group="bitmap_support" />
+			<constant name="B_BITMAPS_SUPPORT_OVERLAY" type="int" group="bitmap_support" />
+<!-- buffer_orientation -->
+			<constant name="B_BUFFER_TOP_TO_BOTTOM" type="int" group="buffer_orientation" />
+			<constant name="B_BUFFER_BOTTOM_TO_TOP" type="int" group="buffer_orientation" />
+<!-- buffer_layout -->
+			<constant name="B_BUFFER_NONINTERLEAVED" type="int" group="buffer_layout" />
+<!-- drawing_mode -->
+			<constant name="B_OP_COPY" type="int" group="drawing_mode" />
+			<constant name="B_OP_OVER" type="int" group="drawing_mode" />
+			<constant name="B_OP_ERASE" type="int" group="drawing_mode" />
+			<constant name="B_OP_INVERT" type="int" group="drawing_mode" />
+			<constant name="B_OP_ADD" type="int" group="drawing_mode" />
+			<constant name="B_OP_SUBTRACT" type="int" group="drawing_mode" />
+			<constant name="B_OP_BLEND" type="int" group="drawing_mode" />
+			<constant name="B_OP_MIN" type="int" group="drawing_mode" />
+			<constant name="B_OP_MAX" type="int" group="drawing_mode" />
+			<constant name="B_OP_SELECT" type="int" group="drawing_mode" />
+			<constant name="B_OP_ALPHA" type="int" group="drawing_mode" />
+<!-- source_alpha -->
+			<constant name="B_PIXEL_ALPHA" type="int" group="source_alpha" />
+			<constant name="B_CONSTANT_ALPHA" type="int" group="source_alpha" />
+<!-- alpha_function -->
+			<constant name="B_ALPHA_OVERLAY" type="int" group="alpha_function" />
+			<constant name="B_ALPHA_COMPOSITE" type="int" group="alpha_function" />
+<!-- fixed screen modes -->
+			<constant name="B_8_BIT_640x480" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_800x600" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_1024x768" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_1280x1024" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_1600x1200" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_640x480" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_800x600" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_1024x768" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_1280x1024" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_1600x1200" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_640x480" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_800x600" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_1024x768" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_1280x1024" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_1600x1200" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_1152x900" type="int" group="fixed_screen" />
+			<constant name="B_16_BIT_1152x900" type="int" group="fixed_screen" />
+			<constant name="B_32_BIT_1152x900" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_640x480" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_800x600" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_1024x768" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_1280x1024" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_1600x1200" type="int" group="fixed_screen" />
+			<constant name="B_15_BIT_1152x900" type="int" group="fixed_screen" />
+			<constant name="B_8_BIT_640x400" type="int" group="fixed_screen" />
 		</constants>
+	</binding>
+	<binding source="key_info" target="Haiku::key_info">
+		<properties>
+			<property name="modifiers"  type="uint32" />
+			<property name="key_states" type="uint8" repeat="16" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
 	</binding>
 	<binding source="key_map" target="Haiku::key_map">
 		<doc>Exposes the key_map struct</doc>
@@ -154,8 +650,6 @@ you need to define those types in this section.
 			<property name="right_option_key"      type="uint32" />
 			<property name="menu_key"              type="uint32" />
 			<property name="lock_settings"         type="uint32" />
-<!-- Commented out until repeats are enabled -->
-
 			<property name="control_map"           type="int32" repeat="128" />
 			<property name="option_caps_shift_map" type="int32" repeat="128" />
 			<property name="option_caps_map"       type="int32" repeat="128" />
@@ -171,7 +665,6 @@ you need to define those types in this section.
 			<property name="dieresis_dead_key"     type="int32" repeat="32" />
 			<property name="tilde_dead_key"        type="int32" repeat="32" />
 			<property name="acute_tables"          type="uint32" />
-
 			<property name="grave_tables"          type="uint32" />
 			<property name="circumflex_tables"     type="uint32" />
 			<property name="dieresis_tables"       type="uint32" />
@@ -185,8 +678,7 @@ you need to define those types in this section.
 	<binding source="mouse_map" target="Haiku::mouse_map">
 		<doc>Exposes the mouse_map struct</doc>
 		<properties>
-<!-- Commented out until repeats are enabled -->
-<!--			<property name="button" type="uint32" repeat="B_MAX_MOUSE_BUTTONS" /> -->
+-			<property name="button" type="uint32" repeat="B_MAX_MOUSE_BUTTONS" />
 		</properties>
 		<functions>
 			<constructor />
@@ -227,7 +719,25 @@ you need to define those types in this section.
 			<destructor />
 		</functions>
 	</binding>
-<!-- Defined in GraphicsDefs.h -->
+<!--
+*
+* Defined in GraphicsDefs.h
+*
+-->
+	<binding source="pattern" target="Haiku::pattern">
+		<doc>Exposes the pattern struct</doc>
+		<properties>
+			<property name="data" type="uchar" repeat="8" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
 	<binding source="rgb_color" target="Haiku::rgb_color">
 		<doc>Exposes the rgb_color struct</doc>
 		<properties>
@@ -249,31 +759,58 @@ you need to define those types in this section.
 		<doc>Exposes the color_map struct</doc>
 		<properties>
 			<property name="id"            type="int32" />
-<!-- Commented out until repeats are enabled -->
-<!--
-			<property name="rgb_color"     type="color_list" repeat="256" />
+			<property name="color_list"    type="rgb_color" repeat="256" />
 			<property name="inversion_map" type="uint8"      repeat="256"  />
 			<property name="index_map"     type="uint8"      repeat="32768" />
--->
 		</properties>
 		<functions>
 			<constructor />
 			<destructor />
 		</functions>
 	</binding>
-	<binding source="pattern" target="Haiku::pattern">
-		<doc>Exposes the pattern struct</doc>
+	<binding source="overlay_rect_limits" target="Haiku::overlay_rect_limits">
+		<doc>Exposes the overlay_rect_limits struct</doc>
 		<properties>
-			<property name="data" type="uchar" repeat="8" />
+			<property name="horizontal_alignment" type="int16" />
+			<property name="vertical_alignment"   type="int16" />
+			<property name="width_alignment"      type="int16" />
+			<property name="height_alignment"     type="int16" />
+			<property name="min_width"            type="int16" />
+			<property name="max_width"            type="int16" />
+			<property name="min_height"           type="int16" />
+			<property name="max_height"           type="int16" />
+			<property name="reserved"             type="int32" repeat="8" />
 		</properties>
 		<functions>
 			<constructor />
 			<destructor />
 		</functions>
-		<operators>
-			<operator name="==" />
-			<operator name="!=" />
-		</operators>
+	</binding>
+	<binding source="overlay_restrictions" target="Haiku::overlay_restrictions">
+		<doc>Exposes the overlay_restrictions struct</doc>
+		<properties>
+			<property name="source"           type="overlay_rect_limits" />
+			<property name="destination"      type="overlay_rect_limits" />
+			<property name="min_width_scale"  type="float" />
+			<property name="max_width_scale"  type="float" />
+			<property name="min_height_scale" type="float" />
+			<property name="max_height_scale" type="float" />
+			<property name="reserved"         type="int32" repeat="8" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="screen_id" target="Haiku::screen_id">
+		<doc>Exposes the screen_id struct</doc>
+		<properties>
+			<property name="id" type="int32" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
 	</binding>
 	
 <!-- print_file_header from PrintJob -->

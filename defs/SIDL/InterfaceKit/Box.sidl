@@ -11,11 +11,31 @@
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP" />
 				<param name="border" type="border_style" action="input" default="B_FANCY_BORDER" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="WithChildAndName">
+				<param name="name" type="const char*" action="input" default="NULL" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE_JUMP" />
+				<param name="border" type="border_style" action="input" default="B_FANCY_BORDER" />
+				<param name="child" type="BView*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="WithChild">
+				<param name="border" type="border_style" action="input" default="B_FANCY_BORDER" />
+				<param name="child" type="BView*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
+<!-- Archiving -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
 			<method name="SetBorder">
 				<doc>Sets the border style.</doc>
 				<param name="border" type="border_style" action="input" />
@@ -24,26 +44,106 @@
 				<doc>Gets the border style.</doc>
 				<return type="border_style" action="output" />
 			</method>
+			<method name="TopBorderOffset">
+				<return type="float" action="output" />
+			</method>
+			<method name="InnerFrame">
+				<return type="BRect" action="output" />
+			</method>
 			<method name="SetLabel">
 				<doc>Sets the label.</doc>
 				<param name="string" type="const char*" action="input" />
-			</method>
-			<method name="Label">
-				<doc>Gets the label.</doc>
-				<return type="const char*" action="output" />
 			</method>
 			<method name="SetLabel" overload-name="View">
 				<doc>Sets the label View.</doc>
 				<param name="viewLabel" type="BView*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+			<method name="Label">
+				<doc>Gets the label.</doc>
+				<return type="const char*" action="output" />
+			</method>
 			<method name="LabelView" overload-name="View">
 				<doc>Gets the label View.</doc>
 				<return type="BView*" action="output" />
 			</method>
-			<!-- AttachedToWindow -->
-			<!-- Draw -->
-			<!-- FrameResized -->
+<!--
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float*" deref="true" action="output" />
+				<param name="height" type="float*" deref="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+			<method name="DoLayout" />
 		</functions>
 	</binding>
 </bindings>

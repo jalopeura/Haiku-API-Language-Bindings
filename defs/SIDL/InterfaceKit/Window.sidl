@@ -21,7 +21,7 @@
 					<doc>Indicates which workspaces the Window should appear in. Defaults to [code]B_CURRENT_WORKSPACE[/code].</doc>
 				</param>
 			</constructor>
-			<constructor overload-name="ByLookAndFeel">
+			<constructor overload-name="FromLookAndFeel">
 				<doc>Creates a Window using separate [code]look[/code] and [code]feel[/code] values (rather than a single [code]type[/code] value). Other parameters are the same as the usual constructor.</doc>
 				<param name="frame" type="BRect" action="input" />
 				<param name="title" type="const char*" action="input" />
@@ -34,20 +34,27 @@
 				<param name="flags" type="uint32" action="input" />
 				<param name="workspaces" type="uint32" action="input" default="B_CURRENT_WORKSPACE" />
 			</constructor>
-			<constructor overload-name="FromMessage">
+			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-			<method name="Activate">
-				<doc>Activates or deactivates the Window.</doc>
-				<param name="flag" type="bool" action="input" default="true">
-					<doc>If true, activates; if false, deactivates.</doc>
-				</param>
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Quit">
+				<doc>Ends the window's message loop.</doc>
 				<return type="void" />
 			</method>
-			<method name="IsActive">
-				<doc>Returns true if the Window is active, false otherwise.</doc>
-				<return type="bool" />
+			<method name="Close">
+				<doc>Ends the window's message loop.</doc>
+				<return type="void" />
 			</method>
 			<method name="AddChild">
 				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
@@ -55,77 +62,159 @@
 				<param name="sibling" type="BView*" action="input" default="NULL" />
 				<return type="void" />
 			</method>
+<!-- BLayoutItem object not yet implemented
+			<method name="AddChild" overload-name="AddLayoutItem">
+				<param name="child" type="BLayoutItem*" action="input" />
+				<return type="void" />
+			</method>
+-->
 			<method name="RemoveChild">
 				<doc>Removes [code]view[/code] from the window's view list.</doc>
 				<param name="view" type="BView*" action="input" />
 				<return type="bool" action="output" />
+			</method>
+			<method name="CountChildren">
+				<doc>Returns the number of views in the window's view list.</doc>
+				<return type="int32" action="output" />
 			</method>
 			<method name="ChildAt">
 				<doc>Returns the [code]index[/code]th view from the window's view list.</doc>
 				<param name="index" type="int32" action="input" />
 				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
-			<method name="CountChildren">
-				<doc>Returns the number of views in the window's view list.</doc>
-				<return type="int32" action="output" />
+			<method name="DispatchMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="handler" type="BHandler*" action="input" />
 			</method>
-			<!-- AddShortcut -->
-			<!-- RemoveShortcut -->
-			<!-- AddToSubset -->
-			<!-- RemoveFromSubset -->
-			<!-- Archive -->
-			<method name="Bounds">
-				<doc>Returns the Window's bounding rectangle in the Window's coordinate system.</doc>
-				<return type="BRect" action="output" />
+			<event name="MessageReceived">
+				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WorkspacesChanged">
+				<param name="oldWorkspaces" type="uint32" action="input" />
+				<param name="newWorkspaces" type="uint32" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WorkspaceActivated">
+				<param name="workspaces" type="int32" action="input" />
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<method name="Minimize">
+				<doc>Minimizes or unminimizes the Window.</doc>
+				<param name="minimize" type="bool" action="input">
+					<doc>If true, minimizes the Window; otherwise unminimizes it.</doc>
+				</param>
 			</method>
-			<method name="Frame">
-				<doc>Returns the Window's bounding rectangle in the screen's coordinate system.</doc>
-				<return type="BRect" action="output" />
+			<event name="Zoom" overload-name="HookZoom">
+				<param name="origin" type="BPoint" action="input" />
+				<param name="width"  type="float" action="input" />
+				<param name="height" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<method name="Zoom" />
+			<method name="SetZoomLimits">
+				<param name="maxWidth"  type="float" action="input" />
+				<param name="maxHeight" type="float" action="input" />
 			</method>
-			<method name="ConvertToScreen" overload-name="_Point">
+			<event name="ScreenChanged">
+				<param name="screenSize" type="BRect" action="input" />
+				<param name="format" type="color_space" action="input" />
+				<return type="void" />
+			</event>
+			<method name="SetPulseRate">
+				<doc>Sets the Window's pulse rate (in milliseconds).</doc>
+				<param name="microseconds" type="bigtime_t" action="input" />
+			</method>
+			<method name="PulseRate">
+				<doc>Gets the Window's pulse rate  (in milliseconds).</doc>
+				<return type="bigtime_t" />
+			</method>
+			<method name="AddShortcut">
+				<param name="key" type="uint32" action="input" />
+				<param name="modifiers" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="AddShortcut" overload-name="AddShortcutWithTarget">
+				<param name="key" type="uint32" action="input" />
+				<param name="modifiers" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<param name="target" type="BHandler*" action="input" />
+			</method>
+			<method name="RemoveShortcut">
+				<param name="key" type="uint32" action="input" />
+				<param name="modifiers" type="uint32" action="input" />
+			</method>
+			<method name="SetDefaultButton">
+				<doc>Maps a button to the Enter key.</doc>
+				<param name="button" type="BButton*" action="input">
+					<doc>The target Button.</doc>
+				</param>
+			</method>
+			<method name="DefaultButton">
+				<doc>Returns the button mapped to the Enter key.</doc>
+				<return type="BButton*" must-not-delete="true" />
+			</method>
+			<event name="MenusBeginning" />
+			<event name="MenusEnded" />
+			<method name="NeedsUpdate">
+				<return type="bool" />
+			</method>
+			<method name="UpdateIfNeeded">
+				<doc>Redraws the Window if necessary.</doc>
+			</method>
+			<method name="FindView">
+				<param name="viewName" type="const char*" action="input" />
+				<return type="BView*" must-not-delete="true" />
+			</method>
+			<method name="FindView" overload-name="FindViewAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="BView*" must-not-delete="true" />
+			</method>
+			<method name="CurrentFocus">
+				<return type="BView*" must-not-delete="true" />
+			</method>
+			<method name="Activate">
+				<doc>Activates or deactivates the Window.</doc>
+				<param name="flag" type="bool" action="input" default="true">
+					<doc>If true, activates; if false, deactivates.</doc>
+				</param>
+				<return type="void" />
+			</method>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<method name="ConvertToScreen" overload-name="ConvertPointToScreen">
 				<doc>Converts a Point from the Window's coordinate system to the screen's coordinate system.</doc>
 				<param name="windowPoint" type="BPoint" action="input" />
 				<return type="BPoint" action="output" />
 			</method>
-			<method name="ConvertToScreen" overload-name="_Rect">
-				<doc>Converts a Rect from the Window's coordinate system to the screen's coordinate system.</doc>
-				<param name="windowRect" type="BRect" action="input" />
-				<return type="BRect" action="output" />
-			</method>
-			<method name="ConvertFromScreen" overload-name="_Point">
+			<method name="ConvertFromScreen" overload-name="ConvertPointFromScreen">
 				<doc>Converts a Point from the screen's coordinate system to the Window's coordinate system.</doc>
 				<param name="windowPoint" type="BPoint" action="input" />
 				<return type="BPoint" action="output" />
 			</method>
-			<method name="ConvertFromScreen" overload-name="_Rect">
+			<method name="ConvertToScreen" overload-name="ConvertRectToScreen">
+				<doc>Converts a Rect from the Window's coordinate system to the screen's coordinate system.</doc>
+				<param name="windowRect" type="BRect" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ConvertFromScreen" overload-name="ConvertRectFromScreen">
 				<doc>Converts a Rect from the screen's coordinate system to the Window's coordinate system.</doc>
 				<param name="windowRect" type="BRect" action="input" />
 				<return type="BRect" action="output" />
 			</method>
-			<!-- CurrentFocus -->
-			<!-- DisableUpdates -->
-			<!-- EnableUpdates -->
-			<!-- FindView -->
-			<method name="Flush">
-				<doc>Sends all pending messages to the Application Server and immediately returns.</doc>
-			</method>
-			<method name="Sync">
-				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
-			</method>
-			<!-- GetSupportedSuites -->
-			<method name="IsFront">
-				<doc>Returns true if the Window is frontmost, false otherwise.</doc>
-				<return type="bool" />
-			</method>
-			<method name="IsFloating">
-				<doc>Returns true if the Window has a floating feel, false otherwise.</doc>
-				<return type="bool" />
-			</method>
-			<method name="IsModal">
-				<doc>Returns true if the Window has a modal feel, false otherwise.</doc>
-				<return type="bool" />
-			</method>
-			<!-- LastMouseMovedView -->
 			<method name="MoveBy">
 				<doc>Moves the window by the given coordinates.</doc>
 				<param name="horizontal" type="float" action="input" />
@@ -138,11 +227,9 @@
 				<param name="y" type="float" action="input" />
 				<return type="void" />
 			</method>
-			<!-- NeedsUpdate -->
-			<!-- OpenViewTransaction -->
-			<!-- CommitViewTransaction -->
-			<method name="Quit">
-				<doc>Ends the window's message loop.</doc>
+			<method name="MoveTo" overload-name="MoveToPoint">
+				<doc>Moves the window to the given coordinates.</doc>
+				<param name="where" type="BPoint" action="input" />
 				<return type="void" />
 			</method>
 			<method name="ResizeBy">
@@ -157,7 +244,33 @@
 				<param name="height" type="float" action="input" />
 				<return type="void" />
 			</method>
-			<!-- ResolveSpecifier -->
+			<method name="CenterIn">
+				<param name="rect" type="BRect" action="input" />
+				<return type="void" />
+			</method>
+			<method name="CenterOnScreen" />
+			<method name="Show">
+				<doc>Shows the window. A window is not automatically shown when created; the first call to [code]Show[/code] also begins the window's message loop.</doc>
+				<return type="void" />
+			</method>
+			<method name="Hide">
+				<doc>Hides the window.</doc>
+				<return type="void" />
+			</method>
+			<method name="IsHidden">
+				<doc>Returns true if the Window is hidden.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsMinimized">
+				<doc>Returns true if the Window is minimized.</doc>
+				<return type="bool" />
+			</method>
+			<method name="Flush">
+				<doc>Sends all pending messages to the Application Server and immediately returns.</doc>
+			</method>
+			<method name="Sync">
+				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
+			</method>
 			<method name="SendBehind">
 				<doc>Sends the Window behind another Window.</doc>
 				<param name="window" type="BWindow*" action="input">
@@ -165,15 +278,118 @@
 				</param>
 				<return type="status_t" />
 			</method>
-			<method name="SetDefaultButton">
-				<doc>Maps a button to the Enter key.</doc>
-				<param name="button" type="BButton*" action="input">
-					<doc>The target Button.</doc>
-				</param>
+			<method name="DisableUpdates" />
+			<method name="EnableUpdates" />
+			<method name="BeginViewTransaction" />
+			<method name="EndViewTransaction" />
+			<method name="InViewTransaction">
+				<return type="bool" />
 			</method>
-			<method name="DefaultButton">
-				<doc>Returns the button mapped to the Enter key.</doc>
-				<return type="BButton*" must-not-delete="true" />
+			<method name="Bounds">
+				<doc>Returns the Window's bounding rectangle in the Window's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Frame">
+				<doc>Returns the Window's bounding rectangle in the screen's coordinate system.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="DecoratorFrame">
+				<return type="BRect" action="output" />
+			</method>
+<!-- BSize object not yet implemented
+			<method name="Size">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="Title">
+				<doc>Gets the Window's title.</doc>
+				<return type="const char*" />
+			</method>
+			<method name="SetTitle">
+				<doc>Sets the Window's title.</doc>
+				<param name="newTitle" type="const char*" action="input" />
+			</method>
+			<method name="IsFront">
+				<doc>Returns true if the Window is frontmost, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<method name="IsActive">
+				<doc>Returns true if the Window is active, false otherwise.</doc>
+				<return type="bool" />
+			</method>
+			<method name="SetKeyMenuBar">
+				<param name="bar" type="BMenuBar*" action="input" />
+			</method>
+			<method name="KeyMenuBar">
+				<return type="BMenuBar*" action="output" />
+			</method>
+			<method name="SetSizeLimits">
+				<param name="minWidth"  type="float" action="input" />
+				<param name="maxWidth"  type="float" action="input" />
+				<param name="minHeight" type="float" action="input" />
+				<param name="maxHeight" type="float" action="input" />
+			</method>
+			<method name="GetSizeLimits">
+				<param name="minWidth"  type="float*" deref="true" action="output" />
+				<param name="maxWidth"  type="float*" deref="true" action="output" />
+				<param name="minHeight" type="float*" deref="true" action="output" />
+				<param name="maxHeight" type="float*" deref="true" action="output" />
+			</method>
+			<method name="UpdateSizeLimits" />
+			<method name="SetDecoratorSettings">
+				<param name="settings" type="BMessage" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetDecoratorSettings">
+				<param name="settings" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetWorkspaces">
+				<doc>Sets the workspaces in which the Window is present.</doc>
+				<param name="workspaces" type="uint32" action="input" />
+			</method>
+			<method name="Workspaces">
+				<doc>Gets the workspaces in which the Window is present.</doc>
+				<return type="uint32" />
+			</method>
+			<method name="LastMouseMovedView">
+				<return type="BView*" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddToSubset">
+				<param name="window" type="BWindow*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="RemoveFromSubset">
+				<param name="window" type="BWindow*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetType">
+				<doc>Sets the Window's type.</doc>
+				<param name="type" type="window_type" action="input" />
+			</method>
+			<method name="Type">
+				<doc>Gets the Window's type.</doc>
+				<return type="window_type" />
+			</method>
+			<method name="SetLook">
+				<doc>Sets the Window's look.</doc>
+				<param name="look" type="window_look" action="input" />
+			</method>
+			<method name="Look">
+				<doc>Gets the Window's look.</doc>
+				<return type="window_look" />
 			</method>
 			<method name="SetFeel">
 				<doc>Sets the Window's feel.</doc>
@@ -191,200 +407,173 @@
 				<doc>Gets the Window's flags.</doc>
 				<return type="uint32" />
 			</method>
-			<!-- SetKeyMenuBar -->
-			<!-- KeyMenuBar -->
-			<method name="SetLook">
-				<doc>Sets the Window's look.</doc>
-				<param name="look" type="window_look" action="input" />
-			</method>
-			<method name="Look">
-				<doc>Gets the Window's look.</doc>
-				<return type="window_look" />
-			</method>
-			<method name="SetPulseRate">
-				<doc>Sets the Window's pulse rate (in milliseconds).</doc>
-				<param name="microseconds" type="bigtime_t" action="input" />
-			</method>
-			<method name="PulseRate">
-				<doc>Gets the Window's pulse rate  (in milliseconds).</doc>
-				<return type="bigtime_t" />
-			</method>
-			<!-- SetSizeLimits -->
-			<!-- GetSizeLimits -->
-			<!-- SetZoomLimits -->
-			<method name="SetTitle">
-				<doc>Sets the Window's title.</doc>
-				<param name="newTitle" type="const char*" action="input" />
-			</method>
-			<method name="Title">
-				<doc>Gets the Window's title.</doc>
-				<return type="const char*" />
-			</method>
-			<method name="SetType">
-				<doc>Sets the Window's type.</doc>
-				<param name="type" type="window_type" action="input" />
-			</method>
-			<method name="Type">
-				<doc>Gets the Window's type.</doc>
-				<return type="window_type" />
-			</method>
-			<!-- SetWindowAlignment -->
-			<!-- GetWindowAlignment -->
-			<method name="SetWorkspaces">
-				<doc>Sets the workspaces in which the Window is present.</doc>
-				<param name="workspaces" type="uint32" action="input" />
-			</method>
-			<method name="Workspaces">
-				<doc>Gets the workspaces in which the Window is present.</doc>
-				<return type="uint32" />
-			</method>
-			<method name="Show">
-				<doc>Shows the window. A window is not automatically shown when created; the first call to [code]Show[/code] also begins the window's message loop.</doc>
-				<return type="void" />
-			</method>
-			<method name="Hide">
-				<doc>Hides the window.</doc>
-				<return type="void" />
-			</method>
-			<method name="IsHidden">
-				<doc>Returns true if the Window is hidden.</doc>
+			<method name="IsFloating">
+				<doc>Returns true if the Window has a floating feel, false otherwise.</doc>
 				<return type="bool" />
 			</method>
-			<method name="Minimize">
-				<doc>Minimizes or unminimizes the Window.</doc>
-				<param name="minimize" type="bool" action="input">
-					<doc>If true, minimizes the Window; otherwise unminimizes it.</doc>
-				</param>
-			</method>
-			<method name="IsMinimized">
-				<doc>Returns true if the Window is minimized.</doc>
+			<method name="IsModal">
+				<doc>Returns true if the Window has a modal feel, false otherwise.</doc>
 				<return type="bool" />
 			</method>
-			<method name="UpdateIfNeeded">
-				<doc>Redraws the Window if necessary.</doc>
+			<method name="SetWindowAlignment">
+				<param name="mode" type="window_alignment" action="input" />
+				<param name="h" type="int32" action="input" />
+				<param name="hOffset" type="int32" default="0" action="input" />
+				<param name="width" type="int32" default="0" action="input" />
+				<param name="widthOffset" type="int32" default="0" action="input" />
+				<param name="v" type="int32" default="0" action="input" />
+				<param name="vOffset" type="int32" default="0" action="input" />
+				<param name="height" type="int32" default="0" action="input" />
+				<param name="heightOffset" type="int32" default="0" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<!-- FrameMoved -->
-			<!-- FrameResized -->
-			<!-- MenusBeginning -->
-			<!-- MenusEnded -->
-			<event name="MessageReceived">
-				<doc>Called when the app receives a message. Determine whether the handle a message by looking at its [code]what[/code] property. Pass unhandled messages to [code][name]Haiku::Window[/name][/code]'s version.</doc>
-				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
-				<return type="void" />
+			<method name="GetWindowAlignment">
+				<param name="mode" type="window_alignment*" deref="true" action="output" />
+				<param name="h" type="int32*" deref="true" action="output" />
+				<param name="hOffset" type="int32*" deref="true" default="0" action="output" />
+				<param name="width" type="int32*" deref="true" action="output" />
+				<param name="widthOffset" type="int32*" deref="true" default="0" action="output" />
+				<param name="v" type="int32*" deref="true" action="output" />
+				<param name="vOffset" type="int32*" deref="true" default="0" action="output" />
+				<param name="height" type="int32*" deref="true" action="output" />
+				<param name="heightOffset" type="int32*" deref="true" default="0" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<event name="QuitRequested">
+				<return type="bool" />
 			</event>
-			<!-- ScreenChanged -->
-			<!-- WindowActivated -->
-			<!-- WorkspaceActivated -->
-			<!-- WorkspacesChanged -->
-			<!-- Zoom -->
+			<method name="Run" />
+<!-- BLayout object not yet implemented
+			<method name="SetLayout">
+				<param name="layout" type="BLayout*" action="input" />
+			</method>
+			<method name="GetLayout">
+				<return type="BLayout*" action="output" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
 		</functions>
 		<constants>
-			<constant name="B_NOT_MOVABLE" type="int" group="flags">
+<!-- window_type -->
+			<constant name="B_UNTYPED_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_CLOSABLE" type="int" group="flags">
+			<constant name="B_TITLED_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_ZOOMABLE" type="int" group="flags">
+			<constant name="B_MODAL_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_MINIMIZABLE" type="int" group="flags">
+			<constant name="B_DOCUMENT_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_H_RESIZABLE" type="int" group="flags">
+			<constant name="B_BORDERED_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_V_RESIZABLE" type="int" group="flags">
+			<constant name="B_FLOATING_WINDOW" type="int" group="window_type">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_RESIZABLE" type="int" group="flags">
+<!-- window_look -->
+			<constant name="B_BORDERED_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_OUTLINE_RESIZE" type="int" group="flags">
+			<constant name="B_NO_BORDER_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_WILL_ACCEPT_FIRST_CLICK" type="int" group="flags">
+			<constant name="B_TITLED_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_AVOID_FRONT" type="int" group="flags">
+			<constant name="B_DOCUMENT_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_AVOID_FOCUS" type="int" group="flags">
+			<constant name="B_MODAL_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_WORKSPACE_ACTIVATION" type="int" group="flags">
+			<constant name="B_FLOATING_WINDOW_LOOK" type="int" group="window_look">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" type="int" group="flags">
+<!-- window_feel -->
+			<constant name="B_NORMAL_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ASYNCHRONOUS_CONTROLS" type="int" group="flags">
+			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_QUIT_ON_WINDOW_CLOSE" type="int" group="flags">
+			<constant name="B_MODAL_APP_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TITLED_WINDOW" type="int" group="type">
+			<constant name="B_MODAL_ALL_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DOCUMENT_WINDOW" type="int" group="type">
+			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_WINDOW" type="int" group="type">
+			<constant name="B_FLOATING_APP_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_WINDOW" type="int" group="type">
+			<constant name="B_FLOATING_ALL_WINDOW_FEEL" type="int" group="window_feel">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BORDERED_WINDOW" type="int" group="type">
+<!-- window_alignment -->
+			<constant name="B_BYTE_ALIGNMENT" type="int" group="window_alignment" />
+			<constant name="B_PIXEL_ALIGNMENT" type="int" group="window_alignment" />
+<!-- window_flags -->
+			<constant name="B_NOT_MOVABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_UNTYPED_WINDOW" type="int" group="type">
+			<constant name="B_NOT_CLOSABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_CURRENT_WORKSPACE" type="int" group="workspace">
+			<constant name="B_NOT_ZOOMABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ALL_WORKSPACES" type="int" group="workspace">
+			<constant name="B_NOT_MINIMIZABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_DOCUMENT_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_NOT_RESIZABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_TITLED_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_NOT_H_RESIZABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_NOT_V_RESIZABLE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_AVOID_FRONT" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_BORDERED_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_AVOID_FOCUS" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NO_BORDER_WINDOW_LOOK" type="int" group="look">
+			<constant name="B_WILL_ACCEPT_FIRST_CLICK" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_NORMAL_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_OUTLINE_RESIZE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_SUBSET_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_NO_WORKSPACE_ACTIVATION" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_APP_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_NOT_ANCHORED_ON_ACTIVATE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_MODAL_ALL_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_ASYNCHRONOUS_CONTROLS" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_SUBSET_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_QUIT_ON_WINDOW_CLOSE" type="int" group="window_flags">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_APP_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_SAME_POSITION_IN_ALL_WORKSPACES" type="int" group="window_flags" />
+			<constant name="B_AUTO_UPDATE_SIZE_LIMITS" type="int" group="window_flags" />
+			<constant name="B_CLOSE_ON_ESCAPE" type="int" group="window_flags" />
+			<constant name="B_NO_SERVER_SIDE_WINDOW_MODIFIERS" type="int" group="window_flags" />
+<!-- workspaces -->
+			<constant name="B_CURRENT_WORKSPACE" type="int" group="workspaces">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_FLOATING_ALL_WINDOW_FEEL" type="int" group="feel">
+			<constant name="B_ALL_WORKSPACES" type="int" group="workspaces">
 				<doc>...</doc>
 			</constant>
 		</constants>
