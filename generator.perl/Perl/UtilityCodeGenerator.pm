@@ -132,9 +132,9 @@ SV* create_perl_object(void* cpp_obj, const char* perl_class_name, bool must_not
 	// link the data via '~' magic
 	// (we link to the underlying hash and not to the reference itself)
 	sv_magic((SV*)underlying_hash, NULL, PERL_MAGIC_ext, (const char*)link, 0);	// cheat by strong data instead of a string
-//	DEBUGME(4, "Created perl object %d of class %s for cpp object %d with link %d", (IV)perl_obj, perl_class_name, (IV)cpp_obj, (IV)link);
+//DEBUGME(4, "Created perl object %d of class %s for cpp object %d with link %d", (IV)perl_obj, perl_class_name, (IV)cpp_obj, (IV)link);
 	link = get_link_data(perl_obj);
-//	DEBUGME(4, "Verifying that setting magic worked: got link object: %d", (IV)link); 
+//DEBUGME(4, "Verifying that setting magic worked: got link object: %d", (IV)link);
 	
 	return perl_obj;
 }
@@ -142,7 +142,7 @@ SV* create_perl_object(void* cpp_obj, const char* perl_class_name, bool must_not
 object_link_data* get_link_data(SV* perl_obj) {
 	SV* underlying_hash;
 	MAGIC* mg;
-//	DEBUGME(4, "Trying to find link data for Perl object: %d", (IV)perl_obj);
+//DEBUGME(4, "Trying to find link data for Perl object: %d", (IV)perl_obj);
 
 	// get the underlying hash that the perl_obj is a reference to
 	// (we can leave it an SV* because we're just using it to find magic)
@@ -152,7 +152,7 @@ object_link_data* get_link_data(SV* perl_obj) {
 	mg = mg_find(underlying_hash, PERL_MAGIC_ext);
 	if (mg == NULL)
 		return NULL;
-//	DEBUGME(4, "Found magic with pointer: %d, %d", (IV)mg, (IV)mg->mg_ptr);
+//DEBUGME(4, "Found magic with pointer: %d, %d", (IV)mg, (IV)mg->mg_ptr);
 	
 	return (object_link_data*)mg->mg_ptr;
 }

@@ -753,25 +753,25 @@
 			</method>
 			<method name="DrawString" overload-name="DrawStringWithLength">
 				<param name="string" type="char*" action="input" />
-				<param name="length" type="char*" action="length[string]" />
+				<param name="length" type="int32" action="length[string]" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringWithLengthToPoint">
 				<param name="string" type="char*" action="input" />
-				<param name="length" type="char*" action="length[string]" />
+				<param name="length" type="int32" action="length[string]" />
 				<param name="location" type="BPoint" action="input" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringToPointArray">
 				<param name="string" type="char*" action="input" />
 				<param name="locations" type="BPoint*" action="input" />
-				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringWithLengthToPointArray">
 				<param name="string" type="char*" action="input" />
-				<param name="length" type="char*" action="length[string]" />
+				<param name="length" type="int32" action="length[string]" />
 				<param name="locations" type="BPoint*" action="input" />
-				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
+				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 			<method name="SetFont">
 				<param name="font" type="BFont*" action="input" />
@@ -796,12 +796,14 @@
 				<param name="length" type="int32" action="length[string]" />
 				<return type="float" action="output" />
 			</method>
+<!-- Need to fix this so it works
 			<method name="GetStringWidths">
-				<param name="stringArray" type="char*" repeat="numStrings" action="input" />
-				<param name="lengthArray" type="int32" repeat="numStrings" action="input" />
+				<param name="stringArray" type="char**" repeat="numStrings" action="input" />
+				<param name="lengthArray" type="int32*" repeat="numStrings" action="input" />
 				<param name="numStrings" type="int32" action="input" />
-				<param name="widthArray" type="float" repeat="numStrings" action="output" />
+				<param name="widthArray" type="float*" repeat="numStrings" action="output" />
 			</method>
+-->
 			<method name="SetFontSize">
 				<param name="size" type="float" action="input" />
 			</method>
@@ -865,7 +867,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="EventMask">
-				<return type="uint32" action="input" />
+				<return type="uint32" action="output" />
 			</method>
 			<method name="SetMouseEventMask">
 				<param name="mask" type="uint32" action="input" />
@@ -956,10 +958,6 @@
 				<return type="void" />
 			</method>
 			<method name="ResizeToPreferred" />
-			<method name="Invoke">
-				<param name="message" type="BMessage*" default="NULL" action="output" />
-				<return type="status_t" action="error" success="B_OK" />
-			</method>
 <!-- BScrollBar object not yet implemented
 			<method name="ScrollBar">
 				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
@@ -1050,7 +1048,6 @@
 				<param name="min" type="float*" deref="true" action="output" />
 				<param name="max" type="float*" deref="true" action="output" />
 				<param name="preferred" type="float*" deref="true" action="output" />
-				<return type="bool" />
 			</method>
 <!-- BLayout object not yet implemented
 			<method name="SetLayout">
@@ -1200,16 +1197,5 @@
 				<doc>...</doc>
 			</constant>
 		</constants>
-	</binding>
-	<binding source="key_info" target="Haiku::key_info">
-		<doc>Exposes the key_info struct</doc>
-		<properties>
-			<property name="modifiers"  type="uint32" />
-			<property name="key_states" type="uint8" repeat="16" />
-		</properties>
-		<functions>
-			<constructor />
-			<destructor />
-		</functions>
 	</binding>
 </bindings>

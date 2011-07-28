@@ -124,37 +124,6 @@
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			
-			
-			
-			<method name="SetBorder">
-				<doc>Sets the border style.</doc>
-				<param name="border" type="border_style" action="input" />
-			</method>
-			<method name="Border">
-				<doc>Gets the border style.</doc>
-				<return type="border_style" action="output" />
-			</method>
-			<method name="SetLabel">
-				<doc>Sets the label.</doc>
-				<param name="string" type="const char*" action="input" />
-			</method>
-			<method name="Label">
-				<doc>Gets the label.</doc>
-				<return type="const char*" action="output" />
-			</method>
-			<method name="SetLabel" overload-name="View">
-				<doc>Sets the label View.</doc>
-				<param name="viewLabel" type="BView*" action="input" />
-				<return type="status_t" action="error" success="B_OK" />
-			</method>
-			<method name="LabelView" overload-name="View">
-				<doc>Gets the label View.</doc>
-				<return type="BView*" action="output" />
-			</method>
-			<!-- AttachedToWindow -->
-			<!-- Draw -->
-			<!-- FrameResized -->
 		</functions>
 	</binding>
 </bindings>

@@ -25,19 +25,18 @@
 			</constructor>
 			<destructor />
 <!-- Statistics and misc info -->
-			<!-- GetInfo -->
 			<method name="GetInfo">
 				<param name="typeRequested" type="type_code" action="input" />
 				<param name="index" type="int32" action="input" />
 				<param name="nameFound" type="char**" deref="true" action="output" />
 				<param name="typeFound" type="type_code*" deref="true" action="output" />
-				<param name="countFound" type="int*" deref="true" action="output" />
+				<param name="countFound" type="int32*" deref="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetInfo" overload-name="GetInfoByName">
 				<param name="name" type="const char*" action="input" />
 				<param name="typeFound" type="type_code*" deref="true" action="output" />
-				<param name="countFound" type="int*" deref="true" action="output" />
+				<param name="countFound" type="int32*" deref="true" action="output" />
 				<param name="fixedSize" type="bool*" deref="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -84,13 +83,13 @@
 			</method>
 -->
 			<method name="Previous">
-				<return type="BMessage*" />
+				<return type="const BMessage*" />
 			</method>
 			<method name="WasDropped">
 				<return type="bool" />
 			</method>
 			<method name="DropPoint">
-				<param name="offset" type="BPoint" default="NULL" action="input" />
+				<param name="offset" type="BPoint*" default="NULL" action="input" />
 				<return type="BPoint" />
 			</method>
 <!-- Replying -->
@@ -201,8 +200,8 @@
 			</method>
 			<method name="GetCurrentSpecifier">
 				<param name="index" type="int32*" deref="true" action="output" />
-				<param name="specifier" type="BMessage*" deref="true" default="NULL" action="output" />
-				<param name="what" type="int32*" deref="true" default="NULL" action="output" />
+				<param name="specifier" type="BMessage*" default="NULL" action="output" />
+				<param name="what" type="int32*" deref="true" action="output" />
 				<param name="property" type="const char**" deref="true" default="NULL" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -277,7 +276,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="AddUint8">
+			<method name="AddUInt8">
 				<doc>Adds an 8-bit unsigned integer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -297,7 +296,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="AddUint16">
+			<method name="AddUInt16">
 				<doc>Adds a 16-bit unsigned integer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -317,7 +316,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="AddUint32">
+			<method name="AddUInt32">
 				<doc>Adds a 32-bit usnisgned integer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -337,7 +336,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="AddUint64">
+			<method name="AddUInt64">
 				<doc>Adds a 64-bit unsigned integer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -591,7 +590,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint8">
+			<method name="FindUInt8">
 				<doc>Finds an 8-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -601,7 +600,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint8" overload-name="FindUint8ByIndex">
+			<method name="FindUInt8" overload-name="FindUInt8ByIndex">
 				<doc>Finds an 8-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -637,7 +636,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint16">
+			<method name="FindUInt16">
 				<doc>Finds a 16-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -647,7 +646,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint16" overload-name="FindUint16ByIndex">
+			<method name="FindUInt16" overload-name="FindUInt16ByIndex">
 				<doc>Finds a 16-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -683,7 +682,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint32">
+			<method name="FindUInt32">
 				<doc>Finds a 32-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -693,15 +692,15 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint32" overload-name="FindUint32ByIndex">
+			<method name="FindUInt32" overload-name="FindUInt32ByIndex">
 				<doc>Finds a 32-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="index" type="uint32" action="input">
+				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="int32*" deref="true" action="output">
+				<param name="value" type="uint32*" deref="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -729,7 +728,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint64">
+			<method name="FindUInt64">
 				<doc>Finds a 64-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -739,7 +738,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindUint64" overload-name="FindUint64ByIndex">
+			<method name="FindUInt64" overload-name="FindUInt64ByIndex">
 				<doc>Finds a 64-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -762,7 +761,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindBool" overload-name="ByIndex">
+			<method name="FindBool" overload-name="FindBoolByIndex">
 				<doc>Finds a boolean in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -785,7 +784,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindFloat" overload-name="ByIndex">
+			<method name="FindFloat" overload-name="FindFloatByIndex">
 				<doc>Finds a float in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -808,7 +807,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindDouble" overload-name="ByIndex">
+			<method name="FindDouble" overload-name="FindDoubleByIndex">
 				<doc>Finds a double in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -832,7 +831,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindPointer" overload-name="ByIndex">
+			<method name="FindPointer" overload-name="FindPointerByIndex">
 				<doc>Finds a pointer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -857,7 +856,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindMessenger" overload-name="ByIndex">
+			<method name="FindMessenger" overload-name="FindMessengerByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -882,7 +881,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindRef" overload-name="ByIndex">
+			<method name="FindRef" overload-name="FindRefByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -906,7 +905,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindMessage" overload-name="ByIndex">
+			<method name="FindMessage" overload-name="FindMessageByIndex">
 				<doc>Finds a Message object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -930,7 +929,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindFlat" overload-name="ByIndex">
+			<method name="FindFlat" overload-name="FindFlatByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -961,7 +960,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="FindData" overload-name="ByIndex">
+			<method name="FindData" overload-name="FindDataByIndex">
 				<doc>Finds named data in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1099,7 +1098,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint8">
+			<method name="ReplaceUInt8">
 				<doc>Finds an 8-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1109,7 +1108,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint8" overload-name="ReplaceUint8ByIndex">
+			<method name="ReplaceUInt8" overload-name="ReplaceUInt8ByIndex">
 				<doc>Finds an 8-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1145,7 +1144,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint16">
+			<method name="ReplaceUInt16">
 				<doc>Finds a 16-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1155,7 +1154,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint16" overload-name="ReplaceUint16ByIndex">
+			<method name="ReplaceUInt16" overload-name="ReplaceUInt16ByIndex">
 				<doc>Finds a 16-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1191,7 +1190,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint32">
+			<method name="ReplaceUInt32">
 				<doc>Finds a 32-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1201,7 +1200,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint32" overload-name="ReplaceUint32ByIndex">
+			<method name="ReplaceUInt32" overload-name="ReplaceUInt32ByIndex">
 				<doc>Finds a 32-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1237,7 +1236,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint64">
+			<method name="ReplaceUInt64">
 				<doc>Finds a 64-bit unsigned integer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1247,7 +1246,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceUint64" overload-name="ReplaceUint64ByIndex">
+			<method name="ReplaceUInt64" overload-name="ReplaceUInt64ByIndex">
 				<doc>Finds a 64-bit unsigned integer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1270,7 +1269,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceBool" overload-name="ByIndex">
+			<method name="ReplaceBool" overload-name="ReplaceBoolByIndex">
 				<doc>Finds a boolean in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1293,7 +1292,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceFloat" overload-name="ByIndex">
+			<method name="ReplaceFloat" overload-name="ReplaceFloatByIndex">
 				<doc>Finds a float in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1316,7 +1315,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceDouble" overload-name="ByIndex">
+			<method name="ReplaceDouble" overload-name="ReplaceDoubleByIndex">
 				<doc>Finds a double in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1340,7 +1339,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplacePointer" overload-name="ByIndex">
+			<method name="ReplacePointer" overload-name="ReplacePointerByIndex">
 				<doc>Finds a pointer in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1365,7 +1364,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceMessenger" overload-name="ByIndex">
+			<method name="ReplaceMessenger" overload-name="ReplaceMessengerByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1390,7 +1389,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceRef" overload-name="ByIndex">
+			<method name="ReplaceRef" overload-name="ReplaceRefByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1409,12 +1408,12 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="message" type="BMessage" action="output">
+				<param name="message" type="BMessage*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceMessage" overload-name="ByIndex">
+			<method name="ReplaceMessage" overload-name="ReplaceMessageByIndex">
 				<doc>Finds a Message object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1422,7 +1421,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="message" type="BMessage" action="output">
+				<param name="message" type="BMessage*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1438,7 +1437,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceFlat" overload-name="ByIndex">
+			<method name="ReplaceFlat" overload-name="ReplaceFlatByIndex">
 				<doc>Finds a Messenger object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
@@ -1469,7 +1468,7 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="ReplaceData" overload-name="ByIndex">
+			<method name="ReplaceData" overload-name="ReplaceDataByIndex">
 				<doc>Finds named data in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>

@@ -24,13 +24,6 @@
 				<doc>Enables or disables the SeparatorItem.</doc>
 				<param name="enabled" type="bool" action="input" />
 			</method>
-			<method name="GetContentSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
-			</method>
-<!--
-			<event name="Draw" />
--->
 		</functions>
 	</binding>
 </bindings>

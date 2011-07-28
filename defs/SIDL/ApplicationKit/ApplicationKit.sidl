@@ -44,6 +44,7 @@ pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
 		<type name="BArchivable*" builtin="object_ptr" target="Haiku::Archivable" />
+		<type name="BPoint*"      builtin="object_ptr" target="Haiku::Point" />
 		<type name="BPoint"       builtin="object"     target="Haiku::Point" />
 		<type name="BRect"        builtin="object"     target="Haiku::Rect" />
 		<type name="BWindow*"     builtin="object_ptr" target="Haiku::Window" />

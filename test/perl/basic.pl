@@ -14,7 +14,7 @@ use Haiku::InterfaceKit;
 use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 
-use Test::Simple tests =>  16;
+use Test::Simple tests =>  17;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 4;
@@ -95,18 +95,7 @@ print $family,"\n";
 
 =cut
 
-# test multiple inheritance (when something multiple inherited is defined)
-
-=pod
-
-package Haiku::Application;
-use overload
-	"==" => "operator_eq",
-	'""' => sub { "Skip" };
-
-package main;
-
-=cut
+ok(($button->Window and $button->Message), "Multiple inheritance");
 
 ok($app == $be_app, "Default equality operator");
 

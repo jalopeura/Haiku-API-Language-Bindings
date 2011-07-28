@@ -50,10 +50,28 @@ sub generate {
 	}
 }
 
+sub generate_exports {
+	my ($self) = @_;
+	
+	if ($self->has('plains')) {
+		my @exports;
+		
+		for my $p ($self->plains) {
+			push @exports, $p->has('overload_name') ?
+				$p->overload_name : $p->name;
+		}
+	
+		print { $self->package->pmh } "\n",
+			'my @exported_functions = qw(',
+			join(' ', @exports),
+			");\n";
+	}
+}
+
 sub exports {
 	my ($self) = @_;
 	if ($self->has('plains')) {
-		return ['\@exported_functions'];
+		return ['@exported_functions'];
 	}
 	else {
 		return [];
@@ -252,7 +270,7 @@ sub generate_xs {
 			if ($type->has('target')) {
 				my $retname = $output->name;
 				my $svname = $retname . '_sv';
-				push @init, "SV* $svname = newSV(0);";
+#				push @init, "SV* $svname = newSV(0);	// iterating through outputs";
 				my $class;
 				if ($self->isa('Perl::Constructor')) {
 					$class = 'CLASS';
@@ -289,7 +307,7 @@ sub generate_xs {
 			for my $i (0..$#outputs) {
 				my $param = $outputs[$i];
 				my $svname = $param->name . '_sv';
-				push @init, "SV* $svname = newSV(0);";
+				push @init, "SV* $svname = newSV(0);	// retcount > 1";
 				my $type = $param->type;
 				
 				# if we're a target, we've already converted it
@@ -306,6 +324,7 @@ sub generate_xs {
 				# we already converted the object, so we change the rettype
 				$rettype = 'SV*';
 				$retname .= '_sv';
+				push @init, "SV* $retname = newSV(0);	// retcount == 1";
 			}
 			if ($outputs[0]->type->has('target')) {
 				push @postcode,

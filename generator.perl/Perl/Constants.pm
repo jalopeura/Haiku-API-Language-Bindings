@@ -36,7 +36,7 @@ sub exports {
 	
 	my @ret;
 	for my $k (sort keys %groups) {
-		my $name = $k ? "${k}_group" : 'ungrouped';
+		my $name = $k=~/\S/ ? "${k}_group" : 'ungrouped';
 		push @ret, "\@$name";
 	}
 	return \@ret;
@@ -51,10 +51,10 @@ sub generate_export_groups {
 	print $fh "\n";
 	my @tags;
 	for my $k (sort keys %groups) {
-		my $name = $k ? "${k}_group" : 'ungrouped';
+		my $name = $k=~/\S/ ? "${k}_group" : 'ungrouped';
 		my $names = join(' ', @{ $groups{$k} });
 		print $fh "my \@$name = qw($names);\n";
-		next unless $k;
+		next unless $k=~/\S/;
 		push @tags, "$k => [\@$name]";
 	}
 	print $fh "\n";

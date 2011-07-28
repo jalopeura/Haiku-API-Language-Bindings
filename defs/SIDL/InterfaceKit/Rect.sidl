@@ -100,57 +100,57 @@
 			</method>
 			<method name="InsetBySelf" overload-name="InsetByPointSelf">
 				<param name="inset" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="InsetBySelf">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetBySelf" overload-name="OffsetByPointSelf">
 				<param name="delta" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetBySelf">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetToSelf" overload-name="OffsetToPointSelf">
 				<param name="offset" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetToSelf">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="InsetByCopy" overload-name="InsetByPointCopy">
 				<param name="inset" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="InsetByCopy">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetByCopy" overload-name="OffsetByPointCopy">
 				<param name="delta" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetByCopy">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetToCopy" overload-name="OffsetToPointCopy">
 				<param name="offset" type="BPoint" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="OffsetToCopy">
 				<param name="x" type="float" action="input" />
 				<param name="y" type="float" action="input" />
-				<return type="BPoint" action="output" />
+				<return type="BRect" action="output" />
 			</method>
 			<method name="IsValid">
 				<return type="bool" action="output" />

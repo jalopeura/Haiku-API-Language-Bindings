@@ -156,7 +156,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index of the desired Looper.</doc>
 				</param>
-				<return type="BWindow*" action="output" must-not-delete="true" />
+				<return type="BLooper*" action="output" must-not-delete="true" />
 			</method>
 			<method name="IsLaunching">
 				<doc>Returns true until [code]ReadyToRun()[/code] returns.</doc>

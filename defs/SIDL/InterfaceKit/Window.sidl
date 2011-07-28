@@ -116,13 +116,13 @@
 					<doc>If true, minimizes the Window; otherwise unminimizes it.</doc>
 				</param>
 			</method>
-			<event name="Zoom" overload-name="HookZoom">
+			<event name="Zoom">
 				<param name="origin" type="BPoint" action="input" />
 				<param name="width"  type="float" action="input" />
 				<param name="height" type="float" action="input" />
 				<return type="void" />
 			</event>
-			<method name="Zoom" />
+			<method name="Zoom" overload-name="DoZoom" />
 			<method name="SetZoomLimits">
 				<param name="maxWidth"  type="float" action="input" />
 				<param name="maxHeight" type="float" action="input" />

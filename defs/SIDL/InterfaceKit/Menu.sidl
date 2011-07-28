@@ -88,7 +88,7 @@
 				<param name="item" type="BMenuItem*" action="input" />
 				<return type="bool" action="output" />
 			</method>
-			<method name="AddItem" overload-name="AtIndex">
+			<method name="AddItem" overload-name="AddItemAtIndex">
 				<doc>Adds a MenuItem to the Menu at a specified index.</doc>
 				<param name="item" type="BMenuItem*" action="input" />
 				<param name="index" type="int32" action="input" />
@@ -137,7 +137,7 @@
 				<param name="item" type="BMenu*" action="input" />
 				<return type="bool" action="output" />
 			</method>
-			<method name="RemoveItem" overload-name="AtIndex">
+			<method name="RemoveItem" overload-name="RemoveItemAtIndex">
 				<doc>Removes the MenuItem at the given index.</doc>
 				<param name="index" type="int32" action="input" />
 				<return type="BMenuItem*" action="output" />
@@ -260,13 +260,15 @@
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- Why is this not working?
 			<method name="AddDynamicItem">
 				<param name="state" type="add_state" action="input" />
 				<return type="bool" action="output" />
 			</method>
-			<method name="AddDynamicItem">
+			<method name="DrawBackground">
 				<param name="update" type="BRect" action="input" />
 			</method>
+-->
 			<!-- SetTrackingHook not implemented because it takes a function ref -->
 			<plain name="get_menu_info">
 				<param name="info" type="menu_info*" action="output" />
@@ -287,9 +289,11 @@
 			<constant name="B_ITEMS_IN_MATRIX" type="int" group="menu_layout">
 				<doc>...</doc>
 			</constant>
+<!-- Why are these not working?
 			<constant name="B_INITIAL_ADD" type="int" group="add_state" />
 			<constant name="B_PROCESSING" type="int" group="add_state" />
 			<constant name="B_ABORT" type="int" group="add_state" />
+-->
 		</constants>
 	</binding>
 	<binding source="menu_info" target="Haiku::menu_info">

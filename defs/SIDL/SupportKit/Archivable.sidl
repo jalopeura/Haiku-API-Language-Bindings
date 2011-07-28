@@ -127,7 +127,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="ArchiveMessage">
-				<return type="BMessage*" action="output" />
+				<return type="const BMessage*" action="output" />
 			</method>
 			<method name="AssumeOwnership">
 				<param name="archivable" type="BArchivable*" action="input" />
@@ -169,9 +169,11 @@
 				(no good to us in a target language)
 			-->
 		</functions>
+<!-- Need to fix this
 		<constants>
 			<constant name="B_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
 			<constant name="B_DONT_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
 		</constants>
+-->
 	</binding>
 </bindings>

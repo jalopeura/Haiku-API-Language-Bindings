@@ -83,27 +83,6 @@
 				<doc>Gets the frame.</doc>
 				<return type="BRect" action="output" />
 			</method>
-			<method name="GetContentSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
-			</method>
-			<method name="TruncateLabel">
-				<param name="maxWidth" type="float" action="input" />
-				<param name="newLabel" type="char*" action="output" />
-			</method>
-<!--
-			<event name="Draw" />
-			<event name="DrawContent" />
--->
-			<method name="Highlight">
-				<param name="enabled" type="bool" action="input" />
-			</method>
-			<method name="IsSelected">
-				<return type="bool" action="output" />
-			</method>
-			<method name="ContentLocation">
-				<return type="BPoint" action="output" />
-			</method>
 		</functions>
 	</binding>
 </bindings>

@@ -54,7 +54,7 @@
 				<doc>Sets the label.</doc>
 				<param name="string" type="const char*" action="input" />
 			</method>
-			<method name="SetLabel" overload-name="View">
+			<method name="SetLabel" overload-name="SetLabelView">
 				<doc>Sets the label View.</doc>
 				<param name="viewLabel" type="BView*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -63,7 +63,7 @@
 				<doc>Gets the label.</doc>
 				<return type="const char*" action="output" />
 			</method>
-			<method name="LabelView" overload-name="View">
+			<method name="LabelView">
 				<doc>Gets the label View.</doc>
 				<return type="BView*" action="output" />
 			</method>

@@ -137,6 +137,12 @@ sub finalize_upgrade {
 		$builtin=~s/ //g;
 		my $perltype = $builtins{$builtin} or
 			warn "Type '$name' mapped to unsupported builtin type '$builtin'";
+#		my $perltype;
+#		$perltype = $builtins{$builtin} or do {
+#			$builtin=~s/^const//;
+#			$perltype = $builtins{$builtin} or
+#				warn "Type '$name' mapped to unsupported builtin type '$builtin'";
+#		};
 			
 		$type->{perltype} = $perltype;
 		$type->{svtype} = $perltypes{$perltype};
@@ -196,6 +202,18 @@ sub type {
 	my ($self, $name) = @_;
 	return $self->{_typemap}{$name} if $self->{_typemap}{$name};
 	
+	# copy base types for const types
+	if ($name=~/^const\s/) {
+		(my $basename = $name)=~s/^const\s+//;
+		if (my $type = $self->{_typemap}{$basename}) {
+			my $target;
+			if ($type->has('target')) {
+				$target = $type->target;
+			}
+			$self->register_type($name, $type->builtin, $target);
+			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
+		}
+	}
 	(my $k = $name)=~s/ //g;
 	if ($builtins{$k}) {
 		return new Perl::BuiltinType($name, $builtins{$k}, $perltypes{ $builtins{$k} });
@@ -321,7 +339,7 @@ sub array_input_converter {
 		qq(for (int i = 0; i < $repeat; i++) {),
 		qq(\t$perl_item = av_fetch($array, i, 0);),
 		qq(\tif ($perl_item == NULL) {),
-		qq(\t\t$cpp_item = $none;),
+		qq(\t\t//$cpp_item = $none;	// need to fix this),
 		qq(\t\tcontinue;),
 		"\t}",
 		"\t" . $self->input_converter($cpp_item, "*$perl_item"),

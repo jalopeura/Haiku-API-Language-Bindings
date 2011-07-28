@@ -76,14 +76,6 @@
 			<method name="Timeout">
 				<return type="bigtime_t" action="output" />
 			</method>
-			<method name="InvokeKind">
-				<param name="notify" type="bool*" default="NULL" action="output" />
-				<return type="uint32" action="output" />
-			</method>
-			<method name="BeginInvokeNotify">
-				<param name="kind" type="uint32" default="B_CONTROL_INVOKED" action="input" />
-			</method>
-			<method name="EndInvokeNotify" />
 		</functions>
 	</binding>
 </bindings>

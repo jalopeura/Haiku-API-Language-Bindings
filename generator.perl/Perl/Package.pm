@@ -178,7 +178,9 @@ sub generate_pm_preamble {
 	
 	my $perl_class_name = $self->perl_name;
 	
-	print { $self->{pmh} } <<TOP;
+	my $fh = $self->pmh;
+	
+	print $fh <<TOP;
 #
 # Automatically generated file
 #
@@ -188,31 +190,42 @@ use strict;
 use warnings;
 TOP
 	
+	if ($self->has('_exports')) {
+		print  $fh "require Exporter;\n";
+	}
+	
 	# if we're a top-level package, we need to be a DynaLoader
 	if ($self->has('name')) {
-		print  { $self->{pmh} } "require DynaLoader;\n"
+		print  $fh "require DynaLoader;\n";
+		
+		if ($self->has('packages')) {
+			print $fh "\n";
+			for my $pkg ($self->packages) {
+				my $name = $pkg->perl_name;
+				print $fh "use $name;\n";
+			}
+		}
 	}
 	
-	if ($self->has('_exports')) {
-		print  { $self->{pmh} } "require Exporter;\n"
-	}
-	
-	print { $self->{pmh} } "\nour \$VERSION = $self->{version};\n";
+	print $fh "\nour \$VERSION = $self->{version};\n";
 	
 	if ($self->has('_isa')) {
 		my $isa = join(' ', $self->_isa);
-		print { $self->{pmh} } "our \@ISA = qw($isa);\n";
+		print $fh "our \@ISA = qw($isa);\n";
 	}
 	
 	if ($self->has('_exports')) {
+		if ($self->has('functions')) {
+			$self->functions->generate_exports;
+		}
 		if ($self->has('constants')) {
 			$self->constants->generate_export_groups;
 		}
 		my $exp = join(', ', $self->_exports);
-		print { $self->{pmh} } "our \@EXPORT_OK = ($exp);\n";
+		print $fh "our \@EXPORT_OK = ($exp);\n";
 	}
 	
-	print { $self->{pmh} } "\n";
+	print $fh "\n";
 }
 
 sub generate_pm_postamble {
@@ -246,6 +259,8 @@ TOP
 sub generate_xs_postamble {
 	my ($self) = @_;
 	
+	my $fh = $self->xsh;
+	
 	my ($op_eq, $op_ne);
 	
 	if ($self->has('operators') and $self->operators->has('operators')) {
@@ -261,7 +276,6 @@ sub generate_xs_postamble {
 	
 	unless ($op_eq and $op_ne) {
 		my $cpp_class_name = $self->cpp_name;
-		my $fh = $self->xsh;
 		
 		if (not $op_eq) {
 			print $fh <<OP_EQ;
@@ -294,7 +308,9 @@ ${cpp_class_name}::operator_ne(object, swap)
 
 OP_NE
 		}
-		
+	}
+	
+	if ($self->perl_name ne $self->module_name) {
 		my $perl_class_name = $self->perl_name;
 		(my $nil = $self->module_name)=~s/:/_/g;
 		$nil = 'XS_' . $nil . '_nil';
@@ -311,7 +327,6 @@ BOOT:
     newXS("${perl_class_name}::()", $nil, file);
 
 OVERLOAD
-
 	}
 }
 

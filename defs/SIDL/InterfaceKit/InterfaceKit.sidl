@@ -4,6 +4,7 @@
 		<file name="Alert.h" />
 		<file name="Box.h" />
 		<file name="Button.h" />
+		<file name="CheckBox.h" />
 		<file name="Control.h" />
 		<file name="Font.h" />
 		<file name="Menu.h" />
@@ -12,8 +13,10 @@
 		<file name="MenuItem.h" />
 		<file name="Point.h" />
 		<file name="PopUpMenu.h" />
+		<file name="RadioButton.h" />
 		<file name="Rect.h" />
 		<file name="Screen.h" />
+		<file name="SeparatorItem.h" />
 		<file name="StringView.h" />
 		<file name="TextControl.h" />
 		<file name="TextView.h" />
@@ -82,6 +85,7 @@ and C++, but the generator complains if they're not defined
 
 		<type name="bool*"            builtin="void*" />
 		<type name="float*"           builtin="void*" />
+		<type name="int32*"           builtin="void*" />
 		<type name="key_map**"        builtin="void*" />
 		<type name="size_t*"          builtin="void*" />
 	</types>
@@ -118,7 +122,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="system_colors">
-				<return type="color_map*" action="output" />
+				<return type="const color_map*" action="output" />
 			</plain>
 			<plain name="get_scroll_bar_info">
 				<param name="info" type="scroll_bar_info*" deref="true" action="output" />
@@ -191,10 +195,12 @@ and C++, but the generator complains if they're not defined
 				<param name="info" type="key_info*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+<!-- Need to fix this
 			<plain name="get_key_map">
 				<param name="map" type="key_map**" action="output" />
 				<param name="keyBuffer" type="char**" action="output" />
 			</plain>
+-->
 			<plain name="get_keyboard_id">
 				<param name="id" type="uint16*" deref="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -202,7 +208,7 @@ and C++, but the generator complains if they're not defined
 			<plain name="get_modifier_key">
 				<param name="modifier" type="uint32" action="input" />
 				<param name="key" type="uint32*" deref="true" action="output" />
-				<return type="rgb_color" action="error" success="B_OK" />
+				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_modifier_key">
 				<param name="modifier" type="uint32" action="input" />

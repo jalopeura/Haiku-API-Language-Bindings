@@ -73,14 +73,11 @@ sub generate {
 	my $type = $ops{$name}{type};
 	
 	my $rettype;
-	if ($type eq 'neg') {
-		$rettype = $cpp_class_name;
+	if ($type eq 'neg' or $type eq 'math' or $type eq 'mut') {
+		$rettype = 'SV*';
 	}
 	elsif ($type eq 'cmp') {
 		$rettype = 'bool';
-	}
-	if ($type eq 'math' or $type eq 'mut') {
-		$rettype = 'SV*';
 	}
 	
 	my $fh = $self->package->xsh;
@@ -88,25 +85,50 @@ sub generate {
 	print $fh <<OPERATOR;
 $rettype
 ${cpp_class_name}::$fname(object, swap)
+OPERATOR
+	
+	if ($type eq 'neg') {
+		my $type_obj = $self->types->type("$cpp_class_name*");
+		my $converter = $type_obj->output_converter('result', 'RETVAL');
+		print $fh <<CODE;
+	INPUT:
+		SV* object;	// don't try to convert it
+		IV swap;
+	OVERLOAD: $name
+	CODE:
+		$cpp_class_name* result;
+//		why do these next two statements not work?
+//		*result = -*THIS;
+//		*result = -(*THIS);
+//		but this workaround does
+		$cpp_class_name holder;
+		holder = *THIS;
+		*result = -holder;
+		RETVAL = newSV(0);
+		$converter
+CODE
+	}
+	elsif ($type eq 'cmp') {
+		print $fh <<CODE;
 	INPUT:
 		$cpp_class_name object;
 		IV swap;
 	OVERLOAD: $name
 	CODE:
-OPERATOR
-	
-	if ($type eq 'neg') {
-		print $fh "\t\tRETVAL = -(*THIS);\n";
-	}
-	elsif ($type eq 'cmp') {
-		print $fh "\t\tRETVAL = *THIS $name object;\n";
+		RETVAL = *THIS $name object;
+CODE
 	}
 	elsif ($type eq 'math') {
-		my $type_obj = $self->types->type($cpp_class_name);
+		my $type_obj = $self->types->type("$cpp_class_name*");
 		my $converter = $type_obj->output_converter('result', 'RETVAL');
 		print $fh <<CODE;
-		$cpp_class_name result;
-		result = *THIS $name object;
+	INPUT:
+		$cpp_class_name object;
+		IV swap;
+	OVERLOAD: $name
+	CODE:
+		$cpp_class_name* result;
+		*result = *THIS $name object;
 		RETVAL = newSV(0);
 		$converter
 CODE
@@ -115,6 +137,11 @@ CODE
 		my $type_obj = $self->types->type("$cpp_class_name*");
 		my $converter = $type_obj->output_converter('THIS', 'RETVAL');
 		print $fh <<CODE;
+	INPUT:
+		$cpp_class_name object;
+		IV swap;
+	OVERLOAD: $name
+	CODE:
 		*THIS $name object;
 		RETVAL = newSV(0);
 		$converter

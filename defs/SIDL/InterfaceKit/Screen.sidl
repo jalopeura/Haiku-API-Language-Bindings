@@ -50,14 +50,4 @@
 		</constants>
 -->
 	</binding>
-	<binding source="screen_id" target="Haiku::screen_id">
-		<doc>Exposes the screen_id struct</doc>
-		<properties>
-			<property name="id" type="int32" />
-		</properties>
-		<functions>
-			<constructor />
-			<destructor />
-		</functions>
-	</binding>
 </bindings>
