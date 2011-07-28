@@ -765,9 +765,11 @@ and C++, but the generator complains if they're not defined
 		<doc>Exposes the color_map struct</doc>
 		<properties>
 			<property name="id"            type="int32" />
-			<property name="color_list"    type="rgb_color" repeat="256" />
+<!--
+			<property name="color_list"    type="rgb_color"  repeat="256" />
 			<property name="inversion_map" type="uint8"      repeat="256"  />
 			<property name="index_map"     type="uint8"      repeat="32768" />
+-->
 		</properties>
 		<functions>
 			<constructor />
@@ -785,7 +787,9 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width"            type="int16" />
 			<property name="min_height"           type="int16" />
 			<property name="max_height"           type="int16" />
+<!--
 			<property name="reserved"             type="int32" repeat="8" />
+-->
 		</properties>
 		<functions>
 			<constructor />
@@ -801,7 +805,9 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width_scale"  type="float" />
 			<property name="min_height_scale" type="float" />
 			<property name="max_height_scale" type="float" />
+<!--
 			<property name="reserved"         type="int32" repeat="8" />
+-->
 		</properties>
 		<functions>
 			<constructor />

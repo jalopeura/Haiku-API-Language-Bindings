@@ -25,7 +25,7 @@ sub generate {
 	mkpath($target);
 print "Generating $target\n";
 	
-#	File::Path->remove_tree($target);
+	File::Path->remove_tree($target);
 	
 	# if the binding has any bundles, generate them
 	my @bundledirs;

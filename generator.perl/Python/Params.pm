@@ -199,12 +199,11 @@ sub as_python_call {
 #		my $obj_return;
 		if ($param->type->has('target') and my $target = $param->type->target) {
 			(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-			push @defs, "$objtype* $pyobj_name;";
+			push @defs, "$objtype* $pyobj_name; // from as_python_call()";
 #			$obj_return = 1;
 		}
 		else {
 			push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
-			
 		}
 		push @defs, @$def;
 	}
@@ -234,7 +233,7 @@ sub as_python_return {
 		
 		@defs = (
 			qq($retval->{type_name} $name;),
-			qq(PyObject* $pyname;),
+			qq(PyObject* $pyname;	// from as_python_return()),
 		);
 		
 		if ($item=~/[ibhlBH]/) {

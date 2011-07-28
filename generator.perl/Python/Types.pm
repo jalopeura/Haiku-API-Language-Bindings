@@ -145,6 +145,7 @@ sub write_object_types {
 	for my $type (@{ $self->{types} }) {
 		next unless $type->has('target') and $type->target;
 		(my $cpp_type = $type->name)=~s/\*$//;
+		$cpp_type=~s/^const\s+//;
 		next if $seen{$cpp_type};
 		$seen{$cpp_type} = 1;
 		
@@ -266,11 +267,12 @@ sub arg_builder {
 			push @code,
 				qq($options->{output_name} = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
 			
+			(my $type_name = $self->name)=~s/^const\s+//;
 			if ($builtin eq 'object' or $builtin eq 'responder') {
-				push @code, qq($options->{output_name}->cpp_object = ($self->{name}*)&$options->{input_name};);
+				push @code, qq($options->{output_name}->cpp_object = ($type_name*)&$options->{input_name};);
 			}
 			else {
-				push @code, qq($options->{output_name}->cpp_object = ($self->{name})$options->{input_name};);
+				push @code, qq($options->{output_name}->cpp_object = ($type_name)$options->{input_name};);
 			}
 			
 			if ($options->{must_not_delete}) {
@@ -333,7 +335,7 @@ sub arg_builder {
 		else {
 			$arg=~s/[^>]+>//g;
 			$arg = "py_$arg";
-			push @def, "PyObject* $arg;";
+			push @def, "PyObject* $arg;	// from arg_builder()";
 			my $builtin = $self->builtin;
 			my $target;
 			if ($builtin eq 'char**') {
@@ -390,7 +392,15 @@ sub array_arg_builder {
 	my $arg = $options->{output_name};
 	my $repeat = delete $options->{repeat};
 #	my @defs = ("PyObject* $arg;");
-	my @defs = ('PyObject* py_element;',);
+	
+	my @defs;	
+	if ($self->has('target') and my $target = $self->target) {
+		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+		@defs = ("$objtype* py_element;	// from array_arg_builder");
+	}
+	else {
+		@defs = ('PyObject* py_element;	// from array_arg_builder');
+	}
 	
 	$options->{input_name} .= '[i]';
 	$options->{output_name} = 'py_element';
@@ -526,7 +536,7 @@ sub arg_parser {
 	if ($item=~/^O/) {
 		$arg=~s/[^>]+>//g;
 		$arg = "py_$arg";
-		push @def, "PyObject* $arg;";
+		push @def, "PyObject* $arg;	// from arg_parser()";
 		
 		my $builtin = $self->builtin;
 		my $target;
@@ -539,7 +549,7 @@ sub arg_parser {
 				$arg = $argname;
 			}
 			else {
-				push @def, "PyObject* $arg;";
+				push @def, "PyObject* $arg;	// from arg_parser()";
 			}
 			my $length = $self->has('repeat') ? $self->repeat : 1;
 			push @code, qq(PyString2Char($arg, &$name, $length, sizeof($builtin)););
@@ -637,7 +647,7 @@ sub array_arg_parser {
 	$options->{output_name} .= '[i]';
 	my ($element_defs, $element_code) = $self->arg_parser($options);
 	
-	my @defs = ("PyObject* $options->{input_name};");
+	my @defs = ("PyObject* $options->{input_name};	// from array_arg_parser()");
 	
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
 	

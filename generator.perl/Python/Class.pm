@@ -78,11 +78,11 @@ sub finalize_upgrade {
 	if ($self->has('functions') and $self->functions->has('plains')) {
 		$self->{_parent}->add_functions(delete $self->functions->{plains});
 		
-		unless ($self->has('constructors')
-			or $self->has('destructor')
-			or $self->has('methods')
-			or $self->has('events')
-			or $self->has('statics')) {
+		unless ($self->functions->has('constructors')
+			or $self->functions->has('destructor')
+			or $self->functions->has('methods')
+			or $self->functions->has('events')
+			or $self->functions->has('statics')) {
 			delete $self->{functions};
 		}
 	}
@@ -298,7 +298,7 @@ CMP
 			}
 			
 			print $fh map { "\t\t\t$_\n"; } @$code;
-			print $fh "\t\t\t\n";
+			print $fh "\t\t\tbreak;\n\t\t\t\n";
 		}
 		
 		print $fh <<CMP;
@@ -356,12 +356,18 @@ CMP
 			$p = '&' . $p . '_PyType';
 		}
 		
-		$parent = "${python_object_prefix}_bases";
+#		$parent = "${python_object_prefix}_bases";
 		
-		print $fh 
-			sprintf("PyObject* $parent = PyTuple_Pack(%d, %s);\n\n", scalar(@p), @p);
+#		print $fh 
+#			sprintf("PyObject* $parent = PyTuple_Pack(%d, %s);\n\n", scalar(@p), join(', ', @p));
 		
-		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), @p);
+		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), join(', ', @p));
+		
+		# Having some trouble with inheritance and garbage collection
+		# For now, inheritance is turned off except for responders
+		unless ($self->is_responder) {
+			$parent = 0;
+		}
 	}
 	else {
 		$parent = 0;

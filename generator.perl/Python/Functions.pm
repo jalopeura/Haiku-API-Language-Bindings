@@ -147,9 +147,16 @@ sub generate_cc {
 						}
 					}
 					my ($arg_defs, $arg_code) = $param->arg_parser($options);
-					push @defs,
-						"PyObject* $pyobj_name;",	# may need to fix this for C++ objects
-						@$arg_defs;
+		
+					if ($param->type->has('target') and my $target = $param->type->target) {
+						(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+						push @defs, "$objtype* $pyobj_name; // from as_python_call()";
+					}
+					else {
+						push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
+					}
+					
+					push @defs, @$arg_defs;
 					push @parsecode, @$arg_code;
 					push @parse_args, '&' . $pyobj_name;
 				}
@@ -208,9 +215,16 @@ sub generate_cc {
 						}
 					}
 					my ($defs, $code) = $param->arg_builder($options);
-					push @defs,
-						"PyObject* $pyobj_name;",
-						@$defs;
+					
+					if ($param->type->has('target') and my $target = $param->type->target) {
+						(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
+						push @defs, "$objtype* $pyobj_name; // from as_python_call()";
+					}
+					else {
+						push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
+					}
+					
+					push @defs, @$defs;
 					push @postcode, @$code;
 					push @build_args, $pyobj_name;
 				}

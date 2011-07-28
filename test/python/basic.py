@@ -70,8 +70,9 @@ menu_info = Haiku.menu_info()
 menu_info.f_family = "Test String"
 print "Should get 'Test String'; got", menu_info.f_family
 
-print "Should get methods from different base classes; got", \
-	button.Window, "and", button.Message
+# Having trouble with Python inheritance and garbage collection 
+#print "Should get methods from different base classes; got", \
+#	button.Window, "and", button.Message
 
 print "app and be_app comparison:", (app == be_app)
 
@@ -80,7 +81,7 @@ y = 10
 point = Haiku.Point(x,y)
 #negpoint = -point
 negpoint = Haiku.Point(-x,-y)
-#print "Should get negated values:", point.PrintToStream(), "vs", negpoint.PrintToStream()
+print "Should get negated values:", point.x, point.y, "vs", negpoint.x, negpoint.y
 
 opoint = point + negpoint
 print "Should get a true value:", opoint == Haiku.PointConstants.B_ORIGIN

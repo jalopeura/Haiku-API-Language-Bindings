@@ -164,16 +164,17 @@ sub generate {
 #	push @$defs, "$rettype retval;";
 	
 	my $fh = $self->class->cch;
-
+	
+	# Comparison operators causing garbage collection problem
 	if ($type eq 'cmp') {
 		unshift @$code, "retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
-		push @$code, qq(return Py_BuildValue("b", retval ? 1 : 0));
+		push @$code, qq(return Py_BuildValue("b", retval ? 1 : 0););
 	}
 	else {
 		if ($type eq 'mut') {
 			@$code = (
 				"*(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;",
-				"return (PyObject*)python_self;",
+				"return (PyObject*)a;",
 			);
 		}
 		else {
