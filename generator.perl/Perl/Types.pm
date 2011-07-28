@@ -214,6 +214,7 @@ sub type {
 			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
 		}
 	}
+	
 	(my $k = $name)=~s/ //g;
 	if ($builtins{$k}) {
 		return new Perl::BuiltinType($name, $builtins{$k}, $perltypes{ $builtins{$k} });

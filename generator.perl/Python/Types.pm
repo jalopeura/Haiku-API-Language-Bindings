@@ -117,6 +117,19 @@ sub type {
 	my ($self, $name) = @_;
 	return $self->{_typemap}{$name} if $self->{_typemap}{$name};
 	
+	# copy base types for const types
+	if ($name=~/^const\s/) {
+		(my $basename = $name)=~s/^const\s+//;
+		if (my $type = $self->{_typemap}{$basename}) {
+			my $target;
+			if ($type->has('target')) {
+				$target = $type->target;
+			}
+			$self->register_type($name, $type->builtin, $target);
+			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
+		}
+	}
+	
 	(my $k = $name)=~s/ //g;
 	if ($builtins{$k}) {
 		return new Python::BuiltinType($name, $builtins{$k});

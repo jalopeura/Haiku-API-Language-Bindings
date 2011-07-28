@@ -70,7 +70,8 @@ menu_info = Haiku.menu_info()
 menu_info.f_family = "Test String"
 print "Should get 'Test String'; got", menu_info.f_family
 
-# test multiple inheritance (when something multiple inherited is defined)
+print "Should get methods from different base classes; got", \
+	button.Window, "and", button.Message
 
 print "app and be_app comparison:", (app == be_app)
 

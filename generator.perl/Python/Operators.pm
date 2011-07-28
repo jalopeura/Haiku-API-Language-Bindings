@@ -76,41 +76,59 @@ my %ops = (
 	'neg' => { 
 		name => 'neg',
 		type => 'neg',	# negation
+		func => 'unary',
+		code => 'nb_negative',
 	},
 	
 	'==' => { 
 		name => 'eq',
 		type => 'cmp',	# comparison
+		func => 'richcompare',
+		code => 'Py_EQ',
 	},
 	'!=' => { 
 		name => 'ne',
 		type => 'cmp',	# comparison
+		func => 'richcompare',
+		code => 'Py_NE',
 	},
 	
 	'+' => { 
 		name => 'add',
 		type => 'math',	# mathematical
+		func => 'binary',
+		code => 'nb_add',
 	},
 	'-' => { 
 		name => 'sub',
 		type => 'math',	# mathematical
+		func => 'binary',
+		code => 'nb_subtract',
 	},
 	'&' => { 
 		name => 'and',
 		type => 'math',	# mathematical
+		func => 'binary',
+		code => 'nb_and',
 	},
 	'|' => { 
 		name => 'or',
 		type => 'math',	# mathematical
+		func => 'binary',
+		code => 'nb_or',
 	},
 	
 	'+=' => { 
 		name => 'iadd',
 		type => 'mut',	# mutator
+		func => 'binary',
+		code => 'nb_inplace_add',
 	},
 	'-=' => { 
 		name => 'isub',
 		type => 'mut',	# mutator
+		func => 'binary',
+		code => 'nb_inplace_subtract',
 	},
 );
 
@@ -123,8 +141,6 @@ sub generate {
 	
 	my $cpp_class_name = $self->class->cpp_name;
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
-	my $mname = "__$ops{$name}{name}__";
-	my $fname = $python_object_prefix . $mname;
 	my $pyobj_type = "${python_object_prefix}_Object";
 	my $type = $ops{$name}{type};
 	
@@ -136,107 +152,83 @@ sub generate {
 		$rettype = 'bool';
 	}
 	
-	my $type_obj = $self->types->type($rettype);
-	my $options = {
-		input_name => 'retval',
-		output_name => 'py_retval',
-	};
-	my ($defs, $code) = $type_obj->arg_builder($options);
-	push @$defs, "$rettype retval;";
+	my $defs = [];
+	my $code = [];
+	
+#	my $type_obj = $self->types->type($rettype);
+#	my $options = {
+#		input_name => 'retval',
+#		output_name => 'py_retval',
+#	};
+#	my ($defs, $code) = $type_obj->arg_builder($options);
+#	push @$defs, "$rettype retval;";
 	
 	my $fh = $self->class->cch;
 
-	if ($type eq 'neg') {
-		push @$defs, "$pyobj_type* py_retval;";
-		unshift @$code, "retval = -(*python_self->cpp_object);";
-		push @$code, "return (PyObject*)py_retval;";
+	if ($type eq 'cmp') {
+		unshift @$code, "retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
+		push @$code, qq(return Py_BuildValue("b", retval ? 1 : 0));
 	}
 	else {
-		if ($type eq 'cmp') {
-			unshift @$code, "retval = *(python_self->cpp_object) $name object;";
-			push @$code, "return py_retval;";
-		}
-		elsif ($type eq 'math') {
-			unshift @$code, "retval = *(python_self->cpp_object) $name object;";
-			push @$code, "return (PyObject*)py_retval;";
-		}
-		elsif ($type eq 'mut') {
+		if ($type eq 'mut') {
 			@$code = (
-				"*(python_self->cpp_object) $name object;",
+				"*(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;",
 				"return (PyObject*)python_self;",
 			);
 		}
+		else {
+			my $type_obj = $self->types->type($rettype);
+			my $options = {
+				input_name => 'retval',
+				output_name => 'py_retval',
+			};
+			($defs, $code) = $type_obj->arg_builder($options);
+			push @$defs, 
+				"$rettype retval;",
+				"$pyobj_type* py_retval;";
+			
+			if ($type eq 'neg') {
+				unshift @$code, "retval = -(*(($pyobj_type*)a)->cpp_object);";
+				push @$code, "return (PyObject*)py_retval;";
+			}
+			elsif ($type eq 'math') {
+				unshift @$code, "retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
+				push @$code, "return (PyObject*)py_retval;";
+			}
+		}
+	}
+	
+	my $func = $ops{$name}{func};
+	my $functype = $ops{$name}{code};
+	
+	if ($func eq 'richcompare') {
+		$self->class->add_richcompare_block($functype, $defs, $code);
+	}
+	else {
+		my $mname = "__$ops{$name}{name}__";
+		my $fname = $python_object_prefix . $mname;
 		
-		push @$defs, "$cpp_class_name object;";
-		unshift @$code,
-			qq(PyArg_ParseTuple(python_args, "O", &py_object);),
-			qq(object = *((($pyobj_type*)py_object)->cpp_object););
+		if ($func eq 'unary') {
+			print $fh "static PyObject* $fname(PyObject* a) {\n";
+		}
+		elsif ($func eq 'binary') {
+			print $fh "static PyObject* $fname(PyObject* a, PyObject* b) {\n";
+		}
+		else {
+			die "Unknown function type '$func' (with code '$functype') for operator '$ops{$name}{name}'";
+		}
+		
+		if (@$defs) {
+			print $fh map { "\t$_\n"; } @$defs;
+			print $fh "\t\n";
+		}
+		
+		print $fh map { "\t$_\n"; } @$code;
+		
+		print $fh "}\n\n";
+		
+		$self->class->add_as_number_op($functype, $fname);
 	}
-	
-	print $fh "static PyObject* $fname($pyobj_type* python_self, PyObject* python_args) {\n";
-	
-	if (@$defs) {
-		print $fh map { "\t$_\n"; } @$defs;
-		print $fh "\t\n";
-	}
-	
-	print $fh map { "\t$_\n"; } @$code;
-	
-	print $fh "}\n\n";
-
-=pod
-
-${cpp_class_name}::$fname(object, swap)
-	INPUT:
-		$cpp_class_name object;
-		IV swap;
-	CODE:
-OPERATOR
-	
-	if ($type eq 'neg') {
-	}
-	elsif ($type eq 'cmp') {
-		print $fh "\t\tRETVAL = *THIS $name object;\n";
-	}
-	elsif ($type eq 'math') {
-		my $type_obj = $self->types->type($cpp_class_name);
-		my $converter = $type_obj->output_converter('result', 'RETVAL');
-		print $fh <<CODE;
-		$cpp_class_name result;
-		result = *THIS $name object;
-		RETVAL = newSV(0);
-		$converter
-CODE
-	}
-	elsif ($type eq 'mut') {
-		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter('THIS', 'RETVAL');
-		print $fh <<CODE;
-		*THIS $name object;
-		RETVAL = newSV(0);
-		$converter
-CODE
-	}
-	
-	print $fh <<OPERATOR;
-	OUTPUT:
-		RETVAL
-
-OPERATOR
-
-=cut
-	
-	my $doc;
-	if ($self->has('doc')) {
-		$doc = $self->doc;
-	}
-	$self->class->add_method_table_entry(
-		$mname,			# name as seen from Python
-		$fname,			# name of wrapper function
-		'METH_VARARGS',	# flags
-		$doc			# docs
-	);
-
 }
 
 1;
