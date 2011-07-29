@@ -126,7 +126,7 @@
 			<method name="Team">
 				<return type="team_id" />
 			</method>
-			<method name="LooperForThread" />
+			<method name="LooperForThread">
 				<param name="thread" type="thread_id" action="input" />
 				<return type="BLooper*" />
 			</method>
@@ -140,7 +140,7 @@
 			<method name="CountLockRequests">
 				<return type="int32" />
 			</method>
-			<method name="Sem" />
+			<method name="Sem">
 				<return type="sem_id" />
 			</method>
 <!-- Scripting -->
