@@ -145,30 +145,53 @@ sub type {
 }
 
 sub input_converter {
-	my ($self, $target) = @_;
+	my ($self, $target, $modifiers) = @_;
 	
-	if ($self->has('repeat')) {
-		return $self->type->array_input_converter("$self->{name}", $target, $self->repeat);
+	my $options = {
+		input_name => $self->name,
+		output_name => $target,
+	};
+	if ($modifiers->{suffix}) {
+		$options->{input_name} .= delete $modifiers->{suffix};
+	}
+	for my $x (keys %$modifiers) {
+		$options->{$x} = $modifiers->{$x};
+	}
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->input_converter("$self->{name}", $target) ];
+	return $self->type->input_converter($options);
 }
 
 sub output_converter {
-	my ($self, $target) = @_;
+	my ($self, $target, $modifiers) = @_;
 	
-	my $mnd = $self->must_not_delete;
-	
-	if ($self->has('repeat')) {
-		return $self->type->array_output_converter("$self->{name}", $target, $self->repeat, $mnd);
+	my $options = {
+		input_name => $self->name,
+		output_name => $target,
+		must_not_delete => $self->must_not_delete,
+	};
+	if ($modifiers->{suffix}) {
+		$options->{input_name} .= $modifiers->{suffix};
+	}
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->output_converter("$self->{name}", $target, $mnd) ];
+	return $self->type->output_converter($options);
 }
 
 sub as_cpp_def {
 	my ($self) = @_;
 	my $type = $self->type->name;
+	if ($self->has('array_length') and $self->pass_as_pointer) {
+		$type .= '*'
+	}
 	my $arg = "$type $self->{name}";
 	if ($self->has('default')) {
 		$arg .= " = $self->{default}";
@@ -180,7 +203,10 @@ sub as_cpp_def {
 sub as_cpp_call {
 	my ($self) = @_;
 	my $arg = $self->name;
-	if ($self->needs_deref) {
+	if (
+		$self->pass_as_pointer and
+		not ($self->has('array_length') or $self->has('string_length'))
+		) {
 		$arg = "&$arg";
 	}
 	return $arg;

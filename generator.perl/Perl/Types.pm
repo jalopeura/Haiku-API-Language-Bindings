@@ -16,16 +16,15 @@ use constant ENUM_TYPE => 'int';
 # int   >= 16; int >= short
 # long  >= 32; long >= int;
 our %builtins = (
-	'char'    => 'STRING',
-	'intchar' => 'T_IV',
+	'char'    => 'T_IV',
 	'short'   => 'T_IV',
 	'int'     => 'T_IV',
 	'long'    => 'T_IV',
-	'unsignedchar'  => 'T_U_CHAR',
+	'unsignedchar'  => 'T_UV',
 	'unsignedshort' => 'T_UV',
 	'unsignedint'   => 'T_UV',
 	'unsignedlong'  => 'T_UV',
-	'wchar_t' => 'WSTRING',
+	'wchar_t' => 'T_IV',
 	'float'   => 'T_FLOAT',
 	'double'  => 'T_DOUBLE',
 	'longdouble'    => 'T_DOUBLE',
@@ -34,8 +33,8 @@ our %builtins = (
 	'unsignedchar*' => 'T_PV',
 	'constchar*'    => 'T_PV',
 	'wchar_t*'      => 'T_PV',
-	'char**'  => 'CHARARRAY',
-	'void*'   => 'T_PTR',
+#	'char**'  => 'CHARARRAY',
+	'void*'   => 'T_PV',
 	'constvoid*'   => 'T_PV',
 	
 	'responder' => 'RESP_OBJ',
@@ -305,100 +304,245 @@ package Perl::Type;
 use strict;
 our @ISA = qw(Type Perl::BaseObject);
 
+#
+# converters already have the type
+# converters need:
+#  array_length (if any)
+#  string_length (if any)
+#
+
+# convert Perl SV* to some C++ type
 sub input_converter {
-	my ($self, $var, $arg, $repeat) = @_;
-	my $converter = $Perl::Types::input_converters{ $self->perltype };
+#print join("\n", 'input_converter', caller),"\n\n";
+	my ($self, $options) = @_;
 	
-	# values for the eval
-	my $type = $self->name;
-	my $ntype = '$ntype';
-	
-	my $ret = eval "qq($converter)" or die $@;
-	
-	if ($self->builtin eq 'char') {
-		my $length = $self->has('repeat') ? $self->repeat : 1;
-		$ret=~s/LENGTH/$length/;
+	if ($options->{array_length}) {
+		return $self->array_input_converter($options);
 	}
-#print "Input converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
-#print "Called from ", join(':::', caller), "\n";
-	return $ret;
+	
+	my (@defs, @code);
+	my $arg = $options->{input_name};
+	my $var = $options->{output_name};
+	
+	my $len =  $options->{string_length};
+	if (not $len and $self->has('string_length')) {
+		$len = $self->string_length;
+	}
+	
+	# strings with lengths need special processing
+	if ($len and $len ne 'null-terminated') {
+		my $ptr = $self->{perltype} eq 'T_PV';
+		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+		
+		if ($ptr) {
+			if ($base ne 'char') {
+				$var = "(char*)$var";
+			}
+			
+			# non-constant lengths
+			if ($options->{set_string_length}) {
+				push @code, "$var = SvPV($arg, $len);";
+			}
+			else {
+				push @code, "$var = SvPV_nolen($arg, $len);";
+			}
+		}
+		else {
+			push @code, "memcpy((void*)&$var, (void*)SvPV($arg, $len), $len)";
+		}
+		
+		# not sure if this is necessary
+#		if (
+#			$options->{string_length} and
+#			$len ne 'null-terminated' and
+#			$base ne 'char'
+#			) {
+#			push @code, "$len /= sizeof($base)";
+#		}
+	}
+	# null-terminated strings and non-string types use default converters
+	else {
+		my $converter = $Perl::Types::input_converters{ $self->perltype };
+		
+		# values for the eval
+		my $type = $self->name;
+		my $ntype = '$ntype';
+		
+		my $ret = eval "qq($converter)" or die $@;
+		
+		push @code, $ret;
+	}
+	
+	return (\@defs, \@code);
 }
 
+# convert Perl SV* containing an aref to C++ array of some type
 sub array_input_converter {
-	my ($self, $var, $arg, $repeat) = @_;
+	my ($self, $options) = @_;
+	
+	my (@defs, @code);
+	my $arg = $options->{input_name};
+	my $var = $options->{output_name};
 	
 	my $array = "${arg}_av";
 	my $cpp_item = "${var}[i]";
 	my $perl_item = 'element_sv';
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
 	
-	my @ret = (
+	my $count = delete $options->{array_length};
+	# I should make these constants instead of hard-coding them here
+	$count=~s/SELF\./cpp_obj->/;
+	
+	$options->{input_name} = "*$perl_item";
+	$options->{output_name} = $cpp_item;
+	my ($item_defs, $item_code) = $self->input_converter($options);
+	
+	push @defs,
+		"AV* $array;",
+		@$item_defs;
+	
+	push @code, (
 		"//Converting Perl arg '$arg' to C array '$var'",
-		qq(AV* $array;),
-		qq(SV** $perl_item;),
 		qq($array = (AV*)SvRV($arg);),
-		qq(for (int i = 0; i < $repeat; i++) {),
-		qq(\t$perl_item = av_fetch($array, i, 0);),
+	);
+	
+	# non-constant lengths
+	if ($options->{set_array_length}) {
+		push @code, "$count = av_len($array) + 1;";
+	}
+
+	# malloc if necessary
+	if ($options->{need_malloc}) {
+		# calling code should not pass 'need_malloc' unless using a pointer (type*)
+		# if using an array (type[]), calling code shouldn't need malloc
+		(my $base = $self->{name})=~s/const\s+//;
+		push @code, "$var = ($base*)malloc($count * sizeof($base));";
+	}
+
+	#
+	# here we need to allocate memory (maybe)
+	# if we're being used as type*, we need to allocate some memory
+	# if we're being used as type[], we do not need to (it should be done already)
+	#
+	
+	push @code, (
+		qq(for (int i = 0; i < $count; i++) {),
+#		qq(\tSV** $perl_item;),
+#		qq(\t$perl_item = av_fetch($array, i, 0);),
+		qq(\tSV** $perl_item = av_fetch($array, i, 0);),
 		qq(\tif ($perl_item == NULL) {),
-		qq(\t\t//$cpp_item = $none;	// need to fix this),
+		qq(\t\t$cpp_item = $none;	// need to fix this),
 		qq(\t\tcontinue;),
 		"\t}",
-		"\t" . $self->input_converter($cpp_item, "*$perl_item"),
+		map({ "\t$_" } @$item_code),
 		'}',
 	);
 	
-	return \@ret;
+	return (\@defs, \@code);
 }
 
+# convert some C++ type to Perl SV*
 sub output_converter {
-	my ($self, $var, $arg, $must_not_delete) = @_;
-	my $converter = $Perl::Types::output_converters{ $self->perltype };
+#print join("\n", 'output_converter', caller),"\n\n";
+	my ($self, $options) = @_;
 	
-	# values for the eval
-	my $type = $self->name;
-	my $ntype = '$ntype';
-	
-	my $ret = eval "qq($converter)" or die "$@ ($self->{name}, $self->{perltype}, $converter)" . join(':::', caller);
-	
-	if ($self->builtin eq 'char') {
-		my $length = $self->has('repeat') ? $self->repeat : 1;
-		$ret=~s/LENGTH/$length/;
+	if ($options->{array_length}) {
+		return $self->array_output_converter($options);
 	}
 	
-	if ($must_not_delete) {
-		$ret=~s/CLASS/CLASS, true/;
+	my (@defs, @code);
+	my $var = $options->{input_name};
+	my $arg = $options->{output_name};
+	
+	my $len =  $options->{string_length};
+	if (not $len and $self->has('string_length')) {
+		$len = $self->string_length;
 	}
 	
-	if ($self->has('target')) {
-		$ret=~s/CLASS/"$self->{target}"/;
+	# strings with lengths need special processing
+	if ($len and $len ne 'null-terminated') {
+		my $ptr = $self->{perltype} eq 'T_PV';
+		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+		
+		if (
+			$options->{string_length} and
+			$len ne 'null-terminated' and
+			$base ne 'char'
+			) {
+			$len .= " * sizeof($base)";
+		}
+		
+		if (not $ptr) {
+			$var = "&$var";
+		}
+		if ($self->{name} ne 'char*') {
+			"$var = (char*)$var";
+		}
+		
+		push @code, "$arg = newSVpvn($var, $len);";
+	}
+	# null-terminated strings and non-string types use default converters
+	else {
+		my $converter = $Perl::Types::output_converters{ $self->perltype };
+		
+		if ($options->{must_not_delete}) {
+			$converter=~s/CLASS/CLASS, true/;
+		}
+		
+		if ($self->has('target')) {
+			$converter=~s/CLASS/"$self->{target}"/;
+		}
+		
+		# values for the eval
+		my $type = $self->name;
+		my $ntype = '$ntype';
+		
+		my $ret = eval "qq($converter)" or die $@;
+		
+		push @code, $ret;
 	}
 	
-#print "Output converter for $self = $converter (with var=$var and arg=$arg); result was $ret\n";
-#print "Called from ", join(':::', caller), "\n";
-	return $ret;
+	return (\@defs, \@code);
 }
 
+# convert C++ array of some type to Perl SV* containing an aref
 sub array_output_converter {
-	my ($self, $var, $arg, $repeat, $must_not_delete) = @_;
+	my ($self, $options) = @_;
+	
+	my (@defs, @code);
+	my $var = $options->{input_name};
+	my $arg = $options->{output_name};
 	
 	my $array = "${arg}_av";
 	my $cpp_item = "${var}[i]";
 	my $perl_item = 'element_sv';
 	
-	my @ret = (
+	my $count = delete $options->{array_length};
+	# I should make these constants instead of hard-coding them here
+	$count=~s/SELF\./cpp_obj->/;
+	
+	$options->{input_name} = $cpp_item;
+	$options->{output_name} = $perl_item;
+	my ($item_defs, $item_code) = $self->output_converter($options);
+	
+	push @defs,
+		"AV* $array;",
+		@$item_defs;
+	
+	push @code, (
 		"//Converting C array '$var' to Perl arg '$arg'",
-		qq(AV* $array;),
-		qq(SV* $perl_item;),
 		qq($array = newAV();),
-		qq(for (int i = 0; i < $repeat; i++) {),
-		qq(\t$perl_item = newSV(0);),
-		"\t" . $self->output_converter($cpp_item, $perl_item, $must_not_delete),
-		qq(\tav_push($array, element_sv);),
+		qq(for (int i = 0; i < $count; i++) {),
+#		qq(\tSV* $perl_item;),
+#		qq(\t$perl_item = newSV(0);),
+		qq(\tSV* $perl_item = newSV(0);),
+		map({ "\t$_" } @$item_code),
+		qq(\tav_push($array, $perl_item);),
 		'}',
 		qq($arg = newRV_noinc((SV*) $array);),
 	);
 	
-	return \@ret;
+	return (\@defs, \@code);
 }
 
 package Perl::BuiltinType;

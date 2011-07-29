@@ -47,20 +47,22 @@ sub type_options {
 		name => 'python_self->cpp_object->' . $self->name,
 		must_not_delete => 1,
 	};
-	if ($self->has('repeat')) {
-		$options->{repeat} = $self->repeat;
+	for (qw(array_length string_length)) {
+		if ($self->has($_)) {
+			$options->{$_} = $self->{$_};
+		}
 	}
 	return $options;
 }
 
 sub arg_builder {
-	my ($self, $options, $repeat) = @_;
-	return $self->type->arg_builder($options, $repeat);
+	my ($self, $options) = @_;
+	return $self->type->arg_builder($options);
 }
 
 sub arg_parser {
-	my ($self, $options, $repeat) = @_;
-	return $self->type->arg_parser($options, $repeat);
+	my ($self, $options) = @_;
+	return $self->type->arg_parser($options);
 }
 
 sub repeat {
@@ -86,74 +88,6 @@ sub generate {
 	
 	my $getter_name = "${class_name}_get$property_name";
 	my $setter_name = "${class_name}_set$property_name";
-
-=pod
-
-	$class_name .= '_Object';
-	
-	my $get_var = my $set_var = "python_self->cpp_object->$property_name";
-	
-	my $pre_get = my $pre_set = "// no conversion necessary";
-		
-	# some types are parsed as Python objects; deal with them here
-	if ($item=~/^O/) {
-		my $builtin = $type->builtin;
-		my $target;
-		if ($type->has('target')) {
-			$target = $type->target;
-		}
-		if ($builtin eq 'bool') {
-			$item = 'b';
-			$get_var = "(self->cpp_object->$property_name ? 1 : 0)";
-			$set_var = "(bool)(PyObject_IsTrue(value))";
-		}
-		elsif ($target) {
-			(my $pytype = $target)=~s/\./_/g; $type .= '_Object';
-			$get_var = "py_$property_name";
-			$pre_get = "$pytype* py_$property_name;
-	py_$property_name = new $type();
-	py_$property_name->cpp_object = self->cpp_object->$property_name;";
-			$set_var = "(($type*)value)->cpp_object";
-		}
-		else {
-			warn "Unsupported type: $property_type/$builtin/$target";
-		}
-	}
-	
-	if ($item=~/[ibhlBH]/) {
-		$set_var = "($property_type)PyInt_AsLong(value)";
-	}
-	elsif ($item=~/[Ik]/) {
-		$set_var = "($property_type)PyLong_AsLong(value)";
-	}
-	elsif ($item=~/[fd]/) {
-		$set_var = "($property_type)PyFloat_AsDouble(value)";
-	}
-	elsif ($item=~/[s]/) {
-		$set_var = "($property_type)PyString_AsString(value)";
-	}
-	else {
-		warn "Unsupported type: $property_type ($item)";
-	}
-	
-	print { $self->class->cch } <<PROP;
-/*
-static PyObject* $getter_name($class_name* python_self, void* python_closure) {
-	$pre_get
-	return Py_BuildValue("$item", $get_var);
-}
-
-static int $setter_name($class_name* python_self, PyObject* value, void* closure) {
-	$pre_set
-	self->cpp_object->$property_name = $set_var;
-	return 0;	// really should be doing some kind of checking here
-}
-*/
-
-PROP
-
-=cut
-
 	
 	my $fh = $self->class->cch;
 	
@@ -164,12 +98,17 @@ PROP
 		input_name => 'python_self->cpp_object->' . $self->name,
 		output_name => $get_arg,
 		must_not_delete => 1,
-		repeat => $self->repeat,
 	};
+	for (qw(array_length string_length)) {
+		if ($self->has($_)) {
+			$options->{$_} = $self->{$_};
+		}
+	}
 	my ($get_defs, $get_code) = $self->arg_builder($options);
 	
 	my $obj_return;
-	if ($self->type->has('target') and my $target = $self->type->target) {
+	if ($self->type->has('target') and my $target = $self->type->target
+		and not($self->has('array_length'))) {
 		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
 		unshift @$get_defs, "$objtype* $get_arg;\n";
 		$obj_return = 1;
@@ -197,6 +136,11 @@ PROP
 		output_name => 'python_self->cpp_object->' . $self->name,
 		repeat => $self->repeat,
 	};
+	for (qw(array_length string_length)) {
+		if ($self->has($_)) {
+			$options->{$_} = $self->{$_};
+		}
+	}
 	my ($set_defs, $set_code) = $self->arg_parser($options);
 	print $fh qq(static int $setter_name($class_name* python_self, PyObject* value, void* closure) {\n);
 #	if (not $self->has('repeat') and not $self->type->has('repeat')) {

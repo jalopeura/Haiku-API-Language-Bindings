@@ -8,7 +8,7 @@
 				<param name="signature" type="const char*" action="input">
 					<doc>Sets the application signature. Must begin "[code]application/[/code]".</doc>
 				</param>
-				<param name="error" type="status_t*" deref="true" action="error" success="B_OK">
+				<param name="error" type="status_t" pass-as-pointer="true" action="error" success="B_OK">
 					<doc>Returns [code]B_OK[/code] to indicate success.</doc>
 				</param>
 			</constructor>
@@ -68,7 +68,7 @@
 				<param name="argc" type="int32" action="count[argv]">
 					<doc>The number of arguments.</doc>
 				</param>
-				<param name="argv" type="char**" action="input">
+				<param name="argv" type="char*" action="input" array-length="argc" string-length="null-terminated" pass-as-pointer="true">
 					<doc>The arguments, beginning with the executable name.</doc>
 				</param>
 				<return type="void" />

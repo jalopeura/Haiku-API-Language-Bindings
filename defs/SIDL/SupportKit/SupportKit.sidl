@@ -20,8 +20,9 @@ you need to define those types in this section.
 This is a workaround; these types are never passed between the target language
 and C++, but the generator complains if they're not defined
 -->
-
+<!--
 		<type name="image_id*"        builtin="void*" />
+-->
 	</types>
 	<import>
 		<file name="Archivable.sidl" />

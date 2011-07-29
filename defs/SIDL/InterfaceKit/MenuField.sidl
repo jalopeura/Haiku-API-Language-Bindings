@@ -68,7 +68,7 @@
 				<return type="void" />
 			</event>
 			<event name="KeyDown">
-				<param name="bytes" type="const char*" action="input" />
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
 				<param name="numBytes" type="int32" action="length[bytes]" />
 				<return type="void" />
 			</event>
@@ -168,8 +168,8 @@
 			</method>
 			<method name="ResizeToPreferred" />
 			<method name="GetPreferredSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
 <!-- TODO: BSize object not yet implemented

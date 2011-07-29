@@ -117,12 +117,12 @@
 				<return type="void" />
 			</event>
 			<event name="KeyDown">
-				<param name="bytes" type="const char*" action="input" />
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
 				<param name="numBytes" type="int32" action="length[bytes]" />
 				<return type="void" />
 			</event>
 			<event name="KeyUp">
-				<param name="bytes" type="const char*" action="input" />
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
 				<param name="numBytes" type="int32" action="length[bytes]" />
 				<return type="void" />
 			</event>
@@ -151,8 +151,8 @@
 			</method>
 			<method name="GetMouse">
 				<doc>Starts displaying a rectangular outline that follows the cursor.</doc>
-				<param name="location" type="BPoint*" deref="true" action="output" />
-				<param name="buttons" type="uint32*" deref="true" action="output" />
+				<param name="location" type="BPoint" pass-as-pointer="true" action="output" />
+				<param name="buttons" type="uint32" pass-as-pointer="true" action="output" />
 				<param name="checkMessageQueue" type="bool" action="input" default="true" />
 			</method>
 			<method name="DragMessage" overload-name="WithRect">
@@ -265,11 +265,11 @@
 			</method>
 <!-- TODO: BRegion object not yet implemented
 			<method name="GetClippingRegion">
-				<param name="region" type="BRegion*" deref="true" action="output" />
+				<param name="region" type="BRegion" pass-as-pointer="true" action="output" />
 				<return type="BPoint" action="output" />
 			</method>
 			<method name="ConstrainClippingRegion">
-				<param name="region" type="BRegion*" deref="true" action="output" />
+				<param name="region" type="BRegion" pass-as-pointer="true" action="output" />
 			</method>
 -->
 <!-- TODO: BPicture object note yet implemented
@@ -295,8 +295,8 @@
 				<param name="alphaFunc" type="alpha_function" action="input" />
 			</method>
 			<method name="GetBlendingMode">
-				<param name="srcAlpha" type="source_alpha*" deref="true" action="output" />
-				<param name="alphaFunc" type="alpha_function*" deref="true" action="output" />
+				<param name="srcAlpha" type="source_alpha" pass-as-pointer="true" action="output" />
+				<param name="alphaFunc" type="alpha_function" pass-as-pointer="true" action="output" />
 			</method>
 			<method name="SetPenSize">
 				<param name="size" type="float" action="input" />
@@ -444,13 +444,13 @@
 -->
 <!-- TODO: Get arrays working
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="closed" type="bool" default="true" action="input" />
@@ -465,12 +465,12 @@
 -->
 <!-- TODO: Get arrays working
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -482,12 +482,12 @@
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithGradient">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" />
+				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
@@ -755,27 +755,29 @@
 				<param name="location" type="BPoint" action="input" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
-<!-- TODO: Get arrays working
+<!-- -->
 			<method name="DrawString" overload-name="DrawStringWithLength">
-				<param name="string" type="char*" action="input" />
+				<param name="string" type="char*" action="input" string-length="length" />
 				<param name="length" type="int32" action="length[string]" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
+<!-- -->
+<!-- TODO: Get arrays working
 			<method name="DrawString" overload-name="DrawStringWithLengthToPoint">
-				<param name="string" type="char*" action="input" />
+				<param name="string" type="char*" action="input" string-length="length" />
 				<param name="length" type="int32" action="length[string]" />
 				<param name="location" type="BPoint" action="input" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringToPointArray">
 				<param name="string" type="char*" action="input" />
-				<param name="locations" type="BPoint*" action="input" />
+				<param name="locations" type="BPoint*" action="input" array-length="locationCount" />
 				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringWithLengthToPointArray">
-				<param name="string" type="char*" action="input" />
+				<param name="string" type="char*" action="input" string-length="length" />
 				<param name="length" type="int32" action="length[string]" />
-				<param name="locations" type="BPoint*" action="input" />
+				<param name="locations" type="BPoint*" action="input" array-length="locationCount" />
 				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 -->
@@ -799,17 +801,17 @@
 			</method>
 <!-- TODO: Get arrays working
 			<method name="StringWidth" overload-name="StringWidthWithLength">
-				<param name="string" type="const char*" action="input" />
-				<param name="length" type="int32" action="length[string]" />
+				<param name="string" type="const char*" action="input" array-length="length" />
+				<param name="length" type="int32" action="count[string]" />
 				<return type="float" action="output" />
 			</method>
 -->
 <!-- TODO: Get arrays working
 			<method name="GetStringWidths">
-				<param name="stringArray" type="char**" repeat="numStrings" action="input" />
-				<param name="lengthArray" type="int32*" repeat="numStrings" action="input" />
-				<param name="numStrings" type="int32" action="input" />
-				<param name="widthArray" type="float*" repeat="numStrings" action="output" />
+				<param name="stringArray" type="char**" array-length="numStrings" action="input" />
+				<param name="lengthArray" type="int32*" array-length="numStrings" action="input" />
+				<param name="numStrings" type="int32" action="count[stringArray]" />
+				<param name="widthArray" type="float*" array-length="numStrings" action="output" />
 			</method>
 -->
 			<method name="SetFontSize">
@@ -961,8 +963,8 @@
 				<doc>Sends all pending messages to the Application Server and returns when they have all been processed.</doc>
 			</method>
 			<method name="GetPreferredSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
 			<method name="ResizeToPreferred" />
@@ -1053,9 +1055,9 @@
 			</method>
 			<method name="GetHeightForWidth">
 				<param name="width" type="float" action="input" />
-				<param name="min" type="float*" deref="true" action="output" />
-				<param name="max" type="float*" deref="true" action="output" />
-				<param name="preferred" type="float*" deref="true" action="output" />
+				<param name="min" type="float" pass-as-pointer="true" action="output" />
+				<param name="max" type="float" pass-as-pointer="true" action="output" />
+				<param name="preferred" type="float" pass-as-pointer="true" action="output" />
 			</method>
 <!-- TODO: BLayout object not yet implemented
 			<method name="SetLayout">

@@ -186,11 +186,16 @@ sub as_python_call {
 			output_name => $pyobj_name,
 			must_not_delete => $param->must_not_delete,
 		};
-		for (qw(count length repeat)) {
+		for (qw(array_length string_length)) {
 			if ($param->has($_)) {
 				$options->{$_} = $param->{$_};
 			}
 		}
+#		for (qw(count length repeat)) {
+#			if ($param->has($_)) {
+#				$options->{$_} = $param->{$_};
+#			}
+#		}
 		my ($def, $code) = $param->arg_builder($options);
 		$format .= $param->type->format_item;
 		push @args, $pyobj_name;
@@ -327,23 +332,22 @@ sub type_options {
 	if ($self->has('default')) {
 		$options->{default} = $self->default;
 	}
-	if ($self->has('count')) {
-		$options->{count} = {
-			name => $self->count->name,
-			type => $self->count->type,
-		};
+	for (qw(array_length string_length)) {
+		if ($self->has($_)) {
+			$options->{$_} = $self->{$_};
+		}
 	}
 	return $options;
 }
 
 sub arg_builder {
-	my ($self, $options, $repeat) = @_;
-	return $self->type->arg_builder($options, $repeat);
+	my ($self, $options) = @_;
+	return $self->type->arg_builder($options);
 }
 
 sub arg_parser {
-	my ($self, $options, $repeat) = @_;
-	return $self->type->arg_parser($options, $repeat);
+	my ($self, $options) = @_;
+	return $self->type->arg_parser($options);
 }
 
 sub repeat {
@@ -360,6 +364,9 @@ sub repeat {
 sub as_cpp_def {
 	my ($self) = @_;
 	my $type = $self->type->name;
+	if ($self->has('array_length') and $self->pass_as_pointer) {
+		$type .= '*'
+	}
 	my $arg = "$type $self->{name}";
 	if ($self->has('default')) {
 		$arg .= " = $self->{default}";
@@ -378,7 +385,7 @@ sub python_error_code {
 	my $success = $self->success;
 	my $badret  = $int_return ? '-1' : 'NULL';
 	
-	if ($self->needs_deref) {
+	if ($self->pass_as_pointer) {
 		$errtype=~s/\*$//;
 	}
 	$def = "$errtype $errname;";
@@ -401,7 +408,10 @@ sub python_error_code {
 sub as_cpp_arg {
 	my ($self) = @_;
 	my $arg = $self->name;
-	if ($self->needs_deref) {
+	if (
+		$self->pass_as_pointer and
+		not ($self->has('array_length') or $self->has('string_length'))
+		) {
 		$arg = "&$arg";
 	}
 	return $arg;

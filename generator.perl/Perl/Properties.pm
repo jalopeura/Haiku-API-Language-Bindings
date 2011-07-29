@@ -34,21 +34,34 @@ sub type {
 sub input_converter {
 	my ($self, $target) = @_;
 	
-	if ($self->has('repeat')) {
-		return $self->type->array_input_converter("cpp_obj->$self->{name}", $target, $self->repeat);
+	my $options = {
+		input_name => $target,
+		output_name => 'cpp_obj->' . $self->name,
+	};
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->input_converter("cpp_obj->$self->{name}", $target) ];
+	return $self->type->input_converter($options);
 }
 
 sub output_converter {
 	my ($self, $target) = @_;
 	
-	if ($self->has('repeat')) {
-		return $self->type->array_output_converter("cpp_obj->$self->{name}", $target, $self->repeat, 1);	# 1 (true) because we should never delete a property
+	my $options = {
+		input_name => 'cpp_obj->' . $self->name,
+		output_name => $target,
+		must_not_delete => 1,	# never try to delete a property
+	};
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->output_converter("cpp_obj->$self->{name}", $target, 1) ];	# 1 (true) because we should never delete a property
+	return $self->type->output_converter($options);
 }
 
 sub generate {

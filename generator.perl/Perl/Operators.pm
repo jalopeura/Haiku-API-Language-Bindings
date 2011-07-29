@@ -89,7 +89,10 @@ OPERATOR
 	
 	if ($type eq 'neg') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter('result', 'RETVAL');
+		my $converter = $type_obj->output_converter({
+			input_name => 'result',
+			output_name => 'RETVAL',
+		});
 		print $fh <<CODE;
 	INPUT:
 		SV* object;	// don't try to convert it
@@ -120,7 +123,10 @@ CODE
 	}
 	elsif ($type eq 'math') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter('result', 'RETVAL');
+		my $converter = $type_obj->output_converter({
+			input_name => 'result',
+			output_name => 'RETVAL',
+		});
 		print $fh <<CODE;
 	INPUT:
 		$cpp_class_name object;
@@ -135,7 +141,10 @@ CODE
 	}
 	elsif ($type eq 'mut') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter('THIS', 'RETVAL');
+		my $converter = $type_obj->output_converter({
+			input_name => 'THIS',
+			output_name => 'RETVAL',
+		});
 		print $fh <<CODE;
 	INPUT:
 		$cpp_class_name object;

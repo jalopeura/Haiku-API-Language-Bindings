@@ -22,7 +22,7 @@
 We are currently mapping int64 to a long; this may not be big enough
 (How does Haiku's gcc interpret long?)
 -->
-		<type name="int8"       builtin="intchar" /><!-- __haiku_int8 -->
+		<type name="int8"       builtin="char" /><!-- __haiku_int8 -->
 		<type name="uint8"      builtin="unsigned char" /><!-- __haiku_uint8 -->
 		<type name="int16"      builtin="int" /><!-- __haiku_int16 -->
 		<type name="uint16"     builtin="unsigned int" /><!-- __haiku_uint16 -->
@@ -53,7 +53,9 @@ you need to define those types in this section.
 This is a workaround; these types are never passed between the target language
 and C++, but the generator complains if they're not defined
 -->
+<!--
 		<type name="bool*"      builtin="void*" />
+-->
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->

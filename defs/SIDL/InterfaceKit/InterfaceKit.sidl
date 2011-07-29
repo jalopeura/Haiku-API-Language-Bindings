@@ -48,9 +48,9 @@
 		<type name="color_which"      builtin="enum" />
 		<type name="drawing_mode"     builtin="enum" />
 		<type name="font_direction"   builtin="enum" />
-		<type name="font_family"      builtin="char" repeat="B_FONT_FAMILY_LENGTH + 1" />
+		<type name="font_family"      builtin="char" string-length="B_FONT_FAMILY_LENGTH + 1" />
 		<type name="font_file_format" builtin="enum" />
-		<type name="font_style"       builtin="char" repeat="B_FONT_STYLE_LENGTH + 1" />
+		<type name="font_style"       builtin="char" string-length="B_FONT_STYLE_LENGTH + 1" />
 		<type name="join_mode"        builtin="enum" />
 		<type name="menu_bar_border"  builtin="enum" />
 		<type name="menu_layout"      builtin="enum" />
@@ -82,12 +82,13 @@ you need to define those types in this section.
 This is a workaround; these types are never passed between the target language
 and C++, but the generator complains if they're not defined
 -->
-
+<!--
 		<type name="bool*"            builtin="void*" />
 		<type name="float*"           builtin="void*" />
 		<type name="int32*"           builtin="void*" />
 		<type name="key_map**"        builtin="void*" />
 		<type name="size_t*"          builtin="void*" />
+-->
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -118,14 +119,14 @@ and C++, but the generator complains if they're not defined
 		<doc>Exposes the Haiku Interface Kit</doc>
 		<functions>
 			<plain name="get_deskbar_frame">
-				<param name="frame" type="BRect*" deref="true" action="input" />
+				<param name="frame" type="BRect" pass-as-pointer="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="system_colors">
 				<return type="const color_map*" action="output" />
 			</plain>
 			<plain name="get_scroll_bar_info">
-				<param name="info" type="scroll_bar_info*" deref="true" action="output" />
+				<param name="info" type="scroll_bar_info" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_scroll_bar_info">
@@ -133,7 +134,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_mouse_type">
-				<param name="type" type="int32*" deref="true" action="output" />
+				<param name="type" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_mouse_type">
@@ -141,7 +142,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_mouse_map">
-				<param name="map" type="mouse_map*" deref="true" action="output" />
+				<param name="map" type="mouse_map" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_mouse_map">
@@ -149,7 +150,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_click_speed">
-				<param name="speed" type="bigtime_t*" deref="true" action="output" />
+				<param name="speed" type="bigtime_t" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_click_speed">
@@ -157,7 +158,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_mouse_speed">
-				<param name="speed" type="int32*" deref="true" action="output" />
+				<param name="speed" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_mouse_speed">
@@ -165,7 +166,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_mouse_acceleration">
-				<param name="speed" type="int32*" deref="true" action="output" />
+				<param name="speed" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_mouse_acceleration">
@@ -173,7 +174,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_key_repeat_rate">
-				<param name="rate" type="int32*" deref="true" action="output" />
+				<param name="rate" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_key_repeat_rate">
@@ -181,7 +182,7 @@ and C++, but the generator complains if they're not defined
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_key_repeat_delay">
-				<param name="delay" type="bigtime_t*" deref="true" action="output" />
+				<param name="delay" type="bigtime_t" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_key_repeat_delay">
@@ -195,19 +196,19 @@ and C++, but the generator complains if they're not defined
 				<param name="info" type="key_info*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- TODO: Get arrays working
+<!-- TODO: Figure this problem out
 			<plain name="get_key_map">
-				<param name="map" type="key_map**" action="output" />
-				<param name="keyBuffer" type="char**" action="output" />
+				<param name="map" type="key_map*" pass-as-pointer="true" action="output" />
+				<param name="keyBuffer" type="char*" pass-as-pointer="true" action="output" />
 			</plain>
 -->
 			<plain name="get_keyboard_id">
-				<param name="id" type="uint16*" deref="true" action="output" />
+				<param name="id" type="uint16" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="get_modifier_key">
 				<param name="modifier" type="uint32" action="input" />
-				<param name="key" type="uint32*" deref="true" action="output" />
+				<param name="key" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 			<plain name="set_modifier_key">
@@ -258,12 +259,12 @@ and C++, but the generator complains if they're not defined
 			</plain>
 			<plain name="get_mouse">
 				<param name="screenWhere" type="BPoint*" action="output" />
-				<param name="buttons" type="uint32*" deref="true" action="output" />
+				<param name="buttons" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 <!-- TODO: BBitmap object not yet implemented
 			<plain name="get_mouse_bitmap">
-				<param name="bitmap" type="BBitmap**" deref="true" action="output" />
+				<param name="bitmap" type="BBitmap*" pass-as-pointer="true" action="output" />
 				<param name="hotspot" type="BPoint*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
@@ -301,14 +302,14 @@ and C++, but the generator complains if they're not defined
 			</plain>
 			<plain name="bitmaps_support_space">
 				<param name="space" type="color_space" action="input" />
-				<param name="flags" type="uint32*" deref="true" action="output" />
+				<param name="flags" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="bool" action="output" />
 			</plain>
 			<plain name="get_pixel_size_for">
 				<param name="space" type="color_space" action="input" />
-				<param name="pixelChunk" type="size_t*" deref="true" action="output" />
-				<param name="rowAlignment" type="size_t*" deref="true" action="output" />
-				<param name="pixelsPerChunk" type="size_t*" deref="true" action="output" />
+				<param name="pixelChunk" type="size_t" pass-as-pointer="true" action="output" />
+				<param name="rowAlignment" type="size_t" pass-as-pointer="true" action="output" />
+				<param name="pixelsPerChunk" type="size_t" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
 		</functions>
@@ -632,7 +633,7 @@ and C++, but the generator complains if they're not defined
 	<binding source="key_info" target="Haiku::key_info">
 		<properties>
 			<property name="modifiers"  type="uint32" />
-			<property name="key_states" type="uint8" repeat="16" />
+			<property name="key_states" type="uint8" array-length="16" />
 		</properties>
 		<functions>
 			<constructor />
@@ -656,20 +657,20 @@ and C++, but the generator complains if they're not defined
 			<property name="right_option_key"      type="uint32" />
 			<property name="menu_key"              type="uint32" />
 			<property name="lock_settings"         type="uint32" />
-			<property name="control_map"           type="int32" repeat="128" />
-			<property name="option_caps_shift_map" type="int32" repeat="128" />
-			<property name="option_caps_map"       type="int32" repeat="128" />
-			<property name="option_shift_map"      type="int32" repeat="128" />
-			<property name="option_map"            type="int32" repeat="128" />
-			<property name="caps_shift_map"        type="int32" repeat="128" />
-			<property name="caps_map"              type="int32" repeat="128" />
-			<property name="shift_map"             type="int32" repeat="128" />
-			<property name="normal_map"            type="int32" repeat="128" />
-			<property name="acute_dead_key"        type="int32" repeat="32" />
-			<property name="grave_dead_key"        type="int32" repeat="32" />
-			<property name="circumflex_dead_key"   type="int32" repeat="32" />
-			<property name="dieresis_dead_key"     type="int32" repeat="32" />
-			<property name="tilde_dead_key"        type="int32" repeat="32" />
+			<property name="control_map"           type="int32" array-length="128" />
+			<property name="option_caps_shift_map" type="int32" array-length="128" />
+			<property name="option_caps_map"       type="int32" array-length="128" />
+			<property name="option_shift_map"      type="int32" array-length="128" />
+			<property name="option_map"            type="int32" array-length="128" />
+			<property name="caps_shift_map"        type="int32" array-length="128" />
+			<property name="caps_map"              type="int32" array-length="128" />
+			<property name="shift_map"             type="int32" array-length="128" />
+			<property name="normal_map"            type="int32" array-length="128" />
+			<property name="acute_dead_key"        type="int32" array-length="32" />
+			<property name="grave_dead_key"        type="int32" array-length="32" />
+			<property name="circumflex_dead_key"   type="int32" array-length="32" />
+			<property name="dieresis_dead_key"     type="int32" array-length="32" />
+			<property name="tilde_dead_key"        type="int32" array-length="32" />
 			<property name="acute_tables"          type="uint32" />
 			<property name="grave_tables"          type="uint32" />
 			<property name="circumflex_tables"     type="uint32" />
@@ -684,7 +685,7 @@ and C++, but the generator complains if they're not defined
 	<binding source="mouse_map" target="Haiku::mouse_map">
 		<doc>Exposes the mouse_map struct</doc>
 		<properties>
--			<property name="button" type="uint32" repeat="B_MAX_MOUSE_BUTTONS" />
+-			<property name="button" type="uint32" array-length="B_MAX_MOUSE_BUTTONS" />
 		</properties>
 		<functions>
 			<constructor />
@@ -733,7 +734,7 @@ and C++, but the generator complains if they're not defined
 	<binding source="pattern" target="Haiku::pattern">
 		<doc>Exposes the pattern struct</doc>
 		<properties>
-			<property name="data" type="uchar" repeat="8" />
+			<property name="data" type="uchar" array-length="8" />
 		</properties>
 		<functions>
 			<constructor />
@@ -766,9 +767,9 @@ and C++, but the generator complains if they're not defined
 		<properties>
 			<property name="id"            type="int32" />
 <!-- TODO: Get arrays working
-			<property name="color_list"    type="rgb_color"  repeat="256" />
-			<property name="inversion_map" type="uint8"      repeat="256"  />
-			<property name="index_map"     type="uint8"      repeat="32768" />
+			<property name="color_list"    type="rgb_color"  array-length="256" />
+			<property name="inversion_map" type="uint8"      array-length="256"  />
+			<property name="index_map"     type="uint8"      array-length="32768" />
 -->
 		</properties>
 		<functions>
@@ -788,7 +789,7 @@ and C++, but the generator complains if they're not defined
 			<property name="min_height"           type="int16" />
 			<property name="max_height"           type="int16" />
 <!-- TODO: Get arrays working
-			<property name="reserved"             type="int32" repeat="8" />
+			<property name="reserved"             type="int32" array-length="8" />
 -->
 		</properties>
 		<functions>
@@ -806,7 +807,7 @@ and C++, but the generator complains if they're not defined
 			<property name="min_height_scale" type="float" />
 			<property name="max_height_scale" type="float" />
 <!-- TODO: Get arrays working
-			<property name="reserved"         type="int32" repeat="8" />
+			<property name="reserved"         type="int32" array-length="8" />
 -->
 		</properties>
 		<functions>

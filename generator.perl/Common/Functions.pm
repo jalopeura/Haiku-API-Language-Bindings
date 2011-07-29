@@ -100,9 +100,15 @@ package Param;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name type deref repeat action default success must-not-delete);
+my @attributes = qw(
+	name type action default success must-not-delete
+	string-length array-length pass-as-pointer
+);
+my %defaults = (
+	action => 'input',
+);
 my @required_data = qw(name type action);
-my @bool_attrs = qw(deref must-not-delete);
+my @bool_attrs = qw(pass-as-pointer must-not-delete);
 
 sub _has_doc { 1 }
 sub _attributes { @attributes }
@@ -113,14 +119,17 @@ package Return;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(type deref action success must-not-delete);
+my @attributes = qw(
+	type action success must-not-delete
+	string-length array-length pass-as-pointer
+);
 my %defaults = (
+	action => 'output',
 	name   => 'retval',
 	type   => 'void',
-	action => 'output',
 );
 my @required_data = qw(name type action);
-my @bool_attrs = qw(deref must-not-delete);
+my @bool_attrs = qw(pass-as-pointer must-not-delete);
 
 sub _has_doc { 1 }
 sub _attributes { @attributes }

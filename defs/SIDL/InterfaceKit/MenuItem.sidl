@@ -68,7 +68,7 @@
 			</method>
 			<method name="Shortcut">
 				<doc>Returns the shortcut.</doc>
-				<param name="modifiers" type="uint32*" deref="true" action="output" />
+				<param name="modifiers" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="char" action="output" />
 			</method>
 			<method name="Submenu">

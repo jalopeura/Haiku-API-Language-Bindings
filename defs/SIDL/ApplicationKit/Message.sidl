@@ -28,16 +28,16 @@
 			<method name="GetInfo">
 				<param name="typeRequested" type="type_code" action="input" />
 				<param name="index" type="int32" action="input" />
-				<param name="nameFound" type="char**" deref="true" action="output" />
-				<param name="typeFound" type="type_code*" deref="true" action="output" />
-				<param name="countFound" type="int32*" deref="true" action="output" />
+				<param name="nameFound" type="char*" pass-as-pointer="true" action="output" />
+				<param name="typeFound" type="type_code" pass-as-pointer="true" action="output" />
+				<param name="countFound" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetInfo" overload-name="GetInfoByName">
 				<param name="name" type="const char*" action="input" />
-				<param name="typeFound" type="type_code*" deref="true" action="output" />
-				<param name="countFound" type="int32*" deref="true" action="output" />
-				<param name="fixedSize" type="bool*" deref="true" action="output" />
+				<param name="typeFound" type="type_code" pass-as-pointer="true" action="output" />
+				<param name="countFound" type="int32" pass-as-pointer="true" action="output" />
+				<param name="fixedSize" type="bool" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="CountNames">
@@ -199,10 +199,10 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetCurrentSpecifier">
-				<param name="index" type="int32*" deref="true" action="output" />
+				<param name="index" type="int32" pass-as-pointer="true" action="output" />
 				<param name="specifier" type="BMessage*" default="NULL" action="output" />
-				<param name="what" type="int32*" deref="true" action="output" />
-				<param name="property" type="const char**" deref="true" default="NULL" action="output" />
+				<param name="what" type="int32" pass-as-pointer="true" action="output" />
+				<param name="property" type="const char*" pass-as-pointer="true" default="NULL" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="HasSpecifiers">
@@ -479,7 +479,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="alignment" type="BAlignment*" deref="true" action="output">
+				<param name="alignment" type="BAlignment" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -492,7 +492,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="alignment" type="BAlignment*" deref="true" action="output">
+				<param name="alignment" type="BAlignment" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -503,7 +503,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="rect" type="BRect*" deref="true" action="output">
+				<param name="rect" type="BRect" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -516,7 +516,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="rect" type="BRect*" deref="true" action="output">
+				<param name="rect" type="BRect" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -526,7 +526,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="point" type="BPoint*" deref="true" action="output">
+				<param name="point" type="BPoint" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -539,7 +539,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="point" type="BPoint*" deref="true" action="output">
+				<param name="point" type="BPoint" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -549,7 +549,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="string" type="const char**" deref="true" action="output">
+				<param name="string" type="const char*" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -562,7 +562,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="string" type="const char**" deref="true" action="output">
+				<param name="string" type="const char*" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -572,7 +572,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="int8*" deref="true" action="output">
+				<param name="value" type="int8" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -585,7 +585,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="int8*" deref="true" action="output">
+				<param name="value" type="int8" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -595,7 +595,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="uint8*" deref="true" action="output">
+				<param name="value" type="uint8" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -608,7 +608,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="uint8*" deref="true" action="output">
+				<param name="value" type="uint8" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -618,7 +618,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="int16*" deref="true" action="output">
+				<param name="value" type="int16" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -631,7 +631,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="int16*" deref="true" action="output">
+				<param name="value" type="int16" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -641,7 +641,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="uint16*" deref="true" action="output">
+				<param name="value" type="uint16" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -654,7 +654,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="uint16*" deref="true" action="output">
+				<param name="value" type="uint16" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -664,7 +664,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="int32*" deref="true" action="output">
+				<param name="value" type="int32" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -677,7 +677,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="int32*" deref="true" action="output">
+				<param name="value" type="int32" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -687,7 +687,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="uint32*" deref="true" action="output">
+				<param name="value" type="uint32" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -700,7 +700,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="uint32*" deref="true" action="output">
+				<param name="value" type="uint32" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -710,7 +710,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="int64*" deref="true" action="output">
+				<param name="value" type="int64" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -723,7 +723,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="int64*" deref="true" action="output">
+				<param name="value" type="int64" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -733,7 +733,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="uint64*" deref="true" action="output">
+				<param name="value" type="uint64" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -746,7 +746,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="uint64*" deref="true" action="output">
+				<param name="value" type="uint64" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -756,7 +756,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="bool*" deref="true" action="output">
+				<param name="value" type="bool" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -769,7 +769,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="bool*" deref="true" action="output">
+				<param name="value" type="bool" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -779,7 +779,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="float*" deref="true" action="output">
+				<param name="value" type="float" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -792,7 +792,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="float*" deref="true" action="output">
+				<param name="value" type="float" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -802,7 +802,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="value" type="double*" deref="true" action="output">
+				<param name="value" type="double" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -815,7 +815,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="value" type="double*" deref="true" action="output">
+				<param name="value" type="double" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -826,7 +826,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="pointer" type="const void**" deref="true" action="output">
+				<param name="pointer" type="const void*" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -839,7 +839,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="pointer" type="const void**" deref="true" action="output">
+				<param name="pointer" type="const void*" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -851,7 +851,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="messenger" type="BMessenger*" deref="true" action="output">
+				<param name="messenger" type="BMessenger" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -864,7 +864,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="messenger" type="BMessenger*" deref="true" action="output">
+				<param name="messenger" type="BMessenger" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -876,7 +876,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="ref" type="entry_ref*" deref="true" action="output">
+				<param name="ref" type="entry_ref" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -889,7 +889,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="ref" type="entry_ref*" deref="true" action="output">
+				<param name="ref" type="entry_ref" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -900,7 +900,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="message" type="BMessage*" deref="true" action="output">
+				<param name="message" type="BMessage" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -913,7 +913,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="message" type="BMessage*" deref="true" action="output">
+				<param name="message" type="BMessage" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -924,7 +924,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="object" type="BFlattenable*" deref="true" action="output">
+				<param name="object" type="BFlattenable" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -937,7 +937,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="object" type="BFlattenable*" deref="true" action="output">
+				<param name="object" type="BFlattenable" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />

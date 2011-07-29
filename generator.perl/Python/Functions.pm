@@ -127,6 +127,12 @@ sub generate_cc {
 			if ($action eq 'input') {
 				push @defs, $param->as_cpp_def;
 				my $item = $param->type->format_item;
+				for (qw(array_length string_length)) {
+					if ($param->has($_)) {
+						$item = 'O';
+					}
+				}
+				
 				if ($param->has('default') and not $seen_default) {
 					$parse_format .= '|';
 					$seen_default = 1;
@@ -141,11 +147,22 @@ sub generate_cc {
 						must_not_delete => $param->must_not_delete,
 						repeat => $param->repeat,
 					};
-					for (qw(count length)) {
+					for (qw(array_length string_length)) {
 						if ($param->has($_)) {
 							$options->{$_} = $param->{$_};
 						}
 					}
+					if ($param->has('count')) {
+						$options->{set_array_length} = 1;
+					}
+					if ($param->has('length')) {
+						$options->{set_string_length} = 1;
+					}
+#					for (qw(count length)) {
+#						if ($param->has($_)) {
+#							$options->{$_} = $param->{$_};
+#						}
+#					}
 					my ($arg_defs, $arg_code) = $param->arg_parser($options);
 		
 					if ($param->type->has('target') and my $target = $param->type->target) {
@@ -167,6 +184,9 @@ sub generate_cc {
 			elsif ($action eq 'output') {
 				push @defs, $param->as_cpp_def;
 				push @outputs, $param;
+			}
+			elsif ($action=~/(length|count)\[/) {
+				push @defs, $param->as_cpp_def;
 			}
 			elsif ($action eq 'error') {
 				my ($def, $code) = $param->python_error_code($options{rettype} eq 'int');

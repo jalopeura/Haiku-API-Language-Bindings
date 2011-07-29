@@ -86,8 +86,8 @@
 			</method>
 			<method name="ResizeToPreferred" />
 			<method name="GetPreferredSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
 <!-- Events not yet implemented for this object

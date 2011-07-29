@@ -57,8 +57,8 @@
 				<param name="focused" type="bool" default="true" action="input" />
 			</method>
 			<method name="GetPreferredSize">
-				<param name="width" type="float*" deref="true" action="output" />
-				<param name="height" type="float*" deref="true" action="output" />
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
 <!-- TODO: BSize object not yet implemented

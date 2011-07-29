@@ -110,3 +110,22 @@ ok(($opoint->x == 0 and $opoint->y == 0), "Mathematical operator");
 
 $point += $point;
 ok(($point->x == 2 * $x and $point->y == 2 * $y), "Mutator operator");
+
+my $color = new Haiu::rgb_color;
+$color->red = 10;
+$color->green = 20;
+$color->blue = 30;
+
+my $text_run = new Haiku::text_run;
+$text_run->offset = 0;
+$text_run->color = $color;
+
+my $text_run_array = new Haiku::text_run_array;
+$text_run_array->runs = [ $text_run ];
+my $tra = $text_run_array->runs;
+
+my $menu_info = new Haiku::menu_info;
+$menu_info->f_family = "Test";
+my $fam = $menu_info->f_family;
+
+$button->DrawStringWithLength("Test");

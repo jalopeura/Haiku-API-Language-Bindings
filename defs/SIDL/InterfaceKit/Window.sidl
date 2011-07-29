@@ -330,10 +330,10 @@
 				<param name="maxHeight" type="float" action="input" />
 			</method>
 			<method name="GetSizeLimits">
-				<param name="minWidth"  type="float*" deref="true" action="output" />
-				<param name="maxWidth"  type="float*" deref="true" action="output" />
-				<param name="minHeight" type="float*" deref="true" action="output" />
-				<param name="maxHeight" type="float*" deref="true" action="output" />
+				<param name="minWidth"  type="float" pass-as-pointer="true" action="output" />
+				<param name="maxWidth"  type="float" pass-as-pointer="true" action="output" />
+				<param name="minHeight" type="float" pass-as-pointer="true" action="output" />
+				<param name="maxHeight" type="float" pass-as-pointer="true" action="output" />
 			</method>
 			<method name="UpdateSizeLimits" />
 			<method name="SetDecoratorSettings">
@@ -428,15 +428,15 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetWindowAlignment">
-				<param name="mode" type="window_alignment*" deref="true" action="output" />
-				<param name="h" type="int32*" deref="true" action="output" />
-				<param name="hOffset" type="int32*" deref="true" default="0" action="output" />
-				<param name="width" type="int32*" deref="true" action="output" />
-				<param name="widthOffset" type="int32*" deref="true" default="0" action="output" />
-				<param name="v" type="int32*" deref="true" action="output" />
-				<param name="vOffset" type="int32*" deref="true" default="0" action="output" />
-				<param name="height" type="int32*" deref="true" action="output" />
-				<param name="heightOffset" type="int32*" deref="true" default="0" action="output" />
+				<param name="mode" type="window_alignment" pass-as-pointer="true" action="output" />
+				<param name="h" type="int32" pass-as-pointer="true" action="output" />
+				<param name="hOffset" type="int32" pass-as-pointer="true" default="0" action="output" />
+				<param name="width" type="int32" pass-as-pointer="true" action="output" />
+				<param name="widthOffset" type="int32" pass-as-pointer="true" default="0" action="output" />
+				<param name="v" type="int32" pass-as-pointer="true" action="output" />
+				<param name="vOffset" type="int32" pass-as-pointer="true" default="0" action="output" />
+				<param name="height" type="int32" pass-as-pointer="true" action="output" />
+				<param name="heightOffset" type="int32" pass-as-pointer="true" default="0" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<event name="QuitRequested">

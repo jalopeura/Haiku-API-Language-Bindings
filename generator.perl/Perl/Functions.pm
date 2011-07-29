@@ -190,24 +190,49 @@ sub generate_xs {
 						push @xsargs, '...';
 						$has_defaults = 1;
 					}
+					my ($defs, $code) = $param->input_converter("ST($i)");
+					push @init, @$defs;
 					push @precode,
 						qq(if (items > $i) {),
-						map( {"\t$_" } @{ $param->input_converter("ST($i)") } ),
+						map( {"\t$_" } @$code ),
 						qq(});
+				}
+				elsif ($param->has('array_length') or $param->has('string_length')) {
+					push @input, "SV* $param->{name}_sv;";
+					push @xsargs, $param->name . '_sv';
+					my $options = {
+						suffix => '_sv'	# use a suffix on the variable name
+					};
+					if ($param->pass_as_pointer) {
+						$options->{need_malloc} = 1;
+						push @postcode, "free($param->{name});";
+					}
+					if ($param->has('count')) {
+						$options->{set_array_length} = 1;
+					}
+					if ($param->has('length')) {
+						$options->{set_string_length} = 1;
+					}
+					my ($defs, $code) = $param->input_converter($param->name, $options);
+					push @init,
+						$param->as_cpp_def,
+						@$defs;
+					push @precode,
+						 "// item $i: $param->{name}",
+						 @$code;
 				}
 				else {
 					push @precode, "// item $i: $param->{name}";
 					push @input, $param->as_cpp_def;
 					push @xsargs, $param->name;
-					if ($param->type->builtin eq 'char') {
-						my $length = $param->has('repeat') ? $param->repeat : 1;
-						push @preinit, qq(int LENGTH = $length; // length for item $i: $param->{name});
-					}
 				}
 			}
 			elsif ($action eq 'output') {
 				push @init, $param->as_cpp_def;
 				push @outputs, $param;
+			}
+			elsif ($action=~/length\[/) {
+				push @init, $param->as_cpp_def;
 			}
 			elsif ($action eq 'error') {
 				$has_errors = 1;
@@ -216,11 +241,12 @@ sub generate_xs {
 			}
 			
 			if ($param->has('length')) {
-				my $name = $param->name;
-				my $ltype = $param->length->type->name;
-				my $lname = $param->length->name;
-				push @preinit, "int length_$name;";
-				push @init, "$ltype $lname = ($ltype)length_$name;";
+#				my $name = $param->name;
+#				my $ltype = $param->length->type->name;
+#				my $lname = $param->length->name;
+#				push @preinit, "int length_$name;";
+#				push @init, "$ltype $lname = ($ltype)length_$name;";
+#				push @init, "$ltype $lname;";
 			}
 			elsif ($param->has('count')) {
 				my $name = $param->name;

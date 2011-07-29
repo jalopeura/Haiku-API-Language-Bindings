@@ -86,7 +86,9 @@ my %class_map = (
 		class => 'Perl::Param',
 		attr_map => {
 			type    => 'type_name',
-			deref   => 'needs_deref',
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
+			'pass-as-pointer' => 'pass_as_pointer',
 			'must-not-delete' => 'must_not_delete',
 		},
 	},
@@ -95,7 +97,9 @@ my %class_map = (
 		class => 'Perl::Return',
 		attr_map => {
 			type    => 'type_name',
-			deref   => 'needs_deref',
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
+			'pass-as-pointer' => 'pass_as_pointer',
 			'must-not-delete' => 'must_not_delete',
 		},
 	},
@@ -109,6 +113,8 @@ my %class_map = (
 		class => 'Perl::Property',
 		attr_map => {
 			type    => 'type_name',
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
 		},
 	},
 	
@@ -131,6 +137,8 @@ my %class_map = (
 		class => 'Perl::Constant',
 		attr_map => {
 			type    => 'type_name',
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
 		},
 	},
 	
@@ -143,6 +151,8 @@ my %class_map = (
 		class => 'Perl::Global',
 		attr_map => {
 			type    => 'type_name',
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
 		},
 	},
 	
@@ -153,7 +163,10 @@ my %class_map = (
 	Type => {
 		key   => 'types',
 		class => 'Perl::Type',
-		attr_map => {},
+		attr_map => {
+			'array-length' => 'array_length',
+			'string-length' => 'string_length',
+		},
 	},
 	
 	Include => {

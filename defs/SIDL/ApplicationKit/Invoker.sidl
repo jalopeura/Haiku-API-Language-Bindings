@@ -45,7 +45,7 @@
 				<return type="bool" action="output" />
 			</method>
 			<method name="Target">
-				<param name="looper" type="BLooper**" deref="true" default="NULL" action="output" />
+				<param name="looper" type="BLooper*" pass-as-pointer="true" default="NULL" action="output" />
 				<return type="BHandler*" action="output" />
 			</method>
 <!-- TODO: BMessenger object not yet implemented

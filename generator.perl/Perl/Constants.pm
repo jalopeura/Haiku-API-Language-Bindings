@@ -92,21 +92,35 @@ sub type {
 sub input_converter {
 	my ($self, $target) = @_;
 	
-	if ($self->has('repeat')) {
-		return $self->type->array_input_converter("$self->{name}", $target, $self->repeat);
+	my $options = {
+		input_name => $self->name,
+		output_name => $target,
+	};
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->input_converter("$self->{name}", $target) ];
+	return $self->type->input_converter($options);
 }
 
 sub output_converter {
 	my ($self, $target) = @_;
+	my ($self, $target) = @_;
 	
-	if ($self->has('repeat')) {
-		return $self->type->array_output_converter("$self->{name}", $target, $self->repeat, 1);	# 1 (true) because we should never delete a constant
+	my $options = {
+		input_name => $self->name,
+		output_name => $target,
+		must_not_delete => 1,	# never try to delete a constant
+	};
+	for my $x (qw(array_length string_length)) {
+		if ($self->has($x)) {
+			$options->{$x} = $self->{$x};
+		}
 	}
 	
-	return [ $self->type->output_converter("$self->{name}", $target, 1) ];	# 1 (true) because we should never delete a constant
+	return $self->type->output_converter($options);
 }
 
 sub generate {

@@ -156,7 +156,7 @@
 			</plain>
 			<plain name="instantiate_object" overload-name="instantiate_object_with_id">
 				<param name="from" type="BMessage*" action="input" />
-				<param name="id" type="image_id*" action="input" />
+				<param name="id" type="image_id" pass-as-pointer="true" action="output" />
 				<return type="BArchivable*" action="output" />
 			</plain>
 			<plain name="validate_instantiation">

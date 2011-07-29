@@ -207,8 +207,28 @@ sub arg_builder {
 	my ($self, $options) = @_;
 	
 	my $builtin = $self->builtin;
-	if ($options->{repeat} and $builtin ne 'char' and $builtin ne 'wchar_t') {
+	if ($options->{array_length}) {
 		return $self->array_arg_builder($options);
+	}
+	
+	my $len =  $options->{string_length};
+	if (not $len and $self->has('string_length')) {
+		$len = $self->string_length;
+	}
+	
+	# strings with lengths need special processing
+	if ($len and $len ne 'null-terminated') {
+		(my $base = $self->{name})=~s/const\s+//;
+		
+		my $input = $options->{input_name};
+		unless ($base=~/\*$/) {
+			$input = "&$input"
+		}
+		
+		return (
+			[],	# empty defs
+			[ qq($options->{output_name} = Py_BuildValue("s#", $input, $len);) ]
+		);
 	}
 	
 	my $item = $self->format_item;
@@ -305,92 +325,14 @@ sub arg_builder {
 	die "Unsupported type: $self->{name}/$builtin/$target";
 }
 
-=pod
-
-sub arg_builder {
-	my ($self, $options, $repeat) = @_;
-	
-	if ($repeat) {
-		return $self->array_arg_builder($options);
-	}
-	
-	my $item = $self->format_item;
-	my $input_name = $options->{input_name};
-	my $output_name = $options->{output_name};
-	
-	my $arg = $name;
-	my (@def, @code);
-	
-	if ($item=~/^O/) {
-		my $builtin = $self->builtin;
-		
-		if ($builtin eq 'bool') {
-			$item = 'b';
-			$arg = "($name ? 1 : 0)";
-		}			
-		elsif ($builtin eq 'char' or $builtin eq 'char') {
-			my $length = $self->has('repeat') ? $self->repeat : 1;
-			push @code, qq($arg = Char2PyString(&$name, $length, sizeof($builtin)););
-		}
-		else {
-			$arg=~s/[^>]+>//g;
-			$arg = "py_$arg";
-			push @def, "PyObject* $arg;	// from arg_builder()";
-			my $builtin = $self->builtin;
-			my $target;
-			if ($builtin eq 'char**') {
-				my $count = $options->{count}{name};
-				push @code, qq($arg = CharArray2PyList($name, (int)$count););
-			}
-			elsif ($builtin eq 'object' or $builtin eq 'responder'
-				or $builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
-				$target = $self->target;
-				(my $objprefix = $target)=~s/\./_/g; $objprefix .= '_';
-				my $objtype = $objprefix . 'Object';
-				my $type_name = $objprefix . 'PyType';
-				
-				$def[-1] = "$objtype* $arg;";
-				
-				push @code,
-					#qq(PyTypeObject* ${arg}_type = (PyTypeObject*)PyRun_String("$target", Py_eval_input, main_dict, main_dict);),
-					#qq($arg = ($objtype*)${arg}_type->tp_alloc(${arg}_type, 0););
-					qq($arg = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
-				
-				if ($builtin eq 'object' or $builtin eq 'responder') {
-					push @code, qq($arg->cpp_object = ($self->{name}*)&$name;);
-				}
-				else {
-					push @code, qq($arg->cpp_object = ($self->{name})$name;);
-				}
-				
-				if ($options->{must_not_delete}) {
-					push @code,
-						qq(// cannot delete this object; we do not own it),
-						qq($arg->can_delete_cpp_object = false;);
-				}
-				else {
-					push @code,
-						qq(// we own this object, so we can delete it),
-						qq($arg->can_delete_cpp_object = true;);
-				}
-			}
-			else {
-				die "Unsupported type: $name/$builtin/$target";
-			}
-		}
-	}
-	
-	return ($item, $arg, \@def, \@code);
-}
-
-=cut
-
 sub array_arg_builder {
 	my ($self, $options) = @_;
 	
 	my $item = 'O';
 	my $arg = $options->{output_name};
-	my $repeat = delete $options->{repeat};
+	my $count = delete $options->{array_length};
+	# I should make these constants instead of hard-coding them here
+	$count=~s/SELF\./python_self->cpp_object->/;
 #	my @defs = ("PyObject* $arg;");
 	
 	my @defs;	
@@ -408,7 +350,7 @@ sub array_arg_builder {
 	
 	my @code = (
 		qq($arg = PyList_New(0);),
-		qq(for (int i = 0; i < $repeat; i++) {),
+		qq(for (int i = 0; i < $count; i++) {),
 		map( { "\t$_" } @$element_defs),
 		map( { "\t$_" } @$element_code),
 		qq(\tPyList_Append($arg, py_element);),
@@ -422,17 +364,55 @@ sub arg_parser {
 	my ($self, $options) = @_;
 	
 	my $builtin = $self->builtin;
-	if ($options->{repeat} and $builtin ne 'char' and $builtin ne 'wchar_t') {
+	if ($options->{array_length}) {
 		return $self->array_arg_parser($options);
+	}
+	
+	my $len =  $options->{string_length};
+	if (not $len and $self->has('string_length')) {
+		$len = $self->string_length;
+	}
+	
+	# strings with lengths need special processing
+	if ($len and $len ne 'null-terminated') {
+		if ($self->{name}=~/\*$/) {
+			if ($options->{set_string_length}) {
+				return (
+					[],	# empty defs
+					[ qq(PyString_AsStringAndSize($options->{input_name}, &$options->{output_name}, &$len);) ]
+				);
+			}
+			else {
+				return (
+					[],	# empty defs
+					[ qq($options->{output_name} = PyString_AsString($options->{input_name});) ]
+				);
+			}
+		}
+		
+		if ($options->{set_string_length}) {
+			return (
+				[ "char buffer[$len];" ],	# empty defs
+				[ qq(PyString_AsStringAndSize($options->{input_name}, &buffer, &$len);) ],
+				[ qq(memcpy((void*)&$options->{output_name}, (void*)buffer);) ]
+			);
+		}
+		else {
+			return (
+				[],	# empty defs
+				[ qq(memcpy((void*)&$options->{output_name}, (void*)PyString_AsString($options->{input_name}));) ]
+			);
+		}
 	}
 	
 	my $item = $self->format_item;
 	my $type_name = $self->name;
 	
 	if ($item=~/[ibhlBH]/) {
-		return
+		return (
 			[],	# empty defs
-			[ "$options->{output_name} = ($type_name)PyInt_AsLong($options->{input_name});" ];
+			[ "$options->{output_name} = ($type_name)PyInt_AsLong($options->{input_name});" ]
+		);
 	}
 	
 	if ($item=~/[Ik]/) {
@@ -497,15 +477,17 @@ sub arg_parser {
 			
 #			push @defs, "$objtype* $options->{input_name};";
 			
+			push @code, "if ($options->{input_name}) != NULL) {";
 			if ($builtin eq 'object' or $builtin eq 'responder') {
-				push @code, qq($options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
+				push @code, qq(\t$options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
 			}
 			else {
-				push @code, qq($options->{output_name} = (($objtype*)$options->{input_name})->cpp_object;);
+				push @code, qq(\t$options->{output_name} = (($objtype*)$options->{input_name})->cpp_object;);
 			}
 			if ($options->{must_not_delete}) {
-				push @code, qq((($objtype*)$options->{input_name})->can_delete_cpp_object = false;);
+				push @code, qq(\t(($objtype*)$options->{input_name})->can_delete_cpp_object = false;);
 			}
+			push @code, '}';
 			
 			return (
 				\@defs,
@@ -517,142 +499,39 @@ sub arg_parser {
 	die "Unsupported type: $self->{name}/$builtin/$target";
 }
 
-=pod
-
-	
-	else {
-		warn "Unsupported type: $type_name ($item)";
-	}
-	
-	my $arg = $name;
-	my (@def, @code);
-	
-#	my $def = "$self->{name} $name";
-#	if (exists $options->{default}) {
-#		$def .= " = " . $options->{default};
-#	}
-#	$def .= ';';
-#	push @def, $def;
-	if ($item=~/^O/) {
-		$arg=~s/[^>]+>//g;
-		$arg = "py_$arg";
-		push @def, "PyObject* $arg;	// from arg_parser()";
-		
-		my $builtin = $self->builtin;
-		my $target;
-		if ($builtin eq 'bool') {
-			push @code, qq($name = (bool)(PyObject_IsTrue($arg)););
-		}
-		elsif ($builtin eq 'char' or $builtin eq 'char') {
-			pop @def;
-			if ($argname) {
-				$arg = $argname;
-			}
-			else {
-				push @def, "PyObject* $arg;	// from arg_parser()";
-			}
-			my $length = $self->has('repeat') ? $self->repeat : 1;
-			push @code, qq(PyString2Char($arg, &$name, $length, sizeof($builtin)););
-		}
-		elsif ($builtin eq 'char**') {
-			my $count_name = $options->{count}{name};
-			if ($options->{count}{type}) {
-				my $count_type = $options->{count}{type}->name;
-				push @def, "$count_type $count_name = 0;";
-			}
-			push @code, qq($name = PyList2CharArray($arg, (int*)&$count_name););
-		}
-		elsif ($builtin eq 'object' or $builtin eq 'responder'
-			or $builtin eq 'object_ptr' or $builtin eq 'responder_ptr') {
-			$target = $self->target;
-			(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-			
-			$def[-1] = "$objtype* $arg;";
-			if ($builtin eq 'object' or $builtin eq 'responder') {
-				push @code, qq($name = *((($objtype*)$arg)->cpp_object););
-			}
-			else {
-				push @code, qq($name = (($objtype*)$arg)->cpp_object;);
-			}
-			if ($options->{must_not_delete}) {
-				push @code, qq((($objtype*)$arg)->can_delete_cpp_object = false;);
-			}
-		}
-		else {
-			die "Unsupported type: $self->{name}/$builtin/$target";
-		}
-	}
-	
-	if ($arg=~/[>.]/) {
-		$arg = "&($arg)";
-	}
-	else {
-		$arg = "&$arg";
-	}
-	
-	return ($item, $arg, \@def, \@code);
-}
-
-sub array_arg_parser {
-	my ($self, $object, $argname) = @_;
-	
-	my $options = $object->type_options;
-	
-	my $item = 'O';
-	my @defs = (
-		'PyObject* item;',
-		'PyObject* tuple;',
-	);
-	
-	my ($element_item, $element_arg, $element_defs, $element_code)
-		= $self->arg_parser($object);
-	my $arg = $element_arg;
-	$element_arg .= '[i]';
-	$element_arg=~s/\)\[i\]/[i])/;	# in case there are parentheses around the arg
-	
-	# get rid of the reference
-	my $plain_name = $element_arg;
-	$plain_name=~s/^&\(?//;
-	$plain_name=~s/\)$//;
-	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
-	
-	my @code = (
-		qq(for (int i = 0; i < $options->{repeat}; i++) {),
-		map( { "\t$_" } @$element_defs),
-		map( { "\t$_" } @$element_code),
-		qq(\titem = PyList_GetItem($argname, i);),
-		qq(\tif (item == NULL) {),
-		qq(\t\t$plain_name = $none;),
-		qq(\t\tcontinue;),
-		"\t}",
-		qq(\ttuple = PyTuple_Pack(1, item);),
-		qq(\tPyArg_ParseTuple(tuple, "$element_item", $element_arg);),
-		'}',
-	);
-	
-	return ($item, $arg, \@defs, \@code);
-
-}
-
-=cut
-
 sub array_arg_parser {
 	my ($self, $options) = @_;
 	
 	my $item = 'O';
 	my $arg = $options->{input_name};
-	my $repeat = delete $options->{repeat};
+	my $count = delete $options->{array_length};
+	# I should make these constants instead of hard-coding them here
+	$count=~s/SELF\./python_self->cpp_object->/;
+#my $repeat = $count;
 	
 	$options->{input_name} = 'py_element';
 	$options->{output_name} .= '[i]';
 	my ($element_defs, $element_code) = $self->arg_parser($options);
-	
-	my @defs = ("PyObject* $options->{input_name};	// from array_arg_parser()");
-	
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
 	
-	my @code = (
-		qq(for (int i = 0; i < $repeat; i++) {),
+	my @defs = ("PyObject* $options->{input_name};	// from array_arg_parser()");
+	my @code;
+	
+	# non-constant lengths
+	if ($options->{set_array_length}) {
+		push @code, "$count = PyList_Size($arg);";
+	}
+
+	# malloc if necessary
+	if ($options->{need_malloc}) {
+		# calling code should not pass 'need_malloc' unless using a pointer (type*)
+		# if using an array (type[]), calling code shouldn't need malloc
+		(my $base = $self->{name})=~s/const\s+//;
+		push @code, "OUT = (TYPE*)malloc($count * sizeof(TYPE));";
+	}
+	
+	push @code, (
+		qq(for (int i = 0; i < $count; i++) {),
 		map( { "\t$_ // element code" } @$element_defs),
 		qq(\t$options->{input_name} = PyList_GetItem($arg, i);),
 		qq(\tif ($options->{input_name} == NULL) {),

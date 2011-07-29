@@ -89,3 +89,22 @@ print "Should get all zeros: got:", opoint.x, opoint.y
 
 point += point;
 print "Should get doubled values; got", point.x, point.y
+
+color = new Haiu.rgb_color
+color.red = 10
+color.green = 20
+color.blue = 30
+
+text_run = new Haiku.text_run
+text_run.offset = 0
+text_run.color = color
+
+text_run_array = new Haiku.text_run_array
+text_run_array.runs = [ text_run ]
+tra = text_run_array.runs
+
+menu_info = new Haiku.menu_info
+menu_info.f_family = "Test"
+fam = menu_info.f_family
+
+button.DrawStringWithLength("Test")

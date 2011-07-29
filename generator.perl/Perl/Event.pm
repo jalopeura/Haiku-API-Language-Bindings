@@ -83,7 +83,7 @@ sub generate_cpp {
 				my $svname = $param->name . '_sv';
 				push @defs, qq(SV* $svname;);
 				push @precode,
-					qq($svname = sv_newmortal();),
+#					qq($svname = sv_newmortal();),
 					@{ $param->output_converter($svname) };
 				if ($param->must_not_delete) {
 					push @precode, 
@@ -108,12 +108,12 @@ sub generate_cpp {
 			if ($param->has('length')) {
 				my $name = $param->name;
 				my $lname = $param->length->name;
-				push @defs, qq(int length_$name = $lname;);
+#				push @defs, qq(int length_$name = $lname;);
 			}
 			elsif ($param->has('count')) {
 				my $name = $param->name;
 				my $cname = $param->count->name;
-				push @defs, qq(int count_$name = $cname;);
+#				push @defs, qq(int count_$name = $cname;);
 			}
 		}
 	}
