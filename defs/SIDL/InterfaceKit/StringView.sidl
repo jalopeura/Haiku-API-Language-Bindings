@@ -47,7 +47,7 @@
 				<doc>Returns the alignment for the StringView.</doc>
 				<return type="alignment" action="output" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="AttachedToWindow" />
 			<event name="DetachedFromWindow" />
 			<event name="AllAttached" />
@@ -61,7 +61,7 @@
 				<param name="height" type="float*" deref="true" action="output" />
 				<return type="void" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -76,7 +76,7 @@
 				<param name="descendants" type="bool" default="false" action="input" />
 			</method>
 			<method name="ResizeToPreferred" />
-<!--
+<!-- Events not yet implemented for this object
 			<event name="FrameMoved">
 				<param name="newPosition" type="BPoint" action="input" />
 				<return type="void" />

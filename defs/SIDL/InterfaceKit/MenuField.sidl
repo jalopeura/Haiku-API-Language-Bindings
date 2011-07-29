@@ -55,7 +55,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="Draw">
 				<doc>Draws the button label.</doc>
 				<param name="updateRect" type="BRect" action="input" />
@@ -77,7 +77,7 @@
 				<doc>Makes the MenuField focused (or not focused) within its Window.</doc>
 				<param name="focused" type="bool" action="input" default="true" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				<return type="void" />
@@ -172,7 +172,7 @@
 				<param name="height" type="float*" deref="true" action="output" />
 				<return type="void" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -186,7 +186,7 @@
 			<method name="InvalidateLayout">
 				<param name="descendants" type="bool" default="false" action="input" />
 			</method>
-<!-- BLayoutItem object not yet implemented
+<!-- TODO: BLayoutItem object not yet implemented
 			<method name="CreateLabelLayoutItem">
 				<return type="BLayoutItem*" action="output" />
 			</method>

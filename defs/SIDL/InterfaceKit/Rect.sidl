@@ -31,7 +31,7 @@
 				<param name="leftTop" type="BPoint" action="input" />
 				<param name="rightBottom" type="BPoint" action="input" />
 			</constructor>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<constructor overload-name="FromPointAndSize">
 				<param name="leftTop" type="BPoint" action="input" />
 				<param name="size" type="BSize" action="input" />
@@ -167,7 +167,7 @@
 			<method name="IntegerHeight">
 				<return type="int32" action="output" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="IntegerHeight">
 				<return type="BSize" action="output" />
 			</method>

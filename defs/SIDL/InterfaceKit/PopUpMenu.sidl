@@ -41,7 +41,7 @@
 				<param name="asynchronous" type="bool" action="input" default="false" />
 				<return type="BMenuItem*" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				<return type="void" />
@@ -90,7 +90,7 @@
 				<param name="height" type="float*" deref="true" action="output" />
 				<return type="void" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="AllAttached" />
 			<event name="AllDetached" />
 -->

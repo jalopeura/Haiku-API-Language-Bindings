@@ -33,7 +33,7 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="WindowActivated">
 				<param name="state" type="bool" action="input" />
 				<return type="void" />
@@ -50,7 +50,7 @@
 			<method name="MakeFocus">
 				<param name="focused" type="bool" default="true" action="input" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="KeyDown">
 				<param name="bytes" type="const char*" action="input" />
 				<param name="numBytes" type="int32" action="length[bytes]" />

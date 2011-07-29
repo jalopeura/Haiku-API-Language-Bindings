@@ -31,7 +31,7 @@
 				<doc>Returns the Message object that holds the clipboard data, or NULL if the CLipboard object is not locked.</doc>
 				<return type="BMessage*" action="output" />
 			</method>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="DataSource">
 				<doc>Returns a BMessenger that targets the Application that last wrote to the Clipboard.</doc>
 				<return type="BMessenger*" action="output" />
@@ -60,7 +60,7 @@
 				<doc>Returns the name of the clipboard.</doc>
 				<return type="const char*" />
 			</method>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="StartWatching">
 				<doc>Begins watching for changes in the clipboard.</doc>
 				<param name="target" type="BMessenger*" action="input">

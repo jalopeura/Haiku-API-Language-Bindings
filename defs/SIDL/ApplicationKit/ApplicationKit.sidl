@@ -8,7 +8,7 @@
 		<file name="Invoker.h" />
 		<file name="Looper.h" />
 		<file name="Message.h" />
-<!-- Move this file to StorageKit when Storage Kit is defined -->
+<!-- TODO: Move this entry to StorageKit when Storage Kit is defined -->
 		<file name="Entry.h" />
 	</include>
 	<link>
@@ -33,6 +33,7 @@ We are currently mapping int64 to a long; this may not be big enough
 		<type name="bigtime_t"  builtin="long" /><!-- int64 -->
 		<type name="dev_t"      builtin="long" /><!-- __haiku_int64 -->
 		<type name="ino_t"      builtin="long" /><!-- __haiku_int32 -->
+		<type name="sem_id"     builtin="long" /><!-- int32 -->
 		<type name="ssize_t"    builtin="long" />
 		<type name="status_t"   builtin="long" /><!-- int32 -->
 		<type name="team_id"    builtin="long" /><!-- int32 -->
@@ -168,7 +169,7 @@ and C++, but the generator complains if they're not defined
 			<constant name="B_CONTROL_MODIFIED" type="int" group="commands" />
 		</constants>
 	</binding>
-<!-- move entry_ref to Storage Kit when Storage Kit is defined -->
+<!-- TODO: move entry_ref to Storage Kit when Storage Kit is defined -->
 	<binding source="entry_ref" target="Haiku::entry_ref">
 		<doc>Exposes the entry_ref struct</doc>
 		<properties>

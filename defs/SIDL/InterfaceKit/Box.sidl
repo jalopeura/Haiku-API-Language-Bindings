@@ -67,7 +67,7 @@
 				<doc>Gets the label View.</doc>
 				<return type="BView*" action="output" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="Draw">
 				<param name="updateRect" type="BRect" action="input" />
 				<return type="void" />
@@ -129,7 +129,7 @@
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>

@@ -9,7 +9,7 @@
 				<param name="handler" type="BHandler*" action="input" />
 				<param name="looper" type="BLooper*" action="input" default="NULL" />
 			</constructor>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<constructor overload-name="WithMessenger">
 				<doc>Creates an Invoker.</doc>
 				<param name="message" type="BMessage*" action="input" />
@@ -35,7 +35,7 @@
 				<param name="looper" type="BLooper*" action="input" default="NULL" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="SetTarget" overload-name="SetTargetMessenger">
 				<param name="messenger" type="BMessenger*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -48,7 +48,7 @@
 				<param name="looper" type="BLooper**" deref="true" default="NULL" action="output" />
 				<return type="BHandler*" action="output" />
 			</method>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="Messenger">
 				<return type="BMessenger*" action="output" />
 			</method>

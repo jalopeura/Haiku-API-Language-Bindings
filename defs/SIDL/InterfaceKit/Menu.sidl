@@ -28,7 +28,7 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="AttachedToWindow" />
 			<event name="DetachedFromWindow" />
 			<event name="AllAttached" />
@@ -48,7 +48,7 @@
 				<return type="void" />
 			</event>
 -->
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -66,7 +66,7 @@
 			</method>
 			<method name="ResizeToPreferred" />
 			<method name="DoLayout" />
-<!--
+<!-- Events not yet implemented for this object
 			<event name="FrameMoved">
 				<param name="newPosition" type="BPoint" action="input" />
 				<return type="void" />
@@ -117,7 +117,7 @@
 				<param name="frame" type="BRect" action="input" />
 				<return type="bool" action="output" />
 			</method>
-<!-- BList object not yet implemented
+<!-- TODO: BList object not yet implemented
 			<method name="AddList">
 				<param name="list" type="BList*" action="input" />
 				<param name="index" type="int32" action="input" />
@@ -187,7 +187,7 @@
 				<param name="handler" type="BHandler*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="SetTargetForItems" overload-name="SetMessengerTargetForItems">
 				<doc>Sets the target for the MenuItems to the given Messenger.</doc>
 				<param name="messenger" type="BMessenger*" action="input" />
@@ -260,7 +260,7 @@
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- Why is this not working?
+<!-- TODO: Why is this not working?
 			<method name="AddDynamicItem">
 				<param name="state" type="add_state" action="input" />
 				<return type="bool" action="output" />
@@ -289,7 +289,7 @@
 			<constant name="B_ITEMS_IN_MATRIX" type="int" group="menu_layout">
 				<doc>...</doc>
 			</constant>
-<!-- Why are these not working?
+<!-- TODO: Why are these not working?
 			<constant name="B_INITIAL_ADD" type="int" group="add_state" />
 			<constant name="B_PROCESSING" type="int" group="add_state" />
 			<constant name="B_ABORT" type="int" group="add_state" />

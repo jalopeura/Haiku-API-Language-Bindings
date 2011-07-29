@@ -30,7 +30,7 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="AttachedToWindow" />
 			<event name="DetachedFromWindow" />
 			<event name="AllAttached" />
@@ -49,7 +49,7 @@
 				<param name="height" type="float*" deref="true" action="output" />
 				<return type="void" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -60,7 +60,7 @@
 				<return type="BSize" action="output" />
 			</method>
 -->
-<!--
+<!-- Events not yet implemented for this object
 			<event name="FrameMoved">
 				<param name="newPosition" type="BPoint" action="input" />
 				<return type="void" />
@@ -79,7 +79,7 @@
 				<doc>Hides the MenuBar.</doc>
 				<return type="void" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="Draw">
 				<doc>Draws the button label.</doc>
 				<param name="updateRect" type="BRect" action="input" />

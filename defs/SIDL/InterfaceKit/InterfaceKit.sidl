@@ -195,7 +195,7 @@ and C++, but the generator complains if they're not defined
 				<param name="info" type="key_info*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- Need to fix this
+<!-- TODO: Get arrays working
 			<plain name="get_key_map">
 				<param name="map" type="key_map**" action="output" />
 				<param name="keyBuffer" type="char**" action="output" />
@@ -261,7 +261,7 @@ and C++, but the generator complains if they're not defined
 				<param name="buttons" type="uint32*" deref="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- BBitmap object not yet implemented
+<!-- TODO: BBitmap object not yet implemented
 			<plain name="get_mouse_bitmap">
 				<param name="bitmap" type="BBitmap**" deref="true" action="output" />
 				<param name="hotspot" type="BPoint*" action="output" />
@@ -765,7 +765,7 @@ and C++, but the generator complains if they're not defined
 		<doc>Exposes the color_map struct</doc>
 		<properties>
 			<property name="id"            type="int32" />
-<!--
+<!-- TODO: Get arrays working
 			<property name="color_list"    type="rgb_color"  repeat="256" />
 			<property name="inversion_map" type="uint8"      repeat="256"  />
 			<property name="index_map"     type="uint8"      repeat="32768" />
@@ -787,7 +787,7 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width"            type="int16" />
 			<property name="min_height"           type="int16" />
 			<property name="max_height"           type="int16" />
-<!--
+<!-- TODO: Get arrays working
 			<property name="reserved"             type="int32" repeat="8" />
 -->
 		</properties>
@@ -805,7 +805,7 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width_scale"  type="float" />
 			<property name="min_height_scale" type="float" />
 			<property name="max_height_scale" type="float" />
-<!--
+<!-- TODO: Get arrays working
 			<property name="reserved"         type="int32" repeat="8" />
 -->
 		</properties>

@@ -117,7 +117,7 @@
 				<doc>Returns true if the cursor is hidden; returns false if it is visible or obscured.</doc>
 				<return type="bool" />
 			</method>
-<!-- const void* type not yet implemented
+<!-- TODO: const void* type not yet supported
 			<method name="SetCursor" overload-name="SetCursorData">
 				<doc>Sets the cursor from raw data.</doc>
 				<param name="cursor" type="const void*" action="input">
@@ -162,13 +162,13 @@
 				<doc>Returns true until [code]ReadyToRun()[/code] returns.</doc>
 				<return type="bool" action="output" />
 			</method>
-<!-- app_info object not implemented yet
+<!-- TODO: app_info object not yet implemented
 			<method name="GetAppInfo">
 				<param name="info" type="app_info*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 -->
-<!-- BResources object not yet implemented
+<!-- TODO: BResources object not yet implemented
 			<static name="AppResources">
 				<doc>Returns a Resources object with data from the currently running executable.</doc>
 				<return type="BResources*" must-not-delete="true" />
@@ -193,7 +193,7 @@
 		</functions>
 		<globals>
 			<global name="be_app" type="BApplication*" />
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<global name="be_app_messenger" type="BMessenger" />
 -->
 		</globals>

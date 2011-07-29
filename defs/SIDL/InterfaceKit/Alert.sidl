@@ -69,7 +69,7 @@
 				<doc>Returns the TextView object for the Alert's text.</doc>
 				<return type="BTextView*" action="output" must-not-delete="true" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="FrameResized">
 				<param name="width" type="float" action="input" />
 				<param name="height" type="float" action="input" />

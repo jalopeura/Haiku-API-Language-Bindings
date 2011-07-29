@@ -74,7 +74,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
-<!-- templates not yet implemented
+<!-- TODO: templates not yet implemented
 			<method name="GetObject">
 				<param name="token" type="int32" action="input" />
 				<param name="object" type="???(template)" action="output" />
@@ -143,7 +143,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 				<return type="BMessage*" action="output" />
 			</method>
-<!-- templates not yet implemented
+<!-- TODO: templates not yet implemented
 			<method name="InstantiateObject">
 				<param name="archive" type="BMessage*" action="input" />
 				<param name="object" type="???(template)" action="output" />
@@ -164,12 +164,9 @@
 				<param name="className" type="const char*" action="input" />
 				<return type="bool" action="output" />
 			</plain>
-			<!--
-				find_instantiation_func unimplemented because it returns a function pointer
-				(no good to us in a target language)
-			-->
+			<!-- find_instantiation_func unimplemented because it returns a function pointer (no good to us in a target language) -->
 		</functions>
-<!-- Need to fix this
+<!-- TODO: Why are these not working?
 		<constants>
 			<constant name="B_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
 			<constant name="B_DONT_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />

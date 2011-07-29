@@ -55,7 +55,7 @@
 			</event>
 -->
 <!-- Message filtering -->
-<!-- BMessageFilter object not yet implemented
+<!-- TODO: BMessageFilter object not yet implemented
 			<method name="AddFilter">
 				<param name="filter" type="BMessageFilter*" action="input" />
 			</method>
@@ -64,7 +64,7 @@
 				<return type="bool" />
 			</method>
 -->
-<!-- BList object not yet implemented
+<!-- TODO: BList object not yet implemented
 			<method name="SetFilterList">
 				<param name="filters" type="BList*" action="input" />
 			</method>
@@ -94,7 +94,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 <!-- Observer calls, inter-looper and inter-team -->
-<!-- BMessenger object not yet implemented
+<!-- TODO: BMessenger object not yet implemented
 			<method name="StartWatching">
 				<param name="target" type="BMessenger" action="input" />
 				<param name="what" type="uint32" action="input" />

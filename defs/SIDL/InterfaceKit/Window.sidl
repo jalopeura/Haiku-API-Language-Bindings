@@ -62,7 +62,7 @@
 				<param name="sibling" type="BView*" action="input" default="NULL" />
 				<return type="void" />
 			</method>
-<!-- BLayoutItem object not yet implemented
+<!-- TODO: BLayoutItem object not yet implemented
 			<method name="AddChild" overload-name="AddLayoutItem">
 				<param name="child" type="BLayoutItem*" action="input" />
 				<return type="void" />
@@ -296,7 +296,7 @@
 			<method name="DecoratorFrame">
 				<return type="BRect" action="output" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="Size">
 				<return type="BSize" action="output" />
 			</method>
@@ -443,7 +443,7 @@
 				<return type="bool" />
 			</event>
 			<method name="Run" />
-<!-- BLayout object not yet implemented
+<!-- TODO: BLayout object not yet implemented
 			<method name="SetLayout">
 				<param name="layout" type="BLayout*" action="input" />
 			</method>

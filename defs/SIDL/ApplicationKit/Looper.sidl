@@ -64,7 +64,7 @@
 			<method name="DetachCurrentMessage">
 				<return type="BMessage*" action="output" />
 			</method>
-<!-- BMessageQueue not yet implemented
+<!-- TODO: BMessageQueue not yet implemented
 			<method name="MessageQueue">
 				<return type="BMessageQueue*" action="output">
 			</method>
@@ -126,12 +126,10 @@
 			<method name="Team">
 				<return type="team_id" />
 			</method>
-<!-- team_id type not yet implemented
 			<method name="LooperForThread" />
 				<param name="thread" type="thread_id" action="input" />
 				<return type="BLooper*" />
 			</method>
--->
 <!-- Loop debugging -->
 			<method name="LockingThread">
 				<return type="thread_id" />
@@ -142,11 +140,9 @@
 			<method name="CountLockRequests">
 				<return type="int32" />
 			</method>
-<!-- sem_id type not yet implemented
 			<method name="Sem" />
 				<return type="sem_id" />
 			</method>
--->
 <!-- Scripting -->
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />
@@ -161,7 +157,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 <!-- Message filters -->
-<!-- BMessageFilter object not yet implemented
+<!-- TODO: BMessageFilter object not yet implemented
 			<method name="AddCommonFilter">
 				<param name="filter" type="BMessageFilter*" action="input" />
 			</method>
@@ -170,7 +166,7 @@
 				<return type="bool" />
 			</method>
 -->
-<!-- BList object not yet implemented
+<!-- TODO: BList object not yet implemented
 			<method name="SetCommonFilterList">
 				<param name="filters" type="BList*" action="input" />
 			</method>

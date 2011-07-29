@@ -10,7 +10,7 @@
 				<param name="resizingMode" type="uint32" action="input" />
 				<param name="flags" type="uint32" action="input" />
 			</constructor>
-<!-- BLayout object not yet implemented
+<!-- TODO: BLayout object not yet implemented
 			<constructor overload-name="WithoutFrame">
 				<doc>Creates a View.</doc>
 				<param name="name" type="const char*" action="input" />
@@ -40,7 +40,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="AttachedToWindow" />
 			<event name="AllAttached" />
 			<event name="DetachedFromWindow" />
@@ -56,7 +56,7 @@
 				<param name="sibling" type="BView*" action="input" default="NULL" />
 				<return type="void" />
 			</method>
-<!-- BLayoutItem object not yet implemented
+<!-- TODO: BLayoutItem object not yet implemented
 			<method name="AddChild" overload-name="AddLayoutItem">
 				<param name="child" type="BLayoutItem*" action="input" />
 				<return type="void" />
@@ -92,7 +92,7 @@
 				<doc>Gets the View's owning Window (which may or may not be its immediate parent).</doc>
 				<return type="BWindow*" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="Draw">
 				<doc>Draws the button label.</doc>
 				<param name="updateRect" type="BRect" action="input" />
@@ -167,7 +167,7 @@
 					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
 				</param>
 			</method>
-<!-- BBitmap object not yet implemented
+<!-- TODO: BBitmap object not yet implemented
 			<method name="DragMessage" overload-name="DragMessageWithBitmap">
 				<doc>Starts a drag-and-drop session.</doc>
 				<param name="message" type="BMessage*" action="input">
@@ -263,7 +263,7 @@
 				<doc>Returns the upper left coordinate of the View as a Point.</doc>
 				<return type="BPoint" action="output" />
 			</method>
-<!-- BRegion object note yet implemented
+<!-- TODO: BRegion object not yet implemented
 			<method name="GetClippingRegion">
 				<param name="region" type="BRegion*" deref="true" action="output" />
 				<return type="BPoint" action="output" />
@@ -272,7 +272,7 @@
 				<param name="region" type="BRegion*" deref="true" action="output" />
 			</method>
 -->
-<!-- BPicture object note yet implemented
+<!-- TODO: BPicture object note yet implemented
 			<method name="ClipToPicture">
 				<param name="picture" type="BPicture*" action="input" />
 				<param name="where" type="BPoint" default="B_ORIGIN" action="input" />
@@ -323,7 +323,7 @@
 			<method name="ViewColor">
 				<return type="rgb_color" action="output" />
 			</method>
-<!-- BBitmap object not yet implemented
+<!-- TODO: BBitmap object not yet implemented
 			<method name="SetViewBitmap">
 				<param name="bitmap" type="BBitmap" action="input" />
 				<param name="srcRect" type="BRect" action="input" />
@@ -435,14 +435,14 @@
 				<param name="color" type="rgb_color" action="input" />
 			</method>
 			<method name="EndLineArray" />
-<!-- BPolygon object not yet implemented
+<!-- TODO: BPolygon object not yet implemented
 			<method name="StrokePolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!--
+<!-- TODO: Get arrays working
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
 				<param name="pointArray" type="BPoint*" action="input" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
@@ -457,13 +457,14 @@
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!-- BPolygon object not yet implemented
+<!-- TODO: BPolygon object not yet implemented
 			<method name="FillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!--			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
+<!-- TODO: Get arrays working
+			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
 				<param name="pointArray" type="BPoint*" action="input" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -475,7 +476,7 @@
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!-- BPolygon object not yet implemented, BGradient object not yet implemented
+<!-- TODO: BPolygon object not yet implemented, BGradient object not yet implemented
 			<method name="FillPolygon" overload-name="GradientFillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
@@ -518,7 +519,7 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillTriangle" overload-name="GradientFillTriangle">
 				<param name="point1" type="BPoint" action="input" />
 				<param name="point2" type="BPoint" action="input" />
@@ -541,13 +542,13 @@
 				<param name="rect" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillRect" overload-name="GradientFillRect">
 				<param name="rect" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 -->
-<!-- BRegion object not yet implemented, BGradient object not yet implemented
+<!-- TODO: BRegion object not yet implemented, BGradient object not yet implemented
 			<method name="FillRegion">
 				<param name="rect" type="BRegion*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -572,7 +573,7 @@
 				<param name="yRadius" type="float" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillRoundRect" overload-name="GradientFillRoundRect">
 				<param name="rect" type="BRect" action="input" />
 				<param name="xRadius" type="float" action="input" />
@@ -599,7 +600,7 @@
 				<param name="rect" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillEllipse" overload-name="GradientFillEllipse">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
@@ -642,7 +643,7 @@
 				<param name="arcAngle" type="float" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillArc" overload-name="GradientFillArc">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
@@ -668,13 +669,13 @@
 				<param name="controlPoints" type="BPoint*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- BGradient object not yet implemented
+<!-- TODO: BGradient object not yet implemented
 			<method name="FillBezier" overload-name="GradientFillBezier">
 				<param name="controlPoints" type="BPoint*" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 -->
-<!-- BShape object not yet implemented, BGradient object not yet implemented
+<!-- TODO: BShape object not yet implemented, BGradient object not yet implemented
 			<method name="StrokeShape">
 				<param name="shape" type="BShape*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -692,7 +693,7 @@
 				<param name="src" type="BRect" action="input" />
 				<param name="dst" type="BRect" action="input" />
 			</method>
-<!-- BBitmap object not yet implemented
+<!-- TODO: BBitmap object not yet implemented
 			<method name="DrawBitmapAsync" overload-name="DrawBitmapAsyncWithOptions">
 				<param name="aBitmap" type="BBitmap*" action="input" />
 				<param name="bitmapRect" type="BRect" action="input" />
@@ -754,7 +755,7 @@
 				<param name="location" type="BPoint" action="input" />
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
-<!--
+<!-- TODO: Get arrays working
 			<method name="DrawString" overload-name="DrawStringWithLength">
 				<param name="string" type="char*" action="input" />
 				<param name="length" type="int32" action="length[string]" />
@@ -785,7 +786,7 @@
 			<method name="GetFont">
 				<param name="font" type="BFont*" action="output" />
 			</method>
-<!-- BString object not implemented yet
+<!-- TODO: BString object not implemented yet
 			<method name="TruncateString">
 				<param name="in_out" type="BString*" action="input" />
 				<param name="mode" type="uint32" action="input" />
@@ -796,14 +797,14 @@
 				<param name="string" type="const char*" action="input" />
 				<return type="float" action="output" />
 			</method>
-<!--
+<!-- TODO: Get arrays working
 			<method name="StringWidth" overload-name="StringWidthWithLength">
 				<param name="string" type="const char*" action="input" />
 				<param name="length" type="int32" action="length[string]" />
 				<return type="float" action="output" />
 			</method>
 -->
-<!-- Need to fix this so it works
+<!-- TODO: Get arrays working
 			<method name="GetStringWidths">
 				<param name="stringArray" type="char**" repeat="numStrings" action="input" />
 				<param name="lengthArray" type="int32*" repeat="numStrings" action="input" />
@@ -824,7 +825,7 @@
 			<method name="Invalidate" overload-name="InavlidateRect">
 				<param name="invalRect" type="BRect" action="input" />
 			</method>
-<!-- BRegion object not yet implemented
+<!-- TODO: BRegion object not yet implemented
 			<method name="Invalidate" overload-name="InvalidateRegion">
 				<param name="invalRegion" type="BRect" action="input" />
 			</method>
@@ -833,7 +834,7 @@
 				<param name="filename" type="char*" action="input" />
 				<param name="offset" type="long" action="input" />
 			</method>
-<!-- BPicture object not yet implemented
+<!-- TODO: BPicture object not yet implemented
 			<method name="BeginPicture">
 				<param name="aPicture" type="BPicture*" action="input" />
 			</method>
@@ -965,7 +966,7 @@
 				<return type="void" />
 			</method>
 			<method name="ResizeToPreferred" />
-<!-- BScrollBar object not yet implemented
+<!-- TODO: BScrollBar object not yet implemented
 			<method name="ScrollBar">
 				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
 				<return type="BScrollBar*" action="output" />
@@ -999,7 +1000,7 @@
 				<return type="void" />
 			</method>
 <!-- layout related -->
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -1010,12 +1011,12 @@
 				<return type="BSize" action="output" />
 			</method>
 -->
-<!-- BAlignment object not yet implemented
+<!-- TODO: BAlignment object not yet implemented
 			<method name="LayoutAlignment">
 				<return type="BAlignment" action="output" />
 			</method>
 -->
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="SetExplicitMinSize">
 				<param name="size" type="BSize" action="output" />
 			</method>
@@ -1026,12 +1027,12 @@
 				<param name="size" type="BSize" action="output" />
 			</method>
 -->
-<!-- BAlignment object not yet implemented
+<!-- TODO: BAlignment object not yet implemented
 			<method name="SetExplicitAlignment">
 				<param name="alignment" type="BAlignment" action="output" />
 			</method>
 -->
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="ExplicitMinSize">
 				<return type="BSize" action="output" />
 			</method>
@@ -1042,7 +1043,7 @@
 				<return type="BSize" action="output" />
 			</method>
 -->
-<!-- BAlignment object not yet implemented
+<!-- TODO: BAlignment object not yet implemented
 			<method name="ExplicitAlignment">
 				<return type="BAlignment" action="output" />
 			</method>
@@ -1056,7 +1057,7 @@
 				<param name="max" type="float*" deref="true" action="output" />
 				<param name="preferred" type="float*" deref="true" action="output" />
 			</method>
-<!-- BLayout object not yet implemented
+<!-- TODO: BLayout object not yet implemented
 			<method name="SetLayout">
 				<param name="layout" type="BLayout*" action="input" />
 			</method>
@@ -1073,7 +1074,7 @@
 				<return type="bool" />
 			</method>
 			<method name="ResetLayoutInvalidation" />
-<!-- BLayoutContext object not yet implemented
+<!-- TODO: BLayoutContext object not yet implemented
 			<method name="LayoutContext">
 				<preturn type="BLayoutContext*" action="output" />
 			</method>
@@ -1086,7 +1087,7 @@
 			<method name="SetToolTip" overload-name="SetTooltipWithText">
 				<param name="text" type="const char*" action="input" />
 			</method>
-<!-- BToolTIp object not yet implemented
+<!-- TODO: BToolTIp object not yet implemented
 			<method name="SetToolTip">
 				<param name="tip" type="BToolTip*" action="input" />
 			</method>
@@ -1097,7 +1098,7 @@
 				<param name="tip" type="BToolTip*" default="NULL" action="input" />
 			</method>
 -->
-<!-- versions of ShowToolTip to be used until BToolTip object is implemented -->
+<!-- TODO: versions of ShowToolTip to be used until BToolTip object is implemented -->
 			<method name="ShowToolTip" />
 			<method name="HideToolTip" />
 		</functions>

@@ -35,7 +35,7 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!--
+<!-- Events not yet implemented for this object
 			<event name="Draw">
 				<param name="updateRect" type="BRect" action="input" />
 				<return type="void" />
@@ -90,7 +90,7 @@
 			<method name="InvalidateLayout">
 				<param name="descendants" type="bool" default="false" action="input" />
 			</method>
-<!-- BSize object not yet implemented
+<!-- TODO: BSize object not yet implemented
 			<method name="MinSize">
 				<return type="BSize" action="output" />
 			</method>
