@@ -24,7 +24,7 @@ sub generate {
 	mkpath($target);
 print "Generating $target\n";
 	
-	File::Path->remove_tree($target);
+#	File::Path->remove_tree($target);
 	
 	# create this now so we can pass it in
 	my $package = new Python::Package($bindings, $options{parent});
@@ -61,7 +61,10 @@ print "Generating $target\n";
 		Extension(
 			'$pkgname',
 			['$filename.cc'],
-			extra_compile_args=["-Wno-multichar"]
+#			extra_compile_args=["-Wno-multichar"]
+# don't like doing this, because the warning is often useful,
+# but I get too many false positives if I don't
+			extra_compile_args=["-Wno-multichar", "-Wno-uninitialized"]
 			)
 EXT
 		$packages{$pkgname} = 1;

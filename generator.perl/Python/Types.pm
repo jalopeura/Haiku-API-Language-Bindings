@@ -335,10 +335,11 @@ sub array_arg_builder {
 	$count=~s/SELF\./python_self->cpp_object->/;
 #	my @defs = ("PyObject* $arg;");
 	
-	my @defs;	
+	my (@defs, $cast_element);
 	if ($self->has('target') and my $target = $self->target) {
 		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
 		@defs = ("$objtype* py_element;	// from array_arg_builder");
+		$cast_element = "(PyObject*)";
 	}
 	else {
 		@defs = ('PyObject* py_element;	// from array_arg_builder');
@@ -353,7 +354,7 @@ sub array_arg_builder {
 		qq(for (int i = 0; i < $count; i++) {),
 		map( { "\t$_" } @$element_defs),
 		map( { "\t$_" } @$element_code),
-		qq(\tPyList_Append($arg, py_element);),
+		qq(\tPyList_Append($arg, $cast_element\py_element);),
 		'}',
 	);
 	
@@ -392,15 +393,17 @@ sub arg_parser {
 		
 		if ($options->{set_string_length}) {
 			return (
-				[ "char buffer[$len];" ],	# empty defs
-				[ qq(PyString_AsStringAndSize($options->{input_name}, &buffer, &$len);) ],
-				[ qq(memcpy((void*)&$options->{output_name}, (void*)buffer);) ]
+				[ "char buffer[$len];" ],	# defs
+				[
+					qq(PyString_AsStringAndSize($options->{input_name}, &buffer, &$len);),
+					qq(memcpy((void*)&$options->{output_name}, (void*)buffer, $len);)
+				]
 			);
 		}
 		else {
 			return (
 				[],	# empty defs
-				[ qq(memcpy((void*)&$options->{output_name}, (void*)PyString_AsString($options->{input_name}));) ]
+				[ qq(memcpy((void*)&$options->{output_name}, (void*)PyString_AsString($options->{input_name}), $len);) ]
 			);
 		}
 	}
@@ -477,7 +480,7 @@ sub arg_parser {
 			
 #			push @defs, "$objtype* $options->{input_name};";
 			
-			push @code, "if ($options->{input_name}) != NULL) {";
+			push @code, "if ($options->{input_name} != NULL) {";
 			if ($builtin eq 'object' or $builtin eq 'responder') {
 				push @code, qq(\t$options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
 			}
@@ -513,6 +516,12 @@ sub array_arg_parser {
 	$options->{output_name} .= '[i]';
 	my ($element_defs, $element_code) = $self->arg_parser($options);
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
+	$none or do {
+		# an object but not via a pointer
+		if ($self->has('target')) {
+			undef $none;
+		}
+	};
 	
 	my @defs = ("PyObject* $options->{input_name};	// from array_arg_parser()");
 	my @code;
@@ -535,7 +544,18 @@ sub array_arg_parser {
 		map( { "\t$_ // element code" } @$element_defs),
 		qq(\t$options->{input_name} = PyList_GetItem($arg, i);),
 		qq(\tif ($options->{input_name} == NULL) {),
-		qq(\t\t$options->{output_name} = $none;),
+	);
+	
+	if (defined $none) {
+		push @code, qq(\t\t$options->{output_name} = $none;);
+	}
+	else {
+		push @code,
+			qq(\t\t// should be setting this to some default),
+			qq(\t\t// but neither 0 nor NULL is right);
+	}
+	
+	push @code, (
 		qq(\t\tcontinue;),
 		"\t}",
 		map( { "\t$_ // element code" } @$element_code),

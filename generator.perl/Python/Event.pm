@@ -23,8 +23,10 @@ sub generate_cc {
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
 	my $name = "${python_object_prefix}_" . $self->name;
+	my $python_name = $self->name;
 	if ($self->has('overload_name')) {
-		$name .= $self->overload_name;
+		$name = "${python_object_prefix}_" . $self->overload_name;
+		$python_name = $self->overload_name;
 	}
 	
 	$self->SUPER::generate_cc(
@@ -42,7 +44,7 @@ sub generate_cc {
 		$doc = $self->doc;
 	}
 	$self->class->add_method_table_entry(
-		$self->name,		# name as seen from Python
+		$python_name,		# name as seen from Python
 		$name,				# name of wrapper function
 		'METH_VARARGS',		# flags
 		$doc				# docs

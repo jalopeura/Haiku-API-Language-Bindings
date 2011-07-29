@@ -316,10 +316,6 @@ our @ISA = qw(Type Perl::BaseObject);
 # for things that are null-terminated but with a maximum length
 #
 
-#
-# may need to add string_length="1" for MenuItem::Shortcut
-#
-
 # convert Perl SV* to some C++ type
 sub input_converter {
 #print join("\n", 'input_converter', caller),"\n\n";
@@ -350,7 +346,10 @@ sub input_converter {
 			
 			# non-constant lengths
 			if ($options->{set_string_length}) {
-				push @code, "$var = ($self->{name})SvPV($arg, (STRLEN)$len);";
+				push @defs, "STRLEN sv_length;";
+				push @code,
+					"$var = ($self->{name})SvPV($arg, sv_length);",
+					"$len = sv_length;",;
 			}
 			else {
 				push @code, "$var = ($self->{name})SvPV_nolen($arg);";
@@ -508,8 +507,10 @@ sub output_converter {
 			$len .= " * sizeof($base)";
 		}
 		
-		if (not $ptr) {
-#			$var = "&$var";
+		# special case: char interpreted as a string
+		# (instead of char[] or char*)
+		if ($len eq '1' and not $ptr) {
+			$var = "&$var";
 		}
 		if ($self->{name} ne 'char*') {
 			"$var = (char*)$var";

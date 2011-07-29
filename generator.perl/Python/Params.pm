@@ -419,7 +419,11 @@ sub as_cpp_arg {
 
 sub as_cpp_input {
 	my ($self) = @_;
-	my $arg = "$self->{type_name} $self->{name}";
+	my $type = $self->{type_name};
+	if ($self->pass_as_pointer) {
+		$type .= '*';
+	}
+	my $arg = "$type $self->{name}";
 	return $arg;
 }
 

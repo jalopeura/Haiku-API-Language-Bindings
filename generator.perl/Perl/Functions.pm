@@ -232,6 +232,8 @@ sub generate_xs {
 				push @outputs, $param;
 			}
 			elsif ($action=~/length\[/) {
+				$i--;
+				push @precode, "// not an XS input: $param->{name}";
 				push @init, $param->as_cpp_def;
 			}
 			elsif ($action eq 'error') {

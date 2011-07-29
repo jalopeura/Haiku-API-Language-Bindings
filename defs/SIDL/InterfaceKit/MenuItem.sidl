@@ -7,7 +7,7 @@
 				<doc>Creates a MenuItem.</doc>
 				<param name="label" type="const char*" action="input" />
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
-				<param name="shortcut" type="char" action="input" default="0" />
+				<param name="shortcut" type="char" action="input" default="0" string-length="1" />
 				<param name="modifiers" type="uint32" action="input" default="0" />
 			</constructor>
 			<constructor overload-name="Submenu">
@@ -47,7 +47,7 @@
 			</method>
 			<method name="SetShortcut">
 				<doc>Sets the shortcut.</doc>
-				<param name="shortcut" type="char" action="input" />
+				<param name="shortcut" type="char" string-length="1" action="input" />
 				<param name="modifiers" type="uint32" action="input" />
 			</method>
 			<method name="Label">
@@ -69,7 +69,7 @@
 			<method name="Shortcut">
 				<doc>Returns the shortcut.</doc>
 				<param name="modifiers" type="uint32" pass-as-pointer="true" action="output" />
-				<return type="char" action="output" />
+				<return type="char" string-length="1" action="output" />
 			</method>
 			<method name="Submenu">
 				<doc>Returns the associated submenu.</doc>
