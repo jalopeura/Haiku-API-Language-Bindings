@@ -79,7 +79,8 @@ binmode(STDOUT, ':utf8');
 my $test_string = join('', map { chr $_ } 0x100..0x109);
 my $menu_info = new Haiku::menu_info;
 $menu_info->f_family = $test_string;
-my $ret_string = unpack('Z64', $menu_info->f_family);
+#my $ret_string = unpack('Z64', $menu_info->f_family);
+my $ret_string = $menu_info->f_family;
 ok($test_string eq $ret_string, "Set and return char strings [$test_string <=> $ret_string]");
 
 =pod
@@ -111,18 +112,24 @@ ok(($opoint->x == 0 and $opoint->y == 0), "Mathematical operator");
 $point += $point;
 ok(($point->x == 2 * $x and $point->y == 2 * $y), "Mutator operator");
 
-my $color = new Haiu::rgb_color;
+my $color = new Haiku::rgb_color;
 $color->red = 10;
 $color->green = 20;
 $color->blue = 30;
+print $color,"\n";
 
 my $text_run = new Haiku::text_run;
 $text_run->offset = 0;
 $text_run->color = $color;
+print $text_run,"\n";
 
 my $text_run_array = new Haiku::text_run_array;
+print $text_run_array,"\n";
 $text_run_array->runs = [ $text_run ];
+print "Set it\n";
 my $tra = $text_run_array->runs;
+print "Got it\n";
+print $text_run_array,"\n";
 
 my $menu_info = new Haiku::menu_info;
 $menu_info->f_family = "Test";

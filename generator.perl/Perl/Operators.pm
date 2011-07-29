@@ -89,7 +89,7 @@ OPERATOR
 	
 	if ($type eq 'neg') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter({
+		my ($defs, $code) = $type_obj->output_converter({
 			input_name => 'result',
 			output_name => 'RETVAL',
 		});
@@ -100,6 +100,13 @@ OPERATOR
 	OVERLOAD: $name
 	CODE:
 		$cpp_class_name* result;
+CODE
+		
+		for my $line (@$defs) {
+			print $fh "\t\t$line\n";
+		}
+		
+		print $fh <<CODE;
 //		why do these next two statements not work?
 //		*result = -*THIS;
 //		*result = -(*THIS);
@@ -108,8 +115,11 @@ OPERATOR
 		holder = *THIS;
 		*result = -holder;
 		RETVAL = newSV(0);
-		$converter
 CODE
+		
+		for my $line (@$code) {
+			print $fh "\t\t$line\n";
+		}
 	}
 	elsif ($type eq 'cmp') {
 		print $fh <<CODE;
@@ -123,7 +133,7 @@ CODE
 	}
 	elsif ($type eq 'math') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter({
+		my ($defs, $code) = $type_obj->output_converter({
 			input_name => 'result',
 			output_name => 'RETVAL',
 		});
@@ -135,13 +145,23 @@ CODE
 	CODE:
 		$cpp_class_name* result;
 		*result = *THIS $name object;
-		RETVAL = newSV(0);
-		$converter
 CODE
+		
+		for my $line (@$defs) {
+			print $fh "\t\t$line\n";
+		}
+		
+		print $fh <<CODE;
+		RETVAL = newSV(0);
+CODE
+		
+		for my $line (@$code) {
+			print $fh "\t\t$line\n";
+		}
 	}
 	elsif ($type eq 'mut') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my $converter = $type_obj->output_converter({
+		my ($defs, $code) = $type_obj->output_converter({
 			input_name => 'THIS',
 			output_name => 'RETVAL',
 		});
@@ -152,9 +172,19 @@ CODE
 	OVERLOAD: $name
 	CODE:
 		*THIS $name object;
-		RETVAL = newSV(0);
-		$converter
 CODE
+		
+		for my $line (@$defs) {
+			print $fh "\t\t$line\n";
+		}
+		
+		print $fh <<CODE;
+		RETVAL = newSV(0);
+CODE
+		
+		for my $line (@$code) {
+			print $fh "\t\t$line\n";
+		}
 	}
 	
 	print $fh <<OPERATOR;

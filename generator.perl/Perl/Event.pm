@@ -81,10 +81,14 @@ sub generate_cpp {
 			my $action = $param->action;
 			if ($action eq 'input') {
 				my $svname = $param->name . '_sv';
-				push @defs, qq(SV* $svname;);
+				
+				my ($defs, $code) = $param->output_converter($svname);
+				push @defs,
+					qq(SV* $svname;),
+					@$defs;
 				push @precode,
-#					qq($svname = sv_newmortal();),
-					@{ $param->output_converter($svname) };
+					qq($svname = sv_newmortal();),
+					@$code;
 				if ($param->must_not_delete) {
 					push @precode, 
 						qq(must_not_delete_cpp_object($svname, true););
@@ -141,13 +145,16 @@ sub generate_cpp {
 	if ($self->params->has('cpp_output') and $self->params->cpp_output->type_name ne 'void') {
 		my $retval = $self->params->cpp_output;
 		my $retname = $retval->name . '_sv';
+		
+		my ($defs, $code) = $retval->input_converter($retname);
 		push @defs,
 			$retval->as_cpp_def,
-			"SV* $retname;";
+			"SV* $retname;",
+			@$defs;
 		push @postcode,
 			'SPAGAIN;',
 			"$retname = POPs;",
-			@{ $retval->input_converter($retname) },
+			@$code,
 			'PUTBACK;';
 		push @return,
 			'',

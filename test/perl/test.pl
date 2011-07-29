@@ -101,7 +101,7 @@ sub MessageReceived {
 #print "$what => $text\n";
 	if ($what == 0x12345678) {
 		$self->{click_count}++;
-		$self->{button}->SetLabel("$self->{click_count} of $self->{message_count}");
+		$self->{button}->SetLabel("$self->{click_count} of $self->{message_count}\0");
 		return;
 	}
 	$self->SUPER::MessageReceived($message);

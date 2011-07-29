@@ -41,6 +41,9 @@ sub input_converter {
 	for my $x (qw(array_length string_length)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
+			if ($self->{$x}=~/SELF\./) {
+				$options->{"set_$x"} = 1;
+			}
 		}
 	}
 	
@@ -72,8 +75,8 @@ sub generate {
 	my $perl_module_name = $self->module_name;
 	
 	my $name = $self->name;
-	my $ctype_to_sv = $self->output_converter('RETVAL');
-	my $sv_to_ctype = $self->input_converter('value');
+	my ($fetch_defs, $fetch_code) = $self->output_converter('RETVAL');
+	my ($store_defs, $store_code) = $self->input_converter('value');
 	
 	my $fh = $self->package->xsh;
 	
@@ -87,12 +90,19 @@ FETCH(tie_obj)
 		SV* cpp_obj_sv;
 		$cpp_class_name* cpp_obj;
 	CODE:
+PROP
+	
+	for my $line (@$fetch_defs) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<PROP;
 		RETVAL = newSV(0);
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
 PROP
 	
-	for my $line (@$ctype_to_sv) {
+	for my $line (@$fetch_code) {
 		print $fh "\t\t$line\n";
 	}
 	
@@ -108,11 +118,18 @@ STORE(tie_obj, value)
 		SV* cpp_obj_sv;
 		$cpp_class_name* cpp_obj;
 	CODE:
+PROP
+	
+	for my $line (@$store_defs) {
+		print $fh "\t\t$line\n";
+	}
+	
+	print $fh <<PROP;
 		cpp_obj_sv = SvRV(tie_obj);
 		cpp_obj = ($cpp_class_name*)SvIV(cpp_obj_sv);
 PROP
 	
-	for my $line (@$sv_to_ctype) {
+	for my $line (@$store_code) {
 		print $fh "\t\t$line\n";
 	}
 	

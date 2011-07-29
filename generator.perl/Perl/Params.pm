@@ -148,8 +148,8 @@ sub input_converter {
 	my ($self, $target, $modifiers) = @_;
 	
 	my $options = {
-		input_name => $self->name,
-		output_name => $target,
+		output_name => $self->name,
+		input_name => $target,
 	};
 	if ($modifiers->{suffix}) {
 		$options->{input_name} .= delete $modifiers->{suffix};
@@ -175,7 +175,7 @@ sub output_converter {
 		must_not_delete => $self->must_not_delete,
 	};
 	if ($modifiers->{suffix}) {
-		$options->{input_name} .= $modifiers->{suffix};
+		$options->{output_name} .= $modifiers->{suffix};
 	}
 	for my $x (qw(array_length string_length)) {
 		if ($self->has($x)) {
@@ -214,7 +214,11 @@ sub as_cpp_call {
 
 sub as_cpp_funcdef {
 	my ($self) = @_;
-	my $arg = "$self->{type_name} $self->{name}";
+	my $type = $self->{type_name};
+	if ($self->pass_as_pointer) {
+		$type .= '*';
+	}
+	my $arg = "$type $self->{name}";
 	return $arg;
 }
 

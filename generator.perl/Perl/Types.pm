@@ -311,6 +311,15 @@ our @ISA = qw(Type Perl::BaseObject);
 #  string_length (if any)
 #
 
+#
+# may need to add a max_string_length/max_array_length attribute
+# for things that are null-terminated but with a maximum length
+#
+
+#
+# may need to add string_length="1" for MenuItem::Shortcut
+#
+
 # convert Perl SV* to some C++ type
 sub input_converter {
 #print join("\n", 'input_converter', caller),"\n\n";
@@ -335,20 +344,30 @@ sub input_converter {
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
 		if ($ptr) {
-			if ($base ne 'char') {
-				$var = "(char*)$var";
-			}
+#			if ($ptr and $base ne 'char') {
+#				$var = "(char*)$var";
+#			}
 			
 			# non-constant lengths
 			if ($options->{set_string_length}) {
-				push @code, "$var = SvPV($arg, $len);";
+				push @code, "$var = ($self->{name})SvPV($arg, (STRLEN)$len);";
 			}
 			else {
-				push @code, "$var = SvPV_nolen($arg, $len);";
+				push @code, "$var = ($self->{name})SvPV_nolen($arg);";
 			}
 		}
 		else {
-			push @code, "memcpy((void*)&$var, (void*)SvPV($arg, $len), $len)";
+#			push @defs, "char* $arg\_buffer;";
+#			push @code,
+#				"$arg\_buffer = SvPV($arg, $len);",
+#				"memcpy((void*)$var, (void*)$arg\_buffer, $len);";
+			# non-constant lengths
+			if ($options->{set_string_length}) {
+				push @code, "memcpy((void*)&$var, (void*)SvPV($arg, $len), $len);";
+			}
+			else {
+				push @code, "memcpy((void*)&$var, (void*)SvPV_nolen($arg), $len);";
+			}
 		}
 		
 		# not sure if this is necessary
@@ -388,6 +407,12 @@ sub array_input_converter {
 	my $cpp_item = "${var}[i]";
 	my $perl_item = 'element_sv';
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
+	$none or do {
+		# an object but not via a pointer
+		if ($self->has('target')) {
+			undef $none;
+		}
+	};
 	
 	my $count = delete $options->{array_length};
 	# I should make these constants instead of hard-coding them here
@@ -430,8 +455,19 @@ sub array_input_converter {
 #		qq(\tSV** $perl_item;),
 #		qq(\t$perl_item = av_fetch($array, i, 0);),
 		qq(\tSV** $perl_item = av_fetch($array, i, 0);),
-		qq(\tif ($perl_item == NULL) {),
-		qq(\t\t$cpp_item = $none;	// need to fix this),
+		qq(\tif ($perl_item == NULL) {)
+	);
+	
+	if (defined $none) {
+		push @code, qq(\t\t$cpp_item = $none;);
+	}
+	else {
+		push @code,
+			qq(\t\t// should be setting this to some default),
+			qq(\t\t// but neither 0 nor NULL is right);
+	}
+	
+	push @code, (
 		qq(\t\tcontinue;),
 		"\t}",
 		map({ "\t$_" } @$item_code),
@@ -473,13 +509,17 @@ sub output_converter {
 		}
 		
 		if (not $ptr) {
-			$var = "&$var";
+#			$var = "&$var";
 		}
 		if ($self->{name} ne 'char*') {
 			"$var = (char*)$var";
 		}
 		
-		push @code, "$arg = newSVpvn($var, $len);";
+		push @code,
+			"$arg = newSVpvn($var, (STRLEN)$len);",
+			"if (is_utf8_string((const U8*)$var, (STRLEN)$len)) {",
+			"\tSvUTF8_on($arg);",
+			'}';
 	}
 	# null-terminated strings and non-string types use default converters
 	else {
