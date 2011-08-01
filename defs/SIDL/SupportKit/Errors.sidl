@@ -1,0 +1,311 @@
+<bindings name="Haiku::Errors">
+	<doc>Exposes the Errors definitions</doc>
+	<binding source="Errors" target="Haiku::Errors">
+		<doc>Exposes the Haiku Support Kit</doc>
+		<constants>
+<!-- Error baselines -->
+			<constant name="B_GENERAL_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_OS_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_APP_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_INTERFACE_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_MEDIA_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_TRANSLATION_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_MIDI_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_STORAGE_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_POSIX_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_MAIL_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_PRINT_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_DEVICE_ERROR_BASE" type="int" group="baselines" />
+			<constant name="B_ERRORS_END" type="int" group="baselines" />
+<!-- General errors -->
+			<constant name="B_NO_MEMORY" type="int" group="general" />
+			<constant name="B_IO_ERROR" type="int" group="general" />
+			<constant name="B_PERMISSION_DENIED" type="int" group="general" />
+			<constant name="B_BAD_INDEX" type="int" group="general" />
+			<constant name="B_BAD_TYPE" type="int" group="general" />
+			<constant name="B_BAD_VALUE" type="int" group="general" />
+			<constant name="B_MISMATCHED_VALUES" type="int" group="general" />
+			<constant name="B_NAME_NOT_FOUND" type="int" group="general" />
+			<constant name="B_NAME_IN_USE" type="int" group="general" />
+			<constant name="B_TIMED_OUT" type="int" group="general" />
+			<constant name="B_INTERRUPTED" type="int" group="general" />
+			<constant name="B_WOULD_BLOCK" type="int" group="general" />
+			<constant name="B_CANCELED" type="int" group="general" />
+			<constant name="B_NO_INIT" type="int" group="general" />
+			<constant name="B_NOT_INITIALIZED" type="int" group="general" />
+			<constant name="B_BUSY" type="int" group="general" />
+			<constant name="B_NOT_ALLOWED" type="int" group="general" />
+			<constant name="B_BAD_DATA" type="int" group="general" />
+			<constant name="B_DONT_DO_THAT" type="int" group="general" />
+			<constant name="B_ERROR" type="int" group="general" />
+			<constant name="B_OK" type="int" group="general" />
+			<constant name="B_NO_ERROR" type="int" group="general" />
+<!-- Kernel Kit errors -->
+			<constant name="B_BAD_SEM_ID" type="int" group="kernel" />
+			<constant name="B_NO_MORE_SEMS" type="int" group="kernel" />
+			<constant name="B_BAD_THREAD_ID" type="int" group="kernel" />
+			<constant name="B_NO_MORE_THREADS" type="int" group="kernel" />
+			<constant name="B_BAD_THREAD_STATE" type="int" group="kernel" />
+			<constant name="B_BAD_TEAM_ID" type="int" group="kernel" />
+			<constant name="B_NO_MORE_TEAMS" type="int" group="kernel" />
+			<constant name="B_BAD_PORT_ID" type="int" group="kernel" />
+			<constant name="B_NO_MORE_PORTS" type="int" group="kernel" />
+			<constant name="B_BAD_IMAGE_ID" type="int" group="kernel" />
+			<constant name="B_BAD_ADDRESS" type="int" group="kernel" />
+			<constant name="B_NOT_AN_EXECUTABLE" type="int" group="kernel" />
+			<constant name="B_MISSING_LIBRARY" type="int" group="kernel" />
+			<constant name="B_MISSING_SYMBOL" type="int" group="kernel" />
+			<constant name="B_DEBUGGER_ALREADY_INSTALLED" type="int" group="kernel" />
+<!-- Application Kit errors -->
+			<constant name="B_BAD_REPLY" type="int" group="application">
+				<doc>The reply message is inappropriate and can't be sent</doc>
+			</constant>
+			<constant name="B_DUPLICATE_REPLY" type="int" group="application">
+				<doc>A reply message has already been sent</doc>
+			</constant>
+			<constant name="B_MESSAGE_TO_SELF" type="int" group="application">
+				<doc>A thread is trying to send a message to itself</doc>
+			</constant>
+			<constant name="B_BAD_HANDLER" type="int" group="application">
+				<doc>The designated message handler isn't valid</doc>
+			</constant>
+			<constant name="B_ALREADY_RUNNING" type="int" group="application">
+				<doc>The application can't be launched again</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED" type="int" group="application">
+				<doc>The attempt to launch the application failed</doc>
+			</constant>
+			<constant name="B_AMBIGUOUS_APP_LAUNCH" type="int" group="application">
+				<doc>Odd things happening in app land</doc>
+			</constant>
+			<constant name="B_UNKNOWN_MIME_TYPE" type="int" group="application">
+				<doc>Application signature unknown</doc>
+			</constant>
+			<constant name="B_BAD_SCRIPT_SYNTAX" type="int" group="application">
+				<doc>Script syntax malformed</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_NO_RESOLVE_LINK" type="int" group="application">
+				<doc>Unable to resolve a link to the application to be launched</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_EXECUTABLE" type="int" group="application">
+				<doc>The attempt to launch the application failed because the application isn't a valid executable</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_APP_NOT_FOUND" type="int" group="application">
+				<doc>The attempt to launch the application failed because the application wasn't found</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_APP_IN_TRASH" type="int" group="application">
+				<doc>The attempt to launch the application failed because the application was in the trash</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_NO_PREFERRED_APP" type="int" group="application">
+				<doc>The attempt to launch the application failed because there is no preferred application for the document</doc>
+			</constant>
+			<constant name="B_LAUNCH_FAILED_FILES_APP_NOT_FOUND" type="int" group="application">
+				<doc>The attempt to launch the application failed because the document's application is missing</doc>
+			</constant>
+			<constant name="B_BAD_MIME_SNIFFER_RULE" type="int" group="application">
+				<doc>A MIME type sniffer rule is invalid</doc>
+			</constant>
+			
+			<constant name="B_NOT_A_MESSAGE" type="int" group="application" />
+			<constant name="B_SHUTDOWN_CANCELLED" type="int" group="application" />
+			<constant name="B_SHUTTING_DOWN" type="int" group="application" />
+<!-- Storage Kit/File System errors -->
+			<constant name="B_FILE_ERROR" type="int" group="storage" />
+			<constant name="B_FILE_NOT_FOUND" type="int" group="storage" />
+			<constant name="B_FILE_EXISTS" type="int" group="storage" />
+			<constant name="B_ENTRY_NOT_FOUND" type="int" group="storage" />
+			<constant name="B_NAME_TOO_LONG" type="int" group="storage" />
+			<constant name="B_NOT_A_DIRECTORY" type="int" group="storage" />
+			<constant name="B_DIRECTORY_NOT_EMPTY" type="int" group="storage" />
+			<constant name="B_DEVICE_FULL" type="int" group="storage" />
+			<constant name="B_READ_ONLY_DEVICE" type="int" group="storage" />
+			<constant name="B_IS_A_DIRECTORY" type="int" group="storage" />
+			<constant name="B_NO_MORE_FDS" type="int" group="storage" />
+			<constant name="B_CROSS_DEVICE_LINK" type="int" group="storage" />
+			<constant name="B_LINK_LIMIT" type="int" group="storage" />
+			<constant name="B_BUSTED_PIPE" type="int" group="storage" />
+			<constant name="B_UNSUPPORTED" type="int" group="storage" />
+			<constant name="B_PARTITION_TOO_SMALL" type="int" group="storage" />
+<!-- POSIX errors -->
+			<constant name="B_POSIX_ENOMEM" type="int" group="posix" />
+			<constant name="E2BIG" type="int" group="posix" />
+			<constant name="ECHILD" type="int" group="posix" />
+			<constant name="EDEADLK" type="int" group="posix" />
+			<constant name="EFBIG" type="int" group="posix" />
+			<constant name="EMLINK" type="int" group="posix" />
+			<constant name="ENFILE" type="int" group="posix" />
+			<constant name="ENODEV" type="int" group="posix" />
+			<constant name="ENOLCK" type="int" group="posix" />
+			<constant name="ENOSYS" type="int" group="posix" />
+			<constant name="ENOTTY" type="int" group="posix" />
+			<constant name="ENXIO" type="int" group="posix" />
+			<constant name="ESPIPE" type="int" group="posix" />
+			<constant name="ESRCH" type="int" group="posix" />
+			<constant name="EFPOS" type="int" group="posix" />
+			<constant name="ESIGPARM" type="int" group="posix" />
+			<constant name="EDOM" type="int" group="posix" />
+			<constant name="ERANGE" type="int" group="posix" />
+			<constant name="EPROTOTYPE" type="int" group="posix" />
+			<constant name="EPROTONOSUPPORT" type="int" group="posix" />
+			<constant name="EPFNOSUPPORT" type="int" group="posix" />
+			<constant name="EAFNOSUPPORT" type="int" group="posix" />
+			<constant name="EADDRINUSE" type="int" group="posix" />
+			<constant name="EADDRNOTAVAIL" type="int" group="posix" />
+			<constant name="ENETDOWN" type="int" group="posix" />
+			<constant name="ENETUNREACH" type="int" group="posix" />
+			<constant name="ENETRESET" type="int" group="posix" />
+			<constant name="ECONNABORTED" type="int" group="posix" />
+			<constant name="ECONNRESET" type="int" group="posix" />
+			<constant name="EISCONN" type="int" group="posix" />
+			<constant name="ENOTCONN" type="int" group="posix" />
+			<constant name="ESHUTDOWN" type="int" group="posix" />
+			<constant name="ECONNREFUSED" type="int" group="posix" />
+			<constant name="EHOSTUNREACH" type="int" group="posix" />
+			<constant name="ENOPROTOOPT" type="int" group="posix" />
+			<constant name="ENOBUFS" type="int" group="posix" />
+			<constant name="EINPROGRESS" type="int" group="posix" />
+			<constant name="EALREADY" type="int" group="posix" />
+			<constant name="EILSEQ" type="int" group="posix" />
+			<constant name="ENOMSG" type="int" group="posix" />
+			<constant name="ESTALE" type="int" group="posix" />
+			<constant name="EOVERFLOW" type="int" group="posix" />
+			<constant name="EMSGSIZE" type="int" group="posix" />
+			<constant name="EOPNOTSUPP" type="int" group="posix" />
+			<constant name="ENOTSOCK" type="int" group="posix" />
+			<constant name="EHOSTDOWN" type="int" group="posix" />
+			<constant name="EBADMSG" type="int" group="posix" />
+			<constant name="ECANCELED" type="int" group="posix" />
+			<constant name="EDESTADDRREQ" type="int" group="posix" />
+			<constant name="EDQUOT" type="int" group="posix" />
+			<constant name="EIDRM" type="int" group="posix" />
+			<constant name="EMULTIHOP" type="int" group="posix" />
+			<constant name="ENODATA" type="int" group="posix" />
+			<constant name="ENOLINK" type="int" group="posix" />
+			<constant name="ENOSR" type="int" group="posix" />
+			<constant name="ENOSTR" type="int" group="posix" />
+			<constant name="ENOTSUP" type="int" group="posix" />
+			<constant name="EPROTO" type="int" group="posix" />
+			<constant name="ETIME" type="int" group="posix" />
+			<constant name="ETXTBSY" type="int" group="posix" />
+			<constant name="ENOATTR" type="int" group="posix" />
+			<constant name="ENOMEM" type="int" group="posix" />
+			<constant name="EACCES" type="int" group="posix" />
+			<constant name="EINTR" type="int" group="posix" />
+			<constant name="EIO" type="int" group="posix" />
+			<constant name="EBUSY" type="int" group="posix" />
+			<constant name="EFAULT" type="int" group="posix" />
+			<constant name="ETIMEDOUT" type="int" group="posix" />
+			<constant name="EAGAIN" type="int" group="posix" />
+			<constant name="EWOULDBLOCK" type="int" group="posix" />
+			<constant name="EBADF" type="int" group="posix" />
+			<constant name="EEXIST" type="int" group="posix" />
+			<constant name="EINVAL" type="int" group="posix" />
+			<constant name="ENAMETOOLONG" type="int" group="posix" />
+			<constant name="ENOENT" type="int" group="posix" />
+			<constant name="EPERM" type="int" group="posix" />
+			<constant name="ENOTDIR" type="int" group="posix" />
+			<constant name="EISDIR" type="int" group="posix" />
+			<constant name="ENOTEMPTY" type="int" group="posix" />
+			<constant name="ENOSPC" type="int" group="posix" />
+			<constant name="EROFS" type="int" group="posix" />
+			<constant name="EMFILE" type="int" group="posix" />
+			<constant name="EXDEV" type="int" group="posix" />
+			<constant name="ELOOP" type="int" group="posix" />
+			<constant name="ENOEXEC" type="int" group="posix" />
+			<constant name="EPIPE" type="int" group="posix" />
+			<constant name="B_BUFFER_OVERFLOW" type="int" group="posix" />
+			<constant name="B_TOO_MANY_ARGS" type="int" group="posix" />
+			<constant name="B_FILE_TOO_LARGE" type="int" group="posix" />
+			<constant name="B_RESULT_NOT_REPRESENTABLE" type="int" group="posix" />
+			<constant name="B_DEVICE_NOT_FOUND" type="int" group="posix" />
+			<constant name="B_NOT_SUPPORTED" type="int" group="posix" />
+<!-- Media Kit errors -->
+			<constant name="B_STREAM_NOT_FOUND" type="int" group="media" />
+			<constant name="B_SERVER_NOT_FOUND" type="int" group="media" />
+			<constant name="B_RESOURCE_NOT_FOUND" type="int" group="media" />
+			<constant name="B_RESOURCE_UNAVAILABLE" type="int" group="media" />
+			<constant name="B_BAD_SUBSCRIBER" type="int" group="media" />
+			<constant name="B_SUBSCRIBER_NOT_ENTERED" type="int" group="media" />
+			<constant name="B_BUFFER_NOT_AVAILABLE" type="int" group="media" />
+			<constant name="B_LAST_BUFFER_ERROR" type="int" group="media" />
+			<constant name="B_MEDIA_SYSTEM_FAILURE" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_NODE" type="int" group="media" />
+			<constant name="B_MEDIA_NODE_BUSY" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_FORMAT" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_BUFFER" type="int" group="media" />
+			<constant name="B_MEDIA_TOO_MANY_NODES" type="int" group="media" />
+			<constant name="B_MEDIA_TOO_MANY_BUFFERS" type="int" group="media" />
+			<constant name="B_MEDIA_NODE_ALREADY_EXISTS" type="int" group="media" />
+			<constant name="B_MEDIA_BUFFER_ALREADY_EXISTS" type="int" group="media" />
+			<constant name="B_MEDIA_CANNOT_SEEK" type="int" group="media" />
+			<constant name="B_MEDIA_CANNOT_CHANGE_RUN_MODE" type="int" group="media" />
+			<constant name="B_MEDIA_APP_ALREADY_REGISTERED" type="int" group="media" />
+			<constant name="B_MEDIA_APP_NOT_REGISTERED" type="int" group="media" />
+			<constant name="B_MEDIA_CANNOT_RECLAIM_BUFFERS" type="int" group="media" />
+			<constant name="B_MEDIA_BUFFERS_NOT_RECLAIMED" type="int" group="media" />
+			<constant name="B_MEDIA_TIME_SOURCE_STOPPED" type="int" group="media" />
+			<constant name="B_MEDIA_TIME_SOURCE_BUSY" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_SOURCE" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_DESTINATION" type="int" group="media" />
+			<constant name="B_MEDIA_ALREADY_CONNECTED" type="int" group="media" />
+			<constant name="B_MEDIA_NOT_CONNECTED" type="int" group="media" />
+			<constant name="B_MEDIA_BAD_CLIP_FORMAT" type="int" group="media" />
+			<constant name="B_MEDIA_ADDON_FAILED" type="int" group="media" />
+			<constant name="B_MEDIA_ADDON_DISABLED" type="int" group="media" />
+			<constant name="B_MEDIA_CHANGE_IN_PROGRESS" type="int" group="media" />
+			<constant name="B_MEDIA_STALE_CHANGE_COUNT" type="int" group="media" />
+			<constant name="B_MEDIA_ADDON_RESTRICTED" type="int" group="media" />
+			<constant name="B_MEDIA_NO_HANDLER" type="int" group="media" />
+			<constant name="B_MEDIA_DUPLICATE_FORMAT" type="int" group="media" />
+			<constant name="B_MEDIA_REALTIME_DISABLED" type="int" group="media" />
+			<constant name="B_MEDIA_REALTIME_UNAVAILABLE" type="int" group="media" />
+<!-- Mail Kit errors -->
+			<constant name="B_MAIL_NO_DAEMON" type="int" group="mail" />
+			<constant name="B_MAIL_UNKNOWN_USER" type="int" group="mail" />
+			<constant name="B_MAIL_WRONG_PASSWORD" type="int" group="mail" />
+			<constant name="B_MAIL_UNKNOWN_HOST" type="int" group="mail" />
+			<constant name="B_MAIL_ACCESS_ERROR" type="int" group="mail" />
+			<constant name="B_MAIL_UNKNOWN_FIELD" type="int" group="mail" />
+			<constant name="B_MAIL_NO_RECIPIENT" type="int" group="mail" />
+			<constant name="B_MAIL_INVALID_MAIL" type="int" group="mail" />
+<!-- Printing errors -->
+			<constant name="B_NO_PRINT_SERVER" type="int" group="printing" />
+<!-- Device Kit errors -->
+			<constant name="B_DEV_INVALID_IOCTL" type="int" group="device" />
+			<constant name="B_DEV_NO_MEMORY" type="int" group="device" />
+			<constant name="B_DEV_BAD_DRIVE_NUM" type="int" group="device" />
+			<constant name="B_DEV_NO_MEDIA" type="int" group="device" />
+			<constant name="B_DEV_UNREADABLE" type="int" group="device" />
+			<constant name="B_DEV_FORMAT_ERROR" type="int" group="device" />
+			<constant name="B_DEV_TIMEOUT" type="int" group="device" />
+			<constant name="B_DEV_RECALIBRATE_ERROR" type="int" group="device" />
+			<constant name="B_DEV_SEEK_ERROR" type="int" group="device" />
+			<constant name="B_DEV_ID_ERROR" type="int" group="device" />
+			<constant name="B_DEV_READ_ERROR" type="int" group="device" />
+			<constant name="B_DEV_WRITE_ERROR" type="int" group="device" />
+			<constant name="B_DEV_NOT_READY" type="int" group="device" />
+			<constant name="B_DEV_MEDIA_CHANGED" type="int" group="device" />
+			<constant name="B_DEV_MEDIA_CHANGE_REQUESTED" type="int" group="device" />
+			<constant name="B_DEV_RESOURCE_CONFLICT" type="int" group="device" />
+			<constant name="B_DEV_CONFIGURATION_ERROR" type="int" group="device" />
+			<constant name="B_DEV_DISABLED_BY_USER" type="int" group="device" />
+			<constant name="B_DEV_DOOR_OPEN" type="int" group="device" />
+			<constant name="B_DEV_INVALID_PIPE" type="int" group="device" />
+			<constant name="B_DEV_CRC_ERROR" type="int" group="device" />
+			<constant name="B_DEV_STALLED" type="int" group="device" />
+			<constant name="B_DEV_BAD_PID" type="int" group="device" />
+			<constant name="B_DEV_UNEXPECTED_PID" type="int" group="device" />
+			<constant name="B_DEV_DATA_OVERRUN" type="int" group="device" />
+			<constant name="B_DEV_DATA_UNDERRUN" type="int" group="device" />
+			<constant name="B_DEV_FIFO_OVERRUN" type="int" group="device" />
+			<constant name="B_DEV_FIFO_UNDERRUN" type="int" group="device" />
+			<constant name="B_DEV_PENDING" type="int" group="device" />
+			<constant name="B_DEV_MULTIPLE_ERRORS" type="int" group="device" />
+			<constant name="B_DEV_TOO_LATE" type="int" group="device" />
+<!-- Translation Kit errors -->
+			<constant name="B_TRANSLATION_BASE_ERROR" type="int" group="translation" />
+			<constant name="B_NO_TRANSLATOR" type="int" group="translation" />
+			<constant name="B_ILLEGAL_DATA" type="int" group="translation" />
+		</constants>
+	</binding>
+</bindings>

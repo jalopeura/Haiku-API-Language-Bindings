@@ -8,7 +8,7 @@ use Common::SIDL::Bundle;
 use Common::SIDL::Include;
 use Common::SIDL::Link;
 use Common::SIDL::Types;
-#use strict;
+use strict;
 our @ISA = qw(Bindings SIDL::BaseObject);
 
 my %child_handlers = (
@@ -18,7 +18,6 @@ sub _child_handlers { %child_handlers }
 
 sub new {
 	my ($class, %options) = @_;
-	
 	my ($vol, $dir, $path) = File::Spec->splitpath($options{source});
 	my $folder = File::Spec->canonpath($dir);
 	
@@ -27,6 +26,7 @@ sub new {
 		_folder => $folder,
 		_filename => $options{source},
 		_parser => new SGML::Parser(filename => $options{source}),
+		_imports_as_bundles => $options{imports_as_bundles},
 		source_type_prefix => 'SIDL',
 	}, $class;
 	
@@ -39,6 +39,13 @@ print "Parsing $options{source}\n";
 
 sub _import {
 	my ($self, $element) = @_;
+	
+	if ($self->{_imports_as_bundles}) {
+		my %allowed_children = $self->_children;
+		$self->_add($element, $allowed_children{'bundle'});
+		return;
+	}
+	
 	for my $file (@{ $element->children }) {
 		# ignore content and comments
 		next if $file->isa('SGML::Content');

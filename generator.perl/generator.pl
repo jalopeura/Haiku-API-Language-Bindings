@@ -8,6 +8,7 @@ if ($perl) {	# or other languages using separate modular extensions
 	print "Separate modular extensions...\n";
 	
 	my $modular_bindings = new Bindings(
+#		imports_as_bundles => 1,
 		source_type => 'SIDL',
 		source => '../defs/SIDL/HaikuKits.sidl',
 	#	source_type => 'TIDL',

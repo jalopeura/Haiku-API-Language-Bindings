@@ -47,6 +47,7 @@ struct object_link_data {
 	void* cpp_object;
 	SV*   perl_object;
 	bool  can_delete_cpp_object;
+	char* perl_class_name;
 };
 
 SV* create_perl_object(void* cpp_obj_address, const char* perl_class_name, bool must_not_delete = false);
@@ -128,6 +129,7 @@ SV* create_perl_object(void* cpp_obj, const char* perl_class_name, bool must_not
 	link->cpp_object = cpp_obj;
 	link->perl_object = perl_obj;
 	link->can_delete_cpp_object = must_not_delete ? false : true;
+	link->perl_class_name = perl_class_name;
 	
 	// link the data via '~' magic
 	// (we link to the underlying hash and not to the reference itself)
@@ -153,6 +155,12 @@ object_link_data* get_link_data(SV* perl_obj) {
 	if (mg == NULL)
 		return NULL;
 //DEBUGME(4, "Found magic with pointer: %d, %d", (IV)mg, (IV)mg->mg_ptr);
+	
+DEBUGME(1, "The %s at %d has refcount of %d; the underlying hash at %d has a refcount of %d",
+	((object_link_data*)mg->mg_ptr)->perl_class_name,
+	int(perl_obj), SvREFCNT(perl_obj),
+	int(underlying_hash), SvREFCNT(underlying_hash)
+);
 	
 	return (object_link_data*)mg->mg_ptr;
 }

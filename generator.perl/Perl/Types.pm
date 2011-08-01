@@ -304,18 +304,6 @@ package Perl::Type;
 use strict;
 our @ISA = qw(Type Perl::BaseObject);
 
-#
-# converters already have the type
-# converters need:
-#  array_length (if any)
-#  string_length (if any)
-#
-
-#
-# may need to add a max_string_length/max_array_length attribute
-# for things that are null-terminated but with a maximum length
-#
-
 # convert Perl SV* to some C++ type
 sub input_converter {
 #print join("\n", 'input_converter', caller),"\n\n";

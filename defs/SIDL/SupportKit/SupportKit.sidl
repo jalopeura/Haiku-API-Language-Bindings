@@ -2,6 +2,7 @@
 	<doc>Exposes the Haiku Support Kit</doc>
 	<include>
 		<file name="Archivable.h" />
+		<file name="Errors.h" />
 	</include>
 	<link>
 		<lib name="libbe" />
@@ -26,6 +27,7 @@ and C++, but the generator complains if they're not defined
 	</types>
 	<import>
 		<file name="Archivable.sidl" />
+		<file name="Errors.sidl" />
 	</import>
 	<binding source="SupportKit" target="Haiku::SupportKit">
 		<doc>Exposes the Haiku Support Kit</doc>

@@ -24,8 +24,14 @@ sub new {
 	
 	my $source = File::Spec->catfile($parent->_folder, $element->attr('name'));
 	
+	my $bindings = $parent;
+	until ($bindings->isa('Bindings')) {
+		$bindings = $bindings->{_parent};
+	}
+	
 	my $self = $class->SUPER::new(
 		source => $source,
+		imports_as_bundles => $bindings->{_imports_as_bundles},
 	);
 	
 	return $self;
