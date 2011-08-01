@@ -17,13 +17,12 @@ use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 use Test::Simple tests =>  17;
 use strict;
 
-$Haiku::ApplicationKit::DEBUG = 4;
-$Haiku::InterfaceKit::DEBUG = 4;
+$Haiku::ApplicationKit::DEBUG = 0;
+$Haiku::InterfaceKit::DEBUG = 0;
 
 ok(1, 'Modules loaded');
 
 my $message = new Haiku::Message(0);
-
 my $status = $message->AddInt8('x', 1);
 ok($status, "Return true [$status] true on success");
 

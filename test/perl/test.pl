@@ -110,8 +110,8 @@ sub MessageReceived {
 package main;
 use strict;
 
-$Haiku::ApplicationKit::DEBUG = 4;
-$Haiku::InterfaceKit::DEBUG = 4;
+$Haiku::ApplicationKit::DEBUG = 1;
+$Haiku::InterfaceKit::DEBUG = 1;
 
 $TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 

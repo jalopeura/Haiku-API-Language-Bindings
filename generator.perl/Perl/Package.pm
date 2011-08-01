@@ -261,24 +261,25 @@ sub generate_xs_postamble {
 	
 	my $fh = $self->xsh;
 	
-	my ($op_eq, $op_ne);
-	
-	if ($self->has('operators') and $self->operators->has('operators')) {
-		for my $operator ($self->operators->operators) {
-			if ($operator->name eq "==") {
-				$op_eq = 1;
-			}
-			elsif ($operator->name eq "!=") {
-				$op_ne = 1;
+	if ($self->has('functions') and $self->functions->has('constructors')) {	
+		my ($op_eq, $op_ne);
+		
+		if ($self->has('operators') and $self->operators->has('operators')) {
+			for my $operator ($self->operators->operators) {
+				if ($operator->name eq "==") {
+					$op_eq = 1;
+				}
+				elsif ($operator->name eq "!=") {
+					$op_ne = 1;
+				}
 			}
 		}
-	}
-	
-	unless ($op_eq and $op_ne) {
-		my $cpp_class_name = $self->cpp_name;
 		
-		if (not $op_eq) {
-			print $fh <<OP_EQ;
+		unless ($op_eq and $op_ne) {
+			my $cpp_class_name = $self->cpp_name;
+			
+			if (not $op_eq) {
+				print $fh <<OP_EQ;
 bool
 ${cpp_class_name}::operator_eq(object, swap)
 	INPUT:
@@ -291,10 +292,10 @@ ${cpp_class_name}::operator_eq(object, swap)
 		RETVAL
 
 OP_EQ
-		}
-		
-		if (not $op_ne) {
-			print $fh <<OP_NE;
+			}
+			
+			if (not $op_ne) {
+				print $fh <<OP_NE;
 bool
 ${cpp_class_name}::operator_ne(object, swap)
 	INPUT:
@@ -307,6 +308,7 @@ ${cpp_class_name}::operator_ne(object, swap)
 		RETVAL
 
 OP_NE
+			}
 		}
 	}
 	

@@ -92,7 +92,7 @@ MAKE
 		my $file = File::Spec->catfile($test_source_dir, $e);
 		next if -d $file;
 #		next unless $e=~/\.t$/;
-		copy($file, $test_target_dir);
+		copy($file, File::Spec->catfile($test_target_dir, $e));
 	}
 	closedir DIR;
 	

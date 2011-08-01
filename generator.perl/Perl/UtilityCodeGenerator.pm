@@ -47,7 +47,7 @@ struct object_link_data {
 	void* cpp_object;
 	SV*   perl_object;
 	bool  can_delete_cpp_object;
-	char* perl_class_name;
+	const char* perl_class_name;
 };
 
 SV* create_perl_object(void* cpp_obj_address, const char* perl_class_name, bool must_not_delete = false);
@@ -120,6 +120,7 @@ SV* create_perl_object(void* cpp_obj, const char* perl_class_name, bool must_not
 	// create the underlying hash and make a ref to it
 	underlying_hash = newHV();
 	perl_obj = newRV_noinc((SV*) underlying_hash);
+	//sv_2mortal(perl_obj);
 	
 	// get the stash and bless the ref (to the underlying hash) into it
 	perl_obj_stash = gv_stashpv(perl_class_name, TRUE);
@@ -156,11 +157,13 @@ object_link_data* get_link_data(SV* perl_obj) {
 		return NULL;
 //DEBUGME(4, "Found magic with pointer: %d, %d", (IV)mg, (IV)mg->mg_ptr);
 	
+/*
 DEBUGME(1, "The %s at %d has refcount of %d; the underlying hash at %d has a refcount of %d",
 	((object_link_data*)mg->mg_ptr)->perl_class_name,
 	int(perl_obj), SvREFCNT(perl_obj),
 	int(underlying_hash), SvREFCNT(underlying_hash)
 );
+*/
 	
 	return (object_link_data*)mg->mg_ptr;
 }

@@ -356,9 +356,14 @@ sub generate_xs {
 			}
 			if ($outputs[0]->type->has('target')) {
 				push @postcode,
-					"RETVAL = newSVsv($retname);",
-					"// it's already mortal, but RETVAL will mortalize it again",
-					"SvREFCNT_inc($retname);";
+					#"RETVAL = newSVsv($retname);",
+					#"// it's already mortal, but RETVAL will mortalize it again",
+					#"SvREFCNT_inc($retname);";
+					"RETVAL = $retname;",
+"get_link_data($retname);",
+"get_link_data(RETVAL);",
+#qq(DEBUGME(1, "refcount of $retname: %d", SvREFCNT($retname));),
+#qq(DEBUGME(1, "refcount of RETVAL: %d", SvREFCNT(RETVAL));),
 			}
 			else {
 				if ($outputs[0]->type->builtin eq 'char') {
