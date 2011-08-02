@@ -17,7 +17,7 @@ package Type;
 use strict;
 our @ISA = qw(BaseObject);
 
-my @attributes = qw(name builtin target string-length);
+my @attributes = qw(name builtin target string-length max-string-length);	# array-length and max-array-length?
 my @required_data = qw(name builtin);
 
 sub _attributes { @attributes }

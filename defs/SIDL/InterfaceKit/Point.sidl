@@ -36,9 +36,6 @@
 				<doc>Prints the contents to standard out as [code]BRect(left, top, right, bottom)[/code]</doc>
 			</method>
 		</functions>
-		<constants>
-			<constant name="B_ORIGIN" type="BPoint" group="" />
-		</constants>
 		<operators>
 			<operator name="neg" />
 			<operator name="==" />
@@ -48,5 +45,8 @@
 			<operator name="+=" />
 			<operator name="-=" />
 		</operators>
+		<constants>
+			<constant name="B_ORIGIN" type="BPoint" group="" />
+		</constants>
 	</binding>
 </bindings>

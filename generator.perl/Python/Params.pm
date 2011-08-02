@@ -332,7 +332,7 @@ sub type_options {
 	if ($self->has('default')) {
 		$options->{default} = $self->default;
 	}
-	for (qw(array_length string_length)) {
+	for (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($_)) {
 			$options->{$_} = $self->{$_};
 		}

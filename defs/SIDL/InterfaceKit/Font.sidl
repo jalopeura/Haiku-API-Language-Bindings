@@ -8,109 +8,282 @@
 			</constructor>
 			<constructor overload-name="FromFont">
 				<doc>Creates a Font from another Font.</doc>
+				<param name="font" type="BFont*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- Archive -->
-<!-- TODO: unicode_block struct not yet implemented
-			<method name="Blocks">
-				<doc>Returns the supported Unicode blocks.</doc>
-				<return type="unicode_block" action="output" />
+			<method name="SetFamilyAndStyle">
+				<param name="family" type="const font_family" action="input" />
+				<param name="style" type="const font_style" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
-			<method name="BoundingBox">
-				<doc>Returns a BRect that can enclose the entire font in its current style and size.</doc>
-				<return type="BRect" action="output" />
+			<method name="SetFamilyAndStyle" overload-name="SetFamilyAndStyleFromCode">
+				<param name="code" type="uint32" action="input" />
 			</method>
-			<method name="Direction">
-				<doc>Returns the font direction.</doc>
-				<return type="font_direction" action="output" />
-			</method>
-			<method name="FileFormat">
-				<doc>Returns the format of the file containing the font.</doc>
-				<return type="font_file_format" action="output" />
-			</method>
-			<!-- GetBoundingBoxesAsGlyphs -->
-			<!-- GetBoundingBoxesAsString -->
-			<!-- GetEscapements -->
-			<!-- GetEdges -->
-			<!-- GetGlyphShapes -->
-			<!-- GetHasGlyphs -->
-			<!-- GetHeight -->
-			<!-- GetTruncatedStrings -->
-			<!-- TruncateStrings -->
-			<!-- GetTunedInfo -->
-			<!-- CountTuned -->
-			<method name="IsFixed">
-				<doc>Returns true if the font is fixed.</doc>
-				<return type="bool" action="output" />
-			</method>
-			<!-- IsFullAndHalfFixed -->
-			<method name="PrintToStream">
-			</method>
-			<method name="SetEncoding">
-				<doc>Sets the font encoding.</doc>
-				<param name="encoding" type="uint8" action="input" />
-			</method>
-			<method name="Encoding">
-				<doc>Returns the font encoding.</doc>
-				<return type="uint8" action="output" />
-			</method>
-			<method name="SetFace">
-				<doc>Sets the font face.</doc>
+			<method name="SetFamilyAndStyle">
+				<param name="family" type="const font_family" action="input" />
 				<param name="face" type="uint16" action="input" />
-			</method>
-			<method name="Face">
-				<doc>Returns the font face.</doc>
-				<return type="uint16" action="output" />
-			</method>
-			<!-- SetFamilyAndFace -->
-			<!-- SetFamilyAndStyle -->
-			<!-- GetFamilyAndStyle -->
-			<!-- FamilyAndStyle -->
-			<method name="SetFlags">
-				<doc>Sets the font flags.</doc>
-				<param name="flags" type="uint32" action="input" />
-			</method>
-			<method name="Flags">
-				<doc>Returns the font flags.</doc>
-				<return type="uint32" action="output" />
-			</method>
-			<method name="SetRotation">
-				<doc>Sets the font rotation.</doc>
-				<param name="rotation" type="float" action="input" />
-			</method>
-			<method name="Rotation">
-				<doc>Returns the font rotation.</doc>
-				<return type="float" action="output" />
-			</method>
-			<method name="SetShear">
-				<doc>Sets the font shear.</doc>
-				<param name="shear" type="float" action="input" />
-			</method>
-			<method name="Shear">
-				<doc>Returns the font shear.</doc>
-				<return type="float" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetSize">
 				<doc>Sets the font size.</doc>
 				<param name="size" type="float" action="input" />
 			</method>
-			<method name="Size">
-				<doc>Returns the font size.</doc>
-				<return type="float" action="output" />
+			<method name="SetShear">
+				<doc>Sets the font shear.</doc>
+				<param name="shear" type="float" action="input" />
+			</method>
+			<method name="SetRotation">
+				<doc>Sets the font rotation.</doc>
+				<param name="rotation" type="float" action="input" />
+			</method>
+			<method name="SetFalseBoldWidth">
+				<param name="width" type="float" action="input" />
 			</method>
 			<method name="SetSpacing">
 				<doc>Sets the font spacing.</doc>
 				<param name="spacing" type="uint8" action="input" />
 			</method>
+			<method name="SetEncoding">
+				<doc>Sets the font encoding.</doc>
+				<param name="encoding" type="uint8" action="input" />
+			</method>
+			<method name="SetFace">
+				<doc>Sets the font face.</doc>
+				<param name="face" type="uint16" action="input" />
+			</method>
+			<method name="SetFlags">
+				<doc>Sets the font flags.</doc>
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="GetFamilyAndStyle">
+				<param name="family" type="const font_family" pass-as-pointer="true" action="output" />
+				<param name="style" type="const font_style" pass-as-pointer="true" action="output" />
+			</method>
+			<method name="FamilyAndStyle" overload-name="SetFamilyAndStyleFromCode">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="Size">
+				<doc>Returns the font size.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="Shear">
+				<doc>Returns the font shear.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="Rotation">
+				<doc>Returns the font rotation.</doc>
+				<return type="float" action="output" />
+			</method>
+			<method name="FalseBoldWidth">
+				<return type="float" action="output" />
+			</method>
 			<method name="Spacing">
 				<doc>Returns the font spacing.</doc>
 				<return type="uint8" action="output" />
 			</method>
-			<!-- StringWidth -->
-			<!-- GetStringWidth -->
+			<method name="Encoding">
+				<doc>Returns the font encoding.</doc>
+				<return type="uint8" action="output" />
+			</method>
+			<method name="Face">
+				<doc>Returns the font face.</doc>
+				<return type="uint16" action="output" />
+			</method>
+			<method name="Flags">
+				<doc>Returns the font flags.</doc>
+				<return type="uint32" action="output" />
+			</method>
+			<method name="Direction">
+				<doc>Returns the font direction.</doc>
+				<return type="font_direction" action="output" />
+			</method>
+			<method name="IsFixed">
+				<doc>Returns true if the font is fixed.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsFullAndHalfFixed">
+				<return type="bool" action="output" />
+			</method>
+			<method name="BoundingBox">
+				<doc>Returns a BRect that can enclose the entire font in its current style and size.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="Blocks">
+				<doc>Returns the supported Unicode blocks.</doc>
+				<return type="unicode_block" action="output" />
+			</method>
+			<method name="FileFormat">
+				<doc>Returns the format of the file containing the font.</doc>
+				<return type="font_file_format" action="output" />
+			</method>
+			<method name="CountTuned">
+				<return type="int32" action="output" />
+			</method>
+			<method name="GetTunedInfo">
+				<param name="index" type="int32" action="input" />
+				<param name="info" type="tuned_font_info*" action="output" />
+			</method>
+<!-- TODO: BString object not implemented yet
+			<method name="TruncateString">
+				<param name="inOut" type="BString*" action="input" />
+				<param name="mode" type="uint32" action="input" />
+				<param name="width" type="float" action="input" />
+			</method>
+-->
+			<method name="GetTruncatedStrings">
+				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="numStrings" type="int32" action="count[stringArray]" />
+				<param name="mode" type="uint32" action="input" />
+				<param name="width" type="float" action="input" />
+				<param name="resultArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="output" />
+			</method>
+<!-- TODO: BString object not implemented yet
+			<method name="GetTruncatedStrings" overload-name="GetTruncatedStringsAsStringObjects">
+				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="numStrings" type="int32" action="count[stringArray]" />
+				<param name="mode" type="uint32" action="input" />
+				<param name="width" type="float" action="input" />
+				<param name="resultArray" type="BString" array-length="numStrings" string-length="null-terminated" action="output" />
+			</method>
+-->
+			<method name="StringWidth">
+				<param name="string" type="const char*" action="input" />
+				<return type="float" action="output" />
+			</method>
+			<method name="StringWidth" overload-name="StringWidthWithLength">
+				<param name="string" type="const char*" string-length="length" action="input" />
+				<param name="length" type="int32" action="length[string]" />
+				<return type="float" action="output" />
+			</method>
+			<method name="GetStringWidths">
+				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="lengthArray" type="int32" array-length="numStrings" action="input" />
+				<param name="numStrings" type="int32" action="count[stringArray]" />
+				<param name="widthArray" type="float" array-length="numStrings" action="output" />
+			</method>
+			<method name="GetEscapements">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="ecapementArray" type="float" array-length="numChars" action="output" />
+			</method>
+			<method name="GetEscapements" overload-name="GetEscapementsWithDelta">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="delta" type="escapement_delta*" action="input" />
+				<param name="ecapementArray" type="float" array-length="numChars" action="output" />
+			</method>
+			<method name="GetEscapements" overload-name="GetEscapementsAsPoints">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="delta" type="escapement_delta*" action="input" />
+				<param name="ecapementArray" type="BPoint" array-length="numChars" action="output" />
+			</method>
+			<method name="GetEscapements" overload-name="GetEscapementsAsPointsWithOffsets">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="delta" type="escapement_delta*" action="input" />
+				<param name="ecapementArray" type="BPoint" array-length="numChars" action="output" />
+				<param name="offsetArray" type="BPoint" array-length="numChars" action="output" />
+			</method>
+			<method name="GetEdges">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="edgeArray" type="edge_info" array-length="numChars" action="output" />
+			</method>
+			<method name="GetHeight">
+				<param name="height" type="font_height*" action="output" />
+			</method>
+			<method name="GetBoundingBoxesAsGlyphs">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="mode" type="font_metric_mode" action="input" />
+				<param name="boundingBoxArray" type="BRect" array-length="numChars" action="output" />
+			</method>
+			<method name="GetBoundingBoxesAsString">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="mode" type="font_metric_mode" action="input" />
+				<param name="delta" type="escapement_delta*" action="input" />
+				<param name="boundingBoxArray" type="BRect" array-length="numChars" action="output" />
+			</method>
+			<method name="GetBoundingBoxesForStrings">
+				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="numStrings" type="int32" action="count[stringArray]" />
+				<param name="mode" type="font_metric_mode" action="input" />
+				<param name="deltas" type="escapement_delta" array-length="numStrings" action="input" />
+				<param name="boundingBoxArray" type="BRect" array-length="numStrings" action="output" />
+			</method>
+<!-- TODO: BShape object not yet implemented
+			<method name="GetGlyphShapes">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="glyphShapeArray" type="BShape*" array-length="numChars" action="output" />
+			</method>
+-->
+			<method name="GetHasGlyphs">
+				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="numChars" type="int32" action="length[charArray]" />
+				<param name="hasArray" type="bool" array-length="numChars" action="output" />
+			</method>
+			<method name="PrintToStream" />
+			<plain name="count_font_families">
+				<return type="int32" action="output" />
+			</plain>
+			<plain name="get_font_family">
+				<param name="index" type="int32" action="input" />
+				<param name="name" type="font_family" pass-as-pointer="true" action="output" />
+				<param name="flags" type="uint32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="count_font_styles">
+				<param name="name" type="font_family" action="input" />
+				<return type="int32" action="output" />
+			</plain>
+			<plain name="get_font_style">
+				<param name="family" type="font_family" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="name" type="font_style" pass-as-pointer="true" action="output" />
+				<param name="flags" type="uint32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_font_style" overload-name="get_font_style_and_face">
+				<param name="family" type="font_family" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="name" type="font_style" pass-as-pointer="true" action="output" />
+				<param name="face" type="uint16" pass-as-pointer="true" action="output" />
+				<param name="flags" type="uint32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="update_font_families">
+				<param name="checkOnly" type="bool" action="input" />
+				<return type="bool" action="output" />
+			</plain>
 		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
 		<constants>
+<!-- lengths -->
+			<constant name="B_FONT_FAMILY_LENGTH" type="int" group="lengths" />
+			<constant name="B_FONT_STYLE_LENGTH" type="int" group="lengths" />
+<!-- font spacing -->
+			<constant name="B_CHAR_SPACING" type="int" group="font_spacing" />
+			<constant name="B_STRING_SPACING" type="int" group="font_spacing" />
+			<constant name="B_BITMAP_SPACING" type="int" group="font_spacing" />
+			<constant name="B_FIXED_SPACING" type="int" group="font_spacing" />
+<!-- direction -->
+			<constant name="B_FONT_LEFT_TO_RIGHT" type="int" group="font_direction" />
+			<constant name="B_FONT_RIGHT_TO_LEFT" type="int" group="font_direction" />
+<!-- font flags -->
+			<constant name="B_DISABLE_ANTIALIASING" type="int" group="flags" />
+			<constant name="B_FORCE_ANTIALIASING" type="int" group="flags" />
+<!-- truncation modes -->
+			<constant name="B_TRUNCATE_END" type="int" group="truncation" />
+			<constant name="B_TRUNCATE_BEGINNING" type="int" group="truncation" />
+			<constant name="B_TRUNCATE_MIDDLE" type="int" group="truncation" />
+			<constant name="B_TRUNCATE_SMART" type="int" group="truncation" />
+<!-- encodings -->
 			<constant name="B_UNICODE_UTF8" type="int" group="encodings">
 				<doc>UTF-8</doc>
 			</constant>
@@ -145,80 +318,43 @@
 				<doc>Latin 6</doc>
 			</constant>
 			<constant name="B_MACINTOSH_ROMAN" type="int" group="encodings">
-				<doc>...</doc>
+				<doc>Macintosh Roman</doc>
 			</constant>
-			<constant name="B_DISABLE_ANTIALIASING" type="int" group="flags">
-				<doc>...</doc>
+<!-- more flags -->
+			<constant name="B_HAS_TUNED_FONT" type="int" group="flags" />
+			<constant name="B_IS_FIXED" type="int" group="flags" />
+<!-- faces -->
+			<constant name="B_ITALIC_FACE" type="int" group="faces">
+				<doc>Characters are drawn italicized.</doc>
 			</constant>
-			<constant name="B_IS_FIXED" type="int" group="flags">
-				<doc>...</doc>
+			<constant name="B_UNDERSCORE_FACE" type="int" group="faces">
+				<doc>Characters are drawn underlined.</doc>
 			</constant>
-			<constant name="B_HAS_TUNED_FONT" type="int" group="flags">
-				<doc>...</doc>
+			<constant name="B_NEGATIVE_FACE" type="int" group="faces">
+				<doc>Characters are drawn in the low color, while the background is drawn in the high color.</doc>
 			</constant>
-			<constant name="B_FONT_FAMILY_LENGTH" type="int" group="lengths">
-				<doc>...</doc>
+			<constant name="B_OUTLINED_FACE" type="int" group="faces">
+				<doc>Characters are drawn hollow, with a line around their border, but unfilled.</doc>
 			</constant>
-			<constant name="B_FONT_STYLE_LENGTH" type="int" group="lengths">
-				<doc>...</doc>
+			<constant name="B_STRIKEOUT_FACE" type="int" group="faces">
+				<doc>Characters are drawn "struck-out," with a line drawn horizontally through the middle.</doc>
 			</constant>
-			<constant name="B_FONT_FAMILY_AND_STYLE" type="int" group="properties">
-				<doc>...</doc>
+			<constant name="B_BOLD_FACE" type="int" group="faces">
+				<doc>Characters are drawn in boldface.</doc>
 			</constant>
-			<constant name="B_FONT_SIZE" type="int" group="properties">
-				<doc>...</doc>
+			<constant name="B_REGULAR_FACE" type="int" group="faces">
+				<doc>Characters are drawn normally.</doc>
 			</constant>
-			<constant name="B_FONT_SHEAR" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_ROTATION" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_SPACING" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_ENCODING" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_FACE" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_FLAGS" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_ALL" type="int" group="properties">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_CHAR_SPACING" type="int" group="spacing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_STRING_SPACING" type="int" group="spacing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_BITMAP_SPACING" type="int" group="spacing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FIXED_SPACING" type="int" group="spacing">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_SCREEN_METRIC" type="int" group="metric">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_PRINTING_METRIC" type="int" group="metric">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_TRUETYPE_WINDOWS" type="int" group="format">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_POSTSCRIPT_TYPE1_WINDOWS" type="int" group="format">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_LEFT_TO_RIGHT" type="int" group="direction">
-				<doc>...</doc>
-			</constant>
-			<constant name="B_FONT_RIGHT_TO_LEFT" type="int" group="direction">
-				<doc>...</doc>
-			</constant>
+			<constant name="B_CONDENSED_FACE" type="int" group="faces" />
+			<constant name="B_LIGHT_FACE" type="int" group="faces" />
+			<constant name="B_HEAVY_FACE" type="int" group="faces" />
+<!-- font_metric_mode -->
+			<constant name="B_SCREEN_METRIC" type="int" group="font_metric_mode" />
+			<constant name="B_PRINTING_METRIC" type="int" group="font_metric_mode" />
+<!-- font_file_format -->
+			<constant name="B_TRUETYPE_WINDOWS" type="int" group="font_file_format" />
+			<constant name="B_POSTSCRIPT_TYPE1_WINDOWS" type="int" group="font_file_format" />
+<!-- unicode blocks (defined in UnicodeBlockObjects.h) -->
 			<constant name="B_BASIC_LATIN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
@@ -432,57 +568,44 @@
 			<constant name="B_TIBETAN_BLOCK" type="unicode_block" group="unicode_blocks">
 				<doc>...</doc>
 			</constant>
-			<constant name="B_ITALIC_FACE" type="int" group="face">
-				<doc>Characters are drawn italicized.</doc>
-			</constant>
-			<constant name="B_UNDERSCORE_FACE" type="int" group="face">
-				<doc>Characters are drawn underlined.</doc>
-			</constant>
-			<constant name="B_NEGATIVE_FACE" type="int" group="face">
-				<doc>Characters are drawn in the low color, while the background is drawn in the high color.</doc>
-			</constant>
-			<constant name="B_OUTLINED_FACE" type="int" group="face">
-				<doc>Characters are drawn hollow, with a line around their border, but unfilled.</doc>
-			</constant>
-			<constant name="B_STRIKEOUT_FACE" type="int" group="face">
-				<doc>Characters are drawn "struck-out," with a line drawn horizontally through the middle.</doc>
-			</constant>
-			<constant name="B_BOLD_FACE" type="int" group="face">
-				<doc>Characters are drawn in boldface.</doc>
-			</constant>
-			<constant name="B_REGULAR_FACE" type="int" group="face">
-				<doc>Characters are drawn normally.</doc>
-			</constant>
-			<!-- string truncation constants -->
-<!--
-B_TRUNCATE_END
-B_TRUNCATE_BEGINNING
-B_TRUNCATE_MIDDLE
-B_TRUNCATE_SMART
--->
 		</constants>
 		<globals>
-			<global name="be_plain_font" type="BFont*" />
-			<global name="be_bold_font"  type="BFont*" />
-			<global name="be_fixed_font" type="BFont*" />
+			<global name="be_plain_font" type="const BFont*" />
+			<global name="be_bold_font" type="const BFont*" />
+			<global name="be_fixed_font" type="const BFont*" />
 		</globals>
+	</binding>
+	<binding source="unicode_block" target="Haiku::unicode_block">
+		<doc>Exposes the unicode_block struct</doc>
+		<properties>
+			<property name="fData" type="uint64" array-length="2" />
+		</properties>
+		<functions>
+			<constructor>
+				<param name="block2" type="uint64" action="input" />
+				<param name="block1" type="uint64" action="input" />
+			</constructor>
+			<constructor overload-name="Empty" />
+			<destructor />
+			<method name="Includes">
+				<doc>Determines whether the given block is a subset of this block.</doc>
+				<param name="block" type="unicode_block" action="input" />
+				<return type="bool" action="output" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="neg" />
+			<operator name="==" />
+			<operator name="!=" />
+			<operator name="&" />
+			<operator name="|" />
+		</operators>
 	</binding>
 	<binding source="edge_info" target="Haiku::edge_info">
 		<doc>Exposes the edge_info struct</doc>
 		<properties>
 			<property name="left"  type="float" />
 			<property name="right" type="float" />
-		</properties>
-		<functions>
-			<constructor />
-			<destructor />
-		</functions>
-	</binding>
-	<binding source="escapement_delta" target="Haiku::escapement_delta">
-		<doc>Exposes the escapement_delta struct</doc>
-		<properties>
-			<property name="nonspace" type="float" />
-			<property name="space"    type="float" />
 		</properties>
 		<functions>
 			<constructor />
@@ -501,6 +624,32 @@ B_TRUNCATE_SMART
 			<destructor />
 		</functions>
 	</binding>
+	<binding source="escapement_delta" target="Haiku::escapement_delta">
+		<doc>Exposes the escapement_delta struct</doc>
+		<properties>
+			<property name="nonspace" type="float" />
+			<property name="space"    type="float" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+	<binding source="font_cache_info" target="Haiku::font_cache_info">
+		<doc>Exposes the font_cache_info struct</doc>
+		<properties>
+			<property name="sheared_font_penalty"   type="int32" />
+			<property name="rotated_font_penalty"   type="int32" />
+			<property name="oversize_threshold"     type="float" />
+			<property name="oversize_penalty"       type="int32" />
+			<property name="cache_size"             type="int32" />
+			<property name="spacing_size_threshold" type="float" />
+		</properties>
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
 	<binding source="tuned_font_info" target="Haiku::tuned_font_info">
 		<doc>Exposes the tuned_font_info struct</doc>
 		<properties>
@@ -513,22 +662,6 @@ B_TRUNCATE_SMART
 		<functions>
 			<constructor />
 			<destructor />
-		</functions>
-	</binding>
-	<binding source="unicode_block" target="Haiku::unicode_block">
-		<doc>Exposes the unicode_block struct</doc>
-		<functions>
-			<constructor>
-				<param name="block2" type="uint64" action="input" />
-				<param name="block1" type="uint64" action="input" />
-			</constructor>
-			<constructor overload-name="Empty" />
-			<destructor />
-			<method name="Includes">
-				<doc>Determines whether the given block is a subset of this block.</doc>
-				<param name="block" type="unicode_block" action="input" />
-				<return type="bool" action="output" />
-			</method>
 		</functions>
 	</binding>
 </bindings>

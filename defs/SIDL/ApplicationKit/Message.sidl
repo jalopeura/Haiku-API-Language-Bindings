@@ -376,18 +376,16 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: const void* type not yet implemented
 			<method name="AddPointer">
 				<doc>Adds a pointer to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="aPointer" type="const void*" action="input">
+				<param name="aPointer" type="const void*" string-length="sizeof(void*)" action="input">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 <!-- TODO: BMessenger object not yet implemented
 			<method name="AddMessenger">
 				<doc>Adds a Messenger object to the Message.</doc>
@@ -434,7 +432,6 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 -->
-<!-- TODO: const void* type not yet implemented
 			<method name="AddData">
 				<doc>Adds data to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -443,10 +440,10 @@
 				<param name="type" type="type_code" action="input">
 					<doc>Data type constant.</doc>
 				</param>
-				<param name="data" type="const void*" action="input">
+				<param name="data" type="const void*"  string-length="numBytes" action="input">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="input">
+				<param name="numBytes" type="ssize_t" action="length[data]">
 					<doc>Size of data.</doc>
 				</param>
 				<param name="isFixedSize" type="bool" action="input" default="true">
@@ -457,7 +454,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 <!-- Removing data -->
 			<method name="RemoveData">
 				<param name="name" type="const char*" action="input" />
@@ -820,13 +816,12 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: const void* type object not yet implemented
 			<method name="FindPointer">
 				<doc>Finds a pointer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="pointer" type="const void*" pass-as-pointer="true" action="output">
+				<param name="pointer" type="const void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -839,12 +834,11 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="pointer" type="const void*" pass-as-pointer="true" action="output">
+				<param name="pointer" type="const void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 <!-- TODO: BMessenger object not yet implemented
 			<method name="FindMessenger">
 				<doc>Finds a Messenger object in the Message.</doc>
@@ -943,7 +937,6 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 -->
-<!-- TODO: const void* type object not yet implemented
 			<method name="FindData">
 				<doc>Finds named data in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -952,10 +945,10 @@
 				<param name="type" type="type_code" action="input">
 					<doc>Data type constant.</doc>
 				</param>
-				<param name="data" type="const void*" action="output">
+				<param name="data" type="const void*" string-length="numBytes" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="output">
+				<param name="numBytes" type="ssize_t" action="length[data]">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -971,10 +964,10 @@
 				<param name="index" type="int32" action="input">
 					<doc>Index.</doc>
 				</param>
-				<param name="data" type="const void*" action="output">
+				<param name="data" type="const void*" string-length="numBytes" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="output">
+				<param name="numBytes" type="ssize_t" action="length[data]">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1328,13 +1321,12 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: const void* type object not yet implemented
 			<method name="ReplacePointer">
 				<doc>Finds a pointer in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="pointer" type="const void*" action="output">
+				<param name="pointer" type="const void*" string-length="sizeof(void*)" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1347,12 +1339,11 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="pointer" type="const void*" action="output">
+				<param name="pointer" type="const void*" string-length="sizeof(void*)" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 <!-- TODO: BMessenger object not yet implemented
 			<method name="ReplaceMessenger">
 				<doc>Finds a Messenger object in the Message.</doc>
@@ -1451,7 +1442,6 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 -->
-<!-- TODO: const void* type object not yet implemented
 			<method name="ReplaceData">
 				<doc>Finds named data in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -1460,10 +1450,10 @@
 				<param name="type" type="type_code" action="input">
 					<doc>Data type constant.</doc>
 				</param>
-				<param name="data" type="const void*" action="output">
+				<param name="data" type="const void*" string-length="numBytes" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="output">
+				<param name="numBytes" type="ssize_t" action="length[data]">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1479,15 +1469,14 @@
 				<param name="index" type="int32" action="input">
 					<doc>Index.</doc>
 				</param>
-				<param name="data" type="const void*" action="output">
+				<param name="data" type="const void*" string-length="numBytes" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="output">
+				<param name="numBytes" type="ssize_t" action="length[data]">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 <!-- HasSameData not implemented because it's experimental -->
 		</functions>
 		<constants>

@@ -128,6 +128,11 @@ sub type {
 			$self->register_type($name, $type->builtin, $target);
 			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
 		}
+		
+		(my $k = $basename)=~s/ //g;
+		if ($builtins{$k}) {
+			return new Python::BuiltinType($name, $builtins{$k}, $basename);
+		}
 	}
 	
 	(my $k = $name)=~s/ //g;
@@ -228,6 +233,35 @@ sub arg_builder {
 		return (
 			[],	# empty defs
 			[ qq($options->{output_name} = Py_BuildValue("s#", $input, $len);) ]
+		);
+	}
+	
+	my $maxlen =  $options->{max_string_length};
+	if (not $maxlen and $self->has('max_string_length')) {
+		$maxlen = $self->max_string_length;
+	}
+	
+	# strings with maximum length (but can be null-terminated)
+	if ($maxlen) {
+		(my $base = $self->{name})=~s/const\s+//;
+		
+		my $input = $options->{input_name};
+		unless ($base=~/\*$/) {
+			$input = "&$input"
+		}
+		
+		return (
+			[ 'Py_ssize_t py_length;' ],
+			[
+				qq($options->{output_name} = Py_BuildValue("s", $input, $len);	// 's' instead of 's#' lets Python calculate length),
+				'',
+				qq(py_length = PyString_Size($options->{output_name});),
+				qq(if (py_length > $maxlen) {),
+				qq(\tpy_length = $maxlen;),
+				qq(\tPyString_Resize(&$options->{output_name}, py_length);),
+				qq(}),
+				'',
+			],
 		);
 	}
 	
@@ -372,6 +406,15 @@ sub arg_parser {
 	my $len =  $options->{string_length};
 	if (not $len and $self->has('string_length')) {
 		$len = $self->string_length;
+	}
+	
+	# for input from Python, treat max length as simple length
+	# (this will be a problem in Python code passes in a too-long string)
+	if (not $len) {
+		my $len =  $options->{max_string_length};
+		if (not $len and $self->has('max_string_length')) {
+			$len = $self->max_string_length;
+		}
 	}
 	
 	# strings with lengths need special processing
@@ -570,10 +613,11 @@ use strict;
 our @ISA = qw(Python::Type);
 
 sub new {
-	my ($class, $name, $format_item) = @_;
+	my ($class, $name, $format_item, $builtin) = @_;
+	$builtin ||= $name;	# allows for const versions of builtins
 	my $self = bless {
 		name        => $name,
-		builtin     => $name,
+		builtin     => $builtin,
 		format_item => $format_item,
 	};
 	return $self;

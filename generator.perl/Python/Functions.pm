@@ -127,7 +127,7 @@ sub generate_cc {
 			if ($action eq 'input') {
 				push @defs, $param->as_cpp_def;
 				my $item = $param->type->format_item;
-				for (qw(array_length string_length)) {
+				for (qw(array_length string_length max_array_length max_string_length)) {
 					if ($param->has($_)) {
 						$item = 'O';
 					}
@@ -147,7 +147,7 @@ sub generate_cc {
 						must_not_delete => $param->must_not_delete,
 						repeat => $param->repeat,
 					};
-					for (qw(array_length string_length)) {
+					for (qw(array_length string_length max_array_length max_string_length)) {
 						if ($param->has($_)) {
 							$options->{$_} = $param->{$_};
 						}

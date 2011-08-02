@@ -88,6 +88,8 @@ my %class_map = (
 			type    => 'type_name',
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 			'pass-as-pointer' => 'pass_as_pointer',
 			'must-not-delete' => 'must_not_delete',
 		},
@@ -99,6 +101,8 @@ my %class_map = (
 			type    => 'type_name',
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 			'pass-as-pointer' => 'pass_as_pointer',
 			'must-not-delete' => 'must_not_delete',
 		},
@@ -115,6 +119,8 @@ my %class_map = (
 			type    => 'type_name',
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 		},
 	},
 	
@@ -139,6 +145,8 @@ my %class_map = (
 			type    => 'type_name',
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 		},
 	},
 	
@@ -153,6 +161,8 @@ my %class_map = (
 			type    => 'type_name',
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 		},
 	},
 	
@@ -166,6 +176,8 @@ my %class_map = (
 		attr_map => {
 			'array-length' => 'array_length',
 			'string-length' => 'string_length',
+#			'max-array-length' => 'max_array_length',
+			'max-string-length' => 'max_string_length',
 		},
 	},
 	

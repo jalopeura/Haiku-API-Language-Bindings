@@ -1,21 +1,79 @@
 <bindings name="Haiku::Cursor">
 	<doc>Exposes the Cursor object</doc>
-	<binding source="BCursor" target="Haiku::Cursor">
+	<binding source="BCursor" source-inherits="BArchivable" target="Haiku::Cursor" target-inherits="Haiku::Archivable">
 		<doc>Exposes the Cursor object</doc>
 		<functions>
 			<constructor>
+<!--
+The length 68 works because cursors currently only accept bit-depth of 1 and size of 16x16
+This fits in 32 bytes; the transparency bitmask takes up another 32, and the header takes up 4
+This will need to be fixed when additional formats are accepted
+-->
 				<doc>Creates a Cursor.</doc>
-				<param name="cursorData" type="char*" action="input">
+				<param name="cursorData" type="void*" string-length="68" action="input">
 					<doc>...</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromCursor">
+				<param name="other" type="BCursor" action="input">
+					<doc>Contains an archived version of the Cursor.</doc>
+				</param>
+			</constructor>
+			<constructor overload-name="FromID">
+				<param name="id" type="BCursorID" action="input">
+					<doc>Contains an archived version of the Cursor.</doc>
 				</param>
 			</constructor>
 			<constructor overload-name="FromMessage">
 				<doc>Creates an Cursor from an archive.</doc>
-				<param name="archive" type="BMessage*" action="input">
-					<doc>Contains an archived version of the Cursor.</doc>
-				</param>
+				<param name="data" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
 		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+		<constants>
+			<constant name="B_CURSOR_ID_SYSTEM_DEFAULT" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_CONTEXT_MENU" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_COPY" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_CREATE_LINK" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_CROSS_HAIR" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_FOLLOW_LINK" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_GRAB" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_GRABBING" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_HELP" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_I_BEAM" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_I_BEAM_HORIZONTAL" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_MOVE" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_NO_CURSOR" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_NOT_ALLOWED" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_PROGRESS" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_EAST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_SOUTH" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_WEST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH_EAST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH_WEST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_SOUTH_EAST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_SOUTH_WEST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH_SOUTH" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_EAST_WEST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH_EAST_SOUTH_WEST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_RESIZE_NORTH_WEST_SOUTH_EAST" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_ZOOM_IN" type="int" group="ids" />
+			<constant name="B_CURSOR_ID_ZOOM_OUT" type="int" group="ids" />
+		</constants>
 	</binding>
 </bindings>

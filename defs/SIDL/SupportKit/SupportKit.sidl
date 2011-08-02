@@ -17,13 +17,6 @@ pointer) created for them. If you need objects not defined in this Support,
 you need to define those types in this section.
 -->
 		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
-<!--
-This is a workaround; these types are never passed between the target language
-and C++, but the generator complains if they're not defined
--->
-<!--
-		<type name="image_id*"        builtin="void*" />
--->
 	</types>
 	<import>
 		<file name="Archivable.sidl" />
@@ -32,10 +25,80 @@ and C++, but the generator complains if they're not defined
 	<binding source="SupportKit" target="Haiku::SupportKit">
 		<doc>Exposes the Haiku Support Kit</doc>
 		<constants>
-			<!-- type constants -->
+			<!-- type constants - where is this actually defined? -->
 			<constant name="B_ANY_TYPE" type="int" group="type">
 				<doc>...</doc>
 			</constant>
+			<constant name="B_PRId8" type="int" group="support" />
+			<constant name="B_PRIi8" type="int" group="support" />
+			<constant name="B_PRId16" type="int" group="support" />
+			<constant name="B_PRIi16" type="int" group="support" />
+			<constant name="B_PRId32" type="int" group="support" />
+			<constant name="B_PRIi32" type="int" group="support" />
+			<constant name="B_PRId64" type="int" group="support" />
+			<constant name="B_PRIi64" type="int" group="support" />
+			<constant name="B_PRIu8" type="int" group="support" />
+			<constant name="B_PRIo8" type="int" group="support" />
+			<constant name="B_PRIx8" type="int" group="support" />
+			<constant name="B_PRIX8" type="int" group="support" />
+			<constant name="B_PRIu16" type="int" group="support" />
+			<constant name="B_PRIo16" type="int" group="support" />
+			<constant name="B_PRIx16" type="int" group="support" />
+			<constant name="B_PRIX16" type="int" group="support" />
+			<constant name="B_PRIu32" type="int" group="support" />
+			<constant name="B_PRIo32" type="int" group="support" />
+			<constant name="B_PRIx32" type="int" group="support" />
+			<constant name="B_PRIX32" type="int" group="support" />
+			<constant name="B_PRIu64" type="int" group="support" />
+			<constant name="B_PRIo64" type="int" group="support" />
+			<constant name="B_PRIx64" type="int" group="support" />
+			<constant name="B_PRIX64" type="int" group="support" />
+			<constant name="B_SCNd8" type="int" group="support" />
+			<constant name="B_SCNi8" type="int" group="support" />
+			<constant name="B_SCNd16" type="int" group="support" />
+			<constant name="B_SCNi16" type="int" group="support" />
+			<constant name="B_SCNd32" type="int" group="support" />
+			<constant name="B_SCNi32" type="int" group="support" />
+			<constant name="B_SCNd64" type="int" group="support" />
+			<constant name="B_SCNi64" type="int" group="support" />
+			<constant name="B_SCNu8" type="int" group="support" />
+			<constant name="B_SCNo8" type="int" group="support" />
+			<constant name="B_SCNx8" type="int" group="support" />
+			<constant name="B_SCNu16" type="int" group="support" />
+			<constant name="B_SCNo16" type="int" group="support" />
+			<constant name="B_SCNx16" type="int" group="support" />
+			<constant name="B_SCNu32" type="int" group="support" />
+			<constant name="B_SCNo32" type="int" group="support" />
+			<constant name="B_SCNx32" type="int" group="support" />
+			<constant name="B_SCNu64" type="int" group="support" />
+			<constant name="B_SCNo64" type="int" group="support" />
+			<constant name="B_SCNx64" type="int" group="support" />
+			<constant name="B_PRIuSIZE" type="int" group="support" />
+			<constant name="B_PRIoSIZE" type="int" group="support" />
+			<constant name="B_PRIxSIZE" type="int" group="support" />
+			<constant name="B_PRIXSIZE" type="int" group="support" />
+			<constant name="B_PRIdSSIZE" type="int" group="support" />
+			<constant name="B_PRIiSSIZE" type="int" group="support" />
+			<constant name="B_PRIuADDR" type="int" group="support" />
+			<constant name="B_PRIoADDR" type="int" group="support" />
+			<constant name="B_PRIxADDR" type="int" group="support" />
+			<constant name="B_PRIXADDR" type="int" group="support" />
+			<constant name="B_PRIuPHYSADDR" type="int" group="support" />
+			<constant name="B_PRIoPHYSADDR" type="int" group="support" />
+			<constant name="B_PRIxPHYSADDR" type="int" group="support" />
+			<constant name="B_PRIXPHYSADDR" type="int" group="support" />
+			<constant name="B_PRIuGENADDR" type="int" group="support" />
+			<constant name="B_PRIoGENADDR" type="int" group="support" />
+			<constant name="B_PRIxGENADDR" type="int" group="support" />
+			<constant name="B_PRIXGENADDR" type="int" group="support" />
+			<constant name="B_PRIdOFF" type="int" group="support" />
+			<constant name="B_PRIiOFF" type="int" group="support" />
+			<constant name="B_PRIdDEV" type="int" group="support" />
+			<constant name="B_PRIiDEV" type="int" group="support" />
+			<constant name="B_PRIdINO" type="int" group="support" />
+			<constant name="B_PRIiINO" type="int" group="support" />
+			<constant name="B_PRIdTIME" type="int" group="support" />
+			<constant name="B_PRIiTIME" type="int" group="support" />
 		</constants>
 	</binding>
 </bindings>

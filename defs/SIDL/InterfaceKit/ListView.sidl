@@ -1,0 +1,280 @@
+<bindings name="Haiku::ListView">
+	<doc>Exposes the ListView object</doc>
+	<binding source="BListView" source-inherits="BView BInvoker" target="Haiku::ListView" target-inherits="Haiku::View Haiku::Invoker">
+		<doc>Exposes the ListView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a ListView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="list_view_type" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="list_view_type" action="input" default="B_SINGLE_SELECTION_LIST" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="BareBones">
+				<param name="type" type="list_view_type" action="input" default="B_SINGLE_SELECTION_LIST" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="TargetedByScrollView">
+				<param name="scroller" type="BScrollView*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="ResizeToPreferred" />
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="SetFont">
+				<param name="font" type="BFont*" action="input" />
+				<param name="mask" type="uint32" default="B_FONT_ALL" action="input" />
+			</method>
+			<method name="ScrollTo">
+				<param name="x" type="float" action="input" />
+				<param name="y" type="float" action="input" />
+			</method>
+			<method name="ScrollTo" overload-name="ScrollToPoint">
+				<param name="where" type="BPoint" action="input" />
+			</method>
+			<method name="AddItem">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="AddItem" overload-name="AddItemAtIndex">
+				<param name="item" type="BListItem*" action="input" />
+				<param name="index" type="int32" action="input" />
+			</method>
+<!-- BList object not yet implemented
+			<method name="AddList">
+				<param name="newItems" type="BList*" action="input" />
+			</method>
+			<method name="AddList" overload-name="AddListAtIndex">
+				<param name="newItems" type="BList*" action="input" />
+				<param name="index" type="int32" action="input" />
+			</method>
+-->
+			<method name="RemoveItem">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="RemoveItem" overload-name="RemoveItemAtIndex">
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="RemoveItems">
+				<param name="index" type="int32" action="input" />
+				<param name="count" type="int32" action="input" />
+			</method>
+			<method name="SetSelectionMessage">
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="SetInvocationMessage">
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="SelectionMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="SelectionCommand">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="InvocationMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="InvocationCommand">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetListType">
+				<param name="type" type="list_view_type" action="input" />
+			</method>
+			<method name="ListType">
+				<return type="list_view_type" action="output" />
+			</method>
+			<method name="ItemAt">
+				<param name="index" type="int32" action="input" />
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="IndexOf" overload-name="IndexAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="IndexOf">
+				<param name="item" type="BListItem*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="FirstItem">
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="LastItem">
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="HasItem">
+				<param name="item" type="BListItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="CountItems">
+				<return type="int32" action="output" />
+			</method>
+			<method name="MakeEmpty" />
+			<method name="IsEmpty">
+				<return type="bool" action="output" />
+			</method>
+<!-- DoForEach not implemented because it takes a function as a parameter -->
+			<method name="Items">
+				<return type="BListItem*" pass-as-pointer="true" array-length="null-terminated" action="output" />
+			</method>
+			<method name="InvalidateItem">
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="ScrollToSelection" />
+			<method name="Select">
+				<param name="index" type="int32" action="input" />
+				<param name="extend" type="bool" default="false" action="input" />
+			</method>
+			<method name="Select" overload-name="SelectMultiple">
+				<param name="from" type="int32" action="input" />
+				<param name="to" type="int32" action="input" />
+				<param name="extend" type="bool" default="false" action="input" />
+			</method>
+			<method name="IsItemSelected">
+				<param name="index" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="CurrentSelection">
+				<param name="index" type="int32" default="0" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="DeselectAll" />
+			<method name="DeselectExcept">
+				<param name="exceptFrom" type="int32" action="input" />
+				<param name="exceptTo" type="int32" action="input" />
+			</method>
+			<method name="Deselect">
+				<param name="index" type="int32" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="SelectionChanged" />
+			<event name="InitiateDrag">
+				<param name="point" type="BPoint" action="input" />
+				<param name="itemIndex" type="int32" action="input" />
+				<param name="wasSelected" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+<!-- SortItems not implemented because it takes a function as a parameter -->
+			<method name="SwapItems">
+				<param name="a" type="int32" action="input" />
+				<param name="b" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="MoveItem">
+				<param name="from" type="int32" action="input" />
+				<param name="to" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="ReplaceItem">
+				<param name="index" type="int32" action="input" />
+				<param name="item" type="BListItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="ItemFrame">
+				<param name="index" type="int32" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_SINGLE_SELECTION_LIST" type="int" group="list_view_type" />
+			<constant name="B_MULTIPLE_SELECTION_LIST" type="int" group="list_view_type" />
+		</constants>
+	</binding>
+</bindings>

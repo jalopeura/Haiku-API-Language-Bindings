@@ -47,7 +47,7 @@ sub type_options {
 		name => 'python_self->cpp_object->' . $self->name,
 		must_not_delete => 1,
 	};
-	for (qw(array_length string_length)) {
+	for (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($_)) {
 			$options->{$_} = $self->{$_};
 		}

@@ -1,0 +1,51 @@
+<bindings name="Haiku::StringItem">
+	<doc>Exposes the StringItem object</doc>
+	<binding source="BStringItem" source-inherits="BListItem" target="Haiku::StringItem" target-inherits="Haiku::ListItem">
+		<doc>Exposes the StringItem object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a StringItem.</doc>
+				<param name="text" type="const char*" action="input" />
+				<param name="outlineLevel" type="uint32" default="0" action="input" />
+				<param name="expanded" type="bool" default="true" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="DrawItem">
+				<param name="owner" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<param name="complete" type="bool" default="false" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetText">
+				<doc>Sets the text.</doc>
+				<param name="text" type="const char*" action="input" />
+			</method>
+			<method name="Text">
+				<doc>Gets the text.</doc>
+				<return type="const char*" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Update">
+				<param name="owner" type="BView*" action="input" />
+				<param name="font" type="const BFont*" action="input" />
+				<return type="void" />
+			</event>
+-->
+		</functions>
+	</binding>
+</bindings>

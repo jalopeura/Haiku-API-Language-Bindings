@@ -106,6 +106,10 @@ sub get_perlfunc {
 			--$inlist;
 		}
 		
+		# any relative links should become absolute
+		s:L<(.+?\|)?/:L<$1perlfunc/:;
+		s:L<(.+?\|)?":L<$1perlfunc/":;
+		
 		push @lines, $_;
 		++$found if /^\w/;	# found descriptive text
 	}
@@ -168,6 +172,11 @@ sub get_perlvar {
 		elsif (/^=back/) {
 			--$inlist;
 		}
+		
+		# any relative links should become absolute
+		s:L<(.+?\|)?/:L<$1perlvar/:;
+		s:L<(.+?\|)?":L<$1perlvar/":;
+		
 		push @lines, $_;
 		#++$found if /^\w/;	# found descriptive text
 	}
@@ -206,6 +215,11 @@ sub get_perlfaq {
 				$found = 0;
 			}
 			next unless $found;
+			
+			# any relative links should become absolute
+			s:L<(.+?\|)?/:L<$1perlfaq$n/:;
+			s:L<(.+?\|)?":L<$1perlfaq$n/":;
+			
 			push @lines, $_;
 		}
 		close FILE;

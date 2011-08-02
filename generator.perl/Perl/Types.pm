@@ -59,10 +59,10 @@ our %perltypes = (
 	'T_DOUBLE' => 'NV',
 	
 	'T_PV'     => 'PV',
-	'CHARARRAY' => 'PV',
-	'STRING'   => 'PV',
-	'WSTRING'  => 'PV',
-	'T_PTR'    => 'PV',
+#	'T_PTR'    => 'PV',
+#	'CHARARRAY' => 'PV',
+#	'STRING'   => 'PV',
+#	'WSTRING'  => 'PV',
 	
 	# how to deal with objects?
 );
@@ -80,10 +80,10 @@ our %input_converters = (
 	'T_DOUBLE' => '$var = ($type)SvNV($arg);',
 	
 	'T_PV'     => '$var = ($type)SvPV_nolen($arg);',
-	'CHARARRAY' => '$var = Aref2CharArray($arg, count_$var);',
-	'STRING'    => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(char));',
-	'WSTRING'   => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(wchar_t));',
-	'T_PTR'    => '$var = INT2PTR($type,SvIV($arg));',
+#	'CHARARRAY' => '$var = Aref2CharArray($arg, count_$var);',
+#	'STRING'    => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(char));',
+#	'WSTRING'   => 'Scalar2Char($arg, (void*)&$var, LENGTH, sizeof(wchar_t));',
+#	'T_PTR'    => '$var = INT2PTR($type,SvIV($arg));',
 	
 	'NORM_OBJ'     => '$var = *($type*)get_cpp_object($arg);',
 	'NORM_OBJ_PTR' => '$var = ($type)get_cpp_object($arg);',
@@ -212,6 +212,11 @@ sub type {
 			$self->register_type($name, $type->builtin, $target);
 			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
 		}
+		
+		(my $k = $basename)=~s/ //g;
+		if ($builtins{$k}) {
+			return new Perl::BuiltinType($name, $builtins{$k}, $perltypes{ $builtins{$k} });
+		}
 	}
 	
 	(my $k = $name)=~s/ //g;
@@ -322,6 +327,11 @@ sub input_converter {
 		$len = $self->string_length;
 	}
 	
+	my $maxlen =  $options->{max_string_length};
+	if (not $maxlen and $self->has('max_string_length')) {
+		$maxlen = $self->max_string_length;
+	}
+	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
 		my $ptr = $self->{perltype} eq 'T_PV';
@@ -366,7 +376,37 @@ sub input_converter {
 #			push @code, "$len /= sizeof($base)";
 #		}
 	}
-	# null-terminated strings and non-string types use default converters
+	# maximum length (but can be null-terminated)
+	elsif ($maxlen) {
+		my $ptr = $self->{perltype} eq 'T_PV';
+		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+		
+		push @defs, "STRLEN sv_length = SvCUR($arg);";
+		
+		# if the current length of the Perl string is longer than
+		# the max length allowed, shorten the Perl string
+		push @code,
+			'',
+			qq(if (sv_length > $maxlen) {),
+			qq(\tchar* last_char;),
+			qq(\tsv_length = $maxlen;),
+			qq(\tSvCUR_set($arg, sv_length);),
+			qq(\tlast_char = SvEND($arg);	// pointer to last character),
+			qq(\t*last_char = '\\0';),
+			qq(}),
+			'';
+		
+		if ($ptr) {
+			push @code, "$var = ($self->{name})SvPV($arg, sv_length);";
+		}
+		else {
+			push @code, "memcpy((void*)&$var, (void*)SvPV($arg, sv_length), sv_length);";
+		}
+		
+		if ($options->{set_string_length}) {
+			push @code, qq(\t$maxlen = sv_length);
+		}	
+	}
 	else {
 		my $converter = $Perl::Types::input_converters{ $self->perltype };
 		
@@ -482,20 +522,21 @@ sub output_converter {
 		$len = $self->string_length;
 	}
 	
+	my $maxlen =  $options->{max_string_length};
+	if (not $maxlen and $self->has('max_string_length')) {
+		$maxlen = $self->max_string_length;
+	}
+	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
-		if (
-			$options->{string_length} and
-			$len ne 'null-terminated' and
-			$base ne 'char'
-			) {
+		if ($base ne 'char') {
 			$len .= " * sizeof($base)";
 		}
 		
-		# special case: char interpreted as a string
+		# special case: char
 		# (instead of char[] or char*)
 		if ($len eq '1' and not $ptr) {
 			$var = "&$var";
@@ -507,6 +548,43 @@ sub output_converter {
 		push @code,
 			"$arg = newSVpvn($var, (STRLEN)$len);",
 			"if (is_utf8_string((const U8*)$var, (STRLEN)$len)) {",
+			"\tSvUTF8_on($arg);",
+			'}';
+	}
+	# maximum length (but can be null-terminated)
+	elsif ($maxlen) {
+		my $ptr = $self->{perltype} eq 'T_PV';
+		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+		
+		if ($base ne 'char') {
+			$len .= " * sizeof($base)";
+		}
+		
+		# special case: char
+		# (instead of char[] or char*)
+		if ($len eq '1' and not $ptr) {
+			$var = "&$var";
+		}
+		if ($self->{name} ne 'char*') {
+			"$var = (char*)$var";
+		}
+		
+		# if the no-length version (which ends at the first null) is longer
+		# than the max length allowed , shorten the Perl string
+		push @defs, "STRLEN sv_length;";
+		push @code,
+			"$arg = newSVpv($var, 0);	// 0 lets Perl calculate length",
+			'',
+			"sv_length = SvCUR($arg);",
+			qq(if (sv_length > $maxlen) {),
+			qq(\tsv_length = $maxlen;),
+			qq(\tSvCUR_set($arg, sv_length);),
+			qq(}),
+			'';
+		
+		# check for utf8
+		push @code, 
+			"if (is_utf8_string((const U8*)$var, (STRLEN)sv_length)) {",
 			"\tSvUTF8_on($arg);",
 			'}';
 	}

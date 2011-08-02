@@ -117,15 +117,18 @@
 				<doc>Returns true if the cursor is hidden; returns false if it is visible or obscured.</doc>
 				<return type="bool" />
 			</method>
-<!-- TODO: const void* type not yet supported
 			<method name="SetCursor" overload-name="SetCursorData">
 				<doc>Sets the cursor from raw data.</doc>
-				<param name="cursor" type="const void*" action="input">
+<!--
+The length 68 works because cursors currently only accept bit-depth of 1 and size of 16x16
+This fits in 32 bytes; the transparency bitmask takes up another 32, and the header takes up 4
+This will need to be fixed when additional formats are accepted
+-->
+				<param name="cursor" type="const void*" string-length="68" action="input">
 					<doc>The Cursor data; can also be one of the constants [code]B_HAND_CURSOR[/code] or [code]B_I_BEAM_CURSOR[/code].</doc>
 				</param>
 				<return type="void" />
 			</method>
--->
 			<method name="SetCursor">
 				<doc>Sets the cursor from a cursor object.</doc>
 				<param name="cursor" type="BCursor*" action="input">

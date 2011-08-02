@@ -48,14 +48,17 @@
 		<type name="color_which"      builtin="enum" />
 		<type name="drawing_mode"     builtin="enum" />
 		<type name="font_direction"   builtin="enum" />
-		<type name="font_family"      builtin="char" string-length="B_FONT_FAMILY_LENGTH + 1" />
+		<type name="font_family"      builtin="char" max-string-length="B_FONT_FAMILY_LENGTH + 1" />
 		<type name="font_file_format" builtin="enum" />
-		<type name="font_style"       builtin="char" string-length="B_FONT_STYLE_LENGTH + 1" />
+		<type name="font_metric_mode" builtin="enum" />
+		<type name="font_style"       builtin="char" max-string-length="B_FONT_STYLE_LENGTH + 1" />
 		<type name="join_mode"        builtin="enum" />
+		<type name="list_view_type"   builtin="enum" />
 		<type name="menu_bar_border"  builtin="enum" />
 		<type name="menu_layout"      builtin="enum" />
 		<type name="mode_focus_follows_mouse" builtin="enum" />
 		<type name="mode_mouse"       builtin="enum" />
+		<type name="orientation"      builtin="enum" />
 		<type name="size_t"           builtin="long" /><!-- __SIZE_TYPE__ -->
 		<type name="source_alpha"     builtin="enum" />
 		<type name="status_t"         builtin="long" /><!-- int32 -->
@@ -78,17 +81,6 @@ you need to define those types in this section.
 		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
 <!-- This fixes an issue with order of definition -->
 		<type name="BMenu*"       builtin="object_ptr" target="Haiku::Menu" />
-<!--
-This is a workaround; these types are never passed between the target language
-and C++, but the generator complains if they're not defined
--->
-<!--
-		<type name="bool*"            builtin="void*" />
-		<type name="float*"           builtin="void*" />
-		<type name="int32*"           builtin="void*" />
-		<type name="key_map**"        builtin="void*" />
-		<type name="size_t*"          builtin="void*" />
--->
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -101,15 +93,22 @@ and C++, but the generator complains if they're not defined
 				<file name="CheckBox.sidl" />
 				<file name="RadioButton.sidl" />
 				<file name="TextControl.sidl" />
+			<file name="ListView.sidl" />	<!-- also inherits from Invoker -->
+				<file name="OutlineListView.sidl" />
 			<file name="Menu.sidl" />
 				<file name="MenuBar.sidl" />
 				<file name="PopUpMenu.sidl" />
 			<file name="MenuField.sidl" />
+			<file name="ScrollBar.sidl" />
+			<file name="ScrollView.sidl" />
 			<file name="StringView.sidl" />
 			<file name="TextView.sidl" />
 		<!-- Invoker (defined in ApplicationKit) -->
 			<file name="MenuItem.sidl" />
 				<file name="SeparatorItem.sidl" />
+		<!-- Archivable (defined in SupportKit) -->
+			<file name="ListItem.sidl" />
+				<file name="StringItem.sidl" />
 		<file name="Font.sidl" />
 		<file name="Point.sidl" />
 		<file name="Rect.sidl" />
@@ -766,11 +765,9 @@ and C++, but the generator complains if they're not defined
 		<doc>Exposes the color_map struct</doc>
 		<properties>
 			<property name="id"            type="int32" />
-<!-- TODO: Get arrays working
 			<property name="color_list"    type="rgb_color"  array-length="256" />
 			<property name="inversion_map" type="uint8"      array-length="256"  />
 			<property name="index_map"     type="uint8"      array-length="32768" />
--->
 		</properties>
 		<functions>
 			<constructor />
@@ -788,9 +785,7 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width"            type="int16" />
 			<property name="min_height"           type="int16" />
 			<property name="max_height"           type="int16" />
-<!-- TODO: Get arrays working
 			<property name="reserved"             type="int32" array-length="8" />
--->
 		</properties>
 		<functions>
 			<constructor />
@@ -806,9 +801,7 @@ and C++, but the generator complains if they're not defined
 			<property name="max_width_scale"  type="float" />
 			<property name="min_height_scale" type="float" />
 			<property name="max_height_scale" type="float" />
-<!-- TODO: Get arrays working
 			<property name="reserved"         type="int32" array-length="8" />
--->
 		</properties>
 		<functions>
 			<constructor />

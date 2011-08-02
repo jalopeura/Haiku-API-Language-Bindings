@@ -103,7 +103,8 @@ our @ISA = qw(BaseObject);
 my @attributes = qw(
 	name type action default success must-not-delete
 	string-length array-length pass-as-pointer
-);
+	max-string-length
+);	# max-array-length?
 my %defaults = (
 	action => 'input',
 );
@@ -120,9 +121,10 @@ use strict;
 our @ISA = qw(BaseObject);
 
 my @attributes = qw(
-	type action success must-not-delete
+	name type action success must-not-delete
 	string-length array-length pass-as-pointer
-);
+	max-string-length
+);	# max-array-length?
 my %defaults = (
 	action => 'output',
 	name   => 'retval',

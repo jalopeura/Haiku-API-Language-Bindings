@@ -1,8 +1,8 @@
 use Common::Bindings;
 use strict;
 
-my $perl = 1;
-my $python = 0;
+my $perl = 0;
+my $python = 1;
 
 if ($perl) {	# or other languages using separate modular extensions
 	print "Separate modular extensions...\n";

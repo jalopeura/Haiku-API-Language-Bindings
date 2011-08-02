@@ -5,49 +5,164 @@
 		<functions>
 			<constructor>
 				<doc>Gets the screen from an id.</doc>
-<!-- screen_id type not yet implemented, so let it default
 				<param name="id" type="screen_id" action="input" default="B_MAIN_SCREEN_ID" />
--->
 			</constructor>
 			<constructor overload-name="ForWindow">
 				<doc>Gets that screen that the given window appears on.</doc>
 				<param name="window" type="BWindow*" action="input" />
 			</constructor>
 			<destructor />
-			<!-- ColorMap -->
-			<!-- IndexForColor -->
-			<!-- ColorForIndex -->
-			<!-- InvertIndex -->
-			<!-- ColorSpace -->
-			<method name="Frame">
-				<doc>Returns a BRect that can represents the coordinates of the Screen.</doc>
-				<return type="BRect" action="output" />
-			</method>
-			<!-- GetDeviceInfo -->
-			<!-- GetModeList -->
-			<!-- SetMode -->
-			<!-- GetMode -->
-			<!-- GetPixelClockLimits -->
-			<!-- GetTimingConstraints -->
 			<method name="IsValid">
 				<doc>Returns true if the Screen is valid.</doc>
 				<return type="bool" action="output" />
 			</method>
-			<!-- ProposeMode -->
-			<!-- ReadBitmap -->
-			<!-- GetBitmap -->
-			<!-- SetDesktopColor -->
-			<!-- DesktopColor -->
-			<!-- SetDPMS -->
-			<!-- DPMSState -->
-			<!-- DPMSCapabilities -->
-			<!-- SetToNext -->
-			<!-- WaitForRetrace -->
-		</functions>
-<!--
-		<constants>
-			<constant name="B_MAIN_SCREEN_ID" type="int" group="">
-		</constants>
+			<method name="IsValid">
+				<doc>Returns true if the Screen is valid.</doc>
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetToNext">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ColorSpace">
+				<return type="color_space" action="output" />
+			</method>
+			<method name="Frame">
+				<doc>Returns a BRect that can represents the coordinates of the Screen.</doc>
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ID">
+				<return type="screen_id" action="output" />
+			</method>
+			<method name="WaitForRetrace">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="WaitForRetrace" name="WaitForRetraceWithTimeout">
+				<param name="timeout" type="bigtime_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IndexForColor">
+				<param name="color" type="rgb_color" action="input" />
+				<return type="uint8" action="output" />
+			</method>
+			<method name="IndexForColor" name="IndexForColorFromRGB">
+				<param name="red"   type="uint8" action="input" />
+				<param name="green" type="uint8" action="input" />
+				<param name="blue"  type="uint8" action="input" />
+				<param name="alpha" type="uint8" action="input" default="255" />
+				<return type="uint8" action="output" />
+			</method>
+			<method name="ColorForIndex">
+				<param name="index" type="uint8" action="input" />
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="InvertIndex">
+				<param name="index" type="uint8" action="input" />
+				<return type="uint8" action="output" />
+			</method>
+			<method name="ColorMap">
+				<return type="const color_map*" action="output" />
+			</method>
+<!-- BBitmap object not yet implemented
+			<method name="GetBitmap">
+				<param name="bitmap" type="BBitmap*" pass-as-pointer="true" action="output" />
+				<param name="drawCursor" type="bool" default="true" action="input" />
+				<param name="bounds" type="BRect*" default="NULL" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ReadBitmap">
+				<param name="bitmap" type="BBitmap*" action="output" />
+				<param name="drawCursor" type="bool" default="true" action="input" />
+				<param name="bounds" type="BRect*" default="NULL" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
 -->
+			<method name="DesktopColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="DesktopColor" overload-name="DesktopColorForIndex">
+				<param name="index" type="uint32" action="input" />
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="SetDesktopColor">
+				<param name="color" type="rgb_color" action="input" />
+				<param name="makeDefault" type="bool" default="true" action="input" />
+				<return type="uint8" action="output" />
+			</method>
+			<method name="SetDesktopColor" overload-name="SetDesktopColorForIndex">
+				<param name="color" type="rgb_color" action="input" />
+				<param name="index" type="uint32" action="input" />
+				<param name="makeDefault" type="bool" default="true" action="input" />
+				<return type="uint8" action="output" />
+			</method>
+<!-- display_mode struct not yet implemented
+			<method name="ProposeMode">
+				<param name="target" type="display_mode*" action="input" />
+				<param name="low" type="const display_mode*" action="input" />
+				<param name="high" type="const display_mode*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetModeList">
+				<param name="modeList" type="display_mode*" pass-as-pointer="true" action="output" />
+				<param name="count" type="uint32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetMode">
+				<param name="mode" type="display_mode*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetMode" overload-name="GetModeForWorkspace">
+				<param name="workspace" type="uint32" action="input" />
+				<param name="mode" type="display_mode*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetMode">
+				<param name="mode" type="display_mode*" action="input" />
+				<param name="makeDefault" type="bool" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetMode" overload-name="SetModeForWorkspace">
+				<param name="workspace" type="uint32" action="input" />
+				<param name="mode" type="display_mode*" action="input" />
+				<param name="makeDefault" type="bool" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+<!-- accelerant_device_info struct not yet implemented
+			<method name="GetDeviceInfo">
+				<param name="info" type="accelerant_device_info*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+<!-- monitor_info struct not yet implemented
+			<method name="GetMonitorInfo">
+				<param name="info" type="monitor_info*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+<!-- display_mode struct not yet implemented
+			<method name="GetPixelClockLimits">
+				<param name="mode" type="display_mode*" action="input" />
+				<param name="low" type="int32" pass-as-pointer="true" action="output" />
+				<param name="high" type="int32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+<!-- display_timing_constraints struct not yet implemented
+			<method name="GetTimingConstraints">
+				<param name="timingConstraints" type="display_timing_constraints*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="SetDPMS">
+				<param name="state" type="uint32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="DPMSState">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="DPMSCapabilities">
+				<return type="uint32" action="output" />
+			</method>
+		</functions>
 	</binding>
 </bindings>

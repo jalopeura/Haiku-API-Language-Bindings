@@ -1,0 +1,176 @@
+<bindings name="Haiku::OutlineListView">
+	<doc>Exposes the OutlineListView object</doc>
+	<binding source="BOutlineListView" source-inherits="BListView" target="Haiku::OutlineListView" target-inherits="Haiku::ListView">
+		<doc>Exposes the OutlineListView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates an OutlineListView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="list_view_type" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="list_view_type" action="input" default="B_SINGLE_SELECTION_LIST" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="AddUnder">
+				<param name="item" type="BListItem*" action="input" />
+				<param name="underItem" type="BListItem*" action="input" />
+			</method>
+			<method name="AddItem">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="AddItem" overload-name="AddItemAtIndex">
+				<param name="item" type="BListItem*" action="input" />
+				<param name="fullListIndex" type="int32" action="input" />
+			</method>
+<!-- BList object not yet implemented
+			<method name="AddList">
+				<param name="newItems" type="BList*" action="input" />
+			</method>
+			<method name="AddList" overload-name="AddListAtIndex">
+				<param name="newItems" type="BList*" action="input" />
+				<param name="fullListIndex" type="int32" action="input" />
+			</method>
+-->
+			<method name="RemoveItem">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="RemoveItem" overload-name="RemoveItemAtIndex">
+				<param name="fullListIndex" type="int32" action="input" />
+			</method>
+			<method name="RemoveItems">
+				<param name="fullListIndex" type="int32" action="input" />
+				<param name="count" type="int32" action="input" />
+			</method>
+			<method name="FullListItemAt">
+				<param name="fullListIndex" type="int32" action="input" />
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="FullListIndexOf" overload-name="FullListIndexAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="FullListIndexOf">
+				<param name="item" type="BListItem*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="FullListFirstItem">
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="FullListLastItem">
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="FullListHasItem">
+				<param name="item" type="BListItem*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="FullListCountItems">
+				<return type="int32" action="output" />
+			</method>
+			<method name="FullListCurrentSelection">
+				<param name="index" type="int32" default="0" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="MakeEmpty" />
+			<method name="FullListIsEmpty">
+				<return type="bool" action="output" />
+			</method>
+<!-- FullListDoForEach not implemented because it takes a function as a parameter -->
+			<method name="Superitem">
+				<param name="item" type="BListItem*" action="input" />
+				<return type="BListItem*" action="output" />
+			</method>
+			<method name="Expand">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="Collapse">
+				<param name="item" type="BListItem*" action="input" />
+			</method>
+			<method name="IsExpanded">
+				<return type="bool" action="output" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="DetachedFromWindow" />
+-->
+<!-- FullListSortItems not implemented because it takes a function as a parameter -->
+<!-- SortItemsUnder not implemented because it takes a function as a parameter -->
+			<method name="CountItemsUnder">
+				<param name="under" type="BListItem*" action="input" />
+				<param name="oneLevelOnly" type="bool" action="input" />
+				<return type="int32" action="output" />
+			</method>
+<!-- EachItemUnder not implemented because it takes a function as a parameter -->
+			<method name="ItemUnderAt">
+				<param name="underItem" type="BListItem*" action="input" />
+				<param name="oneLevelOnly" type="bool" action="input" />
+				<param name="index" type="int32" action="input" />
+				<return type="BListItem*" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

@@ -357,30 +357,27 @@ sub command {
 # verbatim paragraphs should not be parsed for formatting codes; they are usually code samples
 sub verbatim {
 	my ($self, $text, $line_num, $pod_para) = @_;
-#print "START VERBATIM:\n\n";
+	
+	#
+	# here set up the stuff for verbatims
+	#
+	
+	$self->{viewer}->SetMonospace(1);
 	$self->{viewer}->Display($text);
-#print "END VERBATIM:\n\n";
-#print <<INFO;
-#VERBATIM
-#TXT: $text
-#LN#: $line_num
-#
-#INFO
+	$self->{viewer}->SetMonospace(0);
+	
+	$self->{viewer}->Display("\n\n");	# end of a paragraph
 }
 
 # ordinary block of text; it can have formatting codes
 sub textblock {
 	my ($self, $text, $line_num, $pod_para) = @_;
 	
-	#
-	# here handle starting a new paragraph
-	#
-#print "START TEXTBLOCK:\n\n";
-	
 	$text=~s/\s+/ /g; $text=~s/^ //; $text=~s/ $//;
 	my $parse_tree = $self->parse_text($text, $line_num);
 	$self->display_tree($parse_tree);	# can add other args (like text_run) later
-#print "END TEXTBLOCK:\n\n";
+	
+	$self->{viewer}->Display("\n\n");	# end of a paragraph
 }
 
 sub display_tree {
@@ -388,11 +385,9 @@ sub display_tree {
 	
 	for my $child ($parse_tree->children) {
 		if (ref $child) {
-#print "Doing a sequence\n";
 			$self->display_sequence($child);
 		}
 		else {
-#print "Doing plain text\n";
 			$self->{viewer}->Display($child);
 		}
 	}
@@ -434,56 +429,96 @@ sub display_sequence {
 			$u = chr $e;
 		}
 		else {
-			$u = $entity2char{$e} || $e
+			$u = $entity2char{$e};
 		}
-		#
-		# here just display the text
-		#
+		$u ||= $e;	# oops, sequence not recognized
 		$self->{viewer}->Display($u);
 		return;
 	}
 	
+	# X<topic> (for creating indexes; render as an empty string)
+	if ($cmd eq 'X') {
+		$self->{viewer}->SetIndexMark($text);
+		#
+		# here set up indexing if we want to support that
+		#
+		return;
+	}
 	
 	# S<text> (do not wrap)
 	if ($cmd eq 'S') {
-		my $text = $parse_tree->raw_text;
-		$text=~s/ /\xa0/;
+		$self->{viewer}->SetNowrap(1);
+		$self->display_tree($parse_tree);
+		$self->{viewer}->SetNowrap(0);
+		return;
 	}
-	# X<topic> (for creating indexes; render as an empty string)
-#	elsif ($cmd eq 'X') {
-#		#
-#		# here set up indexing if we want to support that
-#		#
-#	}
 	
-	# if we're an E<, a Z<, an X<, we simply display the necessary text and we're done
+	# B<text> (bold)
+	if ($cmd eq 'B') {
+		$self->{viewer}->SetBold(1);
+		$self->display_tree($parse_tree);
+		$self->{viewer}->SetBold(0);
+		return;
+	}
 	
-	# if we're an S<, we replaced spaces with non-breaking spaces and display the text and we're done
+	# I<text> (italic)
+	if ($cmd eq 'I') {
+		$self->{viewer}->SetItalic(1);
+		$self->display_tree($parse_tree);
+		$self->{viewer}->SetItalic(0);
+		return;
+	}
 	
-	#
-	# the following codes alter the appearance
-	#
-
-	# I<text>
-	# B<text>
 	# C<text> (code)
+	if ($cmd eq 'I') {
+		$self->{viewer}->SetMonospace(1);
+		$self->display_tree($parse_tree);
+		$self->{viewer}->SetMonospace(0);
+		return;
+	}
+	
+	# F<text> (filename)
+	if ($cmd eq 'F') {
+		$self->{viewer}->PushColor(0,255,0);
+		$self->{viewer}->SetBold(1);
+		$self->{viewer}->SetMonospace(1);
+		$self->display_tree($parse_tree);
+		$self->{viewer}->SetMonospace(0);
+		$self->{viewer}->SetBold(0);
+		$self->{viewer}->PopColor;
+		return;
+	}
+	
 	# L<text|name> (link to pod page)
 	# L<text|name/"sec"> OR L<text|name/sec> (link to section)
 	# L<text|/"sec"> OR L<text|/sec> OR L<text|"sec"> (link to section in this page)
 	#   NOTE: text| is optional; without it, default to contents
 	# L<scheme:> (link to http, ftp, whatever; no text| option)
-	# F<filename> (typically displayed in italics)
-	
-	#
-	# here save out the current display options and set new ones
-	#
-#print "START INTERIOR SEQUENCE ($cmd):\n\n";
-	$self->display_tree($parse_tree);
-#print "END INTERIOR SEQUENCE ($cmd):\n\n";
-	#
-	# here restore current display options
-	#
+	if ($cmd eq 'L') {
+		my $raw = $parse_tree->raw_text;
+		my $text;
+		if ($raw=~s/^(.+?)\|//) {
+			$text = $1;
+		}
+		else {
+			my ($page, $section) = split m:/:, $raw;
+			if ($section) {
+				$page ||= 'this page';
+				$text = "$section in $page";
+			}
+			else {
+				$text = $raw;
+				$text=~s/^"//;
+				$text=~s/"$//;
+			}
+		}
+		
+		$self->{viewer}->PushColor(0,0,255);
+		$self->{viewer}->DisplayLink($text, $link);
+		$self->{viewer}->SetBold(0);
+	}
 }
+
 sub Xinterior_sequence {
 	my ($self, $seq_cmd, $seq_arg, $pod_seq) = @_;
 print <<INFO;

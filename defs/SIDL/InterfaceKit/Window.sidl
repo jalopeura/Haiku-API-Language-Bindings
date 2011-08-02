@@ -276,7 +276,7 @@
 				<param name="window" type="BWindow*" action="input">
 					<doc>The target Window.</doc>
 				</param>
-				<return type="status_t" />
+				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="DisableUpdates" />
 			<method name="EnableUpdates" />

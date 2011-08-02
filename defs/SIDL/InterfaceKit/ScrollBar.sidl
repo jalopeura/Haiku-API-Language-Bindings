@@ -1,0 +1,166 @@
+<bindings name="Haiku::ScrollBar">
+	<doc>Exposes the ScrollBar object</doc>
+	<binding source="BScrollBar" source-inherits="BView" target="Haiku::ScrollBar" target-inherits="Haiku::View">
+		<doc>Exposes the ScrollBar object</doc>
+		<functions>
+			<constructor>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="target" type="BView*" action="input" />
+				<param name="min" type="float" action="input" />
+				<param name="max" type="float" action="input" />
+				<param name="direction" type="orientation" action="input" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="target" type="BView*" action="input" />
+				<param name="min" type="float" action="input" />
+				<param name="max" type="float" action="input" />
+				<param name="direction" type="orientation" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+<!-- Archiving -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+-->
+			<method name="SetValue">
+				<param name="value" type="float" action="input" />
+			</method>
+			<method name="Value">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetProportion">
+				<param name="proportion" type="float" action="input" />
+			</method>
+			<method name="Proportion">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetRange">
+				<param name="min" type="float" action="input" />
+				<param name="max" type="float" action="input" />
+			</method>
+			<method name="GetRange">
+				<param name="min" type="float" pass-as-pointer="true" action="output" />
+				<param name="max" type="float" pass-as-pointer="true" action="output" />
+			</method>
+			<method name="SetSteps">
+				<param name="smallStep" type="float" action="input" />
+				<param name="largeStep" type="float" action="input" />
+			</method>
+			<method name="GetSteps">
+				<param name="smallStep" type="float" pass-as-pointer="true" action="output" />
+				<param name="largeStep" type="float" pass-as-pointer="true" action="output" />
+			</method>
+			<method name="SetTarget">
+				<param name="target" type="BView*" action="input" />
+			</method>
+			<method name="Target">
+				<return type="BView*" action="output" />
+			</method>
+			<method name="SetOrientation">
+				<param name="direction" type="orientation" action="input" />
+			</method>
+			<method name="Orientation">
+				<return type="orientation" action="output" />
+			</method>
+			<method name="SetBorderHighlighted">
+				<param name="state" type="bool" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DetachedFromWindow" />
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+<!-- Events not yet implemented for this object
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+		</functions>
+		<constants>
+			<constant name="B_V_SCROLL_BAR_WIDTH" type="int" group="size" />
+			<constant name="B_H_SCROLL_BAR_HEIGHT" type="int" group="size" />
+			<constant name="SCROLL_BAR_MAXIMUM_KNOB_SIZE" type="int" group="size" />
+			<constant name="SCROLL_BAR_MINIMUM_KNOB_SIZE" type="int" group="size" />
+			<constant name="DISABLES_ON_WINDOW_DEACTIVATION" type="int" group="" />
+		</constants>
+	</binding>
+</bindings>

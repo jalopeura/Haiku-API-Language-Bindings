@@ -48,6 +48,11 @@ sub type_options {
 		must_not_delete => 1,
 		repeat => $self->repeat,
 	};
+	for (qw(array_length string_length max_array_length max_string_length)) {
+		if ($self->has($_)) {
+			$options->{$_} = $self->{$_};
+		}
+	}
 	return $options;
 }
 

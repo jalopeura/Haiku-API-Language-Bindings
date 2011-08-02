@@ -1,26 +1,30 @@
-<bindings name="Haiku::StringView">
-	<doc>Exposes the StringView object</doc>
-	<binding source="BStringView" source-inherits="BView" target="Haiku::StringView" target-inherits="Haiku::View">
-		<doc>Exposes the StringView object</doc>
+<bindings name="Haiku::ScrollView">
+	<doc>Exposes the ScrollView object</doc>
+	<binding source="BScrollView" source-inherits="BView" target="Haiku::ScrollView" target-inherits="Haiku::View">
+		<doc>Exposes the ScrollView object</doc>
 		<functions>
 			<constructor>
-				<doc>Creates a StringView.</doc>
-				<param name="frame" type="BRect" action="input" />
 				<param name="name" type="const char*" action="input" />
-				<param name="text" type="const char*" action="input" />
+				<param name="target" type="BView*" action="input" />
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
-				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+				<param name="flags" type="uint32" action="input" default="0" />
+				<param name="horizontal" type="bool" action="input" default="false" />
+				<param name="vertical" type="bool" action="input" default="false" />
+				<param name="border" type="border_style" action="input" default="B_FANCY_BORDER" />
 			</constructor>
-			<constructor overload-name="WithoutFrame">
-				<doc>Creates a StringView.</doc>
+			<constructor overload-name="WithoutResize">
 				<param name="name" type="const char*" action="input" />
-				<param name="text" type="const char*" action="input" />
-				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+				<param name="target" type="BView*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="horizontal" type="bool" action="input" />
+				<param name="vertical" type="bool" action="input" />
+				<param name="border" type="border_style" action="input" default="B_FANCY_BORDER" />
 			</constructor>
 			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+<!-- Archiving -->
 			<method name="Instantiate">
 				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
 				<param name="data" type="BMessage*" action="input" />
@@ -31,27 +35,19 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetText">
-				<doc>Sets the text.</doc>
-				<param name="string" type="const char*" action="input" />
-			</method>
-			<method name="Text">
-				<doc>Gets the text.</doc>
-				<return type="const char*" action="output" />
-			</method>
-			<method name="SetAlignment">
-				<doc>Sets the alignment for the StringView.</doc>
-				<param name="flag" type="alignment" action="input" />
-			</method>
-			<method name="Alignment">
-				<doc>Returns the alignment for the StringView.</doc>
-				<return type="alignment" action="output" />
-			</method>
 <!-- Events not yet implemented for this object
 			<event name="AttachedToWindow" />
 			<event name="DetachedFromWindow" />
 			<event name="AllAttached" />
 			<event name="AllDetached" />
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
 -->
 			<method name="MakeFocus">
 				<param name="focused" type="bool" default="true" action="input" />
@@ -72,10 +68,11 @@
 				<return type="BSize" action="output" />
 			</method>
 -->
+			<method name="ResizeToPreferred" />
 			<method name="InvalidateLayout">
 				<param name="descendants" type="bool" default="false" action="input" />
 			</method>
-			<method name="ResizeToPreferred" />
+			<method name="DoLayout" />
 <!-- Events not yet implemented for this object
 			<event name="FrameMoved">
 				<param name="newPosition" type="BPoint" action="input" />
@@ -84,10 +81,6 @@
 			<event name="FrameResized">
 				<param name="newWidth"  type="float" action="input" />
 				<param name="newHeight" type="float" action="input" />
-				<return type="void" />
-			</event>
-			<event name="Draw">
-				<param name="updateRect" type="BRect" action="input" />
 				<return type="void" />
 			</event>
 			<event name="MessageReceived">
@@ -109,6 +102,28 @@
 				<return type="void" />
 			</event>
 -->
+			<method name="ScrollBar">
+				<param name="posture" type="orientation" action="input" />
+				<return type="BScrollBar*" action="output" />
+			</method>
+			<method name="SetBorder">
+				<param name="border" type="border_style" action="input" />
+			</method>
+			<method name="Border">
+				<return type="border_style" action="output" />
+			</method>
+			<method name="SetBorderHighlighted">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="BorderHighlighted">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetTarget">
+				<param name="target" type="BView*" action="input" />
+			</method>
+			<method name="Target">
+				<return type="BView*" action="output" />
+			</method>
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />
 				<param name="index" type="int32" action="input" />
@@ -120,10 +135,6 @@
 			<method name="GetSupportedSuites">
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
-			</method>
-			<method name="SetFont">
-				<param name="font" type="BFont*" action="input" />
-				<param name="mask" type="uint32" default="B_FONT_ALL" action="input" />
 			</method>
 		</functions>
 	</binding>

@@ -1,0 +1,65 @@
+<bindings name="Haiku::ListItem">
+	<doc>Exposes the ListItem object</doc>
+	<binding source="BListItem" source-inherits="BArchivable" target="Haiku::ListItem" target-inherits="Haiku::Archivable">
+		<doc>Exposes the ListItem object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a ListItem.</doc>
+				<param name="outlineLevel" type="uint32" default="0" action="input" />
+				<param name="expanded" type="bool" default="true" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Height">
+				<return type="float" action="output" />
+			</method>
+			<method name="Width">
+				<return type="float" action="output" />
+			</method>
+			<method name="IsSelected">
+				<return type="bool" action="output" />
+			</method>
+			<method name="Select" />
+			<method name="Deselect" />
+			<method name="SetEnabled">
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetHeight">
+				<param name="height" type="float" action="input" />
+			</method>
+			<method name="SetWidth">
+				<param name="width" type="float" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="DrawItem">
+				<param name="owner" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<param name="complete" type="bool" default="false" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Update">
+				<param name="owner" type="BView*" action="input" />
+				<param name="font" type="const BFont*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="IsExpanded">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetExpanded">
+				<param name="expanded" type="bool" action="input" />
+			</method>
+			<method name="OutlineLevel">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetOutlineLevel">
+				<param name="level" type="uint32" action="input" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

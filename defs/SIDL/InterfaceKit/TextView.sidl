@@ -437,18 +437,16 @@
 			<method name="FreeRunArray">
 				<param name="array" type="text_run_array*" action="input" />
 			</method>
-<!-- TODO: void* type not yet implemented
 			<method name="FlattenRunArray">
 				<param name="inArray" type="int32" action="input" />
-				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="output" />
-				<return type="void*" />
+				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="length[retval]" />
+				<return name="retval" type="void*" string-length="outSize" />
 			</method>
-			<method name="FlattenRunArray">
-				<param name="data" type="void*" action="input" />
-				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="output" />
-				<return type="text_run_array*" />
+			<method name="UnflattenRunArray">
+				<param name="data" type="void*" string-length="outSize" action="input" />
+				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="length[data]" />
+				<return name="retval" type="text_run_array*" />
 			</method>
--->
 			<method name="Undo">
 				<param name="clipoard" type="BClipboard*" action="input" />
 			</method>
@@ -480,12 +478,10 @@
 	</binding>
 	<binding source="text_run_array" target="Haiku::text_run_array">
 		<doc>Exposes the text_run_array struct</doc>
-<!-- TODO: Get arrays working -->
 		<properties>
 			<property name="count" type="int32" />
 			<property name="runs"  type="text_run" array-length="SELF.count"/>
 		</properties>
-<!-- -->
 		<functions>
 			<constructor />
 			<destructor />

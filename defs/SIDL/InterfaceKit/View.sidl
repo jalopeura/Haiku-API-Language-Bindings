@@ -442,7 +442,6 @@
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!-- TODO: Get arrays working
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
 				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
@@ -456,14 +455,12 @@
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
--->
 <!-- TODO: BPolygon object not yet implemented
 			<method name="FillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 -->
-<!-- TODO: Get arrays working
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
 				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
@@ -475,7 +472,6 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
--->
 <!-- TODO: BPolygon object not yet implemented, BGradient object not yet implemented
 			<method name="FillPolygon" overload-name="GradientFillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
@@ -762,7 +758,6 @@
 				<param name="delta" type="escapement_delta*" default="NULL" action="input" />
 			</method>
 <!-- -->
-<!-- TODO: Get arrays working
 			<method name="DrawString" overload-name="DrawStringWithLengthToPoint">
 				<param name="string" type="char*" action="input" string-length="length" />
 				<param name="length" type="int32" action="length[string]" />
@@ -780,7 +775,6 @@
 				<param name="locations" type="BPoint*" action="input" array-length="locationCount" />
 				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
--->
 			<method name="SetFont">
 				<param name="font" type="BFont*" action="input" />
 				<param name="mask" type="uint32" default="B_FONT_ALL" action="input" />
@@ -799,21 +793,17 @@
 				<param name="string" type="const char*" action="input" />
 				<return type="float" action="output" />
 			</method>
-<!-- TODO: Get arrays working
 			<method name="StringWidth" overload-name="StringWidthWithLength">
 				<param name="string" type="const char*" action="input" array-length="length" />
 				<param name="length" type="int32" action="count[string]" />
 				<return type="float" action="output" />
 			</method>
--->
-<!-- TODO: Get arrays working
 			<method name="GetStringWidths">
-				<param name="stringArray" type="char**" array-length="numStrings" action="input" />
-				<param name="lengthArray" type="int32*" array-length="numStrings" action="input" />
+				<param name="stringArray" type="char*" pass-as-pointer="true" array-length="numStrings" action="input" />
+				<param name="lengthArray" type="int32" pass-as-pointer="true" array-length="numStrings" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
-				<param name="widthArray" type="float*" array-length="numStrings" action="output" />
+				<param name="widthArray" type="float" pass-as-pointer="true" array-length="numStrings" action="output" />
 			</method>
--->
 			<method name="SetFontSize">
 				<param name="size" type="float" action="input" />
 			</method>

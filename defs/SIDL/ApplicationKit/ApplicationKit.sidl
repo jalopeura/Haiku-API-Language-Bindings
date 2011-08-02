@@ -30,6 +30,7 @@ We are currently mapping int64 to a long; this may not be big enough
 		<type name="uint32"     builtin="unsigned long" /><!-- __haiku_uint32 -->
 		<type name="int64"      builtin="long" /><!-- __haiku_int64 -->
 		<type name="uint64"     builtin="unsigned long" /><!-- __haiku_uint64 -->
+		<type name="BCursorID"  builtin="enum" />
 		<type name="bigtime_t"  builtin="long" /><!-- int64 -->
 		<type name="dev_t"      builtin="long" /><!-- __haiku_int64 -->
 		<type name="ino_t"      builtin="long" /><!-- __haiku_int32 -->
@@ -49,13 +50,6 @@ you need to define those types in this section.
 		<type name="BPoint"       builtin="object"     target="Haiku::Point" />
 		<type name="BRect"        builtin="object"     target="Haiku::Rect" />
 		<type name="BWindow*"     builtin="object_ptr" target="Haiku::Window" />
-<!--
-This is a workaround; these types are never passed between the target language
-and C++, but the generator complains if they're not defined
--->
-<!--
-		<type name="bool*"      builtin="void*" />
--->
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
