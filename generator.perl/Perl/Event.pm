@@ -71,7 +71,7 @@ sub generate_cpp {
 	my @postcode;	# any required post-call code
 	my $stack_count = 0;
 	
-	push @xspush, "PUSHs(perl_link_data->perl_object);";
+	push @xspush, "XPUSHs(perl_link_data->perl_object);";
 	$stack_count++;
 	
 	if ($self->params->has('cpp_input')) {
@@ -93,7 +93,7 @@ sub generate_cpp {
 					push @precode, 
 						qq(must_not_delete_cpp_object($svname, true););
 				}
-				push @xspush, "PUSHs($svname);";
+				push @xspush, "XPUSHs($svname);";
 				$stack_count++;
 			}
 			#
@@ -133,7 +133,7 @@ sub generate_cpp {
 			'dSP;',
 			'ENTER;',
 			'SAVETMPS;',
-			"EXTEND(SP, $stack_count);",
+			"//EXTEND(SP, $stack_count);",
 			'PUSHMARK(SP);',
 			'',
 			@xspush,

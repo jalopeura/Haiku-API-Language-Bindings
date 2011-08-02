@@ -70,9 +70,8 @@ menu_info = Haiku.menu_info()
 menu_info.f_family = "Test String"
 print "Should get 'Test String'; got", menu_info.f_family
 
-# Having trouble with Python inheritance and garbage collection 
-#print "Should get methods from different base classes; got", \
-#	button.Window, "and", button.Message
+print "Should get methods from different base classes; got", \
+	button.Window, "and", button.Message
 
 print "app and be_app comparison:", (app == be_app)
 
@@ -83,6 +82,9 @@ point = Haiku.Point(x,y)
 negpoint = Haiku.Point(-x,-y)
 print "Should get negated values:", point.x, point.y, "vs", negpoint.x, negpoint.y
 
+#
+# This causes a memory problem when exiting
+#
 opoint = point + negpoint
 print "Should get a true value:", opoint == Haiku.PointConstants.B_ORIGIN
 print "Should get all zeros: got:", opoint.x, opoint.y

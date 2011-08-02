@@ -272,8 +272,8 @@ sub generate_cc_postamble {
 	
 	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
-	my ($init_function, $dealloc_function, $parent, $doc,
-		$property_table, $method_table, $richcompare, $as_number);
+	my ($init_function, $dealloc_function, $parent, $parents,
+		$doc, $property_table, $method_table, $richcompare, $as_number);
 	
 	$init_function = $self->constructor_name;
 	$dealloc_function = $self->destructor_name;
@@ -356,30 +356,38 @@ CMP
 			$p = '&' . $p . '_PyType';
 		}
 		
+		if (@p > 1) {
+			$parents = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), join(', ', @p));
+			$parent = 0;
+		}
+		else {
+			$parent = $p[0];
+			$parents = 0;
+		}
+		
 #		$parent = "${python_object_prefix}_bases";
 		
 #		print $fh 
 #			sprintf("PyObject* $parent = PyTuple_Pack(%d, %s);\n\n", scalar(@p), join(', ', @p));
 		
-		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), join(', ', @p));
+#		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), join(', ', @p));
+
+#		$parent = sprintf("PyTuple_Pack(%d, %s)", 1, $p[0]);
 		
 		# Having some trouble with inheritance and garbage collection
 		# For now, inheritance is turned off except for responders
-		unless ($self->is_responder) {
-			$parent = 0;
-		}
+#		unless ($self->is_responder) {
+#						$parent = 0;
+#		}
 	}
 	else {
 		$parent = 0;
+		$parents = 0;
 	}
-	
+
 	if ($self->has('doc')) {
 		$doc = $self->doc;
 	}
-	
-	# build a tp_richcompare function
-	#*tp_richcompare(PyObject *a, PyObject *b, int op).
-	# build a tp_as_number structure
 	
 	my $flags = 'Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE';
 	
@@ -417,7 +425,7 @@ PyTypeObject $self->{pytype_name} = {
 	$method_table,             /* tp_methods */
 	0,                         /* tp_members */
 	$property_table,           /* tp_getset */
-	0,                         /* tp_base */
+	$parent,                   /* tp_base */
 	0,                         /* tp_dict */
 	0,                         /* tp_descr_get */
 	0,                         /* tp_descr_set */
@@ -427,7 +435,7 @@ PyTypeObject $self->{pytype_name} = {
 	PyType_GenericNew,         /* tp_new */
 	0,                         /* tp_free */
 	0,                         /* tp_is_gc */
-    $parent                    /* tp_bases */
+    $parents                   /* tp_bases */
 };
 
 TYPE

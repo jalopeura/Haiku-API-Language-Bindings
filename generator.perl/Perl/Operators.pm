@@ -99,7 +99,7 @@ OPERATOR
 		IV swap;
 	OVERLOAD: $name
 	CODE:
-		$cpp_class_name* result;
+		$cpp_class_name* result = new $cpp_class_name();
 CODE
 		
 		for my $line (@$defs) {
@@ -108,12 +108,12 @@ CODE
 		
 		print $fh <<CODE;
 //		why do these next two statements not work?
-//		*result = -*THIS;
+		*result = -*THIS;
 //		*result = -(*THIS);
 //		but this workaround does
-		$cpp_class_name holder;
-		holder = *THIS;
-		*result = -holder;
+//		$cpp_class_name holder;
+//		holder = *THIS;
+//		*result = -holder;
 		RETVAL = newSV(0);
 CODE
 		

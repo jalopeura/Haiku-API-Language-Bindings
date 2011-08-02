@@ -399,6 +399,15 @@ PARENT
 			my @n = split /\./, $class->python_name;
 			my $type = $class->pytype_name;
 			print $fh "\t// $class->{python_name}: class\n";
+			
+			if ($class->has('python_parent')) {
+				my @p = split /\s+/, $class->{python_parent};
+				for my $p (@p) {
+					$p=~s/\./_/g;
+					print $fh "\tPy_INCREF(&$p\_PyType);	// base class\n";
+				}
+			}
+		
 			my $cn = pop @n;
 			
 #			if ($class->has('python_parent')) {

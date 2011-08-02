@@ -178,22 +178,22 @@ sub generate {
 			);
 		}
 		else {
-			my $type_obj = $self->types->type($rettype);
+			my $type_obj = $self->types->type("$rettype*");
 			my $options = {
 				input_name => 'retval',
 				output_name => 'py_retval',
 			};
 			($defs, $code) = $type_obj->arg_builder($options);
 			push @$defs, 
-				"$rettype retval;",
+				"$rettype* retval = new $rettype();",
 				"$pyobj_type* py_retval;";
 			
 			if ($type eq 'neg') {
-				unshift @$code, "retval = -(*(($pyobj_type*)a)->cpp_object);";
+				unshift @$code, "*retval = -(*(($pyobj_type*)a)->cpp_object);";
 				push @$code, "return (PyObject*)py_retval;";
 			}
 			elsif ($type eq 'math') {
-				unshift @$code, "retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
+				unshift @$code, "*retval = *(($pyobj_type*)a)->cpp_object $name *(($pyobj_type*)b)->cpp_object;";
 				push @$code, "return (PyObject*)py_retval;";
 			}
 		}
