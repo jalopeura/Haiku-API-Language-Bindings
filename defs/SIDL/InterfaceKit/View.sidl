@@ -443,13 +443,13 @@
 			</method>
 -->
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="closed" type="bool" default="true" action="input" />
@@ -462,12 +462,12 @@
 			</method>
 -->
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -478,12 +478,12 @@
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithGradient">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
 			<method name="FillPolygon" overload-name="GradientFillPolygonFromPointArrayWithinBounds">
-				<param name="pointArray" type="BPoint*" action="input" array-length="numPoints" />
+				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
 				<param name="bounds" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
@@ -766,13 +766,13 @@
 			</method>
 			<method name="DrawString" overload-name="DrawStringToPointArray">
 				<param name="string" type="char*" action="input" />
-				<param name="locations" type="BPoint*" action="input" array-length="locationCount" />
+				<param name="locations" type="BPoint" pass-as-pointer="true" action="input" array-length="locationCount" />
 				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 			<method name="DrawString" overload-name="DrawStringWithLengthToPointArray">
 				<param name="string" type="char*" action="input" string-length="length" />
 				<param name="length" type="int32" action="length[string]" />
-				<param name="locations" type="BPoint*" action="input" array-length="locationCount" />
+				<param name="locations" type="BPoint" pass-as-pointer="true" action="input" array-length="locationCount" />
 				<param name="locationCount" type="int32" action="count[locations]" />
 			</method>
 			<method name="SetFont">
@@ -794,8 +794,8 @@
 				<return type="float" action="output" />
 			</method>
 			<method name="StringWidth" overload-name="StringWidthWithLength">
-				<param name="string" type="const char*" action="input" array-length="length" />
-				<param name="length" type="int32" action="count[string]" />
+				<param name="string" type="const char*" action="input" string-length="length" />
+				<param name="length" type="int32" action="length[string]" />
 				<return type="float" action="output" />
 			</method>
 			<method name="GetStringWidths">

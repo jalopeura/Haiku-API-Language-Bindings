@@ -1,6 +1,7 @@
 <bindings name="Haiku::InterfaceKit">
 	<doc>Exposes the Haiku Interface Kit</doc>
 	<include>
+		<file name="Application.h" /> <!-- to get be_app for locking -->
 		<file name="Alert.h" />
 		<file name="Box.h" />
 		<file name="Button.h" />
@@ -8,16 +9,23 @@
 		<file name="Control.h" />
 		<file name="Font.h" />
 		<file name="Menu.h" />
+		<file name="ListItem.h" />
+		<file name="ListView.h" />
 		<file name="MenuBar.h" />
 		<file name="MenuField.h" />
 		<file name="MenuItem.h" />
+		<file name="OutlineListView.h" />
 		<file name="Point.h" />
 		<file name="PopUpMenu.h" />
 		<file name="RadioButton.h" />
 		<file name="Rect.h" />
 		<file name="Screen.h" />
+		<file name="ScrollBar.h" />
+		<file name="ScrollView.h" />
 		<file name="SeparatorItem.h" />
+		<file name="StringItem.h" />
 		<file name="StringView.h" />
+		<file name="TabView.h" />
 		<file name="TextControl.h" />
 		<file name="TextView.h" />
 		<file name="UnicodeBlockObjects.h" />
@@ -102,6 +110,7 @@ you need to define those types in this section.
 			<file name="ScrollBar.sidl" />
 			<file name="ScrollView.sidl" />
 			<file name="StringView.sidl" />
+			<file name="TabView.sidl" />
 			<file name="TextView.sidl" />
 		<!-- Invoker (defined in ApplicationKit) -->
 			<file name="MenuItem.sidl" />

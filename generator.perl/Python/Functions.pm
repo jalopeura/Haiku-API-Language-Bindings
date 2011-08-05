@@ -165,12 +165,13 @@ sub generate_cc {
 #					}
 					my ($arg_defs, $arg_code) = $param->arg_parser($options);
 		
-					if ($param->type->has('target') and my $target = $param->type->target) {
+					if ($param->type->has('target') and my $target = $param->type->target and
+						not $param->has('array_length')) {
 						(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-						push @defs, "$objtype* $pyobj_name; // from as_python_call()";
+						push @defs, "$objtype* $pyobj_name; // from generate_py()";
 					}
 					else {
-						push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
+						push @defs, "PyObject* $pyobj_name; // from generate_py ()",	# may need to fix this for C++ objects
 					}
 					
 					push @defs, @$arg_defs;
@@ -362,6 +363,11 @@ DEF
 	}
 	else {
 		print $fh "\t$options{cpp_name}($cpp_input);\n";
+	}
+	
+	if ($options{postcode}) {
+		print $fh map { "\t$_\n" } @{ $options{postcode} };
+		print $fh "\t\n";
 	}
 	
 	if (@postcode) {

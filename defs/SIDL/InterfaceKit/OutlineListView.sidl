@@ -129,6 +129,7 @@
 				<param name="item" type="BListItem*" action="input" />
 			</method>
 			<method name="IsExpanded">
+				<param name="fullListIndex" type="int32" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="ResolveSpecifier">

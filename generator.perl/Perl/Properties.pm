@@ -31,14 +31,36 @@ sub type {
 	return $self->{type};
 }
 
+sub is_array_or_string {
+	my ($self) = @_;
+	
+	if ($self->has('array_length') or
+		$self->has('string_length') or
+		$self->has('max_array_length') or
+		$self->has('max_string_length')) {
+		return 1;
+	}
+	
+	my $type = $self->type;
+	if ($type->has('array_length') or
+		$type->has('string_length') or
+		$type->has('max_array_length') or
+		$type->has('max_string_length')) {
+		return 1;
+	}
+	
+	return undef;
+}
+
 sub input_converter {
 	my ($self, $target) = @_;
 	
 	my $options = {
 		input_name => $target,
 		output_name => 'cpp_obj->' . $self->name,
+		must_not_delete => 1,	# never try to delete a property
 	};
-	for my $x (qw(array_length string_length)) {
+	for my $x (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 			if ($self->{$x}=~/SELF\./) {
@@ -58,7 +80,7 @@ sub output_converter {
 		output_name => $target,
 		must_not_delete => 1,	# never try to delete a property
 	};
-	for my $x (qw(array_length string_length)) {
+	for my $x (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 		}

@@ -126,7 +126,17 @@ sub type {
 				$target = $type->target;
 			}
 			$self->register_type($name, $type->builtin, $target);
-			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
+			
+			if (my $new_type = $self->{_typemap}{$name}) {			
+				for my $x (qw(
+					array_length max_array_length
+					string_length max_string_length
+				)) {
+					next unless $type->has($x);
+					$new_type->{$x} = $type->{$x};
+				}
+				return $new_type;
+			}
 		}
 		
 		(my $k = $basename)=~s/ //g;
@@ -245,20 +255,22 @@ sub arg_builder {
 	if ($maxlen) {
 		(my $base = $self->{name})=~s/const\s+//;
 		
+		my $py_length = $options->{output_name} . '_length';
+		
 		my $input = $options->{input_name};
 		unless ($base=~/\*$/) {
 			$input = "&$input"
 		}
 		
 		return (
-			[ 'Py_ssize_t py_length;' ],
+			[ "Py_ssize_t $py_length;" ],
 			[
-				qq($options->{output_name} = Py_BuildValue("s", $input, $len);	// 's' instead of 's#' lets Python calculate length),
+				qq($options->{output_name} = Py_BuildValue("s", $input);	// 's' instead of 's#' lets Python calculate length),
 				'',
-				qq(py_length = PyString_Size($options->{output_name});),
-				qq(if (py_length > $maxlen) {),
-				qq(\tpy_length = $maxlen;),
-				qq(\tPyString_Resize(&$options->{output_name}, py_length);),
+				qq($py_length = PyString_Size($options->{output_name});),
+				qq(if ($py_length > $maxlen) {),
+				qq(\t$py_length = $maxlen;),
+				qq(\t_PyString_Resize(&$options->{output_name}, $py_length);),
 				qq(}),
 				'',
 			],
@@ -369,26 +381,26 @@ sub array_arg_builder {
 	$count=~s/SELF\./python_self->cpp_object->/;
 #	my @defs = ("PyObject* $arg;");
 	
+	$options->{input_name} .= '[i]';
+	$options->{output_name} .= '_element';
+	my ($element_defs, $element_code) = $self->arg_builder($options);
+	
 	my (@defs, $cast_element);
 	if ($self->has('target') and my $target = $self->target) {
 		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-		@defs = ("$objtype* py_element;	// from array_arg_builder");
+		@defs = ("$objtype* $options->{output_name};	// from array_arg_builder");
 		$cast_element = "(PyObject*)";
 	}
 	else {
-		@defs = ('PyObject* py_element;	// from array_arg_builder');
+		@defs = ("PyObject* $options->{output_name};	// from array_arg_builder");
 	}
-	
-	$options->{input_name} .= '[i]';
-	$options->{output_name} = 'py_element';
-	my ($element_defs, $element_code) = $self->arg_builder($options);
 	
 	my @code = (
 		qq($arg = PyList_New(0);),
 		qq(for (int i = 0; i < $count; i++) {),
 		map( { "\t$_" } @$element_defs),
 		map( { "\t$_" } @$element_code),
-		qq(\tPyList_Append($arg, $cast_element\py_element);),
+		qq(\tPyList_Append($arg, $cast_element$options->{output_name});),
 		'}',
 	);
 	
@@ -411,7 +423,7 @@ sub arg_parser {
 	# for input from Python, treat max length as simple length
 	# (this will be a problem in Python code passes in a too-long string)
 	if (not $len) {
-		my $len =  $options->{max_string_length};
+		$len = $options->{max_string_length};
 		if (not $len and $self->has('max_string_length')) {
 			$len = $self->max_string_length;
 		}
@@ -421,9 +433,13 @@ sub arg_parser {
 	if ($len and $len ne 'null-terminated') {
 		if ($self->{name}=~/\*$/) {
 			if ($options->{set_string_length}) {
+				my $cast;
+				if ($self->{name} ne 'char*') {
+					$cast = "(char**)";
+				}
 				return (
 					[],	# empty defs
-					[ qq(PyString_AsStringAndSize($options->{input_name}, &$options->{output_name}, &$len);) ]
+					[ qq(PyString_AsStringAndSize($options->{input_name}, $cast&$options->{output_name}, &$len);) ]
 				);
 			}
 			else {
@@ -555,7 +571,7 @@ sub array_arg_parser {
 	$count=~s/SELF\./python_self->cpp_object->/;
 #my $repeat = $count;
 	
-	$options->{input_name} = 'py_element';
+	$options->{input_name} .= '_element';
 	$options->{output_name} .= '[i]';
 	my ($element_defs, $element_code) = $self->arg_parser($options);
 	my $none = $self->{name}=~/\*$/ ? 'NULL' : 0;
@@ -613,8 +629,8 @@ use strict;
 our @ISA = qw(Python::Type);
 
 sub new {
-	my ($class, $name, $format_item, $builtin) = @_;
-	$builtin ||= $name;	# allows for const versions of builtins
+	my ($class, $name, $format_item) = @_;
+	(my $builtin = $name)=~s/const\s+//;	# allows for const versions of builtins
 	my $self = bless {
 		name        => $name,
 		builtin     => $builtin,

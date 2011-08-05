@@ -1,6 +1,6 @@
 <bindings name="Haiku::Handler">
 	<doc>Exposes the Handler object</doc>
-	<binding source="BHandler" target="Haiku::Handler">
+	<binding source="BHandler" source-inherits="BArchivable" target="Haiku::Handler" target-inherits="Haiku::Archivable">
 		<doc>Exposes the Handler object</doc>
 		<functions>
 			<constructor>

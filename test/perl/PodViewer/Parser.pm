@@ -4,7 +4,7 @@ use strict;
 our @ISA = qw(Pod::Parser);
 
 #
-# lifted from HTML::Entities
+# adapted from HTML::Entities
 #
 
 our %entity2char = (
@@ -16,260 +16,260 @@ our %entity2char = (
  apos   => "'",  # single quote
 
  # PUBLIC ISO 8879-1986//ENTITIES Added Latin 1//EN//HTML
- AElig	=> chr(198),  # capital AE diphthong (ligature)
- Aacute	=> chr(193),  # capital A, acute accent
- Acirc	=> chr(194),  # capital A, circumflex accent
- Agrave	=> chr(192),  # capital A, grave accent
- Aring	=> chr(197),  # capital A, ring
- Atilde	=> chr(195),  # capital A, tilde
- Auml	=> chr(196),  # capital A, dieresis or umlaut mark
- Ccedil	=> chr(199),  # capital C, cedilla
- ETH	=> chr(208),  # capital Eth, Icelandic
- Eacute	=> chr(201),  # capital E, acute accent
- Ecirc	=> chr(202),  # capital E, circumflex accent
- Egrave	=> chr(200),  # capital E, grave accent
- Euml	=> chr(203),  # capital E, dieresis or umlaut mark
- Iacute	=> chr(205),  # capital I, acute accent
- Icirc	=> chr(206),  # capital I, circumflex accent
- Igrave	=> chr(204),  # capital I, grave accent
- Iuml	=> chr(207),  # capital I, dieresis or umlaut mark
- Ntilde	=> chr(209),  # capital N, tilde
- Oacute	=> chr(211),  # capital O, acute accent
- Ocirc	=> chr(212),  # capital O, circumflex accent
- Ograve	=> chr(210),  # capital O, grave accent
- Oslash	=> chr(216),  # capital O, slash
- Otilde	=> chr(213),  # capital O, tilde
- Ouml	=> chr(214),  # capital O, dieresis or umlaut mark
- THORN	=> chr(222),  # capital THORN, Icelandic
- Uacute	=> chr(218),  # capital U, acute accent
- Ucirc	=> chr(219),  # capital U, circumflex accent
- Ugrave	=> chr(217),  # capital U, grave accent
- Uuml	=> chr(220),  # capital U, dieresis or umlaut mark
- Yacute	=> chr(221),  # capital Y, acute accent
- aacute	=> chr(225),  # small a, acute accent
- acirc	=> chr(226),  # small a, circumflex accent
- aelig	=> chr(230),  # small ae diphthong (ligature)
- agrave	=> chr(224),  # small a, grave accent
- aring	=> chr(229),  # small a, ring
- atilde	=> chr(227),  # small a, tilde
- auml	=> chr(228),  # small a, dieresis or umlaut mark
- ccedil	=> chr(231),  # small c, cedilla
- eacute	=> chr(233),  # small e, acute accent
- ecirc	=> chr(234),  # small e, circumflex accent
- egrave	=> chr(232),  # small e, grave accent
- eth	=> chr(240),  # small eth, Icelandic
- euml	=> chr(235),  # small e, dieresis or umlaut mark
- iacute	=> chr(237),  # small i, acute accent
- icirc	=> chr(238),  # small i, circumflex accent
- igrave	=> chr(236),  # small i, grave accent
- iuml	=> chr(239),  # small i, dieresis or umlaut mark
- ntilde	=> chr(241),  # small n, tilde
- oacute	=> chr(243),  # small o, acute accent
- ocirc	=> chr(244),  # small o, circumflex accent
- ograve	=> chr(242),  # small o, grave accent
- oslash	=> chr(248),  # small o, slash
- otilde	=> chr(245),  # small o, tilde
- ouml	=> chr(246),  # small o, dieresis or umlaut mark
- szlig	=> chr(223),  # small sharp s, German (sz ligature)
- thorn	=> chr(254),  # small thorn, Icelandic
- uacute	=> chr(250),  # small u, acute accent
- ucirc	=> chr(251),  # small u, circumflex accent
- ugrave	=> chr(249),  # small u, grave accent
- uuml	=> chr(252),  # small u, dieresis or umlaut mark
- yacute	=> chr(253),  # small y, acute accent
- yuml	=> chr(255),  # small y, dieresis or umlaut mark
+ AElig	=> pack('U', 198),  # capital AE diphthong (ligature)
+ Aacute	=> pack('U', 193),  # capital A, acute accent
+ Acirc	=> pack('U', 194),  # capital A, circumflex accent
+ Agrave	=> pack('U', 192),  # capital A, grave accent
+ Aring	=> pack('U', 197),  # capital A, ring
+ Atilde	=> pack('U', 195),  # capital A, tilde
+ Auml	=> pack('U', 196),  # capital A, dieresis or umlaut mark
+ Ccedil	=> pack('U', 199),  # capital C, cedilla
+ ETH	=> pack('U', 208),  # capital Eth, Icelandic
+ Eacute	=> pack('U', 201),  # capital E, acute accent
+ Ecirc	=> pack('U', 202),  # capital E, circumflex accent
+ Egrave	=> pack('U', 200),  # capital E, grave accent
+ Euml	=> pack('U', 203),  # capital E, dieresis or umlaut mark
+ Iacute	=> pack('U', 205),  # capital I, acute accent
+ Icirc	=> pack('U', 206),  # capital I, circumflex accent
+ Igrave	=> pack('U', 204),  # capital I, grave accent
+ Iuml	=> pack('U', 207),  # capital I, dieresis or umlaut mark
+ Ntilde	=> pack('U', 209),  # capital N, tilde
+ Oacute	=> pack('U', 211),  # capital O, acute accent
+ Ocirc	=> pack('U', 212),  # capital O, circumflex accent
+ Ograve	=> pack('U', 210),  # capital O, grave accent
+ Oslash	=> pack('U', 216),  # capital O, slash
+ Otilde	=> pack('U', 213),  # capital O, tilde
+ Ouml	=> pack('U', 214),  # capital O, dieresis or umlaut mark
+ THORN	=> pack('U', 222),  # capital THORN, Icelandic
+ Uacute	=> pack('U', 218),  # capital U, acute accent
+ Ucirc	=> pack('U', 219),  # capital U, circumflex accent
+ Ugrave	=> pack('U', 217),  # capital U, grave accent
+ Uuml	=> pack('U', 220),  # capital U, dieresis or umlaut mark
+ Yacute	=> pack('U', 221),  # capital Y, acute accent
+ aacute	=> pack('U', 225),  # small a, acute accent
+ acirc	=> pack('U', 226),  # small a, circumflex accent
+ aelig	=> pack('U', 230),  # small ae diphthong (ligature)
+ agrave	=> pack('U', 224),  # small a, grave accent
+ aring	=> pack('U', 229),  # small a, ring
+ atilde	=> pack('U', 227),  # small a, tilde
+ auml	=> pack('U', 228),  # small a, dieresis or umlaut mark
+ ccedil	=> pack('U', 231),  # small c, cedilla
+ eacute	=> pack('U', 233),  # small e, acute accent
+ ecirc	=> pack('U', 234),  # small e, circumflex accent
+ egrave	=> pack('U', 232),  # small e, grave accent
+ eth	=> pack('U', 240),  # small eth, Icelandic
+ euml	=> pack('U', 235),  # small e, dieresis or umlaut mark
+ iacute	=> pack('U', 237),  # small i, acute accent
+ icirc	=> pack('U', 238),  # small i, circumflex accent
+ igrave	=> pack('U', 236),  # small i, grave accent
+ iuml	=> pack('U', 239),  # small i, dieresis or umlaut mark
+ ntilde	=> pack('U', 241),  # small n, tilde
+ oacute	=> pack('U', 243),  # small o, acute accent
+ ocirc	=> pack('U', 244),  # small o, circumflex accent
+ ograve	=> pack('U', 242),  # small o, grave accent
+ oslash	=> pack('U', 248),  # small o, slash
+ otilde	=> pack('U', 245),  # small o, tilde
+ ouml	=> pack('U', 246),  # small o, dieresis or umlaut mark
+ szlig	=> pack('U', 223),  # small sharp s, German (sz ligature)
+ thorn	=> pack('U', 254),  # small thorn, Icelandic
+ uacute	=> pack('U', 250),  # small u, acute accent
+ ucirc	=> pack('U', 251),  # small u, circumflex accent
+ ugrave	=> pack('U', 249),  # small u, grave accent
+ uuml	=> pack('U', 252),  # small u, dieresis or umlaut mark
+ yacute	=> pack('U', 253),  # small y, acute accent
+ yuml	=> pack('U', 255),  # small y, dieresis or umlaut mark
 
  # Some extra Latin 1 chars that are listed in the HTML3.2 draft (21-May-96)
- copy   => chr(169),  # copyright sign
- reg    => chr(174),  # registered sign
- nbsp   => chr(160),  # non breaking space
+ copy   => pack('U', 169),  # copyright sign
+ reg    => pack('U', 174),  # registered sign
+ nbsp   => pack('U', 160),  # non breaking space
 
  # Additional ISO-8859/1 entities listed in rfc1866 (section 14)
- iexcl  => chr(161),
- cent   => chr(162),
- pound  => chr(163),
- curren => chr(164),
- yen    => chr(165),
- brvbar => chr(166),
- sect   => chr(167),
- uml    => chr(168),
- ordf   => chr(170),
- laquo  => chr(171),
-'not'   => chr(172),    # not is a keyword in perl
- shy    => chr(173),
- macr   => chr(175),
- deg    => chr(176),
- plusmn => chr(177),
- sup1   => chr(185),
- sup2   => chr(178),
- sup3   => chr(179),
- acute  => chr(180),
- micro  => chr(181),
- para   => chr(182),
- middot => chr(183),
- cedil  => chr(184),
- ordm   => chr(186),
- raquo  => chr(187),
- frac14 => chr(188),
- frac12 => chr(189),
- frac34 => chr(190),
- iquest => chr(191),
-'times' => chr(215),    # times is a keyword in perl
- divide => chr(247),
+ iexcl  => pack('U', 161),
+ cent   => pack('U', 162),
+ pound  => pack('U', 163),
+ curren => pack('U', 164),
+ yen    => pack('U', 165),
+ brvbar => pack('U', 166),
+ sect   => pack('U', 167),
+ uml    => pack('U', 168),
+ ordf   => pack('U', 170),
+ laquo  => pack('U', 171),
+'not'   => pack('U', 172),    # not is a keyword in perl
+ shy    => pack('U', 173),
+ macr   => pack('U', 175),
+ deg    => pack('U', 176),
+ plusmn => pack('U', 177),
+ sup1   => pack('U', 185),
+ sup2   => pack('U', 178),
+ sup3   => pack('U', 179),
+ acute  => pack('U', 180),
+ micro  => pack('U', 181),
+ para   => pack('U', 182),
+ middot => pack('U', 183),
+ cedil  => pack('U', 184),
+ ordm   => pack('U', 186),
+ raquo  => pack('U', 187),
+ frac14 => pack('U', 188),
+ frac12 => pack('U', 189),
+ frac34 => pack('U', 190),
+ iquest => pack('U', 191),
+'times' => pack('U', 215),    # times is a keyword in perl
+ divide => pack('U', 247),
 
  ( $] > 5.007 ? (
-  'OElig'     => chr(338),
-  'oelig'     => chr(339),
-  'Scaron'    => chr(352),
-  'scaron'    => chr(353),
-  'Yuml'      => chr(376),
-  'fnof'      => chr(402),
-  'circ'      => chr(710),
-  'tilde'     => chr(732),
-  'Alpha'     => chr(913),
-  'Beta'      => chr(914),
-  'Gamma'     => chr(915),
-  'Delta'     => chr(916),
-  'Epsilon'   => chr(917),
-  'Zeta'      => chr(918),
-  'Eta'       => chr(919),
-  'Theta'     => chr(920),
-  'Iota'      => chr(921),
-  'Kappa'     => chr(922),
-  'Lambda'    => chr(923),
-  'Mu'        => chr(924),
-  'Nu'        => chr(925),
-  'Xi'        => chr(926),
-  'Omicron'   => chr(927),
-  'Pi'        => chr(928),
-  'Rho'       => chr(929),
-  'Sigma'     => chr(931),
-  'Tau'       => chr(932),
-  'Upsilon'   => chr(933),
-  'Phi'       => chr(934),
-  'Chi'       => chr(935),
-  'Psi'       => chr(936),
-  'Omega'     => chr(937),
-  'alpha'     => chr(945),
-  'beta'      => chr(946),
-  'gamma'     => chr(947),
-  'delta'     => chr(948),
-  'epsilon'   => chr(949),
-  'zeta'      => chr(950),
-  'eta'       => chr(951),
-  'theta'     => chr(952),
-  'iota'      => chr(953),
-  'kappa'     => chr(954),
-  'lambda'    => chr(955),
-  'mu'        => chr(956),
-  'nu'        => chr(957),
-  'xi'        => chr(958),
-  'omicron'   => chr(959),
-  'pi'        => chr(960),
-  'rho'       => chr(961),
-  'sigmaf'    => chr(962),
-  'sigma'     => chr(963),
-  'tau'       => chr(964),
-  'upsilon'   => chr(965),
-  'phi'       => chr(966),
-  'chi'       => chr(967),
-  'psi'       => chr(968),
-  'omega'     => chr(969),
-  'thetasym'  => chr(977),
-  'upsih'     => chr(978),
-  'piv'       => chr(982),
-  'ensp'      => chr(8194),
-  'emsp'      => chr(8195),
-  'thinsp'    => chr(8201),
-  'zwnj'      => chr(8204),
-  'zwj'       => chr(8205),
-  'lrm'       => chr(8206),
-  'rlm'       => chr(8207),
-  'ndash'     => chr(8211),
-  'mdash'     => chr(8212),
-  'lsquo'     => chr(8216),
-  'rsquo'     => chr(8217),
-  'sbquo'     => chr(8218),
-  'ldquo'     => chr(8220),
-  'rdquo'     => chr(8221),
-  'bdquo'     => chr(8222),
-  'dagger'    => chr(8224),
-  'Dagger'    => chr(8225),
-  'bull'      => chr(8226),
-  'hellip'    => chr(8230),
-  'permil'    => chr(8240),
-  'prime'     => chr(8242),
-  'Prime'     => chr(8243),
-  'lsaquo'    => chr(8249),
-  'rsaquo'    => chr(8250),
-  'oline'     => chr(8254),
-  'frasl'     => chr(8260),
-  'euro'      => chr(8364),
-  'image'     => chr(8465),
-  'weierp'    => chr(8472),
-  'real'      => chr(8476),
-  'trade'     => chr(8482),
-  'alefsym'   => chr(8501),
-  'larr'      => chr(8592),
-  'uarr'      => chr(8593),
-  'rarr'      => chr(8594),
-  'darr'      => chr(8595),
-  'harr'      => chr(8596),
-  'crarr'     => chr(8629),
-  'lArr'      => chr(8656),
-  'uArr'      => chr(8657),
-  'rArr'      => chr(8658),
-  'dArr'      => chr(8659),
-  'hArr'      => chr(8660),
-  'forall'    => chr(8704),
-  'part'      => chr(8706),
-  'exist'     => chr(8707),
-  'empty'     => chr(8709),
-  'nabla'     => chr(8711),
-  'isin'      => chr(8712),
-  'notin'     => chr(8713),
-  'ni'        => chr(8715),
-  'prod'      => chr(8719),
-  'sum'       => chr(8721),
-  'minus'     => chr(8722),
-  'lowast'    => chr(8727),
-  'radic'     => chr(8730),
-  'prop'      => chr(8733),
-  'infin'     => chr(8734),
-  'ang'       => chr(8736),
-  'and'       => chr(8743),
-  'or'        => chr(8744),
-  'cap'       => chr(8745),
-  'cup'       => chr(8746),
-  'int'       => chr(8747),
-  'there4'    => chr(8756),
-  'sim'       => chr(8764),
-  'cong'      => chr(8773),
-  'asymp'     => chr(8776),
-  'ne'        => chr(8800),
-  'equiv'     => chr(8801),
-  'le'        => chr(8804),
-  'ge'        => chr(8805),
-  'sub'       => chr(8834),
-  'sup'       => chr(8835),
-  'nsub'      => chr(8836),
-  'sube'      => chr(8838),
-  'supe'      => chr(8839),
-  'oplus'     => chr(8853),
-  'otimes'    => chr(8855),
-  'perp'      => chr(8869),
-  'sdot'      => chr(8901),
-  'lceil'     => chr(8968),
-  'rceil'     => chr(8969),
-  'lfloor'    => chr(8970),
-  'rfloor'    => chr(8971),
-  'lang'      => chr(9001),
-  'rang'      => chr(9002),
-  'loz'       => chr(9674),
-  'spades'    => chr(9824),
-  'clubs'     => chr(9827),
-  'hearts'    => chr(9829),
-  'diams'     => chr(9830),
+  'OElig'     => pack('U', 338),
+  'oelig'     => pack('U', 339),
+  'Scaron'    => pack('U', 352),
+  'scaron'    => pack('U', 353),
+  'Yuml'      => pack('U', 376),
+  'fnof'      => pack('U', 402),
+  'circ'      => pack('U', 710),
+  'tilde'     => pack('U', 732),
+  'Alpha'     => pack('U', 913),
+  'Beta'      => pack('U', 914),
+  'Gamma'     => pack('U', 915),
+  'Delta'     => pack('U', 916),
+  'Epsilon'   => pack('U', 917),
+  'Zeta'      => pack('U', 918),
+  'Eta'       => pack('U', 919),
+  'Theta'     => pack('U', 920),
+  'Iota'      => pack('U', 921),
+  'Kappa'     => pack('U', 922),
+  'Lambda'    => pack('U', 923),
+  'Mu'        => pack('U', 924),
+  'Nu'        => pack('U', 925),
+  'Xi'        => pack('U', 926),
+  'Omicron'   => pack('U', 927),
+  'Pi'        => pack('U', 928),
+  'Rho'       => pack('U', 929),
+  'Sigma'     => pack('U', 931),
+  'Tau'       => pack('U', 932),
+  'Upsilon'   => pack('U', 933),
+  'Phi'       => pack('U', 934),
+  'Chi'       => pack('U', 935),
+  'Psi'       => pack('U', 936),
+  'Omega'     => pack('U', 937),
+  'alpha'     => pack('U', 945),
+  'beta'      => pack('U', 946),
+  'gamma'     => pack('U', 947),
+  'delta'     => pack('U', 948),
+  'epsilon'   => pack('U', 949),
+  'zeta'      => pack('U', 950),
+  'eta'       => pack('U', 951),
+  'theta'     => pack('U', 952),
+  'iota'      => pack('U', 953),
+  'kappa'     => pack('U', 954),
+  'lambda'    => pack('U', 955),
+  'mu'        => pack('U', 956),
+  'nu'        => pack('U', 957),
+  'xi'        => pack('U', 958),
+  'omicron'   => pack('U', 959),
+  'pi'        => pack('U', 960),
+  'rho'       => pack('U', 961),
+  'sigmaf'    => pack('U', 962),
+  'sigma'     => pack('U', 963),
+  'tau'       => pack('U', 964),
+  'upsilon'   => pack('U', 965),
+  'phi'       => pack('U', 966),
+  'chi'       => pack('U', 967),
+  'psi'       => pack('U', 968),
+  'omega'     => pack('U', 969),
+  'thetasym'  => pack('U', 977),
+  'upsih'     => pack('U', 978),
+  'piv'       => pack('U', 982),
+  'ensp'      => pack('U', 8194),
+  'emsp'      => pack('U', 8195),
+  'thinsp'    => pack('U', 8201),
+  'zwnj'      => pack('U', 8204),
+  'zwj'       => pack('U', 8205),
+  'lrm'       => pack('U', 8206),
+  'rlm'       => pack('U', 8207),
+  'ndash'     => pack('U', 8211),
+  'mdash'     => pack('U', 8212),
+  'lsquo'     => pack('U', 8216),
+  'rsquo'     => pack('U', 8217),
+  'sbquo'     => pack('U', 8218),
+  'ldquo'     => pack('U', 8220),
+  'rdquo'     => pack('U', 8221),
+  'bdquo'     => pack('U', 8222),
+  'dagger'    => pack('U', 8224),
+  'Dagger'    => pack('U', 8225),
+  'bull'      => pack('U', 8226),
+  'hellip'    => pack('U', 8230),
+  'permil'    => pack('U', 8240),
+  'prime'     => pack('U', 8242),
+  'Prime'     => pack('U', 8243),
+  'lsaquo'    => pack('U', 8249),
+  'rsaquo'    => pack('U', 8250),
+  'oline'     => pack('U', 8254),
+  'frasl'     => pack('U', 8260),
+  'euro'      => pack('U', 8364),
+  'image'     => pack('U', 8465),
+  'weierp'    => pack('U', 8472),
+  'real'      => pack('U', 8476),
+  'trade'     => pack('U', 8482),
+  'alefsym'   => pack('U', 8501),
+  'larr'      => pack('U', 8592),
+  'uarr'      => pack('U', 8593),
+  'rarr'      => pack('U', 8594),
+  'darr'      => pack('U', 8595),
+  'harr'      => pack('U', 8596),
+  'crarr'     => pack('U', 8629),
+  'lArr'      => pack('U', 8656),
+  'uArr'      => pack('U', 8657),
+  'rArr'      => pack('U', 8658),
+  'dArr'      => pack('U', 8659),
+  'hArr'      => pack('U', 8660),
+  'forall'    => pack('U', 8704),
+  'part'      => pack('U', 8706),
+  'exist'     => pack('U', 8707),
+  'empty'     => pack('U', 8709),
+  'nabla'     => pack('U', 8711),
+  'isin'      => pack('U', 8712),
+  'notin'     => pack('U', 8713),
+  'ni'        => pack('U', 8715),
+  'prod'      => pack('U', 8719),
+  'sum'       => pack('U', 8721),
+  'minus'     => pack('U', 8722),
+  'lowast'    => pack('U', 8727),
+  'radic'     => pack('U', 8730),
+  'prop'      => pack('U', 8733),
+  'infin'     => pack('U', 8734),
+  'ang'       => pack('U', 8736),
+  'and'       => pack('U', 8743),
+  'or'        => pack('U', 8744),
+  'cap'       => pack('U', 8745),
+  'cup'       => pack('U', 8746),
+  'int'       => pack('U', 8747),
+  'there4'    => pack('U', 8756),
+  'sim'       => pack('U', 8764),
+  'cong'      => pack('U', 8773),
+  'asymp'     => pack('U', 8776),
+  'ne'        => pack('U', 8800),
+  'equiv'     => pack('U', 8801),
+  'le'        => pack('U', 8804),
+  'ge'        => pack('U', 8805),
+  'sub'       => pack('U', 8834),
+  'sup'       => pack('U', 8835),
+  'nsub'      => pack('U', 8836),
+  'sube'      => pack('U', 8838),
+  'supe'      => pack('U', 8839),
+  'oplus'     => pack('U', 8853),
+  'otimes'    => pack('U', 8855),
+  'perp'      => pack('U', 8869),
+  'sdot'      => pack('U', 8901),
+  'lceil'     => pack('U', 8968),
+  'rceil'     => pack('U', 8969),
+  'lfloor'    => pack('U', 8970),
+  'rfloor'    => pack('U', 8971),
+  'lang'      => pack('U', 9001),
+  'rang'      => pack('U', 9002),
+  'loz'       => pack('U', 9674),
+  'spades'    => pack('U', 9824),
+  'clubs'     => pack('U', 9827),
+  'hearts'    => pack('U', 9829),
+  'diams'     => pack('U', 9830),
  ) : ())
 );
 
@@ -343,41 +343,159 @@ sub new {
 sub command {
 	my ($self, $cmd, $text, $line_num, $pod_para) = @_;
 	
-	#
-	# here handle starting a new paragraph
-	#
-#print "START COMMAND ($cmd):\n\n";
-	
 	$text=~s/\s+/ /g; $text=~s/^ //; $text=~s/ $//;
 	my $parse_tree = $self->parse_text($text, $line_num);
-	$self->display_tree($parse_tree);	# can add other args (like text_run) later
-#print "END COMMAND ($cmd):\n\n";
+	
+	if ($cmd eq 'head1') {
+		if ($text=~/\S/) {
+			$self->{viewer}->SetHead1Mode(1);
+			$self->{viewer}->StartParagraph;
+			$self->{viewer}->SetLinkAnchor($text);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetHead1Mode(0);
+		}
+		return;
+	}
+	if ($cmd eq 'head2') {
+		if ($text=~/\S/) {
+			$self->{viewer}->SetHead2Mode(1);
+			$self->{viewer}->StartParagraph;
+			$self->{viewer}->SetLinkAnchor($text);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetHead2Mode(0);
+		}
+		return;
+	}
+	if ($cmd eq 'head3') {
+		if ($text=~/\S/) {
+			$self->{viewer}->SetHead3Mode(1);
+			$self->{viewer}->StartParagraph;
+			$self->{viewer}->SetLinkAnchor($text);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetHead3Mode(0);
+		}
+		return;
+	}
+	if ($cmd eq 'head4') {
+		if ($text=~/\S/) {
+			$self->{viewer}->SetHead4Mode(1);
+			$self->{viewer}->StartParagraph;
+			$self->{viewer}->SetLinkAnchor($text);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetHead4Mode(0);
+		}
+		return;
+	}
+	
+	if ($cmd eq 'over') {
+		$self->{viewer}->SetIndent(1);
+		if ($text=~/\S/) {
+			$self->{viewer}->StartParagraph;
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+		}
+		return;
+	}
+	if ($cmd eq 'item') {
+		if ($text=~/\S/) {
+			$self->{viewer}->SetItemMode(1);
+			$self->{viewer}->StartParagraph;
+			$self->{viewer}->SetLinkAnchor($text);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetItemMode(0);
+		}
+		return;
+	}
+	if ($cmd eq 'back') {
+		$self->{viewer}->SetIndent(0);
+		if ($text=~/\S/) {
+			$self->{viewer}->StartParagraph;
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+		}
+		return;
+	}
+	
+	if ($cmd eq 'begin') {
+		$text=~s/(\S+)\s+//;
+		my $format = $1;
+		$self->{viewer}->SetFormatMode($format, 1);
+		if ($text=~/\S/) {
+			$self->{viewer}->StartParagraph;
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+		}
+		return;
+	}
+	
+	if ($cmd eq 'end') {
+		$text=~s/(\S+)\s+//;
+		my $format = $1;
+		$self->{viewer}->SetFormatMode($format, 0);
+		if ($text=~/\S/) {
+			$self->{viewer}->StartParagraph;
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+		}
+		return;
+	}
+	
+	if ($cmd eq 'for') {
+		$text=~s/(\S+)\s+//;
+		my $format = $1;
+		if ($text=~/\S/) {
+			$self->{viewer}->SetFormatMode($format, 1);
+			$self->{viewer}->StartParagraph;
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
+			$self->{viewer}->SetFormatMode($format, 0);
+		}
+		return;
+	}
+	
+	if ($cmd eq 'encoding') {
+		$self->{viewer}->SetEncoding($text);
+		return;
+	}
+	
+	$self->{viewer}->SetUnknownMode(1);
+	$self->{viewer}->StartParagraph;
+	$self->{viewer}->Display($cmd . ' ' . $text);
+	$self->{viewer}->EndParagraph;
+	$self->{viewer}->SetUnknownMode(0);
 }
 
 # verbatim paragraphs should not be parsed for formatting codes; they are usually code samples
 sub verbatim {
 	my ($self, $text, $line_num, $pod_para) = @_;
 	
-	#
-	# here set up the stuff for verbatims
-	#
+	return unless $text=~/\S/;
+	$text=~s/\s+$//;
 	
-	$self->{viewer}->SetMonospace(1);
+	$self->{viewer}->StartParagraph;
+	$self->{viewer}->SetVerbatimMode(1);
 	$self->{viewer}->Display($text);
-	$self->{viewer}->SetMonospace(0);
-	
-	$self->{viewer}->Display("\n\n");	# end of a paragraph
+	$self->{viewer}->SetVerbatimMode(0);
+	$self->{viewer}->EndParagraph;
 }
 
 # ordinary block of text; it can have formatting codes
 sub textblock {
 	my ($self, $text, $line_num, $pod_para) = @_;
 	
+	return unless $text=~/\S/;	
+	
 	$text=~s/\s+/ /g; $text=~s/^ //; $text=~s/ $//;
 	my $parse_tree = $self->parse_text($text, $line_num);
-	$self->display_tree($parse_tree);	# can add other args (like text_run) later
 	
-	$self->{viewer}->Display("\n\n");	# end of a paragraph
+	$self->{viewer}->StartParagraph;
+	$self->display_tree($parse_tree);
+	$self->{viewer}->EndParagraph;
 }
 
 sub display_tree {
@@ -420,13 +538,13 @@ sub display_sequence {
 			$u = '|';
 		}
 		elsif ($e=~/^0x[\da-fA-F]+$/) {
-			$u = chr hex $e;
+			$u = pack('U',hex $e);
 		}
 		elsif ($e=~/^0\d+$/) {
-			$u = chr oct $e;
+			$u = pack('U',oct $e);
 		}
 		elsif ($e=~/^\d+$/) {
-			$u = chr $e;
+			$u = pack('U', $e);
 		}
 		else {
 			$u = $entity2char{$e};
@@ -438,7 +556,7 @@ sub display_sequence {
 	
 	# X<topic> (for creating indexes; render as an empty string)
 	if ($cmd eq 'X') {
-		$self->{viewer}->SetIndexMark($text);
+		$self->{viewer}->SetIndexMark($parse_tree->raw_text);
 		#
 		# here set up indexing if we want to support that
 		#
@@ -447,45 +565,41 @@ sub display_sequence {
 	
 	# S<text> (do not wrap)
 	if ($cmd eq 'S') {
-		$self->{viewer}->SetNowrap(1);
+		$self->{viewer}->SetSMode(1);
 		$self->display_tree($parse_tree);
-		$self->{viewer}->SetNowrap(0);
+		$self->{viewer}->SetSMode(0);
 		return;
 	}
 	
 	# B<text> (bold)
 	if ($cmd eq 'B') {
-		$self->{viewer}->SetBold(1);
+		$self->{viewer}->SetBMode(1);
 		$self->display_tree($parse_tree);
-		$self->{viewer}->SetBold(0);
+		$self->{viewer}->SetBMode(0);
 		return;
 	}
 	
 	# I<text> (italic)
 	if ($cmd eq 'I') {
-		$self->{viewer}->SetItalic(1);
+		$self->{viewer}->SetIMode(1);
 		$self->display_tree($parse_tree);
-		$self->{viewer}->SetItalic(0);
+		$self->{viewer}->SetIMode(0);
 		return;
 	}
 	
 	# C<text> (code)
-	if ($cmd eq 'I') {
-		$self->{viewer}->SetMonospace(1);
+	if ($cmd eq 'C') {
+		$self->{viewer}->SetCMode(1);
 		$self->display_tree($parse_tree);
-		$self->{viewer}->SetMonospace(0);
+		$self->{viewer}->SetCMode(0);
 		return;
 	}
 	
 	# F<text> (filename)
 	if ($cmd eq 'F') {
-		$self->{viewer}->PushColor(0,255,0);
-		$self->{viewer}->SetBold(1);
-		$self->{viewer}->SetMonospace(1);
+		$self->{viewer}->SetFMode(1);
 		$self->display_tree($parse_tree);
-		$self->{viewer}->SetMonospace(0);
-		$self->{viewer}->SetBold(0);
-		$self->{viewer}->PopColor;
+		$self->{viewer}->SetFMode(0);
 		return;
 	}
 	
@@ -495,28 +609,33 @@ sub display_sequence {
 	#   NOTE: text| is optional; without it, default to contents
 	# L<scheme:> (link to http, ftp, whatever; no text| option)
 	if ($cmd eq 'L') {
-		my $raw = $parse_tree->raw_text;
+		my $target = $parse_tree->raw_text;
 		my $text;
-		if ($raw=~s/^(.+?)\|//) {
+		if ($target=~s/^(.+?)\|//) {
 			$text = $1;
 		}
 		else {
-			my ($page, $section) = split m:/:, $raw;
+			my ($page, $section) = split m:/:, $target;
 			if ($section) {
 				$page ||= 'this page';
 				$text = "$section in $page";
 			}
 			else {
-				$text = $raw;
+				$text = $target;
 				$text=~s/^"//;
 				$text=~s/"$//;
 			}
 		}
 		
-		$self->{viewer}->PushColor(0,0,255);
-		$self->{viewer}->DisplayLink($text, $link);
-		$self->{viewer}->SetBold(0);
+		$self->{viewer}->SetLMode(1);
+		$self->{viewer}->DisplayLink($text, $target);
+		$self->{viewer}->SetLMode(0);
+		return;
 	}
+	
+	$self->{viewer}->SetUnknownMode(1);
+	$self->{viewer}->Display($sequence->raw_text);
+	$self->{viewer}->SetUnknownMode(0);
 }
 
 sub Xinterior_sequence {

@@ -15,7 +15,9 @@ sub generate_xs {
 	my ($self, $options) = @_;
 	my $cpp_class_name = $self->cpp_class_name;
 	
-	print { $self->package->xsh } <<DESTRUCTOR;
+	my $fh = $self->package->xsh;
+	
+	print $fh <<DESTRUCTOR;
 # Note that this method is not prefixed by the class name.
 #
 # This is because if we prefix the class name the first argument is

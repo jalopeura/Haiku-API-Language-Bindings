@@ -195,7 +195,7 @@
 			</method>
 <!-- DoForEach not implemented because it takes a function as a parameter -->
 			<method name="Items">
-				<return type="BListItem*" pass-as-pointer="true" array-length="null-terminated" action="output" />
+				<return type="const BListItem*" pass-as-pointer="true" array-length="SELF.CountItems()" action="output" />
 			</method>
 			<method name="InvalidateItem">
 				<param name="index" type="int32" action="input" />

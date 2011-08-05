@@ -12,15 +12,15 @@
 			</constructor>
 			<destructor />
 			<method name="SetFamilyAndStyle">
-				<param name="family" type="const font_family" action="input" />
-				<param name="style" type="const font_style" action="input" />
+				<param name="family" type="const font_family" default='""' action="input" />
+				<param name="style" type="const font_style" default='""' action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetFamilyAndStyle" overload-name="SetFamilyAndStyleFromCode">
 				<param name="code" type="uint32" action="input" />
 			</method>
-			<method name="SetFamilyAndStyle">
-				<param name="family" type="const font_family" action="input" />
+			<method name="SetFamilyAndFace">
+				<param name="family" type="const font_family" default='""' action="input" />
 				<param name="face" type="uint16" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -56,10 +56,10 @@
 				<param name="flags" type="uint32" action="input" />
 			</method>
 			<method name="GetFamilyAndStyle">
-				<param name="family" type="const font_family" pass-as-pointer="true" action="output" />
-				<param name="style" type="const font_style" pass-as-pointer="true" action="output" />
+				<param name="family" type="font_family" pass-as-pointer="true" action="output" />
+				<param name="style" type="font_style" pass-as-pointer="true" action="output" />
 			</method>
-			<method name="FamilyAndStyle" overload-name="SetFamilyAndStyleFromCode">
+			<method name="FamilyAndStyle" overload-name="FamilyAndStyleAsCode">
 				<return type="uint32" action="output" />
 			</method>
 			<method name="Size">
@@ -131,19 +131,19 @@
 			</method>
 -->
 			<method name="GetTruncatedStrings">
-				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="stringArray" type="const char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
 				<param name="mode" type="uint32" action="input" />
 				<param name="width" type="float" action="input" />
-				<param name="resultArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="output" />
+				<param name="resultArray" type="char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="output" />
 			</method>
 <!-- TODO: BString object not implemented yet
 			<method name="GetTruncatedStrings" overload-name="GetTruncatedStringsAsStringObjects">
-				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="stringArray" type="const char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
 				<param name="mode" type="uint32" action="input" />
 				<param name="width" type="float" action="input" />
-				<param name="resultArray" type="BString" array-length="numStrings" string-length="null-terminated" action="output" />
+				<param name="resultArray" type="BString" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="output" />
 			</method>
 -->
 			<method name="StringWidth">
@@ -156,74 +156,74 @@
 				<return type="float" action="output" />
 			</method>
 			<method name="GetStringWidths">
-				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
-				<param name="lengthArray" type="int32" array-length="numStrings" action="input" />
+				<param name="stringArray" type="const char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="lengthArray" type="int32" pass-as-pointer="true" array-length="numStrings" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
-				<param name="widthArray" type="float" array-length="numStrings" action="output" />
+				<param name="widthArray" type="float" pass-as-pointer="true" array-length="numStrings" action="output" />
 			</method>
 			<method name="GetEscapements">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
-				<param name="ecapementArray" type="float" array-length="numChars" action="output" />
+				<param name="ecapementArray" type="float" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetEscapements" overload-name="GetEscapementsWithDelta">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="delta" type="escapement_delta*" action="input" />
-				<param name="ecapementArray" type="float" array-length="numChars" action="output" />
+				<param name="ecapementArray" type="float" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetEscapements" overload-name="GetEscapementsAsPoints">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="delta" type="escapement_delta*" action="input" />
-				<param name="ecapementArray" type="BPoint" array-length="numChars" action="output" />
+				<param name="ecapementArray" type="BPoint" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetEscapements" overload-name="GetEscapementsAsPointsWithOffsets">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="delta" type="escapement_delta*" action="input" />
-				<param name="ecapementArray" type="BPoint" array-length="numChars" action="output" />
-				<param name="offsetArray" type="BPoint" array-length="numChars" action="output" />
+				<param name="ecapementArray" type="BPoint" pass-as-pointer="true" array-length="numChars" action="output" />
+				<param name="offsetArray" type="BPoint" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetEdges">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
-				<param name="edgeArray" type="edge_info" array-length="numChars" action="output" />
+				<param name="edgeArray" type="edge_info" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetHeight">
 				<param name="height" type="font_height*" action="output" />
 			</method>
 			<method name="GetBoundingBoxesAsGlyphs">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="mode" type="font_metric_mode" action="input" />
-				<param name="boundingBoxArray" type="BRect" array-length="numChars" action="output" />
+				<param name="boundingBoxArray" type="BRect" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetBoundingBoxesAsString">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="mode" type="font_metric_mode" action="input" />
 				<param name="delta" type="escapement_delta*" action="input" />
-				<param name="boundingBoxArray" type="BRect" array-length="numChars" action="output" />
+				<param name="boundingBoxArray" type="BRect" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="GetBoundingBoxesForStrings">
-				<param name="stringArray" type="const char*" array-length="numStrings" string-length="null-terminated" action="input" />
+				<param name="stringArray" type="const char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
 				<param name="mode" type="font_metric_mode" action="input" />
-				<param name="deltas" type="escapement_delta" array-length="numStrings" action="input" />
-				<param name="boundingBoxArray" type="BRect" array-length="numStrings" action="output" />
+				<param name="deltas" type="escapement_delta" pass-as-pointer="true" array-length="numStrings" action="input" />
+				<param name="boundingBoxArray" type="BRect" pass-as-pointer="true" array-length="numStrings" action="output" />
 			</method>
 <!-- TODO: BShape object not yet implemented
 			<method name="GetGlyphShapes">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
-				<param name="glyphShapeArray" type="BShape*" array-length="numChars" action="output" />
+				<param name="glyphShapeArray" type="BShape*" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 -->
 			<method name="GetHasGlyphs">
-				<param name="charArray" type="const char" string-length="numChars" action="input" />
+				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
-				<param name="hasArray" type="bool" array-length="numChars" action="output" />
+				<param name="hasArray" type="bool" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
 			<method name="PrintToStream" />
 			<plain name="count_font_families">
@@ -577,9 +577,6 @@
 	</binding>
 	<binding source="unicode_block" target="Haiku::unicode_block">
 		<doc>Exposes the unicode_block struct</doc>
-		<properties>
-			<property name="fData" type="uint64" array-length="2" />
-		</properties>
 		<functions>
 			<constructor>
 				<param name="block2" type="uint64" action="input" />
@@ -594,7 +591,6 @@
 			</method>
 		</functions>
 		<operators>
-			<operator name="neg" />
 			<operator name="==" />
 			<operator name="!=" />
 			<operator name="&" />

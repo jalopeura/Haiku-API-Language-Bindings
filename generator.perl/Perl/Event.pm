@@ -130,6 +130,7 @@ sub generate_cpp {
 	if ($stack_count) {
 		push @precode, '' if @precode;
 		push @precode,
+			'be_app->LockLooper();	// lock before manipulating stack',
 			'dSP;',
 			'ENTER;',
 			'SAVETMPS;',
@@ -152,7 +153,6 @@ sub generate_cpp {
 			"SV* $retname;",
 			@$defs;
 		push @postcode,
-			'SPAGAIN;',
 			"$retname = POPs;",
 			@$code,
 			'PUTBACK;';
@@ -177,6 +177,7 @@ sub generate_cpp {
 	push @postcode,
 		'FREETMPS;',
 		'LEAVE;',
+		'be_app->UnlockLooper();	// unlock after manipulating stack',
 		@return;
 		
 	
@@ -216,18 +217,24 @@ EVENT
 		print $fh "\t\t\n";
 	}
 	
+#print $fh "lock_perl_interpreter(false);\n";
 	if ($rettype eq 'void') {
-		print $fh qq(\t\tcall_method("$name", G_VOID););
+		print $fh  <<CALL;
+		call_method("$name", G_DISCARD);
+		SPAGAIN;
+CALL
 	}
 	else {
-		print $fh <<EVENT;
+		print $fh <<CALL;
 		perl_return_count = call_method("$name", G_SCALAR);
+		SPAGAIN;
 		
 		// need to add some real error checking here
 		if (perl_return_count != 1)
 			DEBUGME(4, "Got a bad number of returns from perl call: %d", perl_return_count);
-EVENT
+CALL
 	}
+#print $fh "lock_perl_interpreter(true);\n";
 	
 	if (@postcode) {
 		print $fh "\t\t\n";

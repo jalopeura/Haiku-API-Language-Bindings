@@ -1,0 +1,274 @@
+<bindings name="Haiku::TabView">
+	<doc>Exposes the TabView object</doc>
+	<binding source="BTabView" source-inherits="BView" target="Haiku::TabView" target-inherits="Haiku::View">
+		<doc>Exposes the TabView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a TabView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="width" type="button_width" action="input" default="B_WIDTH_AS_USUAL" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_ALL" />
+				<param name="flags" type="uint32" action="input" default="B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="width" type="button_width" action="input" default="B_WIDTH_AS_USUAL" />
+				<param name="flags" type="uint32" action="input" default="B_FULL_UPDATE_ON_RESIZE | B_WILL_DRAW | B_NAVIGABLE_JUMP | B_FRAME_EVENTS | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AllUnarchived">
+				<param name="archive" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+			<event name="AllAttached" />
+			<event name="DetachedFromWindow" />
+			<event name="AllDetached" />
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Pulse" />
+-->
+			<method name="Select">
+				<param name="tab" type="int32" action="input" />
+			</method>
+			<method name="Selection">
+				<return type="int32" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<doc>Makes the TabView focused (or not focused) within its Window.</doc>
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<method name="SetFocusTab">
+				<param name="tab" type="int32" action="input" />
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<method name="FocusTab">
+				<return type="int32" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Draw">
+				<doc>Draws the button label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DrawTabs">
+				<return type="BRect" />
+			</event>
+			<event name="DrawBox">
+				<doc>Draws the button label.</doc>
+				<param name="selectedTabRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="TabFrame">
+				<param name="tab" type="int32" action="input" />
+				<return type="BRect" action="output" />
+			</method>
+			<method name="SetFlags">
+				<param name="flags" type="uint32" action="input" />
+			</method>
+			<method name="SetResizingMode">
+				<param name="mode" type="uint32" action="input" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+<!-- Events not yet implemented for this object
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddTab">
+				<param name="target" type="BView*" action="input" />
+				<param name="tab" type="BTab*" action="input" default="NULL" />
+			</method>
+			<method name="RemoveTab">
+				<param name="tabIndex" type="int32" action="input" />
+				<return type="BTab*" action="output" />
+			</method>
+			<method name="TabAt">
+				<param name="index" type="int32" action="input" />
+				<return type="BTab*" action="output" />
+			</method>
+			<method name="SetTabWidth">
+				<param name="width" type="button_width" action="input" />
+			</method>
+			<method name="TabWidth">
+				<return type="button_width" action="output" />
+			</method>
+			<method name="SetTabHeight">
+				<param name="height" type="float" action="input" />
+			</method>
+			<method name="TabHeight">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetBorder">
+				<param name="style" type="border_style" action="input" />
+			</method>
+			<method name="Border">
+				<return type="border_style" action="output" />
+			</method>
+			<method name="ContainerView">
+				<return type="BView*" action="output" />
+			</method>
+			<method name="CountTabs">
+				<return type="int32" action="output" />
+			</method>
+			<method name="ViewForTab">
+				<param name="tabIndex" type="int32" action="input" />
+				<return type="BView*" action="output" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_TAB_FIRST" type="int" group="tab_position" />
+			<constant name="B_TAB_FRONT" type="int" group="tab_position" />
+			<constant name="B_TAB_ANY" type="int" group="tab_position" />
+		</constants>
+	</binding>
+	<binding source="BTab" source-inherits="BArchivable" target="Haiku::Tab" target-inherits="Haiku::Archivable">
+		<doc>Exposes the Tab object</doc>
+		<functions>
+			<constructor>
+				<param name="tabView" type="BView*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Label">
+				<return type="const char*" action="output" />
+			</method>
+			<method name="SetLabel">
+				<param name="label" type="const char*" action="input" />
+			</method>
+			<method name="IsSelected">
+				<return type="bool" action="output" />
+			</method>
+			<method name="Select">
+				<param name="owner" type="BView*" action="input" />
+			</method>
+			<method name="Deselect" />
+			<method name="SetEnabled">
+				<param name="enabled" type="bool" action="input" />
+			</method>
+			<method name="IsEnabled">
+				<return type="bool" action="output" />
+			</method>
+			<method name="MakeFocus">
+				<param name="focused" type="bool" action="input" default="true" />
+			</method>
+			<method name="IsFocus">
+				<return type="bool" />
+			</method>
+			<method name="SetView">
+				<param name="view" type="BView*" action="input" />
+			</method>
+			<method name="View">
+				<return type="BView*" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="DrawFocusMark">
+				<param name="owner" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DrawLabel">
+				<param name="owner" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DrawTab">
+				<param name="owner" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<param name="position" type="tab_position" action="input" />
+				<param name="full" type="bool" action="input" default="true" />
+				<return type="void" />
+			</event>
+-->
+		</functions>
+	</binding>
+</bindings>

@@ -1,29 +1,115 @@
 package PodViewer::Window;
+use Haiku::SupportKit;
 use Haiku::InterfaceKit;
 use PodViewer::PodView;
 use PodViewer::Parser;
 use PodViewer::ArrayAsFile;
 use Haiku::View qw(B_FOLLOW_ALL B_WILL_DRAW B_NAVIGABLE);
+use Haiku::ScrollBar qw(B_V_SCROLL_BAR_WIDTH B_H_SCROLL_BAR_HEIGHT);
 use strict;
 our @ISA = qw(Haiku::CustomWindow);
+
+use constant SEARCH_ORDINARY => 0xffff0001;
+use constant SEARCH_FUNC     => 0xffff0002;
+use constant SEARCH_FAQ      => 0xffff0003;
+use constant SEARCH_VAR      => 0xffff0004;
+
+my $buffer_size = 5;
+my $horizontal_scroll = 0;
+my $vertical_scroll = 1;
 
 sub new {
 	my ($class, @args) = @_;
 	my $self = $class->SUPER::new(@args);
 	
+	my $l = 0;
+	my $t = 0;
+	
 	my $f = $args[0];
 	my $w = $f->right - $f->left;
 	my $h = $f->bottom - $f->top;
 	
+	my $ch = 20;	# control height
+	my $mw = 105;	# menu width
+	
+	$self->{searchmenu} = new Haiku::Menu("");
+	$self->{searchmenu}->SetRadioMode(1);
+	
+	my @items;
+	push @items, new Haiku::MenuItem(
+		"Ordinary Search",
+		new Haiku::Message(SEARCH_ORDINARY),
+	);
+	push @items, new Haiku::MenuItem(
+		"Function Search",
+		new Haiku::Message(SEARCH_FUNC),
+	);
+	push @items, new Haiku::MenuItem(
+		"FAQ Search",
+		new Haiku::Message(SEARCH_FAQ),
+	);
+	push @items, new Haiku::MenuItem(
+		"Variable Search",
+		new Haiku::Message(SEARCH_VAR),
+	);
+	for my $item (@items) {
+		$self->{searchmenu}->AddItem($item);
+	}
+	$self->{searchmenu}->SetTargetForItems($self);
+	$items[0]->SetMarked(1);
+	
+	$self->{searchmenufield} = new Haiku::MenuField(
+		new Haiku::Rect($buffer_size,0,$mw,$ch),
+		"SearchType",
+		"Ordinary Search",
+		$self->{searchmenu},
+		1,	# fixed size
+	);
+	
+	$self->{searchmenufield}->SetDivider($mw);
+	
+	$self->AddChild($self->{searchmenufield}, 0);
+	
+	$l += $mw + 2*$buffer_size;
+	
+	#
+	# a text control with no label goes here
+	#
+	
+	$t += $ch + $buffer_size;
+	$h -= $ch + $buffer_size;
+	
+	$l = 0;
+	
+	if ($vertical_scroll) {
+		$w -= B_V_SCROLL_BAR_WIDTH;
+	}
+	my $h = $f->bottom - $f->top;
+	if ($horizontal_scroll) {
+		$h -= B_H_SCROLL_BAR_HEIGHT;
+	}
+	
 	$self->{podview} = new PodViewer::PodView(
-		new Haiku::Rect(0,0,$w,$h),	# frame
-		"TestButton",	# name
-		new Haiku::Rect(5,5,$w-5,$h-5),	# textRect
+		new Haiku::Rect($l,$t,$w,$h),	# frame
+		"PodView",	# name
+		new Haiku::Rect(
+			$buffer_size,$buffer_size,
+			$w-$buffer_size,$h-$buffer_size
+		),	# textRect
 		B_FOLLOW_ALL,	# resizingMode
 		B_WILL_DRAW | B_NAVIGABLE,	# flags
 	);
 	
-	$self->AddChild($self->{podview}, 0);
+	$self->{scrollview} = new Haiku::ScrollView(
+		"ScrollView",	# name
+		$self->{podview},	# target
+		B_FOLLOW_ALL,	# resizingMode
+		B_WILL_DRAW | B_NAVIGABLE,	# flags
+		$horizontal_scroll,	# horizontal
+		$vertical_scroll,	# vertical
+	);
+	
+	$self->AddChild($self->{scrollview}, 0);
 	
 	$self->{parser} = new PodView::Parser($self->{podview});
 	
@@ -34,21 +120,49 @@ sub new {
 
 sub MessageReceived {
 	my ($self, $message) = @_;
-	$self->{message_count}++;
-	my $what = $message->what();
-#my $text = unpack('A*', pack('L', $what));
-#print "$what => $text\n";
-
+	
+	my $what = $message->what;
+	
+	if ($what == SEARCH_ORDINARY) {
+		$self->{searchtype} = SEARCH_ORDINARY;
+		$self->Lock;
+		$self->{searchmenufield}->SetLabel('Ordinary Search');
+		$self->Unlock;
+		return;
+	}
+	if ($what == SEARCH_FUNC) {
+		$self->{searchtype} = SEARCH_FUNC;
+		$self->Lock;
+		$self->{searchmenufield}->SetLabel('Function Search');
+		$self->Unlock;
+		return;
+	}
+	if ($what == SEARCH_FAQ) {
+		$self->{searchtype} = SEARCH_FAQ;
+		$self->Lock;
+		$self->{searchmenufield}->SetLabel('FAQ Search');
+		$self->Unlock;
+		return;
+	}
+	if ($what == SEARCH_VAR) {
+		$self->{searchtype} = SEARCH_VAR;
+		$self->Lock;
+		$self->{searchmenufield}->SetLabel('Variable Search');
+		$self->Unlock;
+		return;
+	}
+	
 	$self->SUPER::MessageReceived($message);
 }
 
 sub FrameResized {
 	my ($self, $w, $h) = @_;
-
-	my $gap = 5;
 	
 	$self->{podview}->SetTextRect(
-		Haiku::Rect->new($gap,$gap,$w-$gap,$h-$gap)
+		Haiku::Rect->new(
+			$buffer_size,$buffer_size,
+			$w-$buffer_size,$h-$buffer_size
+		)
 	);
 }
 
@@ -65,11 +179,11 @@ sub get_module {
 		warn "No POD file found for module '$module'" and
 		return undef;
 	
-	open my $fh, $file or die "Unable to read file '$file': $!";
+#	open my $fh, $file or die "Unable to read file '$file': $!";
 	
-	$self->{parser}->parse_from_filehandle($fh);
+	$self->{parser}->parse_from_file($file);
 	
-	close $fh;
+#	close $fh;
 }
 
 sub get_perlfunc {

@@ -16,10 +16,6 @@
 				<doc>Returns true if the Screen is valid.</doc>
 				<return type="bool" action="output" />
 			</method>
-			<method name="IsValid">
-				<doc>Returns true if the Screen is valid.</doc>
-				<return type="bool" action="output" />
-			</method>
 			<method name="SetToNext">
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -36,7 +32,7 @@
 			<method name="WaitForRetrace">
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="WaitForRetrace" name="WaitForRetraceWithTimeout">
+			<method name="WaitForRetrace" overload-name="WaitForRetraceWithTimeout">
 				<param name="timeout" type="bigtime_t" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -44,7 +40,7 @@
 				<param name="color" type="rgb_color" action="input" />
 				<return type="uint8" action="output" />
 			</method>
-			<method name="IndexForColor" name="IndexForColorFromRGB">
+			<method name="IndexForColor" overload-name="IndexForColorFromRGB">
 				<param name="red"   type="uint8" action="input" />
 				<param name="green" type="uint8" action="input" />
 				<param name="blue"  type="uint8" action="input" />
@@ -86,13 +82,13 @@
 			<method name="SetDesktopColor">
 				<param name="color" type="rgb_color" action="input" />
 				<param name="makeDefault" type="bool" default="true" action="input" />
-				<return type="uint8" action="output" />
+				<return type="void" />
 			</method>
 			<method name="SetDesktopColor" overload-name="SetDesktopColorForIndex">
 				<param name="color" type="rgb_color" action="input" />
 				<param name="index" type="uint32" action="input" />
 				<param name="makeDefault" type="bool" default="true" action="input" />
-				<return type="uint8" action="output" />
+				<return type="void" />
 			</method>
 <!-- display_mode struct not yet implemented
 			<method name="ProposeMode">
@@ -160,7 +156,7 @@
 			<method name="DPMSState">
 				<return type="uint32" action="output" />
 			</method>
-			<method name="DPMSCapabilities">
+			<method name="DPMSCapabilites" overload-name="DPMSCapabilities">
 				<return type="uint32" action="output" />
 			</method>
 		</functions>

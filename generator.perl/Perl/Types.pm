@@ -210,7 +210,17 @@ sub type {
 				$target = $type->target;
 			}
 			$self->register_type($name, $type->builtin, $target);
-			return $self->{_typemap}{$name} if $self->{_typemap}{$name};
+			
+			if (my $new_type = $self->{_typemap}{$name}) {			
+				for my $x (qw(
+					array_length max_array_length
+					string_length max_string_length
+				)) {
+					next unless $type->has($x);
+					$new_type->{$x} = $type->{$x};
+				}
+				return $new_type;
+			}
 		}
 		
 		(my $k = $basename)=~s/ //g;
@@ -321,6 +331,8 @@ sub input_converter {
 	my (@defs, @code);
 	my $arg = $options->{input_name};
 	my $var = $options->{output_name};
+	my ($pfx) = $arg=~/([^.>]+)$/;
+	$pfx=~s/_sv$//; $pfx=~s/\W/_/g; $pfx=~s/_$//;
 	
 	my $len =  $options->{string_length};
 	if (not $len and $self->has('string_length')) {
@@ -344,10 +356,11 @@ sub input_converter {
 			
 			# non-constant lengths
 			if ($options->{set_string_length}) {
-				push @defs, "STRLEN sv_length;";
+				my $sv_length = "$pfx\_sv_length";
+				push @defs, "STRLEN $sv_length;";
 				push @code,
-					"$var = ($self->{name})SvPV($arg, sv_length);",
-					"$len = sv_length;",;
+					"$var = ($self->{name})SvPV($arg, $sv_length);",
+					"$len = $sv_length;",;
 			}
 			else {
 				push @code, "$var = ($self->{name})SvPV_nolen($arg);";
@@ -381,30 +394,31 @@ sub input_converter {
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
-		push @defs, "STRLEN sv_length = SvCUR($arg);";
+		my $sv_length = "$pfx\_sv_length";
+		push @defs, "STRLEN $sv_length = SvCUR($arg);";
 		
 		# if the current length of the Perl string is longer than
 		# the max length allowed, shorten the Perl string
 		push @code,
 			'',
-			qq(if (sv_length > $maxlen) {),
+			qq(if ($sv_length > $maxlen) {),
 			qq(\tchar* last_char;),
-			qq(\tsv_length = $maxlen;),
-			qq(\tSvCUR_set($arg, sv_length);),
+			qq(\t$sv_length = $maxlen;),
+			qq(\tSvCUR_set($arg, $sv_length);),
 			qq(\tlast_char = SvEND($arg);	// pointer to last character),
 			qq(\t*last_char = '\\0';),
 			qq(}),
 			'';
 		
 		if ($ptr) {
-			push @code, "$var = ($self->{name})SvPV($arg, sv_length);";
+			push @code, "$var = ($self->{name})SvPV($arg, $sv_length);";
 		}
 		else {
-			push @code, "memcpy((void*)&$var, (void*)SvPV($arg, sv_length), sv_length);";
+			push @code, "memcpy((void*)&$var, (void*)SvPV($arg, $sv_length), $sv_length);";
 		}
 		
 		if ($options->{set_string_length}) {
-			push @code, qq(\t$maxlen = sv_length);
+			push @code, qq(\t$maxlen = $sv_length);
 		}	
 	}
 	else {
@@ -413,6 +427,11 @@ sub input_converter {
 		# values for the eval
 		my $type = $self->name;
 		my $ntype = '$ntype';
+		
+		if ($self->has('target') and $options->{must_not_delete}) {
+			push @code,
+				"must_not_delete_cpp_object($options->{input_name}, true);";
+		}
 		
 		my $ret = eval "qq($converter)" or die $@;
 		
@@ -468,7 +487,8 @@ sub array_input_converter {
 		# calling code should not pass 'need_malloc' unless using a pointer (type*)
 		# if using an array (type[]), calling code shouldn't need malloc
 		(my $base = $self->{name})=~s/const\s+//;
-		push @code, "$var = ($base*)malloc($count * sizeof($base));";
+#		push @code, "$var = ($base*)malloc($count * sizeof($base));";
+		push @code, "$var = ($self->{name}*)malloc($count * sizeof($base));";
 	}
 
 	#
@@ -516,6 +536,8 @@ sub output_converter {
 	my (@defs, @code);
 	my $var = $options->{input_name};
 	my $arg = $options->{output_name};
+	my ($pfx) = $arg=~/(\w+)$/;
+	$pfx=~s/_sv$//; $pfx=~s/\W/_/g; $pfx=~s/_$//;
 	
 	my $len =  $options->{string_length};
 	if (not $len and $self->has('string_length')) {
@@ -532,7 +554,7 @@ sub output_converter {
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
-		if ($base ne 'char') {
+		if ($base ne 'char' and not $ptr) {
 			$len .= " * sizeof($base)";
 		}
 		
@@ -541,12 +563,15 @@ sub output_converter {
 		if ($len eq '1' and not $ptr) {
 			$var = "&$var";
 		}
-		if ($self->{name} ne 'char*') {
-			"$var = (char*)$var";
-		}
+		#if ($options->{pass_as_pointer}) {
+		#	$var = "&$var";
+		#}
+		#if ($self->{name} ne 'char*') {
+		#	"$var = (char*)$var";
+		#}
 		
 		push @code,
-			"$arg = newSVpvn($var, (STRLEN)$len);",
+			"$arg = newSVpvn((char*)$var, (STRLEN)$len);",
 			"if (is_utf8_string((const U8*)$var, (STRLEN)$len)) {",
 			"\tSvUTF8_on($arg);",
 			'}';
@@ -556,7 +581,7 @@ sub output_converter {
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
-		if ($base ne 'char') {
+		if ($base ne 'char' and not $ptr) {
 			$len .= " * sizeof($base)";
 		}
 		
@@ -565,26 +590,30 @@ sub output_converter {
 		if ($len eq '1' and not $ptr) {
 			$var = "&$var";
 		}
-		if ($self->{name} ne 'char*') {
-			"$var = (char*)$var";
-		}
+		#if ($options->{pass_as_pointer}) {
+		#	$var = "&$var";
+		#}
+		#if ($self->{name} ne 'char*') {
+		#	"$var = (char*)$var";
+		#}
 		
 		# if the no-length version (which ends at the first null) is longer
 		# than the max length allowed , shorten the Perl string
-		push @defs, "STRLEN sv_length;";
+		my $sv_length = "$pfx\_sv_length";
+		push @defs, "STRLEN $sv_length;";
 		push @code,
-			"$arg = newSVpv($var, 0);	// 0 lets Perl calculate length",
+			"$arg = newSVpv((char*)$var, 0);	// 0 lets Perl calculate length",
 			'',
-			"sv_length = SvCUR($arg);",
-			qq(if (sv_length > $maxlen) {),
-			qq(\tsv_length = $maxlen;),
-			qq(\tSvCUR_set($arg, sv_length);),
+			"$sv_length = SvCUR($arg);",
+			qq(if ($sv_length > $maxlen) {),
+			qq(\t$sv_length = $maxlen;),
+			qq(\tSvCUR_set($arg, $sv_length);),
 			qq(}),
 			'';
 		
 		# check for utf8
 		push @code, 
-			"if (is_utf8_string((const U8*)$var, (STRLEN)sv_length)) {",
+			"if (is_utf8_string((const U8*)$var, (STRLEN)$sv_length)) {",
 			"\tSvUTF8_on($arg);",
 			'}';
 	}
@@ -658,15 +687,16 @@ our @ISA = qw(Perl::Type);
 
 sub new {
 	my ($class, $name, $perltype, $svtype) = @_;
-	if ($name eq 'intchar') {
-		$name = 'char';
-	}
+	(my $builtin = $name)=~s/const\s+//;	# allows for const versions of builtins
+#	if ($name eq 'intchar') {
+#		$name = 'char';
+#	}
 	if ($name eq 'enum') {
 		$name = Perl::Types::ENUM_TYPE;
 	}
 	my $self = bless {
 		name     => $name,
-		builtin  => $name,
+		builtin  => $builtin,
 		perltype => $perltype,
 		svtype   => $svtype,
 	};

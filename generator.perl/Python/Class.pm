@@ -275,8 +275,18 @@ sub generate_cc_postamble {
 	my ($init_function, $dealloc_function, $parent, $parents,
 		$doc, $property_table, $method_table, $richcompare, $as_number);
 	
-	$init_function = $self->constructor_name;
-	$dealloc_function = $self->destructor_name;
+	if ($self->has('constructor_name')) {
+		$init_function = $self->constructor_name;
+	}
+	else {
+		$init_function = 0;
+	}
+	if ($self->has('destructor_name')) {
+		$dealloc_function = $self->destructor_name;
+	}
+	else {
+		$dealloc_function = 0;
+	}
 	
 	# richcompare
 	$richcompare = '0';

@@ -15,7 +15,7 @@ This will need to be fixed when additional formats are accepted
 				</param>
 			</constructor>
 			<constructor overload-name="FromCursor">
-				<param name="other" type="BCursor" action="input">
+				<param name="other" type="BCursor" action="input" default="*B_CURSOR_SYSTEM_DEFAULT">
 					<doc>Contains an archived version of the Cursor.</doc>
 				</param>
 			</constructor>

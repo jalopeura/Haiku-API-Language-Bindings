@@ -61,12 +61,14 @@
 				<param name="point" type="BPoint" action="input" />
 				<return type="void" />
 			</event>
+-->
 			<event name="MouseMoved">
 				<param name="point" type="BPoint" action="input" />
 				<param name="transit" type="uint32" action="input" />
 				<param name="message" type="BMessage*" action="input" />
 				<return type="void" />
 			</event>
+<!-- Events not yet implemented for this object
 			<event name="WindowActivated">
 				<param name="state" type="bool" action="input" />
 				<return type="void" />
@@ -438,13 +440,13 @@
 				<param name="array" type="text_run_array*" action="input" />
 			</method>
 			<method name="FlattenRunArray">
-				<param name="inArray" type="int32" action="input" />
-				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="length[retval]" />
+				<param name="inArray" type="const text_run_array*" action="input" />
+				<param name="outSize" type="int32" pass-as-pointer="true" action="length[retval]" />
 				<return name="retval" type="void*" string-length="outSize" />
 			</method>
 			<method name="UnflattenRunArray">
 				<param name="data" type="void*" string-length="outSize" action="input" />
-				<param name="outSize" type="int32" pass-as-pointer="true" default="NULL" action="length[data]" />
+				<param name="outSize" type="int32" pass-as-pointer="true" action="length[data]" />
 				<return name="retval" type="text_run_array*" />
 			</method>
 			<method name="Undo">

@@ -202,7 +202,9 @@ sub as_python_call {
 		push @code, @$code;
 		
 #		my $obj_return;
-		if ($param->type->has('target') and my $target = $param->type->target) {
+		if ($param->type->has('target') and my $target = $param->type->target and
+			not $param->has('array_length')
+			) {
 			(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
 			push @defs, "$objtype* $pyobj_name; // from as_python_call()";
 #			$obj_return = 1;
@@ -410,7 +412,7 @@ sub as_cpp_arg {
 	my $arg = $self->name;
 	if (
 		$self->pass_as_pointer and
-		not ($self->has('array_length') or $self->has('string_length'))
+		not $self->has('array_length')
 		) {
 		$arg = "&$arg";
 	}

@@ -115,7 +115,7 @@
 			<method name="SetBorderHighlighted">
 				<param name="state" type="bool" action="input" />
 			</method>
-			<method name="BorderHighlighted">
+			<method name="IsBorderHighlighted">
 				<return type="bool" action="output" />
 			</method>
 			<method name="SetTarget">

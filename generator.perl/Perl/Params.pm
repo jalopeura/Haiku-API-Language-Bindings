@@ -136,12 +136,33 @@ sub type {
 	my ($self) = @_;
 	unless ($self->{type}) {
 		my $t = $self->{type_name};
-		if ($self->{needs_deref}) {
-			$t=~s/\*$//;
-		}
+#		if ($self->{needs_deref}) {
+#			$t=~s/\*$//;
+#		}
 		$self->{type} = $self->types->type($t);
 	}
 	return $self->{type};
+}
+
+sub is_array_or_string {
+	my ($self) = @_;
+	
+	if ($self->has('array_length') or
+		$self->has('string_length') or
+		$self->has('max_array_length') or
+		$self->has('max_string_length')) {
+		return 1;
+	}
+	
+	my $type = $self->type;
+	if ($type->has('array_length') or
+		$type->has('string_length') or
+		$type->has('max_array_length') or
+		$type->has('max_string_length')) {
+		return 1;
+	}
+	
+	return undef;
 }
 
 sub input_converter {
@@ -157,7 +178,7 @@ sub input_converter {
 	for my $x (keys %$modifiers) {
 		$options->{$x} = $modifiers->{$x};
 	}
-	for my $x (qw(array_length string_length)) {
+	for my $x (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 		}
@@ -177,7 +198,8 @@ sub output_converter {
 	if ($modifiers->{suffix}) {
 		$options->{output_name} .= $modifiers->{suffix};
 	}
-	for my $x (qw(array_length string_length)) {
+	$options->{pass_as_pointer} = $self->pass_as_pointer;
+	for my $x (qw(array_length string_length max_array_length max_string_length)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 		}
@@ -189,6 +211,8 @@ sub output_converter {
 sub as_cpp_def {
 	my ($self) = @_;
 	my $type = $self->type->name;
+#	my $was_const;
+#	$type=~s/^const\s+// and $was_const = 1;
 	if ($self->has('array_length') and $self->pass_as_pointer) {
 		$type .= '*'
 	}
@@ -197,6 +221,9 @@ sub as_cpp_def {
 		$arg .= " = $self->{default}";
 	}
 	$arg .= ';';
+#	if ($was_const) {
+#		$arg .= "\t// should be const";
+#	}
 	return $arg;
 }
 
@@ -205,7 +232,7 @@ sub as_cpp_call {
 	my $arg = $self->name;
 	if (
 		$self->pass_as_pointer and
-		not ($self->has('array_length') or $self->has('string_length'))
+		not ($self->has('array_length')) #or $self->has('string_length'))
 		) {
 		$arg = "&$arg";
 	}

@@ -3,6 +3,11 @@
 	<binding source="BListItem" source-inherits="BArchivable" target="Haiku::ListItem" target-inherits="Haiku::Archivable">
 		<doc>Exposes the ListItem object</doc>
 		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
 			<constructor>
 				<doc>Creates a ListItem.</doc>
 				<param name="outlineLevel" type="uint32" default="0" action="input" />
@@ -12,6 +17,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+-->
 			<method name="Height">
 				<return type="float" action="output" />
 			</method>

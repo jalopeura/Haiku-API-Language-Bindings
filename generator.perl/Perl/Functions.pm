@@ -197,10 +197,11 @@ sub generate_xs {
 						map( {"\t$_" } @$code ),
 						qq(});
 				}
-				elsif ($param->has('array_length') or $param->has('string_length')) {
+				elsif ($param->is_array_or_string) {
 					push @input, "SV* $param->{name}_sv;";
 					push @xsargs, $param->name . '_sv';
 					my $options = {
+						pass_as_pointer => $param->pass_as_pointer,
 						suffix => '_sv'	# use a suffix on the variable name
 					};
 					if ($param->pass_as_pointer) {
@@ -231,7 +232,7 @@ sub generate_xs {
 				push @init, $param->as_cpp_def;
 				push @outputs, $param;
 			}
-			elsif ($action=~/length\[/) {
+			elsif ($action=~/(length|count)\[/) {
 				$i--;
 				push @precode, "// not an XS input: $param->{name}";
 				push @init, $param->as_cpp_def;
@@ -242,21 +243,22 @@ sub generate_xs {
 				push @postcode, $param->xs_error_code;
 			}
 			
-			if ($param->has('length')) {
+#			if ($param->has('length')) {
 #				my $name = $param->name;
 #				my $ltype = $param->length->type->name;
 #				my $lname = $param->length->name;
 #				push @preinit, "int length_$name;";
 #				push @init, "$ltype $lname = ($ltype)length_$name;";
 #				push @init, "$ltype $lname;";
-			}
-			elsif ($param->has('count')) {
-				my $name = $param->name;
-				my $ctype = $param->count->type->name;
-				my $cname = $param->count->name;
-				push @preinit, "int count_$name;";
-				push @init, "$ctype $cname = ($ctype)count_$name;";
-			}
+#
+#			}
+#			elsif ($param->has('count')) {
+#				my $name = $param->name;
+#				my $ctype = $param->count->type->name;
+#				my $cname = $param->count->name;
+#				push @preinit, "int count_$name;";
+#				push @init, "$ctype $cname = ($ctype)count_$name;";
+#			}
 		}
 	}
 	
@@ -280,9 +282,15 @@ sub generate_xs {
 	
 	# do the C++ call
 	my $call_args = join(', ', @{ $self->params->as_cpp_call });
+	
 	if ($self->params->has('cpp_output') and $self->params->cpp_output->type_name ne 'void') {
 		my $retname = $self->params->cpp_output->name;
-		push @code, qq($retname = $cpp_call($call_args););
+		my $type_name = $self->params->cpp_output->type_name;
+		my $cast;
+#		if ($type_name=~s/^const\s+//) {
+#			$cast = "($type_name)";	# cast to non-const
+#		}
+		push @code, qq($retname = $cast$cpp_call($call_args););
 	}
 	else {
 		push @code, qq($cpp_call($call_args););		
@@ -327,6 +335,18 @@ sub generate_xs {
 				}
 				
 			}
+			elsif ($output->is_array_or_string) {
+				my $options = {
+					pass_as_pointer => $output->pass_as_pointer,
+					suffix => '_sv'	# use a suffix on the variable name
+				};
+				
+				my ($defs, $code) = $output->output_converter($output->name, $options);
+				push @init,
+					@$defs;
+				push @postcode,
+					 @$code;
+			}	
 		}
 		
 		if ($retcount > 1) {
@@ -348,7 +368,8 @@ sub generate_xs {
 		else {
 			my $retname = $outputs[0]->name;
 			$rettype = $outputs[0]->type->name;
-			if ($outputs[0]->type->has('target')) {
+			if ($outputs[0]->type->has('target') or
+				$outputs[0]->is_array_or_string) {
 				# we already converted the object, so we change the rettype
 				$rettype = 'SV*';
 				$retname .= '_sv';
@@ -378,7 +399,7 @@ sub generate_xs {
 	elsif ($has_errors) {
 		$rettype = 'bool';
 		$retcount ||= 1;
-		push @postcode, 'RETVAL = true;';
+		push @code, 'RETVAL = true;';
 	}
 	
 	# now we can finally write the thing
@@ -395,6 +416,13 @@ sub generate_xs {
 $rettype
 $perl_name($input)
 DEF
+
+#print $fh <<DUMP;
+#PREINIT:
+#warn("Calling $rettype $perl_name($input)\\n");
+#Perl_sv_dump(ST(0));
+#warn("\\n");
+#DUMP
 	
 	if (@preinit) {
 		print $fh "\tPREINIT:\n";

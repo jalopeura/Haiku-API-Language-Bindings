@@ -8,6 +8,7 @@ BEGIN {
 	}
 }
 
+use Haiku::SupportKit;
 use Haiku::ApplicationKit;
 use Haiku::InterfaceKit;
 use strict;

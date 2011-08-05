@@ -12,26 +12,52 @@ use PodViewer::Application;
 #use Haiku::InterfaceKit;
 #use Haiku::SupportKit;
 
-$Haiku::ApplicationKit::DEBUG = 0;
-$Haiku::InterfaceKit::DEBUG = 0;
+$Haiku::ApplicationKit::DEBUG = 4;
+$Haiku::InterfaceKit::DEBUG = 4;
 
 my $podviewer = new PodViewer::Application;
 
-print "Getting initial POD\n";
-
 $podviewer->{window}->Lock;
 
-#$podviewer->{window}->{podview}->get_module('perltoc');
-$podviewer->{window}->get_perlfunc('pack');
-#$podviewer->{window}->{podview}->Display(<<TEXT);
-#Some test text goes here to see how things work.
-#
-#Hooray!
-#TEXT
+#$podviewer->{window}->get_module('perltoc');
+$podviewer->{window}->get_module('perlpod');
+#$podviewer->{window}->get_perlfunc('pack');
+#$podviewer->{window}->get_perlfunc('oct');
+#$podviewer->{window}->{parser}->parse_from_file($0);
+
+=pod
+
+S<Here's some non-wrapping stuff (theoretically)>
+
+Here's some stuff at the beginning
+
+Here's some escapes:
+via code: E<ecirc>
+via octal: E<0352>
+via decimal: E<234>
+via hexadecimal: E<0xea>
+
+B<Bold text>
+
+I<Italic text>
+
+B<Bold and I<Italic> text>
+
+L<link text|page/section>
+
+Here's some after stuff
+
+    Here's some verbatim stuff
+
+S<Here's some non-wrapping stuff (theoretically)>
+
+Here's a F<filename>
+
+Here's some Q<Unknown>
+
+=cut
 
 $podviewer->{window}->Unlock;
-
-print "Calling Run()\n";
 
 $podviewer->Run;
 

@@ -200,9 +200,9 @@
 			</method>
 			<method name="GetCurrentSpecifier">
 				<param name="index" type="int32" pass-as-pointer="true" action="output" />
-				<param name="specifier" type="BMessage*" default="NULL" action="output" />
+				<param name="specifier" type="BMessage*" action="output" />
 				<param name="what" type="int32" pass-as-pointer="true" action="output" />
-				<param name="property" type="const char*" pass-as-pointer="true" default="NULL" action="output" />
+				<param name="property" type="const char*" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="HasSpecifiers">
@@ -821,7 +821,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="pointer" type="const void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
+				<param name="pointer" type="void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -834,7 +834,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="pointer" type="const void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
+				<param name="pointer" type="void*" string-length="sizeof(void*)" pass-as-pointer="true" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -945,10 +945,10 @@
 				<param name="type" type="type_code" action="input">
 					<doc>Data type constant.</doc>
 				</param>
-				<param name="data" type="const void*" string-length="numBytes" action="output">
+				<param name="data" type="const void*" string-length="numBytes" pass-as-pointer="true" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="length[data]">
+				<param name="numBytes" type="ssize_t" action="length[data]" pass-as-pointer="true">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -964,10 +964,10 @@
 				<param name="index" type="int32" action="input">
 					<doc>Index.</doc>
 				</param>
-				<param name="data" type="const void*" string-length="numBytes" action="output">
+				<param name="data" type="const void*" string-length="numBytes" pass-as-pointer="true" action="output">
 					<doc>Raw data.</doc>
 				</param>
-				<param name="numBytes" type="ssize_t" action="length[data]">
+				<param name="numBytes" type="ssize_t" action="length[data]" pass-as-pointer="true">
 					<doc>Size of data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />

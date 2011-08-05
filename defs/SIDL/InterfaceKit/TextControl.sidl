@@ -81,7 +81,7 @@
 				<param name="forText" type="alignment" action="input" />
 			</method>
 			<method name="GetAlignment">
-				<doc>Returns the alignment for the StringView.</doc>
+				<doc>Returns the alignment for the TextControl.</doc>
 				<param name="forLabel" type="alignment" pass-as-pointer="true" action="output" />
 				<param name="forText" type="alignment" pass-as-pointer="true" action="output" />
 			</method>
