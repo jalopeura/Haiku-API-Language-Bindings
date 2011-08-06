@@ -84,17 +84,24 @@ WriteMakefile(
 	$makefile_params
 );
 MAKE
+
+=pod
+
 	
 	my $test_target_dir = File::Spec->catdir($target, 't');
 	my $test_source_dir = '../test/perl';
+	mkpath($test_target_dir);
 	opendir DIR, $test_source_dir or die $!;
 	while (my $e = readdir DIR) {
 		my $file = File::Spec->catfile($test_source_dir, $e);
 		next if -d $file;
-#		next unless $e=~/\.t$/;
+		next unless $e=~/\.t$/;
 		copy($file, File::Spec->catfile($test_target_dir, $e));
 	}
 	closedir DIR;
+
+=cut
+
 	
 	return $module;
 }

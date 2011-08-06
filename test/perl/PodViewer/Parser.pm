@@ -344,13 +344,13 @@ sub command {
 	my ($self, $cmd, $text, $line_num, $pod_para) = @_;
 	
 	$text=~s/\s+/ /g; $text=~s/^ //; $text=~s/ $//;
-	my $parse_tree = $self->parse_text($text, $line_num);
 	
 	if ($cmd eq 'head1') {
 		if ($text=~/\S/) {
 			$self->{viewer}->SetHead1Mode(1);
 			$self->{viewer}->StartParagraph;
 			$self->{viewer}->SetLinkAnchor($text);
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetHead1Mode(0);
@@ -362,6 +362,7 @@ sub command {
 			$self->{viewer}->SetHead2Mode(1);
 			$self->{viewer}->StartParagraph;
 			$self->{viewer}->SetLinkAnchor($text);
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetHead2Mode(0);
@@ -373,6 +374,7 @@ sub command {
 			$self->{viewer}->SetHead3Mode(1);
 			$self->{viewer}->StartParagraph;
 			$self->{viewer}->SetLinkAnchor($text);
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetHead3Mode(0);
@@ -384,6 +386,7 @@ sub command {
 			$self->{viewer}->SetHead4Mode(1);
 			$self->{viewer}->StartParagraph;
 			$self->{viewer}->SetLinkAnchor($text);
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetHead4Mode(0);
@@ -392,12 +395,7 @@ sub command {
 	}
 	
 	if ($cmd eq 'over') {
-		$self->{viewer}->SetIndent(1);
-		if ($text=~/\S/) {
-			$self->{viewer}->StartParagraph;
-			$self->display_tree($parse_tree);
-			$self->{viewer}->EndParagraph;
-		}
+		$self->{viewer}->SetIndent($text || 4);
 		return;
 	}
 	if ($cmd eq 'item') {
@@ -405,6 +403,7 @@ sub command {
 			$self->{viewer}->SetItemMode(1);
 			$self->{viewer}->StartParagraph;
 			$self->{viewer}->SetLinkAnchor($text);
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetItemMode(0);
@@ -413,35 +412,16 @@ sub command {
 	}
 	if ($cmd eq 'back') {
 		$self->{viewer}->SetIndent(0);
-		if ($text=~/\S/) {
-			$self->{viewer}->StartParagraph;
-			$self->display_tree($parse_tree);
-			$self->{viewer}->EndParagraph;
-		}
 		return;
 	}
 	
 	if ($cmd eq 'begin') {
-		$text=~s/(\S+)\s+//;
-		my $format = $1;
-		$self->{viewer}->SetFormatMode($format, 1);
-		if ($text=~/\S/) {
-			$self->{viewer}->StartParagraph;
-			$self->display_tree($parse_tree);
-			$self->{viewer}->EndParagraph;
-		}
+		$self->{viewer}->SetFormatMode($text, 1);
 		return;
 	}
 	
 	if ($cmd eq 'end') {
-		$text=~s/(\S+)\s+//;
-		my $format = $1;
-		$self->{viewer}->SetFormatMode($format, 0);
-		if ($text=~/\S/) {
-			$self->{viewer}->StartParagraph;
-			$self->display_tree($parse_tree);
-			$self->{viewer}->EndParagraph;
-		}
+		$self->{viewer}->SetFormatMode($text, 0);
 		return;
 	}
 	
@@ -451,9 +431,20 @@ sub command {
 		if ($text=~/\S/) {
 			$self->{viewer}->SetFormatMode($format, 1);
 			$self->{viewer}->StartParagraph;
+			my $parse_tree = $self->parse_text($text, $line_num);
 			$self->display_tree($parse_tree);
 			$self->{viewer}->EndParagraph;
 			$self->{viewer}->SetFormatMode($format, 0);
+		}
+		return;
+	}
+	
+	if ($cmd eq 'pod') {
+		if ($text=~/\S/) {
+			$self->{viewer}->StartParagraph;
+			my $parse_tree = $self->parse_text($text, $line_num);
+			$self->display_tree($parse_tree);
+			$self->{viewer}->EndParagraph;
 		}
 		return;
 	}
@@ -655,9 +646,9 @@ sub Xinitialize {
 	$self->SUPER::initialize(@_);
 }
 
-sub Xbegin_pod {
-	print join("\n", 'begin_pod', @_),"\n\n";
+sub begin_pod {
 	my ($self) = @_;
+	$self->{viewer}->Reset;
 }
 
 sub Xend_pod {

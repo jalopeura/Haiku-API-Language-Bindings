@@ -4,15 +4,17 @@ use Haiku::InterfaceKit;
 use PodViewer::PodView;
 use PodViewer::Parser;
 use PodViewer::ArrayAsFile;
-use Haiku::View qw(B_FOLLOW_ALL B_WILL_DRAW B_NAVIGABLE);
+use Haiku::View qw(B_FOLLOW_ALL B_FOLLOW_TOP B_FOLLOW_LEFT_RIGHT B_WILL_DRAW B_NAVIGABLE);
 use Haiku::ScrollBar qw(B_V_SCROLL_BAR_WIDTH B_H_SCROLL_BAR_HEIGHT);
 use strict;
 our @ISA = qw(Haiku::CustomWindow);
 
 use constant SEARCH_ORDINARY => 0xffff0001;
 use constant SEARCH_FUNC     => 0xffff0002;
-use constant SEARCH_FAQ      => 0xffff0003;
-use constant SEARCH_VAR      => 0xffff0004;
+use constant SEARCH_VAR      => 0xffff0003;
+use constant SEARCH_FAQ      => 0xffff0004;
+
+use constant DO_SEARCH       => 0xffff0104;
 
 my $buffer_size = 5;
 my $horizontal_scroll = 0;
@@ -29,10 +31,14 @@ sub new {
 	my $w = $f->right - $f->left;
 	my $h = $f->bottom - $f->top;
 	
-	my $ch = 20;	# control height
-	my $mw = 105;	# menu width
+	#
+	# search menu
+	#
 	
-	$self->{searchmenu} = new Haiku::Menu("");
+	my $ch = 20;	# control height
+	my $mw = 125;	# menu width
+	
+	$self->{searchmenu} = new Haiku::PopUpMenu("search");
 	$self->{searchmenu}->SetRadioMode(1);
 	
 	my @items;
@@ -45,12 +51,12 @@ sub new {
 		new Haiku::Message(SEARCH_FUNC),
 	);
 	push @items, new Haiku::MenuItem(
-		"FAQ Search",
-		new Haiku::Message(SEARCH_FAQ),
-	);
-	push @items, new Haiku::MenuItem(
 		"Variable Search",
 		new Haiku::Message(SEARCH_VAR),
+	);
+	push @items, new Haiku::MenuItem(
+		"FAQ Search",
+		new Haiku::Message(SEARCH_FAQ),
 	);
 	for my $item (@items) {
 		$self->{searchmenu}->AddItem($item);
@@ -58,22 +64,40 @@ sub new {
 	$self->{searchmenu}->SetTargetForItems($self);
 	$items[0]->SetMarked(1);
 	
-	$self->{searchmenufield} = new Haiku::MenuField(
-		new Haiku::Rect($buffer_size,0,$mw,$ch),
+	$self->{searchmenufield} = Haiku::MenuField->newFixedSize(
+		new Haiku::Rect($l,$t,$l+$mw,$t+$ch),
 		"SearchType",
 		"Ordinary Search",
 		$self->{searchmenu},
 		1,	# fixed size
 	);
 	
-	$self->{searchmenufield}->SetDivider($mw);
+	$self->{searchmenufield}->SetDivider(0);
 	
 	$self->AddChild($self->{searchmenufield}, 0);
 	
-	$l += $mw + 2*$buffer_size;
+	#
+	# search field
+	#
+	
+	$l += $mw + $buffer_size;
+	
+	my $tw = $w - $l;
+	
+	$self->{searchfield} = new Haiku::TextControl(
+		new Haiku::Rect($l,0,$l+$tw,$t+$ch),
+		"SearchField",	# name
+		"",	# label
+		"",	# text
+		new Haiku::Message(DO_SEARCH),
+		B_FOLLOW_LEFT_RIGHT | B_FOLLOW_TOP,	# resizing
+	);
+	$self->{searchfield}->SetDivider(0);
+	
+	$self->AddChild($self->{searchfield}, 0);
 	
 	#
-	# a text control with no label goes here
+	# pod viewer
 	#
 	
 	$t += $ch + $buffer_size;
@@ -84,13 +108,12 @@ sub new {
 	if ($vertical_scroll) {
 		$w -= B_V_SCROLL_BAR_WIDTH;
 	}
-	my $h = $f->bottom - $f->top;
 	if ($horizontal_scroll) {
 		$h -= B_H_SCROLL_BAR_HEIGHT;
 	}
 	
 	$self->{podview} = new PodViewer::PodView(
-		new Haiku::Rect($l,$t,$w,$h),	# frame
+		new Haiku::Rect($l,$t,$l+$w,$t+$h),	# frame
 		"PodView",	# name
 		new Haiku::Rect(
 			$buffer_size,$buffer_size,
@@ -115,6 +138,8 @@ sub new {
 	
 	$self->{parser}->errorsub(sub { $self->pod_error });
 	
+	$self->{searchtype} = SEARCH_ORDINARY;
+	
 	return $self;
 }
 
@@ -125,30 +150,23 @@ sub MessageReceived {
 	
 	if ($what == SEARCH_ORDINARY) {
 		$self->{searchtype} = SEARCH_ORDINARY;
-		$self->Lock;
-		$self->{searchmenufield}->SetLabel('Ordinary Search');
-		$self->Unlock;
 		return;
 	}
 	if ($what == SEARCH_FUNC) {
 		$self->{searchtype} = SEARCH_FUNC;
-		$self->Lock;
-		$self->{searchmenufield}->SetLabel('Function Search');
-		$self->Unlock;
-		return;
-	}
-	if ($what == SEARCH_FAQ) {
-		$self->{searchtype} = SEARCH_FAQ;
-		$self->Lock;
-		$self->{searchmenufield}->SetLabel('FAQ Search');
-		$self->Unlock;
 		return;
 	}
 	if ($what == SEARCH_VAR) {
 		$self->{searchtype} = SEARCH_VAR;
-		$self->Lock;
-		$self->{searchmenufield}->SetLabel('Variable Search');
-		$self->Unlock;
+		return;
+	}
+	if ($what == SEARCH_FAQ) {
+		$self->{searchtype} = SEARCH_FAQ;
+		return;
+	}
+	
+	if ($what == DO_SEARCH) {
+		$self->search_for_pod($self->{searchfield}->Text);
 		return;
 	}
 	
@@ -164,6 +182,29 @@ sub FrameResized {
 			$w-$buffer_size,$h-$buffer_size
 		)
 	);
+}
+
+sub search_for_pod {
+	my ($self, $term) = @_;
+	
+	my $type = $self->{searchtype};
+	
+	if ($type == SEARCH_ORDINARY) {
+		$self->get_module($term);
+		return;
+	}
+	if ($type == SEARCH_FUNC) {
+		$self->get_perlfunc($term);
+		return;
+	}
+	if ($type == SEARCH_VAR) {
+		$self->get_perlvar($term);
+		return;
+	}
+	if ($type == SEARCH_FAQ) {
+		$self->get_perlfaq($term);
+		return;
+	}
 }
 
 #
@@ -182,6 +223,7 @@ sub get_module {
 #	open my $fh, $file or die "Unable to read file '$file': $!";
 	
 	$self->{parser}->parse_from_file($file);
+	$self->SetTitle($module);
 	
 #	close $fh;
 }
@@ -236,6 +278,7 @@ sub get_perlfunc {
 	tie *FH, 'ArrayAsFile', \@lines;
 	
 	$self->{parser}->parse_from_filehandle(*FH);
+	$self->SetTitle("Function: $func");
 	
 	close FH;
 }
@@ -305,6 +348,7 @@ sub get_perlvar {
 	tie *FH, 'ArrayAsFile', \@lines;
 	
 	$self->{parser}->parse_from_filehandle(*FH);
+	$self->SetTitle("Variable: $var");
 	
 	close FH;
 }
@@ -312,7 +356,7 @@ sub get_perlvar {
 sub get_perlfaq {
 	my ($self, $faq_rx) = @_;
 	
-	my $search_faq = eval { qr/$faq_rx/ } or
+	my $search_faq = eval { qr/$faq_rx/i } or
 		warn "Invalid regular expression '$faq_rx'";
 	
 	my (@lines, $found, %found_in);
@@ -323,7 +367,7 @@ sub get_perlfaq {
 		while (<FILE>) {
 			if ( m/^=head2\s+.*(?:$search_faq)/i ) {
 				$found = 1;
-				push @lines, "=head1 Found in $file\n\n" unless $found_in{$file}++;
+				push @lines, "=head1 Found in $file\n", "\n" unless $found_in{$file}++;
 			}
 			elsif (/^=head[12]/) {
 				$found = 0;
@@ -345,6 +389,7 @@ sub get_perlfaq {
 	tie *FH, 'ArrayAsFile', \@lines;
 	
 	$self->{parser}->parse_from_filehandle(*FH);
+	$self->SetTitle("FAQ Search: $faq_rx");
 	
 	close FH;
 }

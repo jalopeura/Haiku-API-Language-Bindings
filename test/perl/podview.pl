@@ -8,9 +8,17 @@ BEGIN {
 }
 
 use PodViewer::Application;
-#use Haiku::ApplicationKit;
-#use Haiku::InterfaceKit;
-#use Haiku::SupportKit;
+use Haiku::SupportKit;
+use Haiku::ApplicationKit;
+use Haiku::InterfaceKit;
+
+$SIG{__WARN__} = sub {
+	new Haiku::Alert(
+		"Warning",	# title
+		$_[0],	# text
+		'Ok',	# button 1 label
+	)->Go;
+};
 
 $Haiku::ApplicationKit::DEBUG = 4;
 $Haiku::InterfaceKit::DEBUG = 4;
@@ -19,47 +27,62 @@ my $podviewer = new PodViewer::Application;
 
 $podviewer->{window}->Lock;
 
-#$podviewer->{window}->get_module('perltoc');
-$podviewer->{window}->get_module('perlpod');
-#$podviewer->{window}->get_perlfunc('pack');
-#$podviewer->{window}->get_perlfunc('oct');
-#$podviewer->{window}->{parser}->parse_from_file($0);
-
-=pod
-
-S<Here's some non-wrapping stuff (theoretically)>
-
-Here's some stuff at the beginning
-
-Here's some escapes:
-via code: E<ecirc>
-via octal: E<0352>
-via decimal: E<234>
-via hexadecimal: E<0xea>
-
-B<Bold text>
-
-I<Italic text>
-
-B<Bold and I<Italic> text>
-
-L<link text|page/section>
-
-Here's some after stuff
-
-    Here's some verbatim stuff
-
-S<Here's some non-wrapping stuff (theoretically)>
-
-Here's a F<filename>
-
-Here's some Q<Unknown>
-
-=cut
+$podviewer->{window}->{parser}->parse_from_file($0);
 
 $podviewer->{window}->Unlock;
 
 $podviewer->Run;
+
+=pod
+
+=head1 Graphical POD Viewer
+
+This program works similarly to perl's builtin C<perldoc> utility.
+There are four search modes.
+
+=over 4
+
+=item *
+
+Ordinary Search
+
+Allows you to find documentation for Perl itself or for a module. The
+search parameter should be the name of the documentation file (for
+example, C<perlhaiku> or C<perlpod>) or the name of the module (for
+example, C<File::Copy> or C<Tie::Hash>).
+
+=item *
+
+Function Search
+
+Allows you to search for documentation on a builtin function, instead
+of loading C<perlfunc> and scanning through it. The parameter should
+be the name of the function (for example, C<pack> or C<open>).
+
+=item *
+
+Variable Search
+
+Allows you to search for one of Perl's special variables, instead of
+loading C<perlvar> and scanning through it. The parameter should be
+the variable name (for example, C<$_> or C<$0>).
+
+=item *
+
+FAQ Search
+
+Allows you to search the FAQ files instead of loading each one
+individually and scanning through it. The parameter should be a
+regular expression (for example, C<haiku> or C<edit.*>). (Search is
+not case-sensitive.)
+
+Be aware that only the questions themselves are searched, not the
+answers, although both the question and the answer are displayed when
+a match is found.
+
+=back
+
+=cut
 
 __END__
 

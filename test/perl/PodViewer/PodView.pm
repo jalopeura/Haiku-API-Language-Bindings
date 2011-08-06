@@ -96,6 +96,33 @@ sub build_font {
 	return $font;
 }
 
+sub Reset {
+	my ($self) = @_;
+	
+	$self->{_bold} = 0;
+	$self->{_italic} = 0;
+	$self->{_monospace} = 0;
+	
+	$self->{_color} = DEFAULT_COLOR;
+	$self->{_color_stack} = [ $self->{_color} ];
+	
+	$self->{_size} = DEFAULT_SIZE;
+	$self->{_size_stack} = [ $self->{_size} ];
+	
+	$self->{_format} = DEFAULT_FORMAT;
+	$self->{_format_stack} = [ $self->{_format} ];
+	
+	$self->SetTextWithLength('', 0);
+	
+	$self->build_font;
+	
+	$self->SetFontAndColor(
+		$self->{_font},
+		Haiku::View::B_FONT_ALL,
+		$self->{_color},
+	);
+}
+
 sub StartParagraph {
 	my ($self) = @_;
 	
@@ -164,7 +191,9 @@ sub Display {
 			($self->{_bold_on} and not $self->{_bold}) or
 			($self->{_bold} and not $self->{_bold_on}) or
 			($self->{_italic_on} and not $self->{_italic}) or
-			($self->{_italic} and not $self->{_italic_on})
+			($self->{_italic} and not $self->{_italic_on}) or
+			($self->{_italic} and not $self->{_italic_on}) or
+			($self->{_size} != $self->{_size_stack}[-1])
 			) {
 			$self->build_font;
 			$really_changed = 1;
