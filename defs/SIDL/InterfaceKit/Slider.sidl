@@ -1,0 +1,314 @@
+<bindings name="Haiku::Slider">
+	<doc>Exposes the Slider object</doc>
+	<binding source="BSlider" source-inherits="BControl" target="Haiku::Slider" target-inherits="Haiku::Control">
+		<doc>Exposes the Slider object</doc>
+		<functions>
+			<constructor>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="minValue" type="int32" action="input" />
+				<param name="maxValue" type="int32" action="input" />
+				<param name="thumbType" type="thumb_style" action="input" default="B_BLOCK_THUMB" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS" />
+			</constructor>
+			<constructor overload-name="WithOrientation">
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="minValue" type="int32" action="input" />
+				<param name="maxValue" type="int32" action="input" />
+				<param name="posture" type="orientation" action="input" />
+				<param name="thumbType" type="thumb_style" action="input" default="B_BLOCK_THUMB" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="minValue" type="int32" action="input" />
+				<param name="maxValue" type="int32" action="input" />
+				<param name="posture" type="orientation" action="input" />
+				<param name="thumbType" type="thumb_style" action="input" default="B_BLOCK_THUMB" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="AttachedToWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="DetachedFromWindow" />
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="KeyUp">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Pulse" />
+-->
+			<method name="SetLabel">
+				<param name="label" type="const char*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetLimitLabels">
+				<param name="minLabel" type="const char*" action="input" />
+				<param name="maxLabel" type="const char*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="MinLimitLabel">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="MaxLimitLabel">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="SetValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ValueForPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="int32" action="input" />
+			</method>
+			<method name="SetPosition">
+				<param name="position" type="float" action="input" />
+			</method>
+			<method name="Position">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<param name="on" type="bool" action="input" />
+			</method>
+			<method name="GetLimits">
+				<param name="minLabel" type="int32" pass-as-pointer="true" action="output" />
+				<param name="maxLabel" type="int32" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Draw">
+				<doc>Draws the Slider label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DrawSlider" />
+			<event name="DrawBar" />
+			<event name="DrawHashMarks" />
+			<event name="DrawThumb" />
+			<event name="DrawFocusMark" />
+			<event name="DrawText" />
+			<event name="DrawSlider" />
+			<event name="DrawSlider" />
+			<event name="UpdateText">
+				<return type="const char*" action="output" />
+			</event>
+-->
+			<method name="UpdateTextChanged" />
+			<method name="BarFrame">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="HashMarksFrame">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="ThumbFrame">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="SetFlags">
+				<param name="flags" type="uint32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetResizingMode">
+				<param name="mode" type="uint32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetModificationMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ModificationMessage">
+				<return type="BMessage*" action="input" />
+			</method>
+			<method name="SetSnoozeAmount">
+				<param name="amount" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SnoozeAmount">
+				<return type="int32" action="input" />
+			</method>
+			<method name="SetIncrementValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="IncrementValue">
+				<return type="int32" action="input" />
+			</method>
+			<method name="SetHashMarkCount">
+				<param name="count" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="HashMarkCount">
+				<return type="int32" action="input" />
+			</method>
+			<method name="SetHashMarks">
+				<param name="where" type="hash_mark_location" action="input" />
+				<return type="void" />
+			</method>
+			<method name="HashMarks">
+				<return type="hash_mark_location" action="input" />
+			</method>
+			<method name="SetStyle">
+				<param name="style" type="thumb_style" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Style">
+				<return type="thumb_style" action="input" />
+			</method>
+			<method name="SetBarColor">
+				<param name="color" type="rgb_color" action="input" />
+				<return type="void" />
+			</method>
+			<method name="BarColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="UseFillColor">
+				<param name="useFill" type="bool" action="input" />
+				<param name="color" type="const rgb_color*" action="input" default="NULL" />
+				<return type="void" />
+			</method>
+			<method name="FillColor">
+				<param name="color" type="rgb_color*" action="input" default="NULL" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="OffscreenView">
+				<return type="BView*" action="output" />
+			</method>
+			<method name="SetOrientation">
+				<param name="posture" type="orientation" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Orientation">
+				<return type="orientation" action="input" />
+			</method>
+			<method name="BarThickness">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetBarThickness">
+				<param name="thickness" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetFont">
+				<param name="font" type="const BFont*" action="input" />
+				<param name="properties" type="uint32" action="input" default="B_FONT_ALL" />
+				<return type="void" />
+			</method>
+			<method name="SetLimits">
+				<param name="minLabel" type="int32" action="input" />
+				<param name="maxLabel" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="MaxUpdateTextWidth">
+				<return type="float" action="output" />
+			</method>
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+		</functions>
+		<constants>
+<!-- hash_mark_location -->
+			<constant name="B_HASH_MARKS_NONE" type="int" group="hash_mark_location" />
+			<constant name="B_HASH_MARKS_TOP" type="int" group="hash_mark_location" />
+			<constant name="B_HASH_MARKS_LEFT" type="int" group="hash_mark_location" />
+			<constant name="B_HASH_MARKS_BOTTOM" type="int" group="hash_mark_location" />
+			<constant name="B_HASH_MARKS_RIGHT" type="int" group="hash_mark_location" />
+			<constant name="B_HASH_MARKS_BOTH" type="int" group="hash_mark_location" />
+<!-- thumb_style -->
+			<constant name="B_BLOCK_THUMB" type="int" group="thumb_style" />
+			<constant name="B_TRIANGLE_THUMB" type="int" group="thumb_style" />
+		</constants>
+	</binding>
+</bindings>

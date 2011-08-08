@@ -1,0 +1,162 @@
+<bindings name="Haiku::StatusBar">
+	<doc>Exposes the StatusBar object</doc>
+	<binding source="BStatusBar" source-inherits="BView" target="Haiku::StatusBar" target-inherits="Haiku::View">
+		<doc>Exposes the StatusBar object</doc>
+		<functions>
+			<constructor>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" default="NULL" />
+				<param name="trailingLabel" type="const char*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" default="NULL" />
+				<param name="trailingLabel" type="const char*" action="input" default="NULL" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+<!-- Archiving -->
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="ResizeToPreferred" />
+<!-- Events not yet implemented for this object
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Draw">
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetBarColor">
+				<param name="color" type="rgb_color" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetBarHeight">
+				<param name="height" type="float" action="input" />
+			</method>
+			<method name="SetText">
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="SetTrailingText">
+				<param name="string" type="const char*" action="input" />
+			</method>
+			<method name="SetMaxValue">
+				<param name="max" type="float" action="input" />
+			</method>
+			<method name="Update">
+				<param name="delta" type="float" action="input" />
+				<param name="text" type="const char*" action="input" default="NULL" />
+				<param name="trailingText" type="const char*" action="input" default="NULL" />
+			</method>
+			<method name="Reset">
+				<param name="text" type="const char*" action="input" default="NULL" />
+				<param name="trailingText" type="const char*" action="input" default="NULL" />
+			</method>
+			<method name="SetTo">
+				<param name="text" type="const char*" action="input" default="NULL" />
+				<param name="trailingText" type="const char*" action="input" default="NULL" />
+			</method>
+			<method name="CurrentValue">
+				<return type="float" action="output" />
+			</method>
+			<method name="MaxValue">
+				<return type="float" action="output" />
+			</method>
+			<method name="BarColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="BarHeight">
+				<return type="float" action="output" />
+			</method>
+			<method name="Text">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="TrailingText">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="Label">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="TrailingLabel">
+				<return type="const char*" action="input" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

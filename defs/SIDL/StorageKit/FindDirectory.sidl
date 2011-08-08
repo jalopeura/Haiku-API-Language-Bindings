@@ -1,0 +1,81 @@
+<bindings name="Haiku::Mime">
+	<doc>Exposes the Mime object</doc>
+	<binding source="BMime" target="Haiku::Mime">
+		<doc>Exposes the Mime object</doc>
+		<functions>
+			<plain name="find_directory">
+				<param name="which" type="directory_which" action="input" />
+				<param name="volume" type="dev_t" action="input" />
+				<param name="createIt" type="bool" action="input" />
+				<param name="pathString" type="char*" action="output" string-length="length" />
+				<param name="length" type="int32" action="length[pathString]" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+<!-- TODO: BPath object not yet implemented
+			<plain name="find_directory" overload-name="find_directory_into_path">
+				<param name="which" type="directory_which" action="input" />
+				<param name="path" type="BPath*" action="output" />
+				<param name="volume" type="BVolume*" action="input" default="NULL" />
+				<param name="createIt" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+-->
+		</functions>
+		<constants>
+			<constant name="B_DESKTOP_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_TRASH_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_ADDONS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_BOOT_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_FONTS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_LIB_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_SERVERS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_APPS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_BIN_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_DOCUMENTATION_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_PREFERENCES_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_TRANSLATORS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_MEDIA_NODES_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_SOUNDS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_SYSTEM_DATA_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_SYSTEM_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_ADDONS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_BOOT_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_FONTS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_LIB_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_SERVERS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_BIN_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_ETC_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_DOCUMENTATION_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_SETTINGS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_DEVELOP_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_LOG_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_SPOOL_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_TEMP_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_VAR_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_TRANSLATORS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_MEDIA_NODES_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_SOUNDS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_DATA_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_COMMON_CACHE_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_CONFIG_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_ADDONS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_BOOT_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_FONTS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_LIB_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_SETTINGS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_DESKBAR_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_PRINTERS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_TRANSLATORS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_MEDIA_NODES_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_SOUNDS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_DATA_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_USER_CACHE_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_APPS_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_PREFERENCES_DIRECTORY" type="int" group="directory_which" />
+			<constant name="B_UTILITIES_DIRECTORY" type="int" group="directory_which" />
+		</constants>
+	</binding>
+</bindings>

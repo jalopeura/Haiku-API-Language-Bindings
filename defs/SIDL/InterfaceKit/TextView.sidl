@@ -45,7 +45,7 @@
 				<param name="deep" type="bool" default="true" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- Events not yet implemented for this object
+<!-- Events not yet implemented for this object -->
 			<event name="AttachedToWindow" />
 			<event name="DetachedFromWindow" />
 			<event name="Draw">
@@ -61,14 +61,14 @@
 				<param name="point" type="BPoint" action="input" />
 				<return type="void" />
 			</event>
--->
+<!-- -->
 			<event name="MouseMoved">
 				<param name="point" type="BPoint" action="input" />
 				<param name="transit" type="uint32" action="input" />
 				<param name="message" type="BMessage*" action="input" />
 				<return type="void" />
 			</event>
-<!-- Events not yet implemented for this object
+<!-- Events not yet implemented for this object -->
 			<event name="WindowActivated">
 				<param name="state" type="bool" action="input" />
 				<return type="void" />
@@ -84,16 +84,16 @@
 				<param name="newHeight" type="float" action="input" />
 				<return type="void" />
 			</event>
--->
+<!-- -->
 			<method name="MakeFocus">
 				<param name="focused" type="bool" default="true" action="input" />
 			</method>
-<!-- Events not yet implemented for this object
+<!-- Events not yet implemented for this object -->
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
 				<return type="void" />
 			</event>
--->
+<!-- -->
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />
 				<param name="index" type="int32" action="input" />
@@ -422,10 +422,10 @@
 			<method name="InvalidateLayout">
 				<param name="descendants" type="bool" default="false" action="input" />
 			</method>
-<!-- Events not yet implemented for this object
+<!-- Events not yet implemented for this object -->
 			<event name="AllAttached" />
 			<event name="AllDetached" />
--->
+<!-- -->
 			<method name="AllocRunArray">
 				<param name="entryCount" type="int32" action="input" />
 				<param name="outSize" type="int32" pass-as-pointer="true" action="output" />

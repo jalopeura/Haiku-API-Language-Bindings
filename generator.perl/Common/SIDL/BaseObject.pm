@@ -130,6 +130,9 @@ sub _tree {
 	if ($self->{name}) {
 		$branch .= " ($self->{name})";
 	}
+	elsif ($self->{source}) {
+		$branch .= " ($self->{source})";
+	}
 	if ($self->{_parent}) {
 		$branch = $self->{_parent}->_tree . ':' . $branch;
 	}

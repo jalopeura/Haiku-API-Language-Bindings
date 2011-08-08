@@ -178,7 +178,11 @@ sub input_converter {
 	for my $x (keys %$modifiers) {
 		$options->{$x} = $modifiers->{$x};
 	}
-	for my $x (qw(array_length string_length max_array_length max_string_length)) {
+	$options->{pass_as_pointer} = $self->pass_as_pointer;
+	for my $x (qw(
+		array_length string_length
+		max_array_length max_string_length
+		)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 		}
@@ -198,8 +202,14 @@ sub output_converter {
 	if ($modifiers->{suffix}) {
 		$options->{output_name} .= $modifiers->{suffix};
 	}
+	for my $x (keys %$modifiers) {
+		$options->{$x} = $modifiers->{$x};
+	}
 	$options->{pass_as_pointer} = $self->pass_as_pointer;
-	for my $x (qw(array_length string_length max_array_length max_string_length)) {
+	for my $x (qw(
+		array_length string_length
+		max_array_length max_string_length
+		)) {
 		if ($self->has($x)) {
 			$options->{$x} = $self->{$x};
 		}

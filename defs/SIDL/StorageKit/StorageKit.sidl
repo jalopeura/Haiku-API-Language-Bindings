@@ -1,0 +1,170 @@
+<bindings name="Haiku::StorageKit">
+	<doc>Exposes the Haiku Storage Kit</doc>
+	<include>
+		<file name="Entry.h" />
+		<file name="EntryList.h" />
+		<file name="FilePanel.h" />
+		<file name="FindDirectory.h" />
+		<file name="Mime.h" />
+		<file name="MimeType.h" />
+		<file name="Node.h" />
+		<file name="NodeInfo.h" />
+		<file name="NodeMonitor.h" />
+		<file name="MimeType.h" />
+		<file name="Statable.h" />
+		<file name="StorageDefs.h" />
+		<file name="Volume.h" />
+		<file name="VolumeRoster.h" />
+	</include>
+	<link>
+		<lib name="libbe" />
+	</link>
+	<types>
+		<type name="uint8"            builtin="unsigned char" /><!-- __haiku_uint8 -->
+		<type name="uint32"           builtin="unsigned long" /><!-- __haiku_uint32 -->
+		<type name="int32"            builtin="long" /><!-- __haiku_int32 -->
+		<type name="uint64"           builtin="unsigned long" /><!-- __haiku_uint64 -->
+		<type name="int64"            builtin="long" /><!-- __haiku_int64 -->
+		<type name="blkcnt_t"         builtin="long" /><!-- __haiku_int64 -->
+		<type name="blksize_t"        builtin="long" /><!-- __haiku_int32 -->
+		<type name="app_verb"         builtin="enum" />
+		<type name="dev_t"            builtin="long" /><!-- __haiku_int64 -->
+		<type name="directory_which"  builtin="enum" />
+		<type name="file_panel_mode"  builtin="enum" />
+		<type name="file_panel_button" builtin="enum" />
+		<type name="gid_t"            builtin="long" /><!-- __haiku_uint32 -->
+		<type name="icon_size"        builtin="enum" />
+		<type name="ino_t"            builtin="long" /><!-- __haiku_int64 -->
+		<type name="mode_t"           builtin="long" /><!-- __haiku_uint32 -->
+		<type name="nlink_t"          builtin="long" /><!-- __haiku_int64 -->
+		<type name="off_t"            builtin="long" /><!-- __haiku_int64 -->
+		<type name="query_op"         builtin="enum" />
+		<type name="size_t"           builtin="long" /><!-- __SIZE_TYPE__ -->
+		<type name="ssize_t"          builtin="long" />
+		<type name="status_t"         builtin="long" /><!-- int32 -->
+		<type name="time_t"           builtin="long" /><!-- __haiku_int32 -->
+		<type name="type_code"        builtin="unsigned long" /><!-- uint32 -->
+		<type name="uid_t"            builtin="long" /><!-- __haiku_uint32 -->
+<!--
+Objects defined by this interface automatically have data types (plain and
+pointer) created for them. If you need objects not defined in this interface,
+you need to define those types in this section.
+-->
+		<type name="BBitmap*"     builtin="object_ptr" target="Haiku::Bitmap" />
+		<type name="BHandler*"    builtin="object_ptr" target="Haiku::Handler" />
+		<type name="BLooper*"     builtin="object_ptr" target="Haiku::Looper" />
+		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
+		<type name="BMessenger"   builtin="object"     target="Haiku::Messenger" />
+		<type name="BMessenger*"  builtin="object_ptr" target="Haiku::Messenger" />
+		<type name="BWindow*"     builtin="object_ptr" target="Haiku::Window" />
+	</types>
+	<import>
+		<!-- ancestor classes must be defined before the descendant classes -->
+		<file name="EntryList.sidl" />
+			<file name="Query.sidl" />
+		<file name="Mime.sidl" />
+		<file name="FilePanel.sidl" />
+		<file name="FindDirectory.sidl" />
+		<file name="MimeType.sidl" />
+		<file name="NodeInfo.sidl" />
+		<file name="NodeMonitor.sidl" />
+		<file name="Statable.sidl" />
+			<file name="Entry.sidl" />
+			<file name="Node.sidl" />
+		<file name="Volume.sidl" />
+		<file name="VolumeRoster.sidl" />
+	</import>
+	<binding source="StorageKit" target="Haiku::StorageKit">
+		<doc>Exposes the Haiku Storage Kit</doc>
+		<constants>
+<!-- limits -->
+			<constant name="B_DEV_NAME_LENGTH" type="int" group="limits" />
+			<constant name="B_FILE_NAME_LENGTH" type="int" group="limits" />
+			<constant name="B_PATH_NAME_LENGTH" type="int" group="limits" />
+			<constant name="B_ATTR_NAME_LENGTH" type="int" group="limits" />
+			<constant name="B_MIME_TYPE_LENGTH" type="int" group="limits" />
+			<constant name="B_MAX_SYMLINKS" type="int" group="limits" />
+<!-- open modes -->
+			<constant name="B_READ_ONLY" type="int" group="open_modes" />
+			<constant name="B_WRITE_ONLY" type="int" group="open_modes" />
+			<constant name="B_READ_WRITE" type="int" group="open_modes" />
+			<constant name="B_FAIL_IF_EXISTS" type="int" group="open_modes" />
+			<constant name="B_CREATE_FILE" type="int" group="open_modes" />
+			<constant name="B_ERASE_FILE" type="int" group="open_modes" />
+			<constant name="B_OPEN_AT_END" type="int" group="open_modes" />
+<!-- node_flavor -->
+			<constant name="B_FILE_NODE" type="int" group="node_flavor" />
+			<constant name="B_SYMLINK_NODE" type="int" group="node_flavor" />
+			<constant name="B_DIRECTORY_NODE" type="int" group="node_flavor" />
+			<constant name="B_ANY_NODE" type="int" group="node_flavor" />
+		</constants>
+	</binding>
+<!-- defined in posix/dirent.h -->
+	<binding source="dirent" target="Haiku::dirent">
+		<properties>
+			<property name="d_dev" type="dev_t" />
+			<property name="d_pdev" type="dev_t" />
+			<property name="d_ino" type="ino_t" />
+			<property name="d_pino" type="ino_t" />
+			<property name="d_reclen" type="unsigned short" />
+			<property name="d_name" type="char*" />
+		</properties>
+	</binding>
+<!-- defined in posix/compat/sys/stat.h -->
+	<binding source="stat_beos" target="Haiku::stat_beos">
+		<properties>
+			<property name="st_dev" type="dev_t" />
+			<property name="st_ino" type="ino_t" />
+			<property name="st_mode" type="mode_t" />
+			<property name="st_nlink" type="nlink_t" />
+			<property name="st_uid" type="uid_t" />
+			<property name="st_gid" type="gid_t" />
+			<property name="st_size" type="off_t" />
+			<property name="st_rdev" type="dev_t" />
+			<property name="st_blksize" type="blksize_t" />
+			<property name="st_atim" type="stat_beos_time" />
+			<property name="st_mtim" type="stat_beos_time" />
+			<property name="st_ctim" type="stat_beos_time" />
+			<property name="st_crtim" type="stat_beos_time" />
+		</properties>
+	</binding>
+	<binding source="stat_beos_time" target="Haiku::stat_beos_time">
+		<properties>
+			<property name="tv_sec" type="time_t" />
+		</properties>
+	</binding>
+<!-- defined in posix/sys/stat.h -->
+	<binding source="stat" target="Haiku::stat">
+		<properties>
+			<property name="st_dev" type="dev_t" />
+			<property name="st_ino" type="ino_t" />
+			<property name="st_mode" type="mode_t" />
+			<property name="st_nlink" type="nlink_t" />
+			<property name="st_uid" type="uid_t" />
+			<property name="st_gid" type="gid_t" />
+			<property name="st_size" type="off_t" />
+			<property name="st_rdev" type="dev_t" />
+			<property name="st_blksize" type="blksize_t" />
+			<property name="st_atim" type="timespec" />
+			<property name="st_mtim" type="timespec" />
+			<property name="st_ctim" type="timespec" />
+			<property name="st_crtim" type="timespec" />
+			<property name="st_type" type="uint32" />
+			<property name="st_blocks" type="blkcnt_t" />
+		</properties>
+	</binding>
+<!-- defined in posix/time.h -->
+	<binding source="timespec" target="Haiku::timespec">
+		<properties>
+			<property name="tv_sec" type="time_t" />
+			<property name="tv_nsec" type="long" />
+		</properties>
+	</binding>
+<!-- defined in kernel/fs_attr.h -->
+	<binding source="attr_info" target="Haiku::attr_info">
+		<properties>
+			<property name="type" type="uint32" />
+			<property name="size" type="off_t" />
+		</properties>
+	</binding>
+</bindings>

@@ -1,13 +1,16 @@
 <bindings name="Haiku::SupportKit">
 	<doc>Exposes the Haiku Support Kit</doc>
 	<include>
+		<file name="Beep.h" />
 		<file name="Archivable.h" />
 		<file name="Errors.h" />
+		<file name="TypeConstants.h" />
 	</include>
 	<link>
 		<lib name="libbe" />
 	</link>
 	<types>
+		<type name="uint32"           builtin="unsigned long" /><!-- __haiku_uint32 -->
 		<type name="int32"            builtin="long" /><!-- __haiku_int32 -->
 		<type name="image_id"         builtin="long" /><!-- int32 -->
 		<type name="status_t"         builtin="long" /><!-- int32 -->
@@ -19,8 +22,10 @@ you need to define those types in this section.
 		<type name="BMessage*"   builtin="object_ptr" target="Haiku::Message" />
 	</types>
 	<import>
+		<file name="Beep.sidl" />
 		<file name="Archivable.sidl" />
 		<file name="Errors.sidl" />
+		<file name="TypeConstants.sidl" />
 	</import>
 	<binding source="SupportKit" target="Haiku::SupportKit">
 		<doc>Exposes the Haiku Support Kit</doc>

@@ -25,6 +25,12 @@ package Python::Constant;
 use strict;
 our @ISA = qw(Constant Python::BaseObject);
 
+sub finalize_upgrade {
+	my ($self) = @_;
+	
+	$self->{name}=~s/^.*::([^:]+)$/$1/;
+}
+
 sub type {
 	my ($self) = @_;
 	unless ($self->{type}) {

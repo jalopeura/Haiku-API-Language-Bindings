@@ -121,6 +121,7 @@ my %class_map = (
 			'string-length' => 'string_length',
 #			'max-array-length' => 'max_array_length',
 			'max-string-length' => 'max_string_length',
+			'pass-as-pointer' => 'pass_as_pointer',
 		},
 	},
 	

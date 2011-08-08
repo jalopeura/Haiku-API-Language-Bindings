@@ -1,0 +1,130 @@
+<bindings name="Haiku::Entry">
+	<doc>Exposes the Entry object</doc>
+	<binding source="BEntry" source-inherits="BStatable" target="Haiku::Entry" target-inherits="Haiku::Statable">
+		<doc>Exposes the Entry object</doc>
+		<functions>
+			<constructor overload-name="Empty" />
+<!-- TODO: BDirectory object not yet implemented
+			<constructor overload-name="FromDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+			</constructor>
+-->
+			<constructor overload-name="FromEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+			</constructor>
+			<constructor>
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+			</constructor>
+			<constructor overload-name="FromEntry">
+				<param name="entry" type="const BEntry" action="input" />
+			</constructor>
+			<destructor />
+			<method name="InitCheck">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Exists">
+				<return type="bool" action="output" />
+			</method>
+			<method name="GetStat">
+				<param name="stat" type="stat*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="SetTo" overload-name="SetToDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="SetTo" overload-name="SetToEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo">
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unset" />
+			<method name="GetRef">
+				<param name="ref" type="entry_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BPath object not yet implemented
+			<method name="GetPath">
+				<param name="path" type="BPath*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="GetParent">
+				<param name="entry" type="BEntry*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="GetParent" overload-name="GetParentAsDirectory">
+				<param name="dir" type="const BDirectory*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="GetName">
+				<param name="buffer" type="char*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Rename">
+				<param name="path" type="const char*" action="input" />
+				<param name="clobber" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="MoveTo">
+				<param name="dir" type="const BDirectory*" action="output" />
+				<param name="path" type="const char*" action="input" default="NULL" />
+				<param name="clobber" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="Remove">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+	<binding source="entry_ref" target="Haiku::entry_ref">
+		<doc>Exposes the entry_ref struct</doc>
+		<properties>
+			<property name="device"    type="dev_t" />
+			<property name="directory" type="ino_t" />
+			<property name="name"      type="char*" />
+		</properties>
+		<functions>
+			<constructor>
+				<param name="device" type="dev_t"       action="input" />
+				<param name="dir"    type="ino_t"       action="input" />
+				<param name="name"   type="const char*" action="input" />
+			</constructor>
+			<constructor overload-name="Empty">
+			</constructor>
+			<constructor overload-name="FromEntryRef">
+				<param name="ref" type="entry_ref" action="input" />
+			</constructor>
+			<destructor />
+			<method name="set_name">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+</bindings>

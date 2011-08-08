@@ -1,0 +1,86 @@
+<bindings name="Haiku::OptionPopUp">
+	<doc>Exposes the OptionPopUp object</doc>
+	<binding source="BOptionPopUp" source-inherits="BOptionControl" target="Haiku::OptionPopUp" target-inherits="Haiku::OptionControl">
+		<doc>Exposes the OptionPopUp object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="rect" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="WithFixed">
+				<doc>...</doc>
+				<param name="rect" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="fixed" type="bool" action="input" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<doc>...</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<destructor />
+			<method name="MenuField">
+				<return type="BMenuField*" action="output" />
+			</method>
+			<method name="GetOptionAt">
+				<param name="index" type="int32" action="input" />
+				<param name="name" type="const char*" pass-as-pointer="true" action="output" />
+				<param name="value" type="int32" pass-as-pointer="true" action="output" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="RemoveOptionAt">
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="CountOptions">
+				<return type="int32" action="output" />
+			</method>
+			<method name="AddOptionAt">
+				<param name="name" type="const char*" action="input" />
+				<param name="value" type="int32" action="input" />
+				<param name="index" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AllAttached" />
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetLabel">
+				<param name="string" type="const char*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetEnabled">
+				<param name="enabled" type="bool" action="input" />
+				<return type="void" />
+			</method>
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="SelectedOption">
+				<param name="name" type="const char*" pass-as-pointer="true" action="output" />
+				<param name="value" type="int32" pass-as-pointer="true" action="output" />
+				<return type="int32" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

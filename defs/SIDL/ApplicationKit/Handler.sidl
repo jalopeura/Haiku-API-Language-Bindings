@@ -94,7 +94,6 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 <!-- Observer calls, inter-looper and inter-team -->
-<!-- TODO: BMessenger object not yet implemented
 			<method name="StartWatching">
 				<param name="target" type="BMessenger" action="input" />
 				<param name="what" type="uint32" action="input" />
@@ -113,7 +112,6 @@
 				<param name="target" type="BMessenger" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="StartWatching" overload-name="StartWatchingHandler">
 				<param name="observer" type="BHandler*" action="input" />
 				<param name="what" type="uint32" action="input" />

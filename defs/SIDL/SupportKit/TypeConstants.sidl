@@ -1,0 +1,67 @@
+<bindings name="Haiku::TypeConstants">
+	<doc>Exposes the TypeConstants object</doc>
+	<binding source="BTypeConstants" target="Haiku::TypeConstants">
+		<constants>
+			<constant name="B_AFFINE_TRANSFORM_TYPE" type="int" group="types" />
+			<constant name="B_ALIGNMENT_TYPE" type="int" group="types" />
+			<constant name="B_ANY_TYPE" type="int" group="types" />
+			<constant name="B_ATOM_TYPE" type="int" group="types" />
+			<constant name="B_ATOMREF_TYPE" type="int" group="types" />
+			<constant name="B_BOOL_TYPE" type="int" group="types" />
+			<constant name="B_CHAR_TYPE" type="int" group="types" />
+			<constant name="B_COLOR_8_BIT_TYPE" type="int" group="types" />
+			<constant name="B_DOUBLE_TYPE" type="int" group="types" />
+			<constant name="B_FLOAT_TYPE" type="int" group="types" />
+			<constant name="B_GRAYSCALE_8_BIT_TYPE" type="int" group="types" />
+			<constant name="B_INT16_TYPE" type="int" group="types" />
+			<constant name="B_INT32_TYPE" type="int" group="types" />
+			<constant name="B_INT64_TYPE" type="int" group="types" />
+			<constant name="B_INT8_TYPE" type="int" group="types" />
+			<constant name="B_LARGE_ICON_TYPE" type="int" group="types" />
+			<constant name="B_MEDIA_PARAMETER_GROUP_TYPE" type="int" group="types" />
+			<constant name="B_MEDIA_PARAMETER_TYPE" type="int" group="types" />
+			<constant name="B_MEDIA_PARAMETER_WEB_TYPE" type="int" group="types" />
+			<constant name="B_MESSAGE_TYPE" type="int" group="types" />
+			<constant name="B_MESSENGER_TYPE" type="int" group="types" />
+			<constant name="B_MIME_TYPE" type="int" group="types" />
+			<constant name="B_MINI_ICON_TYPE" type="int" group="types" />
+			<constant name="B_MONOCHROME_1_BIT_TYPE" type="int" group="types" />
+			<constant name="B_OBJECT_TYPE" type="int" group="types" />
+			<constant name="B_OFF_T_TYPE" type="int" group="types" />
+			<constant name="B_PATTERN_TYPE" type="int" group="types" />
+			<constant name="B_POINTER_TYPE" type="int" group="types" />
+			<constant name="B_POINT_TYPE" type="int" group="types" />
+			<constant name="B_PROPERTY_INFO_TYPE" type="int" group="types" />
+			<constant name="B_RAW_TYPE" type="int" group="types" />
+			<constant name="B_RECT_TYPE" type="int" group="types" />
+			<constant name="B_REF_TYPE" type="int" group="types" />
+			<constant name="B_RGB_32_BIT_TYPE" type="int" group="types" />
+			<constant name="B_RGB_COLOR_TYPE" type="int" group="types" />
+			<constant name="B_SIZE_TYPE" type="int" group="types" />
+			<constant name="B_SIZE_T_TYPE" type="int" group="types" />
+			<constant name="B_SSIZE_T_TYPE" type="int" group="types" />
+			<constant name="B_STRING_TYPE" type="int" group="types" />
+			<constant name="B_TIME_TYPE" type="int" group="types" />
+			<constant name="B_UINT16_TYPE" type="int" group="types" />
+			<constant name="B_UINT32_TYPE" type="int" group="types" />
+			<constant name="B_UINT64_TYPE" type="int" group="types" />
+			<constant name="B_UINT8_TYPE" type="int" group="types" />
+			<constant name="B_VECTOR_ICON_TYPE" type="int" group="types" />
+			<constant name="B_XATTR_TYPE" type="int" group="types" />
+			<constant name="B_NETWORK_ADDRESS_TYPE" type="int" group="types" />
+			<constant name="B_ASCII_TYPE" type="int" group="types" />
+			<constant name="B_URL_HTTP" type="const char*" group="url_types" />
+			<constant name="B_URL_HTTPS" type="const char*" group="url_types" />
+			<constant name="B_URL_FTP" type="const char*" group="url_types" />
+			<constant name="B_URL_GOPHER" type="const char*" group="url_types" />
+			<constant name="B_URL_MAILTO" type="const char*" group="url_types" />
+			<constant name="B_URL_NEWS" type="const char*" group="url_types" />
+			<constant name="B_URL_NNTP" type="const char*" group="url_types" />
+			<constant name="B_URL_TELNET" type="const char*" group="url_types" />
+			<constant name="B_URL_RLOGIN" type="const char*" group="url_types" />
+			<constant name="B_URL_TN3270" type="const char*" group="url_types" />
+			<constant name="B_URL_WAIS" type="const char*" group="url_types" />
+			<constant name="B_URL_FILE" type="const char*" group="url_types" />
+		</constants>
+	</binding>
+</bindings>

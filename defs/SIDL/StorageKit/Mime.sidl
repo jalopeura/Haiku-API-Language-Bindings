@@ -1,0 +1,61 @@
+<bindings name="Haiku::Mime">
+	<doc>Exposes the Mime object</doc>
+	<binding source="BMime" target="Haiku::Mime">
+		<doc>Exposes the Mime object</doc>
+		<functions>
+			<plain name="update_mime_info">
+				<param name="path" type="const char*" action="input" />
+				<param name="recursive" type="int" action="input" />
+				<param name="synchronous" type="int" action="input" />
+				<param name="force" type="int" action="input" />
+				<return type="int" action="output" />
+			</plain>
+			<plain name="create_app_meta_mime">
+				<param name="path" type="const char*" action="input" />
+				<param name="recursive" type="int" action="input" />
+				<param name="synchronous" type="int" action="input" />
+				<param name="force" type="int" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_device_icon" overload-name="get_device_icon_as_data">
+				<param name="device" type="const char*" action="input" />
+				<param name="icon" type="void*" action="output" string-length="size" />
+				<param name="size" type="int32" action="length[icon]" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_device_icon">
+				<param name="device" type="const char*" action="input" />
+				<param name="icon" type="BBitmap*" action="output" />
+				<param name="which" type="icon_size" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_device_icon" overload-name="get_device_icon_with_type">
+				<param name="device" type="const char*" action="input" />
+				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_named_icon">
+				<param name="name" type="const char*" action="input" />
+				<param name="icon" type="BBitmap*" action="output" />
+				<param name="which" type="icon_size" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="get_named_icon" overload-name="get_named_icon_with_type">
+				<param name="name" type="const char*" action="input" />
+				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+		</functions>
+		<constants>
+			<constant name="B_LARGE_ICON" type="int" group="icon_size" />
+			<constant name="B_MINI_ICON" type="int" group="icon_size" />
+			<constant name="B_UPDATE_MIME_INFO_NO_FORCE" type="int" group="force" />
+			<constant name="B_UPDATE_MIME_INFO_FORCE_KEEP_TYPE" type="int" group="force" />
+			<constant name="B_UPDATE_MIME_INFO_FORCE_UPDATE_ALL" type="int" group="force" />
+		</constants>
+	</binding>
+</bindings>

@@ -1,0 +1,76 @@
+<bindings name="Haiku::NodeMonitor">
+	<doc>Exposes the NodeMonitor object</doc>
+	<binding source="BNodeMonitor" target="Haiku::NodeMonitor">
+		<doc>Exposes the NodeMonitor object</doc>
+		<functions>
+			<plain name="watch_volume" name="watch_volume_with_messenger">
+				<param name="volume" type="dev_t" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="target" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="watch_volume">
+				<param name="volume" type="dev_t" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="handler" type="const BHandler*" action="input" />
+				<param name="looper" type="const BLooper*" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="watch_node" name="watch_node_with_messenger">
+				<param name="node" type="const node_ref*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="target" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="watch_node">
+				<param name="node" type="const node_ref*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="handler" type="const BHandler*" action="input" />
+				<param name="looper" type="const BLooper*" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="stop_watching" name="stop_watching_with_messenger">
+				<param name="target" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="stop_watching">
+				<param name="handler" type="const BHandler*" action="input" />
+				<param name="looper" type="const BLooper*" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+		</functions>
+		<constants>
+<!-- Flags for the watch_node() call. -->
+			<constant name="B_STOP_WATCHING" type="int" group="flags" />
+			<constant name="B_WATCH_NAME" type="int" group="flags" />
+			<constant name="B_WATCH_STAT" type="int" group="flags" />
+			<constant name="B_WATCH_ATTR" type="int" group="flags" />
+			<constant name="B_WATCH_DIRECTORY" type="int" group="flags" />
+			<constant name="B_WATCH_ALL" type="int" group="flags" />
+			<constant name="B_WATCH_MOUNT" type="int" group="flags" />
+			<constant name="B_WATCH_INTERIM_STAT" type="int" group="flags" />
+<!-- The "opcode" field of the B_NODE_MONITOR notification message you get. -->
+			<constant name="B_ENTRY_CREATED" type="int" group="opcode" />
+			<constant name="B_ENTRY_REMOVED" type="int" group="opcode" />
+			<constant name="B_ENTRY_MOVED" type="int" group="opcode" />
+			<constant name="B_STAT_CHANGED" type="int" group="opcode" />
+			<constant name="B_ATTR_CHANGED" type="int" group="opcode cause" />
+			<constant name="B_DEVICE_MOUNTED" type="int" group="opcode" />
+			<constant name="B_DEVICE_UNMOUNTED" type="int" group="opcode" />
+<!-- More specific info in the "cause" field of B_ATTR_CHANGED notification messages. (Haiku only) -->
+			<constant name="B_ATTR_CREATED" type="int" group="cause" />
+			<constant name="B_ATTR_REMOVED" type="int" group="cause" />
+			<!-- B_ATTR_CHANGED is reused -->
+<!--More specific info in the "fields" field of B_STAT_CHANGED notification messages, specifying what parts of the stat data have actually been changed. (Haiku only) -->
+			<constant name="B_STAT_MODE" type="int" group="fields" />
+			<constant name="B_STAT_UID" type="int" group="fields" />
+			<constant name="B_STAT_GID" type="int" group="fields" />
+			<constant name="B_STAT_SIZE" type="int" group="fields" />
+			<constant name="B_STAT_ACCESS_TIME" type="int" group="fields" />
+			<constant name="B_STAT_MODIFICATION_TIME" type="int" group="fields" />
+			<constant name="B_STAT_CREATION_TIME" type="int" group="fields" />
+			<constant name="B_STAT_CHANGE_TIME" type="int" group="fields" />
+			<constant name="B_STAT_INTERIM_UPDATE" type="int" group="fields" />
+		</constants>
+	</binding>
+</bindings>

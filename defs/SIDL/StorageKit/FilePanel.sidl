@@ -1,0 +1,108 @@
+<bindings name="Haiku::FilePanel">
+	<doc>Exposes the FilePanel object</doc>
+	<binding source="BFilePanel" source-inherits="BEntryList" target="Haiku::FilePanel" target-inherits="Haiku::EntryList">
+		<doc>Exposes the FilePanel object</doc>
+		<functions>
+			<constructor>
+				<param name="mode" type="file_panel_mode" action="input" default="B_OPEN_PANEL" />
+				<param name="target" type="BMessenger*" action="input" default="NULL" />
+				<param name="directory" type="const entry_ref*" action="input" default="NULL" />
+				<param name="nodeFlavors" type="uint32" action="input" default="0" />
+				<param name="allowMultipleSelection" type="bool" action="input" default="true" />
+				<param name="message" type="BMessage*" action="input" default="NULL" />
+				<param name="refFilter" type="BRefFilter*" action="input" default="NULL" />
+				<param name="modal" type="bool" action="input" default="false" />
+				<param name="hideWhenDone" type="bool" action="input" default="true" />
+			</constructor>
+			<destructor />
+			<method name="Show" />
+			<method name="Hide" />
+			<method name="IsShowing">
+				<return type="bool" action="output" />
+			</method>
+			<event name="WasHidden" />
+			<event name="SelectionChanged" />
+			<method name="SendMessage">
+				<param name="target" type="BMessenger*" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="Window">
+				<return type="BWindow*" action="output" />
+			</method>
+			<method name="Messenger">
+				<return type="BMessenger" action="output" />
+			</method>
+			<method name="RefFilter">
+				<return type="BRefFilter*" action="output" />
+			</method>
+			<method name="PanelMode">
+				<return type="file_panel_mode" action="output" />
+			</method>
+			<method name="SetTarget">
+				<param name="target" type="BMessenger*" action="input" />
+			</method>
+			<method name="SetMessage">
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="SetRefFilter">
+				<param name="filter" type="BRefFilter*" action="input" />
+			</method>
+			<method name="SetSaveText">
+				<param name="text" type="const char*" action="input" />
+			</method>
+			<method name="SetButtonLabel">
+				<param name="button" type="file_panel_button" action="input" />
+				<param name="label" type="const char*" action="input" />
+			</method>
+			<method name="SetPanelDirectory" overload-name="SetPanelDirectoryFromEntry">
+				<param name="newDirectory" type="const BEntry*" action="input" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="SetPanelDirectory" overload-name="SetPanelDirectoryFromDirectory">
+				<param name="newDirectory" type="const BDirectory*" action="input" />
+			</method>
+-->
+			<method name="SetPanelDirectory">
+				<param name="newDirectory" type="const entry_ref*" action="input" />
+			</method>
+			<method name="SetPanelDirectory" overload-name="SetPanelDirectoryFromString">
+				<param name="newDirectory" type="const char*" action="input" />
+			</method>
+			<method name="GetPanelDirectory">
+				<param name="newDirectory" type="entry_ref*" action="output" />
+			</method>
+			<method name="SetHideWhenDone">
+				<param name="hideWhenDone" type="bool" action="input" />
+			</method>
+			<method name="HidesWhenDone">
+				<return type="bool" action="output" />
+			</method>
+			<method name="Refresh" />
+			<method name="Rewind" />
+			<method name="GetNextSelectedRef">
+				<param name="newDirectory" type="entry_ref*" action="output" />
+			</method>
+		</functions>
+		<constants>
+<!-- file_panel_mode -->
+			<constant name="B_OPEN_PANEL" type="int" group="file_panel_mode" />
+			<constant name="B_SAVE_PANEL" type="int" group="file_panel_mode" />
+<!-- file_panel_button -->
+			<constant name="B_CANCEL_BUTTON" type="int" group="file_panel_button" />
+			<constant name="B_DEFAULT_BUTTON" type="int" group="file_panel_button" />
+		</constants>
+	</binding>
+	<binding source="BRefFilter" target="Haiku::RefFilter">
+		<functions>
+			<constructor />
+			<destructor />
+			<event name="Filter">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<param name="node" type="BNode*" action="input" />
+				<param name="stat" type="stat_beos*" action="input" />
+				<param name="mimeType" type="const char*" action="input" />
+				<return type="bool" action="output" />
+			</event>
+		</functions>
+	</binding>
+</bindings>

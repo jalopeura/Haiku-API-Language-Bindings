@@ -235,6 +235,11 @@ sub generate_cc {
 							$options->{$_} = $param->{$_};
 						}
 					}
+					for (qw(array_length string_length max_array_length max_string_length)) {
+						if ($param->has($_)) {
+							$options->{$_} = $param->{$_};
+						}
+					}
 					my ($defs, $code) = $param->arg_builder($options);
 					
 					if ($param->type->has('target') and my $target = $param->type->target) {
@@ -286,6 +291,16 @@ sub generate_cc {
 				output_name => $pyobj_name,
 				must_not_delete => $outputs[0]->must_not_delete,
 			};
+			for (qw(count length repeat)) {
+				if ($outputs[0]->has($_)) {
+					$options->{$_} = $outputs[0]->{$_};
+				}
+			}
+			for (qw(array_length string_length max_array_length max_string_length)) {
+				if ($outputs[0]->has($_)) {
+					$options->{$_} = $outputs[0]->{$_};
+				}
+			}
 			my ($defs, $code) = $outputs[0]->arg_builder($options);
 			push @defs, @$defs;
 			push @postcode, @$code;

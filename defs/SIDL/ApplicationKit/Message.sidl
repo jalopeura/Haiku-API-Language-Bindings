@@ -76,12 +76,10 @@
 			<method name="IsSourceWaiting">
 				<return type="bool" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="ReturnAddress">
 				<doc>Returns a Messenger that can be used to reply to the Message.</doc>
 				<return type="BMessenger" />
 			</method>
--->
 			<method name="Previous">
 				<return type="const BMessage*" />
 			</method>
@@ -104,14 +102,12 @@
 				<param name="replyTo" type="BHandler*" default="NULL" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="SendReply" overload-name="SendReplyToMessenger">
 				<param name="command" type="uint32" action="input" />
 				<param name="replyTo" type="BMessenger*" action="input" />
 				<param name="timeout" type="bigtime_t" default="B_INFINITE_TIMEOUT" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="SendReply" overload-name="SendReplyWithReplyMessage">
 				<param name="command" type="uint32" action="input" />
 				<param name="replyToReply" type="BMessage*" action="input" />
@@ -386,7 +382,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="AddMessenger">
 				<doc>Adds a Messenger object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -397,8 +392,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
-<!-- TODO: entry_ref struct not yet implemented
 			<method name="AddRef">
 				<doc>Adds a Messenger object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -409,7 +402,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="AddMessage">
 				<doc>Adds a Message object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -422,7 +414,7 @@
 			</method>
 <!-- TODO: BFlattenable object not yet implemented
 			<method name="AddFlat">
-				<doc>Adds a Messenger object to the Message.</doc>
+				<doc>Adds a Flatten()ed object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
@@ -469,7 +461,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 <!-- Finding data -->
-<!-- TODO: BAlignment object not yt implemented
+<!-- TODO: BAlignment object not yet implemented
 			<method name="FindAlignment">
 				<doc>Finds an Alignment object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -839,7 +831,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="FindMessenger">
 				<doc>Finds a Messenger object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -863,8 +854,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
-<!-- TODO: entry_ref struct not yet implemented
 			<method name="FindRef">
 				<doc>Finds a Messenger object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -888,7 +877,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="FindMessage">
 				<doc>Finds a Message object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -914,7 +902,7 @@
 			</method>
 <!-- TODO: BFlattenable object not yet implemented
 			<method name="FindFlat">
-				<doc>Finds a Messenger object in the Message.</doc>
+				<doc>Finds a Flatten()ed object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
@@ -924,7 +912,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="FindFlat" overload-name="FindFlatByIndex">
-				<doc>Finds a Messenger object in the Message using an index.</doc>
+				<doc>Finds a Flatten()ed object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
@@ -1344,7 +1332,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="ReplaceMessenger">
 				<doc>Finds a Messenger object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -1368,8 +1355,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
-<!-- TODO: entry_ref struct not yet implemented
 			<method name="ReplaceRef">
 				<doc>Finds a Messenger object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -1393,7 +1378,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="ReplaceMessage">
 				<doc>Finds a Message object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
@@ -1419,7 +1403,7 @@
 			</method>
 <!-- TODO: BFlattenable object not yet implemented
 			<method name="ReplaceFlat">
-				<doc>Finds a Messenger object in the Message.</doc>
+				<doc>Finds a Flatten()ed object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
@@ -1429,7 +1413,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="ReplaceFlat" overload-name="ReplaceFlatByIndex">
-				<doc>Finds a Messenger object in the Message using an index.</doc>
+				<doc>Finds a Flatten()ed object in the Message using an index.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>

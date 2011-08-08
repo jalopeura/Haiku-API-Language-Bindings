@@ -187,13 +187,11 @@
 				<param name="handler" type="BHandler*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="SetTargetForItems" overload-name="SetMessengerTargetForItems">
 				<doc>Sets the target for the MenuItems to the given Messenger.</doc>
 				<param name="messenger" type="BMessenger*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="SetEnabled">
 				<doc>Enables or disables the Menu.</doc>
 				<param name="enabled" type="bool" action="input" />
@@ -260,7 +258,6 @@
 				<param name="data" type="BMessage*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: Why is this not working?
 			<method name="AddDynamicItem">
 				<param name="state" type="add_state" action="input" />
 				<return type="bool" action="output" />
@@ -268,7 +265,6 @@
 			<method name="DrawBackground">
 				<param name="update" type="BRect" action="input" />
 			</method>
--->
 			<!-- SetTrackingHook not implemented because it takes a function ref -->
 			<plain name="get_menu_info">
 				<param name="info" type="menu_info*" action="output" />
@@ -289,11 +285,9 @@
 			<constant name="B_ITEMS_IN_MATRIX" type="int" group="menu_layout">
 				<doc>...</doc>
 			</constant>
-<!-- TODO: Why are these not working?
-			<constant name="B_INITIAL_ADD" type="int" group="add_state" />
-			<constant name="B_PROCESSING" type="int" group="add_state" />
-			<constant name="B_ABORT" type="int" group="add_state" />
--->
+			<constant name="BMenu::B_INITIAL_ADD" type="int" group="add_state" />
+			<constant name="BMenu::B_PROCESSING" type="int" group="add_state" />
+			<constant name="BMenu::B_ABORT" type="int" group="add_state" />
 		</constants>
 	</binding>
 	<binding source="menu_info" target="Haiku::menu_info">

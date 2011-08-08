@@ -1,0 +1,31 @@
+<bindings name="Haiku::Polygon">
+	<doc>Exposes the Polygon object</doc>
+	<binding source="BPolygon" source-inherits="BArchivable" target="Haiku::Polygon" target-inherits="Haiku::Archivable">
+		<doc>Exposes the Polygon object</doc>
+		<functions>
+			<constructor>
+				<param name="points" type="BPoint" pass-as-pointer="true" action="input" array-length="count" />
+				<param name="count" type="int32" action="count[points]" />
+			</constructor>
+			<constructor overload-name="FromPolygon">
+				<param name="other" type="BPolygon" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Frame">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="AddPoints">
+				<param name="points" type="BPoint" pass-as-pointer="true" action="input" array-length="count" />
+				<param name="count" type="int32" action="count[points]" />
+			</method>
+			<method name="CountPoints">
+				<return type="int32" action="output" />
+			</method>
+			<method name="MapTo">
+				<param name="srcRect" type="BRect" action="input" />
+				<param name="dstRect" type="BRect" action="input" />
+			</method>
+			<method name="PrintToStream" />
+		</functions>
+	</binding>
+</bindings>

@@ -27,7 +27,6 @@
 				<doc>Fetches a count of clipboards from the system.</doc>
 				<return type="uint32" action="output" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="StartWatching">
 				<doc>Begins watching for changes in the clipboard.</doc>
 				<param name="target" type="BMessenger*" action="input">
@@ -42,7 +41,6 @@
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="Lock">
 				<doc>Locks the Clipboard object; it must be locked before reading or writing data. Blocks if the Clipboard is already locked; returns true if the lock was successful; returns flase if the Clipboard was deleted while waiting for a lock.</doc>
 				<return type="bool" action="output" />
@@ -67,12 +65,10 @@
 				<doc>Reloads data from the underlying clipboard, losing any data in the Clipboard object.</doc>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BMessenger object not yet implemented
 			<method name="DataSource">
 				<doc>Returns a BMessenger that targets the Application that last wrote to the Clipboard.</doc>
 				<return type="BMessenger*" action="output" />
 			</method>
--->
 			<method name="Data">
 				<doc>Returns the Message object that holds the clipboard data, or NULL if the CLipboard object is not locked.</doc>
 				<return type="BMessage*" action="output" />

@@ -1,0 +1,20 @@
+<bindings name="Haiku::NodeMonitor">
+	<doc>Exposes the NodeMonitor object</doc>
+	<binding source="BNodeMonitor" target="Haiku::NodeMonitor">
+		<doc>Exposes the NodeMonitor object</doc>
+		<functions>
+			<plain name="beep">
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="system_beep">
+				<param name="eventName" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+			<plain name="add_system_beep_event">
+				<param name="eventName" type="const char*" action="input" />
+				<param name="flags" type="uint32" action="input" default="0" />
+				<return type="status_t" action="error" success="B_OK" />
+			</plain>
+		</functions>
+	</binding>
+</bindings>

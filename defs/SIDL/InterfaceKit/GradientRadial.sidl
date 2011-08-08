@@ -1,0 +1,35 @@
+<bindings name="Haiku::GradientRadial">
+	<doc>Exposes the GradientRadial object</doc>
+	<binding source="BGradientRadial" source-inherits="BGradient" target="Haiku::GradientRadial" target-inherits="Haiku::Gradient">
+		<doc>Exposes the GradientRadial object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromPointAndRadius">
+				<param name="center" type="const BPoint" action="input" />
+				<param name="radius" type="float" action="input" />
+			</constructor>
+			<constructor overload-name="FromXYAndRadius">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+				<param name="radius" type="float" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Center">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetCenter">
+				<param name="center" type="BPoint" action="input" />
+			</method>
+			<method name="SetCenter" overload-name="SetCenterFromXY">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+			</method>
+			<method name="Radius">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetRadius">
+				<param name="radius" type="float" action="input" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

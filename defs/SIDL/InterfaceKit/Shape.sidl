@@ -1,0 +1,105 @@
+<bindings name="Haiku::Shape">
+	<doc>Exposes the Shape object</doc>
+	<binding source="BShape" source-inherits="BArchivable" target="Haiku::Shape" target-inherits="Haiku::Archivable">
+		<doc>Exposes the Shape object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromShape">
+				<param name="other" type="BShape" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Clear" />
+			<method name="Bounds">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="CurrentPosition">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="AddShape">
+				<param name="other" type="BShape*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="MoveTo">
+				<param name="point" type="BPoint" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="LineTo">
+				<param name="linePoint" type="BPoint" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="BezierTo">
+				<param name="controlPoints" type="BPoint" pass-as-pointer="true" action="input" array-length="3" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="BezierTo" overload-name="BezierToPoints">
+				<param name="control1" type="const BPoint" action="input"/>
+				<param name="control2" type="const BPoint" action="input"/>
+				<param name="endPoint" type="const BPoint" action="input"/>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ArcTo">
+				<param name="rx" type="float" action="input" />
+				<param name="ry" type="float" action="input" />
+				<param name="angle" type="float" action="input" />
+				<param name="largeArc" type="bool" action="input" />
+				<param name="counterClockWise" type="bool" action="input" />
+				<param name="point" type="const BPoint" action="input"/>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Close">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+	<binding source="BShapeIterator" target="Haiku::ShapeIterator">
+		<doc>Exposes the ShapeIterator object</doc>
+		<functions>
+			<constructor />
+			<destructor />
+			<method name="IterateMoveTo">
+				<param name="point" type="BPoint*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IterateLineTo">
+				<param name="lineCount" type="int32" action="count[linePts]" />
+				<param name="linePts" type="BPoint" pass-as-pointer="true" action="input" array-length="lineCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="BezierTo">
+				<param name="bezierCount" type="int32" action="count[bezierPts]" />
+				<param name="bezierPts" type="BPoint" pass-as-pointer="true" action="input" array-length="bezierCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IterateClose">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IterateArcTo">
+				<param name="rx" type="float" action="input" />
+				<param name="ry" type="float" action="input" />
+				<param name="angle" type="float" action="input" />
+				<param name="largeArc" type="bool" action="input" />
+				<param name="counterClockWise" type="bool" action="input" />
+				<param name="point" type="const BPoint" action="input"/>
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

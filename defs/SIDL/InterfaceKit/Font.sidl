@@ -123,7 +123,7 @@
 				<param name="index" type="int32" action="input" />
 				<param name="info" type="tuned_font_info*" action="output" />
 			</method>
-<!-- TODO: BString object not implemented yet
+<!-- TODO: BString object not yet implemented
 			<method name="TruncateString">
 				<param name="inOut" type="BString*" action="input" />
 				<param name="mode" type="uint32" action="input" />
@@ -137,7 +137,7 @@
 				<param name="width" type="float" action="input" />
 				<param name="resultArray" type="char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="output" />
 			</method>
-<!-- TODO: BString object not implemented yet
+<!-- TODO: BString object not yet implemented
 			<method name="GetTruncatedStrings" overload-name="GetTruncatedStringsAsStringObjects">
 				<param name="stringArray" type="const char*" pass-as-pointer="true" array-length="numStrings" string-length="null-terminated" action="input" />
 				<param name="numStrings" type="int32" action="count[stringArray]" />
@@ -213,13 +213,11 @@
 				<param name="deltas" type="escapement_delta" pass-as-pointer="true" array-length="numStrings" action="input" />
 				<param name="boundingBoxArray" type="BRect" pass-as-pointer="true" array-length="numStrings" action="output" />
 			</method>
-<!-- TODO: BShape object not yet implemented
 			<method name="GetGlyphShapes">
 				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />
 				<param name="glyphShapeArray" type="BShape*" pass-as-pointer="true" array-length="numChars" action="output" />
 			</method>
--->
 			<method name="GetHasGlyphs">
 				<param name="charArray" type="const char*" string-length="numChars" action="input" />
 				<param name="numChars" type="int32" action="length[charArray]" />

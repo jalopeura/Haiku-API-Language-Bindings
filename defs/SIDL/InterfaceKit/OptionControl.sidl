@@ -1,0 +1,74 @@
+<bindings name="Haiku::OptionControl">
+	<doc>Exposes the OptionControl object</doc>
+	<binding source="BOptionControl" source-inherits="BControl" target="Haiku::OptionControl" target-inherits="Haiku::Control">
+		<doc>Exposes the OptionControl object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="rect" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<doc>...</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+<!-- Events not yet implemented for this object
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="AddOption">
+				<param name="name" type="const char*" action="input" />
+				<param name="value" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetOptionAt">
+				<param name="index" type="int32" action="input" />
+				<param name="name" type="const char*" pass-as-pointer="true" action="output" />
+				<param name="value" type="int32" pass-as-pointer="true" action="output" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="RemoveOptionAt">
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="CountOptions">
+				<return type="int32" action="output" />
+			</method>
+			<method name="AddOptionAt">
+				<param name="name" type="const char*" action="input" />
+				<param name="value" type="int32" action="input" />
+				<param name="index" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SelectedOption">
+				<param name="name" type="const char*" pass-as-pointer="true" action="output" />
+				<param name="value" type="int32" pass-as-pointer="true" action="output" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="SelectOptionFor" name="SelectOptionForValue">
+				<param name="value" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SelectOptionFor">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_OPTION_CONTROL_VALUE" type="int" group="" />
+		</constants>
+	</binding>
+</bindings>

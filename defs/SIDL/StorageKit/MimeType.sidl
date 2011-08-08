@@ -1,0 +1,271 @@
+<bindings name="Haiku::MimeType">
+	<doc>Exposes the MimeType object</doc>
+	<binding source="BMimeType" target="Haiku::MimeType">
+		<doc>Exposes the MimeType object</doc>
+		<functions>
+			<constructor overload-name="Empty" />
+			<constructor>
+				<param name="mimeType" type="const char*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="SetTo">
+				<param name="mimeType" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unset" />
+			<method name="InitCheck">
+				<return type="status_t" action="output" />
+			</method>
+			<method name="Type">
+				<return type="const char*" action="error" success="B_OK" />
+			</method>
+			<method name="IsValid">
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsSupertypeOnly">
+				<return type="bool" action="output" />
+			</method>
+			<method name="GetSupertype">
+				<param name="superType" type="BMimeType*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Install">
+				<return type="status_t" action="output" />
+			</method>
+			<method name="Delete">
+				<return type="status_t" action="output" />
+			</method>
+			<method name="IsInstalled">
+				<return type="bool" action="output" />
+			</method>
+			<method name="GetIcon">
+				<param name="icon" type="BBitmap*" action="output" />
+				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetIcon" overload-name="GetIconData">
+				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<param name="type" type="type_code" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetPreferredApp">
+				<param name="signature" type="char*" action="output" />
+				<param name="verb" type="app_verb" action="input" default="B_OPEN" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetAttrInfo">
+				<param name="info" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetFileExtensions">
+				<param name="extensions" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetShortDescription">
+				<param name="description" type="char*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetLongDescription">
+				<param name="description" type="char*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetFileExtensions">
+				<param name="signatures" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetIcon">
+				<param name="icon" type="BBitmap*" action="input" />
+				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetIcon" overload-name="SetIconFromData">
+				<param name="data" type="uint8" pass-as-pointer="true" action="input" string-length="size" />
+				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<param name="type" type="type_code" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetPreferredApp">
+				<param name="signature" type="char*" action="input" />
+				<param name="verb" type="app_verb" action="input" default="B_OPEN" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetAttrInfo">
+				<param name="info" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetFileExtensions">
+				<param name="extensions" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetShortDescription">
+				<param name="description" type="char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetLongDescription">
+				<param name="description" type="char*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetFileExtensions">
+				<param name="signatures" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<static name="GetInstalledSupertypes">
+				<param name="supertypes" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="GetInstalledTypes">
+				<param name="types" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="GetInstalledTypes" overload-name="GetInstalledTypeForSupertype">
+				<param name="supertype" type="const char*" action="input" />
+				<param name="subtypes" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="GetWildcardApps">
+				<param name="wildcardApps" type="BMessage*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="IsValid">
+				<param name="mimeType" type="const char*" action="input" />
+				<return type="bool" action="output" />
+			</static>
+			<method name="SetAppHint">
+				<param name="ref" type="entry_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetAppHint">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetIconForType">
+				<param name="type" type="const char*" action="input" />
+				<param name="icon" type="BBitmap*" action="output" />
+				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetIconForType" overload-name="GetIconDataForType">
+				<param name="type" type="const char*" action="input" />
+				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetIconForType">
+				<param name="type" type="const char*" action="input" />
+				<param name="icon" type="BBitmap*" action="input" />
+				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetIconForType" overload-name="SetIconFromDataForType">
+				<param name="type" type="const char*" action="input" />
+				<param name="data" type="uint8" pass-as-pointer="true" action="input" string-length="size" />
+				<param name="size" type="size_t" action="length[data]" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BString object not yet implemented
+			<method name="GetSnifferRule">
+				<param name="result" type="BString*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetSnifferRule">
+				<param name="rule" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<static name="CheckSnifferRule">
+				<param name="rule" type="const char*" action="input" />
+				<param name="parseError" type="BString*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+-->
+			<static name="GuessMimeType" overload-name="GuessMimeTypeForEntryRef">
+				<param name="file" type="const entry_ref*" action="input" />
+				<param name="type" type="BMimeType*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="GuessMimeType" overload-name="GuessMimeTypeForString">
+				<param name="buffer" type="void*" action="input" string-length="length" />
+				<param name="length" type="int32" action="length[buffer]" />
+				<param name="type" type="BMimeType*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="GuessMimeType">
+				<param name="filename" type="const char*" action="input" />
+				<param name="type" type="BMimeType*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="StartWatching">
+				<param name="target" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+			<static name="StopWatching">
+				<param name="target" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</static>
+		</functions>
+		<constants>
+<!-- app verbs -->
+			<constant name="B_OPEN" type="int" group="app_verb" />
+<!-- types -->
+			<constant name="B_APP_MIME_TYPE" type="const char*" group="types" />
+			<constant name="B_PEF_APP_MIME_TYPE" type="const char*" group="types" />
+			<constant name="B_PE_APP_MIME_TYPE" type="const char*" group="types" />
+			<constant name="B_ELF_APP_MIME_TYPE" type="const char*" group="types" />
+			<constant name="B_RESOURCE_MIME_TYPE" type="const char*" group="types" />
+			<constant name="B_FILE_MIME_TYPE" type="const char*" group="types" />
+<!-- MIME Monitor BMessage::what value -->
+			<constant name="B_META_MIME_CHANGED" type="int" group="what" />
+<!-- MIME Monitor "be:which" values -->
+			<constant name="B_ICON_CHANGED" type="int" group="which" />
+			<constant name="B_PREFERRED_APP_CHANGED" type="int" group="which" />
+			<constant name="B_ATTR_INFO_CHANGED" type="int" group="which" />
+			<constant name="B_FILE_EXTENSIONS_CHANGED" type="int" group="which" />
+			<constant name="B_SHORT_DESCRIPTION_CHANGED" type="int" group="which" />
+			<constant name="B_LONG_DESCRIPTION_CHANGED" type="int" group="which" />
+			<constant name="B_ICON_FOR_TYPE_CHANGED" type="int" group="which" />
+			<constant name="B_APP_HINT_CHANGED" type="int" group="which" />
+			<constant name="B_MIME_TYPE_CREATED" type="int" group="which" />
+			<constant name="B_MIME_TYPE_DELETED" type="int" group="which" />
+			<constant name="B_SNIFFER_RULE_CHANGED" type="int" group="which" />
+			<constant name="B_SUPPORTED_TYPES_CHANGED" type="int" group="which" />
+			<constant name="B_EVERYTHING_CHANGED" type="int" group="which" />
+<!-- MIME Monitor "be:action" values -->
+			<constant name="B_META_MIME_MODIFIED" type="int" group="action" />
+			<constant name="B_META_MIME_DELETED" type="int" group="action" />
+		</constants>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+	<binding source="MimeType_ref" target="Haiku::MimeType_ref">
+		<doc>Exposes the MimeType_ref struct</doc>
+		<properties>
+			<property name="device"    type="dev_t" />
+			<property name="directory" type="ino_t" />
+			<property name="name"      type="char*" />
+		</properties>
+		<functions>
+			<constructor>
+				<param name="device" type="dev_t"       action="input" />
+				<param name="dir"    type="ino_t"       action="input" />
+				<param name="name"   type="const char*" action="input" />
+			</constructor>
+			<constructor overload-name="Empty">
+			</constructor>
+			<constructor overload-name="FromMimeTypeRef">
+				<param name="ref" type="MimeType_ref" action="input" />
+				<param name="ref" type="MimeType_ref" action="input" />
+			</constructor>
+			<destructor />
+			<method name="set_name">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+</bindings>

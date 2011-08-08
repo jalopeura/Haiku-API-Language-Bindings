@@ -1,0 +1,182 @@
+<bindings name="Haiku::Statable">
+	<doc>Exposes the Statable object</doc>
+	<binding source="BStatable" target="Haiku::Statable">
+		<doc>Exposes the Statable object</doc>
+		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
+			<constructor />
+			<destructor />
+-->
+			<method name="GetStat">
+				<param name="stat" type="stat*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsFile">
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsDirectory">
+				<return type="bool" action="output" />
+			</method>
+			<method name="IsSymlink">
+				<return type="bool" action="output" />
+			</method>
+			<method name="GetNodeRef">
+				<param name="ref" type="node_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetOwner">
+				<param name="owner" type="uid_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetOwner">
+				<param name="owner" type="uid_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetGroup">
+				<param name="group" type="gid_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetGroup">
+				<param name="group" type="gid_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetPermissions">
+				<param name="perms" type="mode_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetPermissions">
+				<param name="perms" type="mode_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetSize">
+				<param name="size" type="off_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetModificationTime">
+				<param name="mtime" type="time_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetModificationTime">
+				<param name="mtime" type="time_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetCreationTime">
+				<param name="ctime" type="time_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetCreationTime">
+				<param name="ctime" type="time_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetAccessTime">
+				<param name="atime" type="time_t" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetAccessTime">
+				<param name="atime" type="time_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetVolume">
+				<param name="vol" type="BVolume*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			
+<!-- TODO: BDirectory object not yet implemented
+			<method name="SetTo" overload-name="SetToDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="SetTo" overload-name="SetToRef">
+				<param name="ref" type="const Statable_ref*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo">
+				<param name="path" type="const char*" action="input" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unset" />
+			<method name="GetRef">
+				<param name="ref" type="Statable_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BPath object not yet implemented
+			<method name="GetPath">
+				<param name="path" type="BPath*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="GetParent">
+				<param name="Statable" type="BStatable*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="GetParent" overload-name="GetParentAsDirectory">
+				<param name="dir" type="const BDirectory*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="GetName">
+				<param name="buffer" type="char*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Rename">
+				<param name="path" type="const char*" action="input" />
+				<param name="clobber" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="MoveTo">
+				<param name="dir" type="const BDirectory*" action="output" />
+				<param name="path" type="const char*" action="input" default="NULL" />
+				<param name="clobber" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="Remove">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+	<binding source="Statable_ref" target="Haiku::Statable_ref">
+		<doc>Exposes the Statable_ref struct</doc>
+		<properties>
+			<property name="device"    type="dev_t" />
+			<property name="directory" type="ino_t" />
+			<property name="name"      type="char*" />
+		</properties>
+		<functions>
+			<constructor>
+				<param name="device" type="dev_t"       action="input" />
+				<param name="dir"    type="ino_t"       action="input" />
+				<param name="name"   type="const char*" action="input" />
+			</constructor>
+			<constructor overload-name="Empty">
+			</constructor>
+			<constructor overload-name="FromStatableRef">
+				<param name="ref" type="Statable_ref" action="input" />
+			</constructor>
+			<destructor />
+			<method name="set_name">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+</bindings>

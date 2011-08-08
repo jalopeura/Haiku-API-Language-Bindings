@@ -196,9 +196,7 @@ This will need to be fixed when additional formats are accepted
 		</functions>
 		<globals>
 			<global name="be_app" type="BApplication*" />
-<!-- TODO: BMessenger object not yet implemented
 			<global name="be_app_messenger" type="BMessenger" />
--->
 		</globals>
 	</binding>
 </bindings>

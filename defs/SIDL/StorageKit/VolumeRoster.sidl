@@ -1,0 +1,27 @@
+<bindings name="Haiku::VolumeRoster">
+	<doc>Exposes the VolumeRoster object</doc>
+	<binding source="BVolumeRoster" target="Haiku::VolumeRoster">
+		<doc>Exposes the VolumeRoster object</doc>
+		<functions>
+			<constructor />
+			<destructor />
+			<method name="GetNextVolume">
+				<param name="name" type="BVolume*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Rewind" />
+			<method name="GetBootVolume">
+				<param name="name" type="BVolume*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="StartWatching">
+				<param name="name" type="BMessenger*" action="input" default="be_app_messenger" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="StopWatching" />
+			<method name="Messenger">
+				<return type="BMessenger" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

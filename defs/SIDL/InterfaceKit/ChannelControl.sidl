@@ -1,0 +1,229 @@
+<bindings name="Haiku::ChannelControl">
+	<doc>Exposes the ChannelControl object</doc>
+	<binding source="BChannelControl" source-inherits="BControl" target="Haiku::ChannelControl" target-inherits="Haiku::Control">
+		<doc>Exposes the ChannelControl object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="channelCount" type="int32" action="input" default="1" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<doc>...</doc>
+				<param name="name" type="const char*" action="input" />
+				<param name="label" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="channelCount" type="int32" action="input" default="1" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Draw">
+				<doc>Draws the ChannelControl label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetFont">
+				<param name="font" type="const BFont*" action="input" />
+				<param name="properties" type="uint32" action="input" default="B_FONT_ALL" />
+				<return type="void" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+-->
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetModificationMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ModificationMessage">
+				<return type="BMessage*" action="input" />
+			</method>
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="InvokeChannels">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<param name="fromChannel" type="int32" action="input" default="0" />
+				<param name="channelCount" type="int32" action="input" default="-1" />
+				<param name="fromChannel" type="const bool" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="InvokeNotifyChannels">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<param name="kind" type="uint32" action="input" default="B_CONTROL_INVOKED" />
+				<param name="fromChannel" type="int32" action="input" default="0" />
+				<param name="channelCount" type="int32" action="input" default="-1" />
+				<param name="fromChannel" type="const bool" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Value">
+				<return type="int32" action="output" />
+			</method>
+			<method name="SetCurrentChannel">
+				<param name="channel" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="CurrentChannel">
+				<return type="int32" action="output" />
+			</method>
+			<method name="CountChannels">
+				<return type="int32" action="output" />
+			</method>
+			<method name="ValueFor">
+				<param name="channel" type="int32" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="GetValue">
+				<param name="values" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
+				<param name="fromChannel" type="int32" action="input" />
+				<param name="channelCount" type="int32" action="count[values]" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="SetValueFor">
+				<param name="channel" type="int32" action="input" />
+				<param name="value" type="int32" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetValue">
+				<param name="fromChannel" type="int32" action="input" />
+				<param name="channelCount" type="int32" action="count[values]" />
+				<param name="values" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetAllValue">
+				<param name="values" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetLimitsFor">
+				<param name="channel" type="int32" action="input" />
+				<param name="minimum" type="int32" action="input" />
+				<param name="maximum" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetLimitsFor">
+				<param name="channel" type="int32" action="input" />
+				<param name="minimum" type="int32" pass-as-pointer="true" action="output" />
+				<param name="maximum" type="int32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetLimitsFor" overload-name="SetLimitsForMultiple">
+				<param name="channel" type="int32" action="input" />
+				<param name="channelCount" type="int32" action="count[minima]" />
+				<param name="minima" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
+				<param name="maxima" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetLimitsFor" overload-name="GetLimitsForMultiple">
+				<param name="channel" type="int32" action="input" />
+				<param name="channelCount" type="int32" action="count[minima]" />
+				<param name="minima" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
+				<param name="maxima" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetLimits">
+				<param name="minimum" type="int32" action="input" />
+				<param name="maximum" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetLimits">
+				<param name="minimum" type="int32" pass-as-pointer="true" action="output" />
+				<param name="maximum" type="int32" pass-as-pointer="true" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SupportsIndividualLimits">
+				<return type="bool" />
+			</method>
+			<method name="SetLimitLabels">
+				<param name="minLabel" type="const char*" action="input" />
+				<param name="maxLabel" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="MinLimitLabel">
+				<return type="const char*" action="output" />
+			</method>
+			<method name="MaxLimitLabel">
+				<return type="const char*" action="output" />
+			</method>
+			<method name="SetLimitLabelsFor">
+				<param name="channel" type="int32" action="input" />
+				<param name="minLabel" type="const char*" action="input" />
+				<param name="maxLabel" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetLimitLabelsFor" overload-name="SetLimitLabelsForMultiple">
+				<param name="fromChannel" type="int32" action="input" />
+				<param name="channelCount" type="int32" action="count[minLabel]" />
+				<param name="minLabel" type="const char*" action="input" array-length="channelCount" />
+				<param name="maxLabel" type="const char*" action="input" array-length="channelCount" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="MinLimitLabelFor">
+				<param name="channel" type="int32" action="input" />
+				<return type="const char*" action="output" />
+			</method>
+			<method name="MaxLimitLabelFor">
+				<param name="channel" type="int32" action="input" />
+				<return type="const char*" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

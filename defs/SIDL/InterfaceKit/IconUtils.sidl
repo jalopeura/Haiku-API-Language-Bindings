@@ -1,0 +1,66 @@
+<bindings name="Haiku::IconUtils">
+	<doc>Exposes the IconUtils object</doc>
+	<binding source="BIconUtils" target="Haiku::IconUtils">
+		<doc>Exposes the IconUtils object</doc>
+		<functions>
+<!--
+This class is only used for static statics,
+so we do not need a constructor or destructor
+-->
+<!--
+			<constructor />
+			<constructor overload-name="FromIconUtils">
+				<param name="other" type="BIconUtils" action="input" />
+			</constructor>
+			<destructor />
+-->
+			<static name="GetIcon">
+				<param name="node" type="BNode*" action="input" />
+				<param name="vectorIconAttrName" type="const char*" action="input" />
+				<param name="smallIconAttrName" type="const char*" action="input" />
+				<param name="largeIconAttrName" type="const char*" action="input" />
+				<param name="size" type="icon_size" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="GetVectorIcon">
+				<param name="node" type="BNode*" action="input" />
+				<param name="attrName" type="const char*" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="GetVectorIcon" overload-name="GetVectorIconData">
+				<param name="node" type="BNode*" action="input" />
+				<param name="buffer" type="const uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="size" type="size_t" action="length[buffer]" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="GetCMAP8Icon">
+				<param name="node" type="BNode*" action="input" />
+				<param name="smallIconAttrName" type="const char*" action="input" />
+				<param name="largeIconAttrName" type="const char*" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="ConvertFromCMAP8">
+				<param name="source" type="BBitmap*" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="ConvertToCMAP8">
+				<param name="source" type="BBitmap*" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="ConvertFromCMAP8">
+				<param name="data" type="const uint8" pass-as-pointer="true" action="output" string-length="width*height*bytesPerRow" />
+				<param name="width" type="uint32" action="input" />
+				<param name="height" type="uint32" action="input" />
+				<param name="bytesPerRow" type="uint32" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+			<static name="ConvertToCMAP8">
+				<param name="data" type="const uint8" pass-as-pointer="true" action="output" string-length="width*height*bytesPerRow" />
+				<param name="width" type="uint32" action="input" />
+				<param name="height" type="uint32" action="input" />
+				<param name="bytesPerRow" type="uint32" action="input" />
+				<param name="result" type="BBitmap*" action="output" />
+			</static>
+		</functions>
+	</binding>
+</bindings>

@@ -1,0 +1,86 @@
+<bindings name="Haiku::Messenger">
+	<doc>Exposes the Messenger object</doc>
+	<binding source="BMessenger" target="Haiku::Messenger">
+		<doc>Exposes the Messenger object</doc>
+		<properties>
+			<property name="what" type="uint32">
+				<doc>Indicates the purpose of the Messenger.</doc>
+			</property>
+		</properties>
+		<functions>
+			<constructor overload-name="Empty">
+				<doc>Creates an empty Messenger.</doc>
+			</constructor>
+			<constructor>
+				<param name="signature" type="const char*" action="input" />
+				<param name="team" type="team_id" action="input" default="-1" />
+				<param name="result" type="status_t" action="error" success="B_OK" />
+			</constructor>
+			<constructor overload-name="Copy">
+				<param name="Messenger" type="BMessenger" action="input">
+					<doc>Contains a Messenger to be copied.</doc>
+				</param>
+			</constructor>
+			<destructor />
+<!-- Target -->
+			<method name="IsTargetLocal">
+				<return type="bool" />
+			</method>
+			<method name="Target">
+				<param name="Looper" type="BLooper*" pass-as-pointer="true" action="output" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="LockTarget">
+				<return type="bool" />
+			</method>
+			<method name="LockTargetWithTimeout">
+				<param name="timeout" type="bigtime_t" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Messager sending -->
+			<method name="SendMessage" overload-name="SendCommand">
+				<param name="command" type="uint32" action="input" />
+				<param name="replyTo" type="BHandler*" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SendMessage">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="replyTo" type="BHandler*" action="input" default="NULL" />
+				<param name="timeout" type="bigtime_t" action="input" default="B_INFINITE_TIMEOUT" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SendMessage" overload-name="SendMessageAndReplyToMessenger">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="replyTo" type="BMessenger" action="input" default="NULL" />
+				<param name="timeout" type="bigtime_t" action="input" default="B_INFINITE_TIMEOUT" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SendMessage" overload-name="SendCommandWithReply">
+				<param name="command" type="uint32" action="input" />
+				<param name="reply" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SendMessage" overload-name="SendMessageWithReply">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="reply" type="BMessage*" action="input" />
+				<param name="deliveryTimeout" type="bigtime_t" action="input" default="B_INFINITE_TIMEOUT" />
+				<param name="replyTimeout" type="bigtime_t" action="input" default="B_INFINITE_TIMEOUT" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- misc -->
+			<method name="IsValid">
+				<return type="bool" />
+			</method>
+			<method name="Team">
+				<return type="team_id" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+<!-- TODO: '<' operator not yet supported
+			<operator name="<" />
+-->
+		</operators>
+	</binding>
+</bindings>

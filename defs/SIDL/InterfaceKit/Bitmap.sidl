@@ -1,0 +1,167 @@
+<bindings name="Haiku::Bitmap">
+	<doc>Exposes the Bitmap object</doc>
+	<binding source="BBitmap" source-inherits="BArchivable" target="Haiku::Bitmap" target-inherits="Haiku::Archivable">
+		<doc>Exposes the Bitmap object</doc>
+		<functions>
+			<constructor overload-name="WithFlags">
+				<param name="bounds" type="BRect" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="colorSpace" type="color_space" action="input" />
+				<param name="bytesPerRow" type="int32" action="input" default="B_ANY_BYTES_PER_ROW" />
+				<param name="screenID" type="screen_id" action="input" default="B_MAIN_SCREEN_ID" />
+			</constructor>
+			<constructor>
+				<param name="bounds" type="BRect" action="input" />
+				<param name="colorSpace" type="color_space" action="input" />
+				<param name="acceptsViews" type="bool" action="input" default="false" />
+				<param name="needsContiguous" type="bool" action="input" default="false" />
+			</constructor>
+			<constructor overload-name="FromBitmap">
+				<param name="source" type="BBitmap*" action="input" />
+			</constructor>
+			<constructor overload-name="FromBitmapWithFlags">
+				<param name="source" type="BBitmap*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+			</constructor>
+			<constructor overload-name="FromBitmapWithQualifiers">
+				<param name="source" type="BBitmap*" action="input" />
+				<param name="acceptsViews" type="bool" action="input" default="false" />
+				<param name="needsContiguous" type="bool" action="input" default="false" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="InitCheck">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsValid">
+				<return type="bool" action="output" />
+			</method>
+			<method name="LockBits">
+				<param name="state" type="uint32" pass-as-pointer="true" action="input" default="NULL" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="UnlockBits" />
+			<method name="Area">
+				<return type="area_id" action="output" />
+			</method>
+			<method name="Bits">
+				<return type="void*" action="output" string-length="SELF.BitsLength()"/>
+			</method>
+			<method name="BitsLength">
+				<return type="int32" action="output" />
+			</method>
+			<method name="BytesPerRow">
+				<return type="int32" action="output" />
+			</method>
+			<method name="ColorSpace">
+				<return type="color_space" action="output" />
+			</method>
+			<method name="Bounds">
+				<return type="BRect" action="output" />
+			</method>
+			<method name="SetDrawingFlags">
+				<param name="flags" type="uint32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Flags">
+				<return type="uint32" action="input" />
+			</method>
+			<method name="SetBits">
+				<param name="data" type="const void*" action="input" string-length="length" />
+				<param name="length" type="int32" action="length[data]" />
+				<param name="offset" type="int32" action="input" />
+				<param name="colorSpace" type="color_space" action="input" />
+			</method>
+			<method name="ImportBits">
+				<param name="data" type="const void*" action="input" string-length="length" />
+				<param name="length" type="int32" action="length[data]" />
+				<param name="bpr" type="int32" action="input" />
+				<param name="offset" type="int32" action="input" />
+				<param name="colorSpace" type="color_space" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ImportBits" overload-name="ImportBitsWithQualifiers">
+				<param name="data" type="const void*" action="input" string-length="length" />
+				<param name="length" type="int32" action="length[data]" />
+				<param name="bpr" type="int32" action="input" />
+				<param name="offset" type="int32" action="input" />
+				<param name="colorSpace" type="color_space" action="input" />
+				<param name="from" type="BPoint" action="input" />
+				<param name="to" type="BPoint" action="input" />
+				<param name="width" type="int32" action="input" />
+				<param name="height" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ImportBits" overload-name="ImportBitsFromBitmap">
+				<param name="bitmap" type="BBitmap*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ImportBits" overload-name="ImportBitsFromBitmapWithQualifiers">
+				<param name="bitmap" type="BBitmap*" action="input" />
+				<param name="from" type="BPoint" action="input" />
+				<param name="to" type="BPoint" action="input" />
+				<param name="width" type="int32" action="input" />
+				<param name="height" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetOverlayRestrictions">
+				<param name="restrictions" type="overlay_restrictions*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="AddChild">
+				<param name="view" type="BView*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="RemoveChild">
+				<param name="view" type="BView*" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="CountChildren">
+				<return type="int32" action="output" />
+			</method>
+			<method name="ChildAt">
+				<param name="index" type="int32" action="input" />
+				<return type="BView*" action="output" must-not-delete="true" />
+			</method>
+			<method name="FindView">
+				<param name="viewName" type="const char*" action="input" />
+				<return type="BView*" must-not-delete="true" />
+			</method>
+			<method name="FindView" overload-name="FindViewAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="BView*" must-not-delete="true" />
+			</method>
+			<method name="Lock">
+				<return type="bool" />
+			</method>
+			<method name="Unlock" />
+			<method name="IsLocked">
+				<return type="bool" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_BITMAP_CLEAR_TO_WHITE" type="int" group="flags" />
+			<constant name="B_BITMAP_ACCEPTS_VIEWS" type="int" group="flags" />
+			<constant name="B_BITMAP_IS_AREA" type="int" group="flags" />
+			<constant name="B_BITMAP_IS_LOCKED" type="int" group="flags" />
+			<constant name="B_BITMAP_IS_CONTIGUOUS" type="int" group="flags" />
+			<constant name="B_BITMAP_IS_OFFSCREEN" type="int" group="flags" />
+			<constant name="B_BITMAP_WILL_OVERLAY" type="int" group="flags" />
+			<constant name="B_BITMAP_RESERVE_OVERLAY_CHANNEL" type="int" group="flags" />
+			<constant name="B_BITMAP_NO_SERVER_LINK" type="int" group="flags" />
+			<constant name="B_ANY_BYTES_PER_ROW" type="int" group="" />
+		</constants>
+	</binding>
+</bindings>

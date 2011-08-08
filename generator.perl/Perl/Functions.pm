@@ -201,7 +201,6 @@ sub generate_xs {
 					push @input, "SV* $param->{name}_sv;";
 					push @xsargs, $param->name . '_sv';
 					my $options = {
-						pass_as_pointer => $param->pass_as_pointer,
 						suffix => '_sv'	# use a suffix on the variable name
 					};
 					if ($param->pass_as_pointer) {
@@ -303,7 +302,18 @@ sub generate_xs {
 	if ($retcount) {
 		for my $output (@outputs) {
 			my $type = $output->type;
-			if ($type->has('target')) {
+			if ($output->is_array_or_string) {
+				my $options = {
+					suffix => '_sv'	# use a suffix on the variable name
+				};
+				
+				my ($defs, $code) = $output->output_converter($output->name, $options);
+				push @init,
+					@$defs;
+				push @postcode,
+					 @$code;
+			}
+			elsif ($type->has('target')) {
 				my $retname = $output->name;
 				my $svname = $retname . '_sv';
 #				push @init, "SV* $svname = newSV(0);	// iterating through outputs";
@@ -333,20 +343,7 @@ sub generate_xs {
 					push @postcode,
 						qq{$svname = newSVsv(create_perl_object((void*)&$retname, $class, $mnd));};
 				}
-				
 			}
-			elsif ($output->is_array_or_string) {
-				my $options = {
-					pass_as_pointer => $output->pass_as_pointer,
-					suffix => '_sv'	# use a suffix on the variable name
-				};
-				
-				my ($defs, $code) = $output->output_converter($output->name, $options);
-				push @init,
-					@$defs;
-				push @postcode,
-					 @$code;
-			}	
 		}
 		
 		if ($retcount > 1) {

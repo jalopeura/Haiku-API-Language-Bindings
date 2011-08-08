@@ -1,0 +1,56 @@
+<bindings name="Haiku::Picture">
+	<doc>Exposes the Picture object</doc>
+	<binding source="BPicture" source-inherits="BArchivable" target="Haiku::Picture" target-inherits="Haiku::Archivable">
+		<doc>Exposes the Picture object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromPicture">
+				<param name="Picture" type="BPicture*" action="input" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Play">
+				<param name="callbackTable" type="void*" pass-as-pointer="true" action="input" array-length="tableEntries" />
+				<param name="tableEntries" type="bool" default="true" action="count[callbackTable]" />
+				<param name="userData" type="void*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</event>
+-->
+<!-- TODO: BDataIO not yet implemented
+			<method name="Flatten">
+				<param name="stream" type="BDataIO*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unflatten">
+				<param name="stream" type="BDataIO*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+		</functions>
+		<constants>
+			<constant name="B_Picture_CLEAR_TO_WHITE" type="int" group="flags" />
+			<constant name="B_Picture_ACCEPTS_VIEWS" type="int" group="flags" />
+			<constant name="B_Picture_IS_AREA" type="int" group="flags" />
+			<constant name="B_Picture_IS_LOCKED" type="int" group="flags" />
+			<constant name="B_Picture_IS_CONTIGUOUS" type="int" group="flags" />
+			<constant name="B_Picture_IS_OFFSCREEN" type="int" group="flags" />
+			<constant name="B_Picture_WILL_OVERLAY" type="int" group="flags" />
+			<constant name="B_Picture_RESERVE_OVERLAY_CHANNEL" type="int" group="flags" />
+			<constant name="B_Picture_NO_SERVER_LINK" type="int" group="flags" />
+			<constant name="B_ANY_BYTES_PER_ROW" type="int" group="" />
+		</constants>
+	</binding>
+</bindings>

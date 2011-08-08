@@ -3,6 +3,7 @@
 	<bundle>
 		<file name="ApplicationKit/ApplicationKit.sidl" />
 		<file name="InterfaceKit/InterfaceKit.sidl" />
+		<file name="StorageKit/StorageKit.sidl" />
 		<file name="SupportKit/SupportKit.sidl" />
 	</bundle>
 </bindings>

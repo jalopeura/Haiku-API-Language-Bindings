@@ -1,0 +1,151 @@
+<bindings name="Haiku::ColorControl">
+	<doc>Exposes the ColorControl object</doc>
+	<binding source="BColorControl" source-inherits="BControl" target="Haiku::ColorControl" target-inherits="Haiku::Control">
+		<doc>Exposes the ColorControl object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="start" type="BPoint" action="input" />
+				<param name="layout" type="color_control_layout" action="input" />
+				<param name="cellSize" type="float" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" default="NULL" />
+				<param name="useOffscreen" type="bool" action="input" default="false" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BLayout object not yet implemented
+			<method name="SetLayout">
+				<param name="layout" type="BLayout*" action="input" />
+			</method>
+-->
+			<method name="SetValue" overload-name="SetValueAsColor">
+				<param name="color" type="rgb_color" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetValue">
+				<param name="color_value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="ValueAsColor">
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="SetEnabled">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="Draw">
+				<doc>Draws the ColorControl label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetCellSize">
+				<param name="size" type="float" action="input" />
+				<return type="void" />
+			</method>
+			<method name="CellSize">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetLayout">
+				<param name="layout" type="color_control_layout" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Layout">
+				<return type="color_control_layout" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DetachedFromWindow" />
+-->
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+			<method name="ResizeToPreferred" />
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+		</functions>
+		<constants>
+			<constant name="B_CELLS_4x64"  type="int" group="color_control_layout" />
+			<constant name="B_CELLS_8x32"  type="int" group="color_control_layout" />
+			<constant name="B_CELLS_16x16" type="int" group="color_control_layout" />
+			<constant name="B_CELLS_32x8"  type="int" group="color_control_layout" />
+			<constant name="B_CELLS_64x4"  type="int" group="color_control_layout" />
+		</constants>
+	</binding>
+</bindings>

@@ -1,0 +1,31 @@
+<bindings name="Haiku::EntryList">
+	<doc>Exposes the EntryList object</doc>
+	<binding source="BEntryList" target="Haiku::EntryList">
+		<doc>Exposes the EntryList object</doc>
+		<functions>
+			<constructor />
+			<destructor />
+			<method name="GetNextEntry">
+				<param name="entry" type="BEntry*" action="output" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextRef">
+				<param name="ref" type="entry_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextDirents">
+				<param name="buffer" type="dirent*" action="output" />
+				<param name="length" type="size_t" action="input" />
+				<param name="count" type="int32" action="input" default="INT_MAX" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="Rewind">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="CountEntries">
+				<return type="int32" action="output" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

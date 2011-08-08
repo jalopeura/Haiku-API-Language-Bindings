@@ -1,0 +1,35 @@
+<bindings name="Haiku::GradientConic">
+	<doc>Exposes the GradientConic object</doc>
+	<binding source="BGradientConic" source-inherits="BGradient" target="Haiku::GradientConic" target-inherits="Haiku::Gradient">
+		<doc>Exposes the GradientConic object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromPointAndAngle">
+				<param name="center" type="const BPoint" action="input" />
+				<param name="angle" type="float" action="input" />
+			</constructor>
+			<constructor overload-name="FromXYAndAngle">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+				<param name="angle" type="float" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Center">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetCenter">
+				<param name="center" type="BPoint" action="input" />
+			</method>
+			<method name="SetCenter" overload-name="SetCenterFromXY">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+			</method>
+			<method name="Angle">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetAngle">
+				<param name="angle" type="float" action="input" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

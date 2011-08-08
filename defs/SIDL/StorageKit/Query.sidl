@@ -1,0 +1,119 @@
+<bindings name="Haiku::Query">
+	<doc>Exposes the Query object</doc>
+	<binding source="BQuery" source-inherits="BEntryList" target="Haiku::Query" target-inherits="Haiku::EntryList">
+		<doc>Exposes the Query object</doc>
+		<functions>
+			<constructor />
+			<destructor />
+			<method name="Clear">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushAttr">
+				<param name="attrName" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushOp">
+				<param name="op" type="query_op" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushUint32">
+				<param name="value" type="uint32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushInt32">
+				<param name="value" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushUint64">
+				<param name="value" type="uint64" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushInt64">
+				<param name="value" type="int64" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushFloat">
+				<param name="value" type="float" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushDouble">
+				<param name="value" type="double" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushString">
+				<param name="value" type="const char*" action="input" />
+				<param name="caseInsensitive" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PushDate">
+				<param name="date" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetVolume">
+				<param name="volume" type="const BVolume*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetPredicate">
+				<param name="expression" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTarget">
+				<param name="messenger" type="BMessenger" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="IsLive">
+				<return type="bool" action="output" />
+			</method>
+			<method name="GetPredicate">
+				<param name="buffer" type="char" pass-as-pointer="true" string-length="SELF.PredicateLength()" action="output" />
+				<param name="length" type="size_t" action="input" default="SELF.PredicateLength()" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="PredicateLength">
+				<return type="size_t" action="output" />
+			</method>
+			<method name="TargetDevice">
+				<return type="dev_t" action="output" />
+			</method>
+			<method name="Fetch">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextEntry">
+				<param name="entry" type="BEntry*" action="output" />
+				<param name="traverse" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextRef">
+				<param name="ref" type="entry_ref*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextDirents">
+				<param name="buffer" type="dirent*" action="output" />
+				<param name="length" type="size_t" action="input" />
+				<param name="count" type="int32" action="input" default="INT_MAX" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="Rewind">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="CountEntries">
+				<return type="int32" action="output" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_INVALID_OP" type="int" group="query_op" />
+			<constant name="B_EQ" type="int" group="query_op" />
+			<constant name="B_GT" type="int" group="query_op" />
+			<constant name="B_GE" type="int" group="query_op" />
+			<constant name="B_LT" type="int" group="query_op" />
+			<constant name="B_LE" type="int" group="query_op" />
+			<constant name="B_NE" type="int" group="query_op" />
+			<constant name="B_CONTAINS" type="int" group="query_op" />
+			<constant name="B_BEGINS_WITH" type="int" group="query_op" />
+			<constant name="B_ENDS_WITH" type="int" group="query_op" />
+			<constant name="B_AND" type="int" group="query_op" />
+			<constant name="B_OR" type="int" group="query_op" />
+			<constant name="B_NOT" type="int" group="query_op" />
+		</constants>
+	</binding>
+</bindings>

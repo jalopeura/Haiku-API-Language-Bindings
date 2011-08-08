@@ -8,8 +8,7 @@
 		<file name="Invoker.h" />
 		<file name="Looper.h" />
 		<file name="Message.h" />
-<!-- TODO: Move this entry to StorageKit when Storage Kit is defined -->
-		<file name="Entry.h" />
+		<file name="Messenger.h" />
 	</include>
 	<link>
 		<lib name="libbe" />
@@ -50,6 +49,8 @@ you need to define those types in this section.
 		<type name="BPoint"       builtin="object"     target="Haiku::Point" />
 		<type name="BRect"        builtin="object"     target="Haiku::Rect" />
 		<type name="BWindow*"     builtin="object_ptr" target="Haiku::Window" />
+		<type name="entry_ref*"   builtin="object_ptr" target="Haiku::entry_ref" />
+		<type name="entry_ref"    builtin="object"     target="Haiku::entry_ref" />
 	</types>
 	<import>
 		<!-- ancestor classes must be defined before the descendant classes -->
@@ -60,6 +61,7 @@ you need to define those types in this section.
 		<file name="Cursor.sidl" />
 		<file name="Invoker.sidl" />
 		<file name="Message.sidl" />
+		<file name="Messenger.sidl" />
 	</import>
 	<binding source="ApplicationKit" target="Haiku::ApplicationKit">
 		<doc>Exposes the Haiku Application Kit.</doc>
@@ -164,31 +166,5 @@ you need to define those types in this section.
 			<constant name="B_CONTROL_INVOKED" type="int" group="commands" />
 			<constant name="B_CONTROL_MODIFIED" type="int" group="commands" />
 		</constants>
-	</binding>
-<!-- TODO: move entry_ref to Storage Kit when Storage Kit is defined -->
-	<binding source="entry_ref" target="Haiku::entry_ref">
-		<doc>Exposes the entry_ref struct</doc>
-		<properties>
-			<property name="device"    type="dev_t" />
-			<property name="directory" type="ino_t" />
-			<property name="name"      type="char*" />
-		</properties>
-		<functions>
-			<constructor>
-				<param name="device" type="dev_t"       action="input" />
-				<param name="dir"    type="ino_t"       action="input" />
-				<param name="name"   type="const char*" action="input" />
-			</constructor>
-			<constructor overload-name="Empty">
-			</constructor>
-			<constructor overload-name="FromEntryRef">
-				<param name="ref" type="entry_ref" action="input" />
-			</constructor>
-			<destructor />
-			<method name="set_name">
-				<param name="name" type="const char*" action="input" />
-				<return type="status_t" action="error" success="B_OK" />
-			</method>
-		</functions>
 	</binding>
 </bindings>

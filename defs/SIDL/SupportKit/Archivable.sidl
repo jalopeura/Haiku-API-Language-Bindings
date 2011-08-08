@@ -166,11 +166,9 @@
 			</plain>
 			<!-- find_instantiation_func unimplemented because it returns a function pointer (no good to us in a target language) -->
 		</functions>
-<!-- TODO: Why are these not working?
 		<constants>
-			<constant name="B_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
-			<constant name="B_DONT_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
+			<constant name="BUnarchiver::B_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
+			<constant name="BUnarchiver::B_DONT_ASSUME_OWNERSHIP" type="int" group="ownership_policy" />
 		</constants>
--->
 	</binding>
 </bindings>

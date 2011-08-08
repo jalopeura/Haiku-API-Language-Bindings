@@ -1,0 +1,143 @@
+<bindings name="Haiku::Node">
+	<doc>Exposes the Node object</doc>
+	<binding source="BNode" source-inherits="BStatable" target="Haiku::Node" target-inherits="Haiku::Statable">
+		<doc>Exposes the Node object</doc>
+		<functions>
+			<constructor overload-name="Empty" />
+			<constructor overload-name="FromEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+			</constructor>
+			<constructor overload-name="FromEntry">
+				<param name="entry" type="BEntry*" action="input" />
+			</constructor>
+			<constructor>
+				<param name="path" type="const char*" action="input" />
+			</constructor>
+<!-- TODO: BDirectory object not yet implemented
+			<constructor>
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="path" type="const char*" action="input" />
+			</constructor>
+-->
+			<constructor overload-name="FromNode">
+				<param name="node" type="const BNode" action="input" />
+			</constructor>
+			<destructor />
+			<method name="InitCheck">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetStat">
+				<param name="stat" type="stat*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo" overload-name="SetToEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo" overload-name="SetToEntry">
+				<param name="entry" type="const BEntry*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo">
+				<param name="path" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="SetTo" overload-name="SetToDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="path" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="Unset" />
+			<method name="Lock">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Unlock">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Sync">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="WriteAttr">
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="type_code" action="input" />
+				<param name="offset" type="off_t" action="input" />
+				<param name="buffer" type="const void*" action="input" string-length="len" />
+				<param name="len" type="size_t" action="length[buffer]" />
+				<return type="ssize_t" action="output" />
+			</method>
+			<method name="ReadAttr">
+				<param name="name" type="const char*" action="input" />
+				<param name="type" type="type_code" action="input" />
+				<param name="offset" type="off_t" action="input" />
+				<param name="buffer" type="void*" action="input" string-length="len" />
+				<param name="len" type="size_t" action="length[buffer]" />
+				<return type="ssize_t" action="output" />
+			</method>
+			<method name="RemoveAttr">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="RenameAttr">
+				<param name="oldname" type="const char*" action="input" />
+				<param name="newname" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetAttrInfo">
+				<param name="name" type="const char*" action="input" />
+				<param name="info" type="attr_info*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="GetNextAttrName">
+				<param name="buffer" type="char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="RewindAttrs">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BString object not yet implemented
+			<method name="WriteAttrString">
+				<param name="name" type="const char*" action="input" />
+				<param name="data" type="const BString*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ReadAttrString">
+				<param name="name" type="const char*" action="input" />
+				<param name="result" type="const BString*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+-->
+			<method name="Dup">
+				<return type="int" action="output" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+	<binding source="node_ref" target="Haiku::node_ref">
+		<doc>Exposes the node_ref struct</doc>
+		<properties>
+			<property name="device" type="dev_t" />
+			<property name="node"   type="ino_t" />
+		</properties>
+		<functions>
+			<constructor>
+			</constructor>
+			<constructor overload-name="FromNodeRef">
+				<param name="ref" type="node_ref" action="input" />
+			</constructor>
+			<destructor />
+			<method name="set_name">
+				<param name="name" type="const char*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+</bindings>

@@ -1,0 +1,40 @@
+<bindings name="Haiku::GradientLinear">
+	<doc>Exposes the GradientLinear object</doc>
+	<binding source="BGradientLinear" source-inherits="BGradient" target="Haiku::GradientLinear" target-inherits="Haiku::Gradient">
+		<doc>Exposes the GradientLinear object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromPoints">
+				<param name="start" type="const BPoint" action="input" />
+				<param name="end" type="const BPoint" action="input" />
+			</constructor>
+			<constructor overload-name="FromXYs">
+				<param name="x1" type="float" action="input" />
+				<param name="y1" type="float" action="input" />
+				<param name="x2" type="float" action="input" />
+				<param name="y2" type="float" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Start">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetStart">
+				<param name="start" type="BPoint" action="input" />
+			</method>
+			<method name="SetStart" overload-name="SetStartFromXY">
+				<param name="x1" type="float" action="input" />
+				<param name="y1" type="float" action="input" />
+			</method>
+			<method name="End">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetEnd">
+				<param name="end" type="BPoint" action="input" />
+			</method>
+			<method name="SetEnd" overload-name="SetEndFromXY">
+				<param name="x2" type="float" action="input" />
+				<param name="y2" type="float" action="input" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

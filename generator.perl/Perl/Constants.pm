@@ -77,6 +77,12 @@ package Perl::Constant;
 use strict;
 our @ISA = qw(Constant Perl::BaseObject);
 
+sub finalize_upgrade {
+	my ($self) = @_;
+	
+	$self->{name}=~s/^.*::([^:]+)$/$1/;
+}
+
 sub type {
 	my ($self) = @_;
 	unless ($self->{type}) {

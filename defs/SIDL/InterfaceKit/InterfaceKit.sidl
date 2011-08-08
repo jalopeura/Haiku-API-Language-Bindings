@@ -3,19 +3,38 @@
 	<include>
 		<file name="Application.h" /> <!-- to get be_app for locking -->
 		<file name="Alert.h" />
+		<file name="Bitmap.h" />
 		<file name="Box.h" />
 		<file name="Button.h" />
+		<file name="ChannelControl.h" />
+		<file name="ChannelSlider.h" />
 		<file name="CheckBox.h" />
+		<file name="ColorControl.h" />
 		<file name="Control.h" />
 		<file name="Font.h" />
+		<file name="Gradient.h" />
+		<file name="GradientConic.h" />
+		<file name="GradientDiamond.h" />
+		<file name="GradientLinear.h" />
+		<file name="GradientRadial.h" />
+		<file name="GradientRadialFocus.h" />
+		<file name="GraphicsDefs.h" />
+		<file name="IconUtils.h" />
+		<file name="InterfaceDefs.h" />
 		<file name="Menu.h" />
+		<file name="MultiChannelControl.h" />
 		<file name="ListItem.h" />
 		<file name="ListView.h" />
 		<file name="MenuBar.h" />
 		<file name="MenuField.h" />
 		<file name="MenuItem.h" />
+		<file name="OptionControl.h" />
+		<file name="OptionPopUp.h" />
 		<file name="OutlineListView.h" />
+		<file name="Picture.h" />
+		<file name="PictureButton.h" />
 		<file name="Point.h" />
+		<file name="Polygon.h" />
 		<file name="PopUpMenu.h" />
 		<file name="RadioButton.h" />
 		<file name="Rect.h" />
@@ -23,6 +42,9 @@
 		<file name="ScrollBar.h" />
 		<file name="ScrollView.h" />
 		<file name="SeparatorItem.h" />
+		<file name="Shape.h" />
+		<file name="Slider.h" />
+		<file name="StatusBar.h" />
 		<file name="StringItem.h" />
 		<file name="StringView.h" />
 		<file name="TabView.h" />
@@ -47,11 +69,13 @@
 		<type name="alert_type"       builtin="enum" />
 		<type name="alignment"        builtin="enum" />
 		<type name="alpha_function"   builtin="enum" />
+		<type name="area_id"          builtin="long" /><!-- int32 -->
 		<type name="bigtime_t"        builtin="long" /><!-- int64 -->
 		<type name="border_style"     builtin="enum" />
 		<type name="button_spacing"   builtin="enum" />
 		<type name="button_width"     builtin="enum" />
 		<type name="cap_mode"         builtin="enum" />
+		<type name="color_control_layout" builtin="enum" />
 		<type name="color_space"      builtin="enum" />
 		<type name="color_which"      builtin="enum" />
 		<type name="drawing_mode"     builtin="enum" />
@@ -60,6 +84,8 @@
 		<type name="font_file_format" builtin="enum" />
 		<type name="font_metric_mode" builtin="enum" />
 		<type name="font_style"       builtin="char" max-string-length="B_FONT_STYLE_LENGTH + 1" />
+		<type name="hash_mark_location" builtin="enum" />
+		<type name="icon_size"        builtin="enum" />
 		<type name="join_mode"        builtin="enum" />
 		<type name="list_view_type"   builtin="enum" />
 		<type name="menu_bar_border"  builtin="enum" />
@@ -70,6 +96,8 @@
 		<type name="size_t"           builtin="long" /><!-- __SIZE_TYPE__ -->
 		<type name="source_alpha"     builtin="enum" />
 		<type name="status_t"         builtin="long" /><!-- int32 -->
+		<type name="thumb_style"      builtin="enum" />
+		<type name="Type"             builtin="enum" />
 		<type name="undo_state"       builtin="enum" />
 		<type name="window_alignment" builtin="enum" />
 		<type name="window_look"      builtin="enum" />
@@ -87,6 +115,8 @@ you need to define those types in this section.
 		<type name="BInvoker*"    builtin="object_ptr" target="Haiku::Invoker" />
 		<type name="BMessage"     builtin="object"     target="Haiku::Message" />
 		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
+		<type name="BMessenger*"  builtin="object_ptr" target="Haiku::Messenger" />
+		<type name="BNode*"       builtin="object_ptr" target="Haiku::Menu" />
 <!-- This fixes an issue with order of definition -->
 		<type name="BMenu*"       builtin="object_ptr" target="Haiku::Menu" />
 	</types>
@@ -98,8 +128,16 @@ you need to define those types in this section.
 			<file name="Box.sidl" />
 			<file name="Control.sidl" />
 				<file name="Button.sidl" />
+				<file name="ChannelControl.sidl" />
+				<file name="ChannelSlider.sidl" />
 				<file name="CheckBox.sidl" />
+				<file name="ColorControl.sidl" />
+				<file name="MultiChannelControl.sidl" />
+				<file name="OptionControl.sidl" />
+				<file name="OptionPopUp.sidl" />
+				<file name="PictureButton.sidl" />
 				<file name="RadioButton.sidl" />
+				<file name="Slider.sidl" />
 				<file name="TextControl.sidl" />
 			<file name="ListView.sidl" />	<!-- also inherits from Invoker -->
 				<file name="OutlineListView.sidl" />
@@ -109,6 +147,7 @@ you need to define those types in this section.
 			<file name="MenuField.sidl" />
 			<file name="ScrollBar.sidl" />
 			<file name="ScrollView.sidl" />
+			<file name="StatusBar.sidl" />
 			<file name="StringView.sidl" />
 			<file name="TabView.sidl" />
 			<file name="TextView.sidl" />
@@ -116,12 +155,23 @@ you need to define those types in this section.
 			<file name="MenuItem.sidl" />
 				<file name="SeparatorItem.sidl" />
 		<!-- Archivable (defined in SupportKit) -->
+			<file name="Bitmap.sidl" />
+			<file name="Gradient.sidl" />
+			<file name="GradientConic.sidl" />
+			<file name="GradientDiamond.sidl" />
+			<file name="GradientLinear.sidl" />
+			<file name="GradientRadial.sidl" />
+			<file name="GradientRadialFocus.sidl" />
 			<file name="ListItem.sidl" />
 				<file name="StringItem.sidl" />
 		<file name="Font.sidl" />
+		<file name="IconUtils.sidl" />
+		<file name="Picture.sidl" />
 		<file name="Point.sidl" />
+		<file name="Polygon.sidl" />
 		<file name="Rect.sidl" />
 		<file name="Screen.sidl" />
+		<file name="Shape.sidl" />
 	</import>
 	<binding source="InterfaceKit" target="Haiku::InterfaceKit">
 		<doc>Exposes the Haiku Interface Kit</doc>
@@ -204,12 +254,12 @@ you need to define those types in this section.
 				<param name="info" type="key_info*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- TODO: Figure this problem out
+<!-- TODO: Figure this problem out -->
 			<plain name="get_key_map">
 				<param name="map" type="key_map*" pass-as-pointer="true" action="output" />
 				<param name="keyBuffer" type="char*" pass-as-pointer="true" action="output" />
 			</plain>
--->
+<!-- -->
 			<plain name="get_keyboard_id">
 				<param name="id" type="uint16" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -270,13 +320,11 @@ you need to define those types in this section.
 				<param name="buttons" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- TODO: BBitmap object not yet implemented
 			<plain name="get_mouse_bitmap">
 				<param name="bitmap" type="BBitmap*" pass-as-pointer="true" action="output" />
 				<param name="hotspot" type="BPoint*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
--->
 			<plain name="set_accept_first_click">
 				<param name="acceptFirstClick" type="bool" action="input" />
 			</plain>

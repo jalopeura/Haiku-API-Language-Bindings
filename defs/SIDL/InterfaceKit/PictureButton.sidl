@@ -1,0 +1,153 @@
+<bindings name="Haiku::PictureButton">
+	<doc>Exposes the PictureButton object</doc>
+	<binding source="BPictureButton" source-inherits="BControl" target="Haiku::PictureButton" target-inherits="Haiku::Control">
+		<doc>Exposes the PictureButton object</doc>
+		<functions>
+			<constructor>
+				<doc>...</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="off" type="BPicture*" action="input" />
+				<param name="on" type="BPicture*" action="input" />
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<param name="behavior" type="uint32" action="input" default="B_ONE_STATE_BUTTON" />
+				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
+			</constructor>
+			<constructor overload-name="FromArchive">
+				<doc>...</doc>
+				<param name="archive" type="BMessage*" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Instantiate">
+				<doc>Instantiate [b]must[/b] return a [name]Haiku::Archivable[/name]</doc>
+				<param name="data" type="BMessage*" action="input" />
+				<return type="BArchivable*" action="output" />
+			</method>
+			<method name="Archive">
+				<param name="data" type="BMessage*" action="output" />
+				<param name="deep" type="bool" default="true" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AttachedToWindow" />
+			<event name="DetachedFromWindow" />
+			<event name="AllAttached" />
+			<event name="AllDetached" />
+-->
+			<method name="ResizeToPreferred" />
+			<method name="GetPreferredSize">
+				<param name="width" type="float" pass-as-pointer="true" action="output" />
+				<param name="height" type="float" pass-as-pointer="true" action="output" />
+				<return type="void" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="FrameMoved">
+				<param name="newPosition" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="FrameResized">
+				<param name="newWidth"  type="float" action="input" />
+				<param name="newHeight" type="float" action="input" />
+				<return type="void" />
+			</event>
+			<event name="WindowActivated">
+				<param name="state" type="bool" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="Draw">
+				<doc>Draws the PictureButton label.</doc>
+				<param name="updateRect" type="BRect" action="input" />
+				<return type="void" />
+			</event>
+			<event name="KeyDown">
+				<param name="bytes" type="const char*" action="input" string-length="numBytes" />
+				<param name="numBytes" type="int32" action="length[bytes]" />
+				<return type="void" />
+			</event>
+			<event name="MessageReceived">
+				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="SetEnabledOn">
+				<param name="on" type="BPicture*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetEnabledOff">
+				<param name="off" type="BPicture*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetDisabledOn">
+				<param name="on" type="BPicture*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="SetDisabledOff">
+				<param name="off" type="BPicture*" action="input" />
+				<return type="void" />
+			</method>
+			<method name="EnabledOn">
+				<return type="BPicture*" action="output" />
+			</method>
+			<method name="EnabledOff">
+				<return type="BPicture*" action="output" />
+			</method>
+			<method name="DisabledOn">
+				<return type="BPicture*" action="output" />
+			</method>
+			<method name="DisabledOff">
+				<return type="BPicture*" action="output" />
+			</method>
+			<method name="SetBehavior">
+				<param name="behavior" type="uint32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Behavior">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetValue">
+				<param name="value" type="int32" action="input" />
+				<return type="void" />
+			</method>
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="ResolveSpecifier">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="specifier" type="BMessage*" action="input" />
+				<param name="form" type="int32" action="input" />
+				<param name="property" type="const char*" action="input" />
+				<return type="BHandler*" action="output" />
+			</method>
+			<method name="GetSupportedSuites">
+				<param name="data" type="BMessage*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+		</functions>
+		<constants>
+			<constant name="B_ONE_STATE_BUTTON" type="int" group="behavior" />
+			<constant name="B_TWO_STATE_BUTTON" type="int" group="behavior" />
+		</constants>
+	</binding>
+</bindings>

@@ -24,7 +24,7 @@ sub new {
 	my $self = bless {
 		_name   => 'root',
 		_folder => $folder,
-		_filename => $options{source},
+		_filename => [ $options{source} ],
 		_parser => new SGML::Parser(filename => $options{source}),
 		_imports_as_bundles => $options{imports_as_bundles},
 		source_type_prefix => 'SIDL',

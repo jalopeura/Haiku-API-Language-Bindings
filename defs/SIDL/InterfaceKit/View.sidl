@@ -167,7 +167,6 @@
 					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
 				</param>
 			</method>
-<!-- TODO: BBitmap object not yet implemented
 			<method name="DragMessage" overload-name="DragMessageWithBitmap">
 				<doc>Starts a drag-and-drop session.</doc>
 				<param name="message" type="BMessage*" action="input">
@@ -201,7 +200,6 @@
 					<doc>A handler that the destination View may use to send a reply message to; if NULL, the reply will be sent to the calling View.</doc>
 				</param>
 			</method>
--->
 			<method name="FindView">
 				<doc>Finds a child View by name.</doc>
 				<param name="name" type="const char*" action="input" />
@@ -272,7 +270,6 @@
 				<param name="region" type="BRegion" pass-as-pointer="true" action="output" />
 			</method>
 -->
-<!-- TODO: BPicture object note yet implemented
 			<method name="ClipToPicture">
 				<param name="picture" type="BPicture*" action="input" />
 				<param name="where" type="BPoint" default="B_ORIGIN" action="input" />
@@ -283,7 +280,6 @@
 				<param name="where" type="BPoint" default="B_ORIGIN" action="input" />
 				<param name="sync" type="bool" default="true" action="input" />
 			</method>
--->
 			<method name="SetDrawingMode">
 				<param name="mode" type="drawing_mode" action="input" />
 			</method>
@@ -323,7 +319,6 @@
 			<method name="ViewColor">
 				<return type="rgb_color" action="output" />
 			</method>
-<!-- TODO: BBitmap object not yet implemented
 			<method name="SetViewBitmap">
 				<param name="bitmap" type="BBitmap" action="input" />
 				<param name="srcRect" type="BRect" action="input" />
@@ -351,7 +346,6 @@
 				<param name="followFlags" type="uint32" default="B_FOLLOW_TOP | B_FOLLOW_LEFT" action="input" />
 				<param name="options" type="uint32" default="0" action="input" />
 			</method>
--->
 			<method name="ClearViewOverlay" />
 			<method name="SetHighColor">
 				<param name="c" type="rgb_color" action="input" />
@@ -435,13 +429,11 @@
 				<param name="color" type="rgb_color" action="input" />
 			</method>
 			<method name="EndLineArray" />
-<!-- TODO: BPolygon object not yet implemented
 			<method name="StrokePolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
--->
 			<method name="StrokePolygon" overload-name="StrokePolygonFromPointArray">
 				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
@@ -455,12 +447,10 @@
 				<param name="closed" type="bool" default="true" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BPolygon object not yet implemented
 			<method name="FillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
--->
 			<method name="FillPolygon" overload-name="FillPolygonFromPointArray">
 				<param name="pointArray" type="BPoint" pass-as-pointer="true" action="input" array-length="numPoints" />
 				<param name="numPoints" type="int32" action="count[pointArray]" />
@@ -472,7 +462,6 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BPolygon object not yet implemented, BGradient object not yet implemented
 			<method name="FillPolygon" overload-name="GradientFillPolygon">
 				<param name="polygon" type="BPolygon*" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
@@ -488,7 +477,6 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
 			<method name="StrokeTriangle">
 				<param name="point1" type="BPoint" action="input" />
 				<param name="point2" type="BPoint" action="input" />
@@ -515,7 +503,6 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillTriangle" overload-name="GradientFillTriangle">
 				<param name="point1" type="BPoint" action="input" />
 				<param name="point2" type="BPoint" action="input" />
@@ -529,7 +516,6 @@
 				<param name="bounds" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
 			<method name="StrokeRect">
 				<param name="rect" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -538,13 +524,11 @@
 				<param name="rect" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillRect" overload-name="GradientFillRect">
 				<param name="rect" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
-<!-- TODO: BRegion object not yet implemented, BGradient object not yet implemented
+<!-- TODO: BRegion object not yet implemented
 			<method name="FillRegion">
 				<param name="rect" type="BRegion*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -569,14 +553,13 @@
 				<param name="yRadius" type="float" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillRoundRect" overload-name="GradientFillRoundRect">
 				<param name="rect" type="BRect" action="input" />
 				<param name="xRadius" type="float" action="input" />
 				<param name="yRadius" type="float" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->			<method name="StrokeEllipse">
+			<method name="StrokeEllipse">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
 				<param name="yRadius" type="float" action="input" />
@@ -596,7 +579,6 @@
 				<param name="rect" type="BRect" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillEllipse" overload-name="GradientFillEllipse">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
@@ -607,7 +589,7 @@
 				<param name="rect" type="BRect" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->			<method name="StrokeArc">
+			<method name="StrokeArc">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
 				<param name="yRadius" type="float" action="input" />
@@ -639,7 +621,6 @@
 				<param name="arcAngle" type="float" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillArc" overload-name="GradientFillArc">
 				<param name="center" type="BPoint" action="input" />
 				<param name="xRadius" type="float" action="input" />
@@ -656,7 +637,6 @@
 				<param name="arcAngle" type="float" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
 			<method name="StrokeBezier">
 				<param name="controlPoints" type="BPoint*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -665,13 +645,10 @@
 				<param name="controlPoints" type="BPoint*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
 			</method>
-<!-- TODO: BGradient object not yet implemented
 			<method name="FillBezier" overload-name="GradientFillBezier">
 				<param name="controlPoints" type="BPoint*" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
-<!-- TODO: BShape object not yet implemented, BGradient object not yet implemented
 			<method name="StrokeShape">
 				<param name="shape" type="BShape*" action="input" />
 				<param name="p" type="pattern" default="B_SOLID_HIGH" action="input" />
@@ -684,12 +661,10 @@
 				<param name="shape" type="BShape*" action="input" />
 				<param name="gradient" type="BGradient" action="input" />
 			</method>
--->
 			<method name="CopyBits">
 				<param name="src" type="BRect" action="input" />
 				<param name="dst" type="BRect" action="input" />
 			</method>
-<!-- TODO: BBitmap object not yet implemented
 			<method name="DrawBitmapAsync" overload-name="DrawBitmapAsyncWithOptions">
 				<param name="aBitmap" type="BBitmap*" action="input" />
 				<param name="bitmapRect" type="BRect" action="input" />
@@ -734,7 +709,6 @@
 			<method name="DrawBitmap" overload-name="DrawBitmapToPenLocation">
 				<param name="aBitmap" type="BBitmap*" action="input" />
 			</method>
--->
 			<method name="DrawChar">
 				<param name="aChar" type="char" action="input" />
 			</method>
@@ -782,7 +756,7 @@
 			<method name="GetFont">
 				<param name="font" type="BFont*" action="output" />
 			</method>
-<!-- TODO: BString object not implemented yet
+<!-- TODO: BString object not yet implemented
 			<method name="TruncateString">
 				<param name="in_out" type="BString*" action="input" />
 				<param name="mode" type="uint32" action="input" />
@@ -826,7 +800,6 @@
 				<param name="filename" type="char*" action="input" />
 				<param name="offset" type="long" action="input" />
 			</method>
-<!-- TODO: BPicture object not yet implemented
 			<method name="BeginPicture">
 				<param name="aPicture" type="BPicture*" action="input" />
 			</method>
@@ -958,12 +931,10 @@
 				<return type="void" />
 			</method>
 			<method name="ResizeToPreferred" />
-<!-- TODO: BScrollBar object not yet implemented
 			<method name="ScrollBar">
 				<doc>Returns the View's ScrollBar, or NULL if there is no Scrollbar.</doc>
 				<return type="BScrollBar*" action="output" />
 			</method>
--->
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />
 				<param name="index" type="int32" action="input" />
@@ -1079,7 +1050,7 @@
 			<method name="SetToolTip" overload-name="SetTooltipWithText">
 				<param name="text" type="const char*" action="input" />
 			</method>
-<!-- TODO: BToolTIp object not yet implemented
+<!-- TODO: BToolTip object not yet implemented
 			<method name="SetToolTip">
 				<param name="tip" type="BToolTip*" action="input" />
 			</method>

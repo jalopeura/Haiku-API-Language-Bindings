@@ -1,0 +1,436 @@
+<bindings name="Haiku::ColumnListView">
+	<doc>Exposes the ColumnListView object</doc>
+	<binding source="BColumnListView" source-inherits="BView BInvoker" target="Haiku::ColumnListView" target-inherits="Haiku::View Haiku::Invoker">
+		<doc>Exposes the ColumnListView object</doc>
+		<functions>
+			<constructor>
+				<doc>Creates a ColumnListView.</doc>
+				<param name="frame" type="BRect" action="input" />
+				<param name="name" type="const char*" action="input" />
+				<param name="resizingMode" type="uint32" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="border" type="border_style" action="input" default="B_NO_BORDER" />
+				<param name="showHorizontalScrollbar" type="bool" action="input" default="true" />
+			</constructor>
+			<constructor overload-name="WithoutFrame">
+				<param name="name" type="const char*" action="input" />
+				<param name="flags" type="uint32" action="input" />
+				<param name="border" type="border_style" action="input" default="B_NO_BORDER" />
+				<param name="showHorizontalScrollbar" type="bool" action="input" default="true" />
+			</constructor>
+			<destructor />
+<!-- Events not yet implemented for this object
+			<event name="InitiateDrag">
+				<param name="where" type="BPoint" action="input" />
+				<param name="wasSelected" type="bool" action="input" />
+				<return type="bool" actionb="output" />
+			</event>
+			<event name="MessageDropped">
+				<param name="message" type="BMessage*" action="input" />
+				<param name="where" type="BPoint" action="input" />
+			</event>
+			<event name="ExpandOrCollapse">
+				<param name="row" type="BRow*" action="input" />
+				<param name="expand" type="bool" action="input" />
+			</event>
+-->
+			<method name="Invoke">
+				<param name="message" type="BMessage*" default="NULL" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="ItemInvoked" />
+-->
+			<method name="SetInvocationMessage">
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="InvocationMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="InvocationCommand">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="FocusRow">
+				<return type="BRow*" action="output" />
+			</method>
+			<method name="SetFocusRow">
+				<param name="row" type="BRow*" action="input" />
+				<param name="select" type="bool" action="input" default="false" />
+			</method>
+			<method name="SetFocusRow" overload-name="SetFocusRowByIndex">
+				<param name="index" type="int32" action="input" />
+				<param name="select" type="bool" action="input" default="false" />
+			</method>
+			<method name="SetMouseTrackingEnabled">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="SelectionMode">
+				<return type="list_view_type" action="output" />
+			</method>
+			<method name="Deselect">
+				<param name="row" type="BRow*" action="input" />
+			</method>
+			<method name="AddToSelection">
+				<param name="row" type="BRow*" action="input" />
+			</method>
+			<method name="DeselectAll" />
+			<method name="FocusRow">
+				<param name="lastSelected" type="BRow*" action="input" default="NULL" />
+				<return type="BRow*" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="SelectionChanged" />
+-->
+			<method name="SetSelectionMessage">
+				<param name="message" type="BMessage*" action="input" />
+			</method>
+			<method name="SelectionMessage">
+				<return type="BMessage*" action="output" />
+			</method>
+			<method name="SelectionCommand">
+				<return type="uint32" action="output" />
+			</method>
+			<method name="SetSelectionMode">
+				<param name="type" type="list_view_type" action="input" />
+			</method>
+			<method name="SetSortingEnabled">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="SortingEnabled">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetSortColumn">
+				<param name="column" type="BColumn*" action="input" />
+				<param name="add" type="bool" action="input" />
+				<param name="ascending" type="bool" action="input" />
+			</method>
+			<method name="ClearSortColumns" />
+			<method name="AddStatusView">
+				<param name="view" type="BView*" action="input" />
+			</method>
+			<method name="RemoveStatusView">
+				<return type="BView*" action="output" />
+			</method>
+			<method name="AddColumn">
+				<param name="column" type="BColumn*" action="input" />
+				<param name="logicalFieldIndex" type="int32" action="input" />
+			</method>
+			<method name="MoveColumn">
+				<param name="column" type="BColumn*" action="input" />
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="RemoveColumn">
+				<param name="column" type="BColumn*" action="input" />
+			</method>
+			<method name="CountColumns">
+				<return type="int32" action="output" />
+			</method>
+			<method name="ColumnAt">
+				<param name="index" type="int32" action="input" />
+				<return type="BColumn*" action="output" />
+			</method>
+			<method name="ColumnAt" overload-name="ColumnAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="BColumn*" action="output" />
+			</method>
+			<method name="SetColumnVisible">
+				<param name="column" type="BColumn*" action="input" />
+				<param name="isVisible" type="bool" action="input" />
+			</method>
+			<method name="SetColumnVisible" overload-name="SetColumnVisibleByIndex">
+				<param name="index" type="int32" action="input" />
+				<param name="isVisible" type="bool" action="input" />
+			</method>
+			<method name="IsColumnVisible">
+				<param name="index" type="int32" action="input" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetColumnFlags">
+				<param name="flags" type="column_flags" action="input" />
+			</method>
+			<method name="ResizeColumnToPreferred">
+				<param name="index" type="int32" action="input" />
+			</method>
+			<method name="ResizeAllColumnsToPreferred" />
+			<method name="RowAt">
+				<param name="index" type="int32" action="input" />
+				<param name="parent" type="BRow*" action="input" default="NULL"/>
+				<return type="BRow*" action="output" />
+			</method>
+			<method name="RowAt" overload-namename="RowAtPoint">
+				<param name="point" type="BPoint" action="input" />
+				<return type="BRow*" action="output" />
+			</method>
+			<method name="GetRowRect">
+				<param name="row" type="BRow*" action="input" />
+				<param name="rect" type="BPoint" pass-as-pointer="true" action="output" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="FindParent">
+				<param name="row" type="BRow*" action="input" />
+				<param name="parent" type="BRow*" pass-as-pointer="true" action="output" />
+				<param name="isVisible" type="bool" pass-as-pointer="true" action="output" />
+				<return type="bool" action="output" />
+			</method>
+			<method name="IndexOf">
+				<param name="row" type="BRow*" action="input" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="CountRows">
+				<param name="parent" type="BRow*" action="input" default="NULL" />
+				<return type="int32" action="output" />
+			</method>
+			<method name="AddRow">
+				<param name="row" type="BRow*" action="input" />
+				<param name="parent" type="BRow*" action="output" default="NULL" />
+			</method>
+			<method name="AddRow" overload-name="AddRowAtIndex">
+				<param name="row" type="BRow*" action="input" />
+				<param name="index" type="int32" action="input" />
+				<param name="parent" type="BRow*" action="output" default="NULL" />
+			</method>
+			<method name="ScrollTo">
+				<param name="row" type="const BRow*" action="input" />
+			</method>
+			<method name="ScrollTo" overload-name="ScrollToPoint">
+				<param name="row" type="BPoint" action="input" />
+			</method>
+			<method name="RemoveRow">
+				<param name="row" type="const BRow*" action="input" />
+			</method>
+			<method name="UpdateRow">
+				<param name="row" type="const BRow*" action="input" />
+			</method>
+			<method name="Clear" />
+			<method name="SetColor">
+				<param name="colorIndex" type="ColumnListViewColor" action="input" />
+				<param name="color" type="rgb_color" action="input" />
+			</method>
+			<method name="SetFont">
+				<param name="fontIndex" type="ColumnListViewFont" action="input" />
+				<param name="font" type="const BFont*" action="input" />
+				<param name="mask" type="uint32" action="input" default="B_FONT_ALL" />
+			</method>
+			<method name="Color">
+				<param name="colorIndex" type="ColumnListViewColor" action="input" />
+				<return type="rgb_color" action="output" />
+			</method>
+			<method name="Font">
+				<param name="fontIndex" type="ColumnListViewFont" action="input" />
+				<param name="font" type="BFont*" action="output" />
+			</method>
+			<method name="SuggestTextPosition">
+				<param name="row" type="const BRow*" action="input" />
+				<param name="column" type="const BColumn*" action="output" default="NULL" />
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetLatchWidth">
+				<param name="width" type="float" action="input" />
+			</method>
+			<method name="LatchWidth">
+				<return type="float" action="input" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="DrawLatch">
+				<param name="view" type="BView*" action="input" />
+				<param name="frame" type="BRect" action="input" />
+				<param name="type" type="LatchType" action="input" />
+				<param name="row" type="BRow*" action="input" />
+				<return type="void" />
+			</event>
+-->
+			<method name="MakeFocus">
+				<param name="focused" type="bool" default="true" action="input" />
+			</method>
+			<method name="SaveState">
+				<param name="archive" type="BMessage*" action="input" />
+			</method>
+			<method name="LoadState">
+				<param name="archive" type="BMessage*" action="input" />
+			</method>
+			<method name="ScrollView">
+				<return type="BView*" action="output" />
+			</method>
+			<method name="SetEditMode">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="Refresh" />
+<!-- TODO: BSize object not yet implemented
+			<method name="MinSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="MaxSize">
+				<return type="BSize" action="output" />
+			</method>
+			<method name="PreferredSize">
+				<return type="BSize" action="output" />
+			</method>
+-->
+			<method name="InvalidateLayout">
+				<param name="descendants" type="bool" default="false" action="input" />
+			</method>
+		</functions>
+		<constants>
+<!-- LatchType -->
+			<constant name="B_NO_LATCH" type="int" group="LatchType" />
+			<constant name="B_OPEN_LATCH" type="int" group="LatchType" />
+			<constant name="B_PRESSED_LATCH" type="int" group="LatchType" />
+			<constant name="B_CLOSED_LATCH" type="int" group="LatchType" />
+<!-- column_flags -->
+			<constant name="B_ALLOW_COLUMN_NONE" type="int" group="column_flags" />
+			<constant name="B_ALLOW_COLUMN_MOVE" type="int" group="column_flags" />
+			<constant name="B_ALLOW_COLUMN_RESIZE" type="int" group="column_flags" />
+			<constant name="B_ALLOW_COLUMN_POPUP" type="int" group="column_flags" />
+			<constant name="B_ALLOW_COLUMN_REMOVE" type="int" group="column_flags" />
+<!-- ColumnListViewColor -->
+			<constant name="B_COLOR_BACKGROUND" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_TEXT" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_ROW_DIVIDER" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_SELECTION" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_SELECTION_TEXT" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_NON_FOCUS_SELECTION" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_EDIT_BACKGROUND" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_EDIT_TEXT" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_HEADER_BACKGROUND" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_HEADER_TEXT" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_SEPARATOR_LINE" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_SEPARATOR_BORDER" type="int" group="ColumnListViewColor" />
+			<constant name="B_COLOR_TOTAL" type="int" group="ColumnListViewColor" />
+<!-- ColumnListViewFont -->
+			<constant name="B_FONT_ROW" type="int" group="ColumnListViewFont" />
+			<constant name="B_FONT_HEADER" type="int" group="ColumnListViewFont" />
+			<constant name="B_FONT_TOTAL" type="int" group="ColumnListViewFont" />
+		</constants>
+	</binding>
+	<binding source="BColumn" target="Haiku::Column">
+		<functions>
+			<constructor>
+				<param name="width" type="float" action="input" />
+				<param name="minWidth" type="float" action="input" />
+				<param name="maxWidth" type="float" action="input" />
+				<param name="align" type="alignment" action="input" default="B_ALIGN_LEFT" />
+			</constructor>
+			<destructor />
+			<method name="Width">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetWidth">
+				<param name="width" type="float" action="input" />
+			</method>
+			<method name="MinWidth">
+				<return type="float" action="output" />
+			</method>
+			<method name="MaxWidth">
+				<return type="float" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="DrawTitle">
+				<param name="rect" type="BRect" action="input" />
+				<param name="targetView" type="BView*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="DrawField">
+				<param name="field" type="BField*" action="input" />
+				<param name="rect" type="BRect" action="input" />
+				<param name="targetView" type="BView*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="Compare fields">
+				<param name="field1" type="BField*" action="input" />
+				<param name="field2" type="BField*" action="input" />
+				<return type="int" />
+			</event>
+			<event name="MouseMoved">
+				<param name="point" type="BPoint" action="input" />
+				<param name="transit" type="uint32" action="input" />
+				<param name="message" type="BMessage*" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseDown">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+			<event name="MouseUp">
+				<param name="point" type="BPoint" action="input" />
+				<return type="void" />
+			</event>
+-->
+<!-- BString object not yet implemented
+			<method name="GetColumnName">
+				<param name="into" type="BString*" action="output" />
+			</method>
+-->
+			<method name="GetPreferredWidth">
+				<param name="field" type="BField*" action="input" />
+				<param name="parent" type="BView*" action="input" />
+			</method>
+			<method name="IsVisible">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetVisible">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="WantsEvents">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetWantsEvents">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="ShowHeading">
+				<return type="bool" action="output" />
+			</method>
+			<method name="SetShowHeading">
+				<param name="state" type="bool" action="input" />
+			</method>
+			<method name="Alignment">
+				<return type="alignment" action="output" />
+			</method>
+			<method name="SetAlignment">
+				<param name="align" type="alignment" action="input" />
+			</method>
+			<method name="LogicalFieldNum">
+				<return type="int32" action="output" />
+			</method>
+<!-- Events not yet implemented for this object
+			<event name="AcceptsField">
+				<param name="field" type="const BField*" action="input" />
+				<return type="bool" />
+			</event>
+-->
+		</functions>
+	</binding>
+	<binding source="BRow" target="Haiku::Row">
+		<functions>
+			<constructor>
+				<param name="height" type="float" action="input" default="16" />
+			</constructor>
+			<destructor />
+			<method name="HasLatch">
+				<return type="bool" action="output" />
+			</method>
+			<method name="CountFields">
+				<return type="int32" action="output" />
+			</method>
+			<method name="GetField">
+				<param name="logicalFieldIndex" type="int32" action="input" />
+				<return type="BField*" action="output" />
+			</method>
+			<method name="SetField">
+				<param name="field" type="BField*" action="input" />
+				<param name="logicalFieldIndex" type="int32" action="input" />
+			</method>
+			<method name="Height">
+				<return type="float" action="output" />
+			</method>
+			<method name="IsExpanded">
+				<return type="bool" action="output" />
+			</method>
+		</functions>
+	</binding>
+	<binding source="BField" target="Haiku::Field">
+		<functions>
+			<constructor />
+			<destructor />
+		</functions>
+	</binding>
+</bindings>

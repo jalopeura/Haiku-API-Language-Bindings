@@ -1,0 +1,48 @@
+<bindings name="Haiku::GradientRadialFocus">
+	<doc>Exposes the GradientRadialFocus object</doc>
+	<binding source="BGradientRadialFocus" source-inherits="BGradient" target="Haiku::GradientRadialFocus" target-inherits="Haiku::Gradient">
+		<doc>Exposes the GradientRadialFocus object</doc>
+		<functions>
+			<constructor />
+			<constructor overload-name="FromPointsAndRadius">
+				<param name="center" type="const BPoint" action="input" />
+				<param name="radius" type="float" action="input" />
+				<param name="focal" type="const BPoint" action="input" />
+			</constructor>
+			<constructor overload-name="FromXYsAndRadius">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+				<param name="radius" type="float" action="input" />
+				<param name="fx" type="float" action="input" />
+				<param name="fy" type="float" action="input" />
+			</constructor>
+			<destructor />
+			<method name="Center">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetCenter">
+				<param name="center" type="BPoint" action="input" />
+			</method>
+			<method name="SetCenter" overload-name="SetCenterFromXY">
+				<param name="cx" type="float" action="input" />
+				<param name="cy" type="float" action="input" />
+			</method>
+			<method name="Focal">
+				<return type="BPoint" action="output" />
+			</method>
+			<method name="SetFocal">
+				<param name="focal" type="BPoint" action="input" />
+			</method>
+			<method name="SetFocal" overload-name="SetFocalFromXY">
+				<param name="fx" type="float" action="input" />
+				<param name="fy" type="float" action="input" />
+			</method>
+			<method name="Radius">
+				<return type="float" action="output" />
+			</method>
+			<method name="SetRadius">
+				<param name="radius" type="float" action="input" />
+			</method>
+		</functions>
+	</binding>
+</bindings>

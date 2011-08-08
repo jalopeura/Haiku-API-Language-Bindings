@@ -28,7 +28,7 @@ sub new {
 		for my $class (@classes) {
 			if ($class->has('functions') or $class->has('properties')) {
 				push @{ $self->{classes} }, $class;	
-				if ($class->functions->had('events')) {
+				if ($class->has('functions') and $class->functions->had('events')) {
 					push @{ $self->{classes} },
 						Python::ResponderClass->upgrade($bindings->source_type_prefix, $class);
 				}
