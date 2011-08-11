@@ -34,7 +34,6 @@
 				<param name="maxValue" type="int32" action="input" />
 				<param name="posture" type="orientation" action="input" />
 				<param name="thumbType" type="thumb_style" action="input" default="B_BLOCK_THUMB" />
-				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="B_NAVIGABLE | B_WILL_DRAW | B_FRAME_EVENTS" />
 			</constructor>
 			<constructor overload-name="FromArchive">
@@ -110,10 +109,10 @@
 				<return type="void" />
 			</method>
 			<method name="MinLimitLabel">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="MaxLimitLabel">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="SetValue">
 				<param name="value" type="int32" action="input" />
@@ -121,7 +120,7 @@
 			</method>
 			<method name="ValueForPoint">
 				<param name="point" type="BPoint" action="input" />
-				<return type="int32" action="input" />
+				<return type="int32" action="output" />
 			</method>
 			<method name="SetPosition">
 				<param name="position" type="float" action="input" />
@@ -200,42 +199,42 @@
 				<return type="void" />
 			</method>
 			<method name="ModificationMessage">
-				<return type="BMessage*" action="input" />
+				<return type="BMessage*" action="output" />
 			</method>
 			<method name="SetSnoozeAmount">
 				<param name="amount" type="int32" action="input" />
 				<return type="void" />
 			</method>
 			<method name="SnoozeAmount">
-				<return type="int32" action="input" />
+				<return type="int32" action="output" />
 			</method>
-			<method name="SetIncrementValue">
+			<method name="SetKeyIncrementValue">
 				<param name="value" type="int32" action="input" />
 				<return type="void" />
 			</method>
-			<method name="IncrementValue">
-				<return type="int32" action="input" />
+			<method name="KeyIncrementValue">
+				<return type="int32" action="output" />
 			</method>
 			<method name="SetHashMarkCount">
 				<param name="count" type="int32" action="input" />
 				<return type="void" />
 			</method>
 			<method name="HashMarkCount">
-				<return type="int32" action="input" />
+				<return type="int32" action="output" />
 			</method>
 			<method name="SetHashMarks">
 				<param name="where" type="hash_mark_location" action="input" />
 				<return type="void" />
 			</method>
 			<method name="HashMarks">
-				<return type="hash_mark_location" action="input" />
+				<return type="hash_mark_location" action="output" />
 			</method>
 			<method name="SetStyle">
 				<param name="style" type="thumb_style" action="input" />
 				<return type="void" />
 			</method>
 			<method name="Style">
-				<return type="thumb_style" action="input" />
+				<return type="thumb_style" action="output" />
 			</method>
 			<method name="SetBarColor">
 				<param name="color" type="rgb_color" action="input" />
@@ -261,7 +260,7 @@
 				<return type="void" />
 			</method>
 			<method name="Orientation">
-				<return type="orientation" action="input" />
+				<return type="orientation" action="output" />
 			</method>
 			<method name="BarThickness">
 				<return type="float" action="output" />

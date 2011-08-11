@@ -30,7 +30,7 @@
 				<return type="bool" action="output" />
 			</method>
 			<method name="GetStat">
-				<param name="stat" type="stat*" action="output" />
+				<param name="stat" type="struct stat*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 <!-- TODO: BDirectory object not yet implemented
@@ -56,12 +56,10 @@
 				<param name="ref" type="entry_ref*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-<!-- TODO: BPath object not yet implemented
 			<method name="GetPath">
-				<param name="path" type="BPath*" action="output" />
+				<param name="path" type="BPath*" action="output" default="new BPath()" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
--->
 			<method name="GetParent">
 				<param name="entry" type="BEntry*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -73,7 +71,7 @@
 			</method>
 -->
 			<method name="GetName">
-				<param name="buffer" type="char*" action="output" />
+				<param name="buffer" type="char" pass-as-pointer="true" action="output" max-string-length="B_FILE_NAME_LENGTH" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="Rename">

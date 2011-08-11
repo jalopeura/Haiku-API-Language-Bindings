@@ -171,6 +171,7 @@ sub input_converter {
 	my $options = {
 		output_name => $self->name,
 		input_name => $target,
+		self_name => 'THIS',
 	};
 	if ($modifiers->{suffix}) {
 		$options->{input_name} .= delete $modifiers->{suffix};
@@ -187,6 +188,16 @@ sub input_converter {
 			$options->{$x} = $self->{$x};
 		}
 	}
+#					if ($self->pass_as_pointer) {
+#						$options->{need_malloc} = 1;
+#						push @postcode, "free((void*)$self->{name});";
+#					}
+	if ($self->has('count')) {
+		$options->{set_array_length} = 1;
+	}
+	if ($self->has('length')) {
+		$options->{set_string_length} = 1;
+	}
 	
 	return $self->type->input_converter($options);
 }
@@ -197,6 +208,7 @@ sub output_converter {
 	my $options = {
 		input_name => $self->name,
 		output_name => $target,
+		self_name => 'THIS',
 		must_not_delete => $self->must_not_delete,
 	};
 	if ($modifiers->{suffix}) {
@@ -223,12 +235,29 @@ sub as_cpp_def {
 	my $type = $self->type->name;
 #	my $was_const;
 #	$type=~s/^const\s+// and $was_const = 1;
-	if ($self->has('array_length') and $self->pass_as_pointer) {
+	if ($self->is_array_or_string and $self->pass_as_pointer) {
+		# this might fail on null-terminated strings passed as pointers
 		$type .= '*'
 	}
+	
 	my $arg = "$type $self->{name}";
+	
+#	unless ($self->pass_as_pointer) {
+#		my $len;
+#		if ($self->has('string_length') and $self->string_length ne 'null-terminated') {
+#			$len = $self->string_length;
+#		}
+#		elsif ($self->has('max_string_length')) {
+#			$len = $self->max_string_length;
+#		}
+#		if ($len) {
+#			$arg .= "[$len]";
+#		}
+#	}
+	
 	if ($self->has('default')) {
 		$arg .= " = $self->{default}";
+		$arg=~s/SELF\./THIS->/;
 	}
 	$arg .= ';';
 #	if ($was_const) {
@@ -240,10 +269,8 @@ sub as_cpp_def {
 sub as_cpp_call {
 	my ($self) = @_;
 	my $arg = $self->name;
-	if (
-		$self->pass_as_pointer and
-		not ($self->has('array_length')) #or $self->has('string_length'))
-		) {
+	if ($self->pass_as_pointer and not $self->is_array_or_string) {
+		# this might fail on null-terminated strings passed as pointers
 		$arg = "&$arg";
 	}
 	return $arg;

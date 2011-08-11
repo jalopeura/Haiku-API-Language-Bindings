@@ -103,8 +103,8 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SendReply" overload-name="SendReplyToMessenger">
-				<param name="command" type="uint32" action="input" />
-				<param name="replyTo" type="BMessenger*" action="input" />
+				<param name="reply" type="BMessage*" action="input" />
+				<param name="replyTo" type="BMessenger" action="input" />
 				<param name="timeout" type="bigtime_t" default="B_INFINITE_TIMEOUT" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -393,7 +393,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="AddRef">
-				<doc>Adds a Messenger object to the Message.</doc>
+				<doc>Adds an entry_ref object to the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
@@ -855,11 +855,11 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="FindRef">
-				<doc>Finds a Messenger object in the Message.</doc>
+				<doc>Finds an entry_ref object in the Message.</doc>
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="ref" type="entry_ref" pass-as-pointer="true" action="output">
+				<param name="ref" type="entry_ref*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -872,7 +872,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="ref" type="entry_ref" pass-as-pointer="true" action="output">
+				<param name="ref" type="entry_ref*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1360,7 +1360,7 @@
 				<param name="name" type="const char*" action="input">
 					<doc>Name of the data.</doc>
 				</param>
-				<param name="ref" type="entry_ref" action="output">
+				<param name="ref" type="entry_ref*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -1373,7 +1373,7 @@
 				<param name="index" type="int32" action="input">
 					<doc>The index.</doc>
 				</param>
-				<param name="ref" type="entry_ref" action="output">
+				<param name="ref" type="entry_ref*" action="output">
 					<doc>The data.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />

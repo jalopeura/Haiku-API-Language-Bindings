@@ -6,16 +6,16 @@
 			<constructor />
 			<destructor />
 			<method name="GetNextVolume">
-				<param name="name" type="BVolume*" action="output" />
+				<param name="volume" type="BVolume*" action="output" default="new BVolume()" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="Rewind" />
 			<method name="GetBootVolume">
-				<param name="name" type="BVolume*" action="output" />
+				<param name="volume" type="BVolume*" action="output" default="new BVolume()" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="StartWatching">
-				<param name="name" type="BMessenger*" action="input" default="be_app_messenger" />
+				<param name="name" type="BMessenger" action="input" default="be_app_messenger" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="StopWatching" />

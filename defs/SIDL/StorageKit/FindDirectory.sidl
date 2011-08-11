@@ -1,7 +1,7 @@
-<bindings name="Haiku::Mime">
+<bindings name="Haiku::FindDirectory">
 	<doc>Exposes the Mime object</doc>
-	<binding source="BMime" target="Haiku::Mime">
-		<doc>Exposes the Mime object</doc>
+	<binding source="BFindDirectory" target="Haiku::FindDirectory">
+		<doc>Exposes the FindDirectory object</doc>
 		<functions>
 			<plain name="find_directory">
 				<param name="which" type="directory_which" action="input" />
@@ -11,15 +11,13 @@
 				<param name="length" type="int32" action="length[pathString]" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-<!-- TODO: BPath object not yet implemented
 			<plain name="find_directory" overload-name="find_directory_into_path">
 				<param name="which" type="directory_which" action="input" />
 				<param name="path" type="BPath*" action="output" />
-				<param name="volume" type="BVolume*" action="input" default="NULL" />
 				<param name="createIt" type="bool" action="input" default="false" />
+				<param name="volume" type="BVolume*" action="input" default="NULL" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
--->
 		</functions>
 		<constants>
 			<constant name="B_DESKTOP_DIRECTORY" type="int" group="directory_which" />

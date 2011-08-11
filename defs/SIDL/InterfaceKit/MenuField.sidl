@@ -25,13 +25,12 @@
 				<param name="name" type="const char*" action="input" />
 				<param name="label" type="const char*" action="input" />
 				<param name="menu" type="BMenu*" action="input" />
-				<param name="message" type="BMessage*" default="NULL" action="input" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
 			</constructor>
 			<constructor overload-name="BareBones">
 				<param name="label" type="const char*" action="input" />
 				<param name="menu" type="BMenu*" action="input" />
-				<param name="message" type="BMessage*" default="NULL" action="input" />
+				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW | B_NAVIGABLE" />
 			</constructor>
 			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />

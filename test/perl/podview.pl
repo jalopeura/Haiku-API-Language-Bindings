@@ -7,10 +7,10 @@ BEGIN {
 	}
 }
 
-use PodViewer::Application;
 use Haiku::SupportKit;
 use Haiku::ApplicationKit;
 use Haiku::InterfaceKit;
+use PodViewer::Application;
 
 $SIG{__WARN__} = sub {
 	new Haiku::Alert(

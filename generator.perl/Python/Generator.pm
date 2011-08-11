@@ -24,7 +24,7 @@ sub generate {
 	mkpath($target);
 print "Generating $target\n";
 	
-	File::Path->remove_tree($target);
+#	File::Path->remove_tree($target);
 	
 	# create this now so we can pass it in
 	my $package = new Python::Package($bindings, $options{parent});
@@ -52,6 +52,14 @@ print "Generating $target\n";
 		unshift @packages, $package
 	}
 	
+	my %libs;
+	if ($package->has('link') and $package->link->has('libs')) {
+		for my $lib ($package->link->libs) {
+			$libs{ $lib->name }++;
+		}
+	}
+	my $libs = join(', ', map { qq("$_") } sort keys %libs);
+	
 	# determine packages (including bundled packages)
 	my (%packages, @extensions);
 	for my $pkg (@packages) {
@@ -62,9 +70,10 @@ print "Generating $target\n";
 			'$pkgname',
 			['$filename.cc'],
 #			extra_compile_args=["-Wno-multichar"]
-# don't like doing this, because the warning is often useful,
+# I don't like doing this, because the uninitialized warning is often useful,
 # but I get too many false positives if I don't
-			extra_compile_args=["-Wno-multichar", "-Wno-uninitialized"]
+			extra_compile_args=["-Wno-multichar", "-Wno-uninitialized"],
+			runtime_library_dirs=[$libs]
 			)
 EXT
 		$packages{$pkgname} = 1;

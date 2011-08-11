@@ -25,6 +25,7 @@ sub generate_xs {
 			types  => $self->types,
 			needs_deref => 0,
 			must_not_delete => $self->package->must_not_delete,
+			pass_as_pointer => 0,
 		}, 'Perl::Return';
 		$self->{params} ||= new Perl::Params;
 		$self->params->add($self->{return});

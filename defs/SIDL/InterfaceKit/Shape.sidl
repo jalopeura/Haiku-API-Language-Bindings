@@ -83,7 +83,7 @@
 				<param name="linePts" type="BPoint" pass-as-pointer="true" action="input" array-length="lineCount" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="BezierTo">
+			<method name="IterateBezierTo">
 				<param name="bezierCount" type="int32" action="count[bezierPts]" />
 				<param name="bezierPts" type="BPoint" pass-as-pointer="true" action="input" array-length="bezierCount" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -97,7 +97,7 @@
 				<param name="angle" type="float" action="input" />
 				<param name="largeArc" type="bool" action="input" />
 				<param name="counterClockWise" type="bool" action="input" />
-				<param name="point" type="const BPoint" action="input"/>
+				<param name="point" type="BPoint" action="input"/>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 		</functions>

@@ -189,7 +189,7 @@
 			</method>
 			<method name="SetTargetForItems" overload-name="SetMessengerTargetForItems">
 				<doc>Sets the target for the MenuItems to the given Messenger.</doc>
-				<param name="messenger" type="BMessenger*" action="input" />
+				<param name="messenger" type="BMessenger" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetEnabled">
@@ -259,7 +259,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="AddDynamicItem">
-				<param name="state" type="add_state" action="input" />
+				<param name="state" type="BMenu::add_state" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="DrawBackground">

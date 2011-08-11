@@ -19,7 +19,7 @@
 				<param name="name" type="const char*" action="input" />
 				<param name="label" type="const char*" action="input" />
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
-				<param name="orientation" type="orientation" action="input" />
+				<param name="posture" type="orientation" action="input" />
 				<param name="channels" type="int32" action="input" default="1" />
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
@@ -29,7 +29,7 @@
 				<param name="name" type="const char*" action="input" />
 				<param name="label" type="const char*" action="input" />
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
-				<param name="orientation" type="orientation" action="input" />
+				<param name="posture" type="orientation" action="input" />
 				<param name="channels" type="int32" action="input" default="1" />
 				<param name="flags" type="uint32" action="input" default="B_WILL_DRAW" />
 			</constructor>
@@ -130,13 +130,13 @@
 				<return type="void" />
 			</method>
 			<method name="Orientation">
-				<return type="orientation" action="input" />
+				<return type="orientation" action="output" />
 			</method>
 			<method name="MaxChannelCount">
 				<return type="int32" action="output" />
 			</method>
 			<method name="SupportsIndividualLimits">
-				<return type="bool" />
+				<return type="bool" action="output" />
 			</method>
 <!-- Events not yet implemented for this object
 			<event name="DrawChannel">

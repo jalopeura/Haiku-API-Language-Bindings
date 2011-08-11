@@ -11,13 +11,18 @@
 		<file name="NodeInfo.h" />
 		<file name="NodeMonitor.h" />
 		<file name="MimeType.h" />
+		<file name="Path.h" />
+		<file name="Query.h" />
 		<file name="Statable.h" />
 		<file name="StorageDefs.h" />
 		<file name="Volume.h" />
 		<file name="VolumeRoster.h" />
+		<file name="fs_attr.h" />
+		<file name="compat/sys/stat.h" />
 	</include>
 	<link>
 		<lib name="libbe" />
+		<lib name="libtracker" />
 	</link>
 	<types>
 		<type name="uint8"            builtin="unsigned char" /><!-- __haiku_uint8 -->
@@ -45,12 +50,13 @@
 		<type name="time_t"           builtin="long" /><!-- __haiku_int32 -->
 		<type name="type_code"        builtin="unsigned long" /><!-- uint32 -->
 		<type name="uid_t"            builtin="long" /><!-- __haiku_uint32 -->
+		<type name="uint8*"           builtin="void*" />
 <!--
 Objects defined by this interface automatically have data types (plain and
 pointer) created for them. If you need objects not defined in this interface,
 you need to define those types in this section.
 -->
-		<type name="BBitmap*"     builtin="object_ptr" target="Haiku::Bitmap" />
+		<!--<type name="BBitmap*"     builtin="object_ptr" target="Haiku::Bitmap" />-->
 		<type name="BHandler*"    builtin="object_ptr" target="Haiku::Handler" />
 		<type name="BLooper*"     builtin="object_ptr" target="Haiku::Looper" />
 		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
@@ -62,12 +68,13 @@ you need to define those types in this section.
 		<!-- ancestor classes must be defined before the descendant classes -->
 		<file name="EntryList.sidl" />
 			<file name="Query.sidl" />
-		<file name="Mime.sidl" />
-		<file name="FilePanel.sidl" />
+		<!--<file name="FilePanel.sidl" />-->
 		<file name="FindDirectory.sidl" />
+		<file name="Mime.sidl" />
 		<file name="MimeType.sidl" />
 		<file name="NodeInfo.sidl" />
 		<file name="NodeMonitor.sidl" />
+		<file name="Path.sidl" />
 		<file name="Statable.sidl" />
 			<file name="Entry.sidl" />
 			<file name="Node.sidl" />
@@ -107,7 +114,7 @@ you need to define those types in this section.
 			<property name="d_ino" type="ino_t" />
 			<property name="d_pino" type="ino_t" />
 			<property name="d_reclen" type="unsigned short" />
-			<property name="d_name" type="char*" />
+			<property name="d_name" type="char" pass-as-pointer="true" string-length="null-terminated" />
 		</properties>
 	</binding>
 <!-- defined in posix/compat/sys/stat.h -->
@@ -134,7 +141,7 @@ you need to define those types in this section.
 		</properties>
 	</binding>
 <!-- defined in posix/sys/stat.h -->
-	<binding source="stat" target="Haiku::stat">
+	<binding source="struct stat" target="Haiku::stat">
 		<properties>
 			<property name="st_dev" type="dev_t" />
 			<property name="st_ino" type="ino_t" />

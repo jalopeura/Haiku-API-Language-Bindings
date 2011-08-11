@@ -33,7 +33,7 @@ DESTROY(perl_obj)
 		$cpp_class_name* cpp_obj;
 		object_link_data* link;
 	CODE:
-//DEBUGME(4, "DESTROYing a $cpp_class_name (%x, %d)", perl_obj, perl_obj);
+DEBUGME(4, "DESTROYing a $cpp_class_name (%x, %d)", perl_obj, perl_obj);
 		link = get_link_data(perl_obj);
 		if (! PL_dirty && link->can_delete_cpp_object) {
 			cpp_obj = ($cpp_class_name*)link->cpp_object;

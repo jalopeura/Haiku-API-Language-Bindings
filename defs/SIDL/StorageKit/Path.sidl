@@ -1,0 +1,80 @@
+<bindings name="Haiku::Path">
+	<doc>Exposes the Path object</doc>
+<!-- TODO: BFlattenable object not yet implemented
+	<binding source="BPath" source-inherits="BFlattenable" target="Haiku::Path" target-inherits="Haiku::Flattenable">
+-->
+	<binding source="BPath" target="Haiku::Path">
+		<doc>Exposes the Path object</doc>
+		<functions>
+			<constructor overload-name="Empty" />
+			<constructor overload-name="FromPath">
+				<param name="path" type="const BPath" action="input" />
+			</constructor>
+			<constructor overload-name="FromEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+			</constructor>
+			<constructor overload-name="FromEntry">
+				<param name="entry" type="const BEntry*" action="input" />
+			</constructor>
+			<constructor>
+				<param name="path" type="const char*" action="input" />
+				<param name="leaf" type="const char*" action="input" />
+				<param name="normalize" type="bool" action="input" default="false" />
+			</constructor>
+<!-- TODO: BDirectory object not yet implemented
+			<constructor overload-name="FromDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="leaf" type="const char*" action="input" />
+				<param name="normalize" type="bool" action="input" default="false" />
+			</constructor>
+-->
+			<destructor />
+			<method name="InitCheck">
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo" overload-name="SetToEntryRef">
+				<param name="ref" type="const entry_ref*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo" overload-name="SetToEntry">
+				<param name="entry" type="const BEntry*" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="SetTo">
+				<param name="path" type="const char*" action="input" />
+				<param name="leaf" type="const char*" action="input" />
+				<param name="normalize" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- TODO: BDirectory object not yet implemented
+			<method name="SetTo" overload-name="SetToDirectory">
+				<param name="dir" type="const BDirectory*" action="input" />
+				<param name="leaf" type="const char*" action="input" />
+				<param name="normalize" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>	
+-->
+			<method name="Unset" />
+			<method name="Append">
+				<param name="path" type="const char*" action="input" />
+				<param name="normalize" type="bool" action="input" default="false" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+			<method name="Path">
+				<return type="const char*" action="output" max-string-length="B_FILE_NAME_LENGTH" />
+			</method>
+			<method name="Leaf">
+				<return type="const char*" action="output" max-string-length="B_FILE_NAME_LENGTH" />
+			</method>
+			<method name="GetParent">
+				<param name="path" type="BPath*" action="output" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
+<!-- BFlattenable methods not implemented -->
+		</functions>
+		<operators>
+			<operator name="==" />
+			<operator name="!=" />
+		</operators>
+	</binding>
+</bindings>

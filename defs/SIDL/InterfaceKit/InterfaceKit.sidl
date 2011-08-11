@@ -22,7 +22,7 @@
 		<file name="IconUtils.h" />
 		<file name="InterfaceDefs.h" />
 		<file name="Menu.h" />
-		<file name="MultiChannelControl.h" />
+		<!--<file name="MultiChannelControl.h" />-->
 		<file name="ListItem.h" />
 		<file name="ListView.h" />
 		<file name="MenuBar.h" />
@@ -65,7 +65,7 @@
 		<type name="uint32"           builtin="unsigned long" /><!-- __haiku_uint32 -->
 		<type name="int32"            builtin="long" /><!-- __haiku_int32 -->
 		<type name="uint64"           builtin="unsigned long" /><!-- __haiku_uint64 -->
-		<type name="add_state"        builtin="enum" />
+		<type name="BMenu::add_state" builtin="enum" />
 		<type name="alert_type"       builtin="enum" />
 		<type name="alignment"        builtin="enum" />
 		<type name="alpha_function"   builtin="enum" />
@@ -97,7 +97,8 @@
 		<type name="source_alpha"     builtin="enum" />
 		<type name="status_t"         builtin="long" /><!-- int32 -->
 		<type name="thumb_style"      builtin="enum" />
-		<type name="Type"             builtin="enum" />
+		<!--<type name="BGradient::Type"  builtin="enum" />-->
+		<type name="uint8*"           builtin="void*" />
 		<type name="undo_state"       builtin="enum" />
 		<type name="window_alignment" builtin="enum" />
 		<type name="window_look"      builtin="enum" />
@@ -115,8 +116,9 @@ you need to define those types in this section.
 		<type name="BInvoker*"    builtin="object_ptr" target="Haiku::Invoker" />
 		<type name="BMessage"     builtin="object"     target="Haiku::Message" />
 		<type name="BMessage*"    builtin="object_ptr" target="Haiku::Message" />
-		<type name="BMessenger*"  builtin="object_ptr" target="Haiku::Messenger" />
-		<type name="BNode*"       builtin="object_ptr" target="Haiku::Menu" />
+		<type name="BMessenger"   builtin="object"     target="Haiku::Messenger" />
+		<!--<type name="BMessenger*"  builtin="object_ptr" target="Haiku::Messenger" />
+		--><type name="BNode*"       builtin="object_ptr" target="Haiku::Node" />
 <!-- This fixes an issue with order of definition -->
 		<type name="BMenu*"       builtin="object_ptr" target="Haiku::Menu" />
 	</types>
@@ -128,13 +130,13 @@ you need to define those types in this section.
 			<file name="Box.sidl" />
 			<file name="Control.sidl" />
 				<file name="Button.sidl" />
-				<file name="ChannelControl.sidl" />
-				<file name="ChannelSlider.sidl" />
+				<!--<file name="ChannelControl.sidl" />-->
+					<!--<file name="ChannelSlider.sidl" />-->
 				<file name="CheckBox.sidl" />
 				<file name="ColorControl.sidl" />
-				<file name="MultiChannelControl.sidl" />
-				<file name="OptionControl.sidl" />
-				<file name="OptionPopUp.sidl" />
+				<!--<file name="MultiChannelControl.sidl" />-->
+				<!--<file name="OptionControl.sidl" />-->
+				<!--<file name="OptionPopUp.sidl" />-->
 				<file name="PictureButton.sidl" />
 				<file name="RadioButton.sidl" />
 				<file name="Slider.sidl" />
@@ -155,17 +157,17 @@ you need to define those types in this section.
 			<file name="MenuItem.sidl" />
 				<file name="SeparatorItem.sidl" />
 		<!-- Archivable (defined in SupportKit) -->
-			<file name="Bitmap.sidl" />
-			<file name="Gradient.sidl" />
-			<file name="GradientConic.sidl" />
-			<file name="GradientDiamond.sidl" />
-			<file name="GradientLinear.sidl" />
-			<file name="GradientRadial.sidl" />
-			<file name="GradientRadialFocus.sidl" />
+			<!--<file name="Bitmap.sidl" />-->
+			<!--<file name="Gradient.sidl" />-->
+			<!--<file name="GradientConic.sidl" />-->
+			<!--<file name="GradientDiamond.sidl" />-->
+			<!--<file name="GradientLinear.sidl" />-->
+			<!--<file name="GradientRadial.sidl" />-->
+			<!--<file name="GradientRadialFocus.sidl" />-->
 			<file name="ListItem.sidl" />
 				<file name="StringItem.sidl" />
 		<file name="Font.sidl" />
-		<file name="IconUtils.sidl" />
+		<!--<file name="IconUtils.sidl" />-->
 		<file name="Picture.sidl" />
 		<file name="Point.sidl" />
 		<file name="Polygon.sidl" />
@@ -320,11 +322,13 @@ you need to define those types in this section.
 				<param name="buttons" type="uint32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+<!-- TODO: Resolve issues with Bitmap
 			<plain name="get_mouse_bitmap">
 				<param name="bitmap" type="BBitmap*" pass-as-pointer="true" action="output" />
 				<param name="hotspot" type="BPoint*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+-->
 			<plain name="set_accept_first_click">
 				<param name="acceptFirstClick" type="bool" action="input" />
 			</plain>

@@ -372,6 +372,7 @@ sub as_cpp_def {
 	my $arg = "$type $self->{name}";
 	if ($self->has('default')) {
 		$arg .= " = $self->{default}";
+		$arg=~s/SELF\./python_self->cpp_object->/;
 	}
 	$arg .= ';';
 	return $arg;

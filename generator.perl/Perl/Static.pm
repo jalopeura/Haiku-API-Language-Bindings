@@ -12,7 +12,7 @@ sub generate_xs {
 		$self->overload_name : $self->name;
 	
 	$self->SUPER::generate_xs(
-		cpp_call => "$cpp_class_name}::" . $self->name,
+		cpp_call => "$cpp_class_name\::" . $self->name,
 		perl_name => $perl_name,
 		add_CLASS => 1,
 		extra_items => [

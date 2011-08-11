@@ -23,28 +23,31 @@
 				<param name="size" type="int32" action="length[icon]" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+<!-- TODO: Resolve issues with Bitmap
 			<plain name="get_device_icon">
 				<param name="device" type="const char*" action="input" />
 				<param name="icon" type="BBitmap*" action="output" />
 				<param name="which" type="icon_size" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-			<plain name="get_device_icon" overload-name="get_device_icon_with_type">
+-->			<plain name="get_device_icon" overload-name="get_device_icon_with_type">
 				<param name="device" type="const char*" action="input" />
-				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="data" type="uint8*" pass-as-pointer="true" action="output" string-length="size" />
 				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
 				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+<!-- TODO: Resolve issues with Bitmap
 			<plain name="get_named_icon">
 				<param name="name" type="const char*" action="input" />
 				<param name="icon" type="BBitmap*" action="output" />
 				<param name="which" type="icon_size" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
+-->
 			<plain name="get_named_icon" overload-name="get_named_icon_with_type">
 				<param name="name" type="const char*" action="input" />
-				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="data" type="uint8*" pass-as-pointer="true" action="output" string-length="size" />
 				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
 				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />

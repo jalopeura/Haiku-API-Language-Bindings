@@ -4,7 +4,7 @@
 		<doc>Exposes the NodeInfo object</doc>
 		<functions>
 			<constructor>
-				<param name="node" type="BNode" action="input" />
+				<param name="node" type="BNode*" action="input" />
 			</constructor>
 			<constructor overload-name="Empty" />
 			<destructor />
@@ -23,6 +23,7 @@
 				<param name="type" type="const char*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- TODO: Resolve issues with Bitmap
 			<method name="GetIcon">
 				<param name="icon" type="BBitmap*" action="output" />
 				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
@@ -33,15 +34,15 @@
 				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="GetIcon" overload-name="GetIconData">
-				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+-->			<method name="GetIcon" overload-name="GetIconData">
+				<param name="data" type="uint8*" pass-as-pointer="true" action="output" string-length="size" />
 				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
-				<param name="type" type="type_code" action="output" />
+				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetIcon" overload-name="SetIconFromData">
-				<param name="data" type="const uint8" pass-as-pointer="true" action="input" string-length="size" />
-				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
+				<param name="data" type="const uint8*" action="input" string-length="size" />
+				<param name="size" type="size_t" action="length[data]" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetPreferredApp">
@@ -62,17 +63,19 @@
 				<param name="ref" type="entry_ref*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- TODO: Resolve issues with Bitmap
 			<method name="GetTrackerIcon">
 				<param name="icon" type="BBitmap*" action="output" />
 				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetTrackerIcon">
+			<static name="GetTrackerIcon" overload-name="GetTrackerIconForEntryRef">
 				<param name="ref" type="entry_ref*" action="input" />
 				<param name="icon" type="BBitmap*" action="input" />
 				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
 				<return type="status_t" action="error" success="B_OK" />
-			</method>
+			</static>
+-->
 		</functions>
 	</binding>
 </bindings>

@@ -58,7 +58,7 @@
 			<method name="ColorMap">
 				<return type="const color_map*" action="output" />
 			</method>
-<!-- BBitmap object not yet implemented
+<!-- TODO: Resolve issues with Bitmap
 			<method name="GetBitmap">
 				<param name="bitmap" type="BBitmap*" pass-as-pointer="true" action="output" />
 				<param name="drawCursor" type="bool" default="true" action="input" />

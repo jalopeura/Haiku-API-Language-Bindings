@@ -16,7 +16,7 @@
 				<param name="op" type="query_op" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="PushUint32">
+			<method name="PushUInt32">
 				<param name="value" type="uint32" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -24,7 +24,7 @@
 				<param name="value" type="int32" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="PushUint64">
+			<method name="PushUInt64">
 				<param name="value" type="uint64" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
@@ -79,12 +79,12 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetNextEntry">
-				<param name="entry" type="BEntry*" action="output" />
+				<param name="entry" type="BEntry*" action="output" default="new BEntry()" />
 				<param name="traverse" type="bool" action="input" default="false" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetNextRef">
-				<param name="ref" type="entry_ref*" action="output" />
+				<param name="ref" type="entry_ref*" action="output" default="new entry_ref()" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetNextDirents">

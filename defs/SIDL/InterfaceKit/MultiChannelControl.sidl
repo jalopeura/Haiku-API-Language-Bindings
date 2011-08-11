@@ -3,6 +3,11 @@
 	<binding source="BMultiChannelControl" source-inherits="BControl" target="Haiku::MultiChannelControl" target-inherits="Haiku::Control">
 		<doc>Exposes the MultiChannelControl object</doc>
 		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
 			<constructor>
 				<doc>...</doc>
 				<param name="frame" type="BRect" action="input" />
@@ -18,6 +23,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+-->
 			<method name="Archive">
 				<param name="data" type="BMessage*" action="output" />
 				<param name="deep" type="bool" default="true" action="input" />
@@ -54,11 +60,13 @@
 			<event name="DetachedFromWindow" />
 -->
 			<method name="ResizeToPreferred" />
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
 			<method name="GetPreferredSize">
 				<param name="width" type="float" pass-as-pointer="true" action="output" />
 				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
+-->
 <!-- Events not yet implemented for this object
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
@@ -79,9 +87,11 @@
 			<method name="CountChannels">
 				<return type="int32" action="output" />
 			</method>
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
 			<method name="MaxChannelCount">
 				<return type="int32" action="output" />
 			</method>
+-->
 			<method name="SetChannelCount">
 				<param name="channelCount" type="int32" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
@@ -123,28 +133,23 @@
 				<param name="maximum" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetLimitsFor" overload-name="SetLimitsForMultiple">
+			<method name="SetLimits">
 				<param name="channel" type="int32" action="input" />
 				<param name="channelCount" type="int32" action="count[minima]" />
 				<param name="minima" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
 				<param name="maxima" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="GetLimitsFor" overload-name="GetLimitsForMultiple">
+			<method name="GetLimits">
 				<param name="channel" type="int32" action="input" />
 				<param name="channelCount" type="int32" action="count[minima]" />
 				<param name="minima" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
 				<param name="maxima" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetLimits">
+			<method name="SetAllLimits">
 				<param name="minimum" type="int32" action="input" />
 				<param name="maximum" type="int32" action="input" />
-				<return type="status_t" action="error" success="B_OK" />
-			</method>
-			<method name="GetLimits">
-				<param name="minimum" type="int32" pass-as-pointer="true" action="output" />
-				<param name="maximum" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetLimitLabels">

@@ -242,12 +242,13 @@ sub generate_cc {
 					}
 					my ($defs, $code) = $param->arg_builder($options);
 					
-					if ($param->type->has('target') and my $target = $param->type->target) {
+					if ($param->type->has('target') and my $target = $param->type->target and
+						not $param->has('array_length')) {
 						(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-						push @defs, "$objtype* $pyobj_name; // from as_python_call()";
+						push @defs, "$objtype* $pyobj_name; // from generate_py()";
 					}
 					else {
-						push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
+						push @defs, "PyObject* $pyobj_name; // from generate_py()",	# may need to fix this for C++ objects
 					}
 					
 					push @defs, @$defs;
@@ -276,9 +277,10 @@ sub generate_cc {
 			
 			my $obj_return;
 			unless ($self->isa('Python::Constructor')) {
-				if ($outputs[0]->type->has('target') and my $target = $outputs[0]->type->target) {
+				if ($outputs[0]->type->has('target') and my $target = $outputs[0]->type->target and
+					not $outputs[0]->has('array_length')) {
 					(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
-					push @defs, "$objtype* $pyobj_name; // from generate_py()";
+					push @defs, "$objtype* $pyobj_name; // from generate_py() (for outputs)";
 					$obj_return = 1;
 				}
 				else {

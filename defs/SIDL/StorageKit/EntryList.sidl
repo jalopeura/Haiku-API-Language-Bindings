@@ -3,8 +3,15 @@
 	<binding source="BEntryList" target="Haiku::EntryList">
 		<doc>Exposes the EntryList object</doc>
 		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
 			<constructor />
 			<destructor />
+-->
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
 			<method name="GetNextEntry">
 				<param name="entry" type="BEntry*" action="output" />
 				<param name="traverse" type="bool" action="input" default="false" />
@@ -26,6 +33,7 @@
 			<method name="CountEntries">
 				<return type="int32" action="output" />
 			</method>
+-->
 		</functions>
 	</binding>
 </bindings>

@@ -2,11 +2,6 @@
 	<doc>Exposes the Messenger object</doc>
 	<binding source="BMessenger" target="Haiku::Messenger">
 		<doc>Exposes the Messenger object</doc>
-		<properties>
-			<property name="what" type="uint32">
-				<doc>Indicates the purpose of the Messenger.</doc>
-			</property>
-		</properties>
 		<functions>
 			<constructor overload-name="Empty">
 				<doc>Creates an empty Messenger.</doc>
@@ -14,7 +9,7 @@
 			<constructor>
 				<param name="signature" type="const char*" action="input" />
 				<param name="team" type="team_id" action="input" default="-1" />
-				<param name="result" type="status_t" action="error" success="B_OK" />
+				<param name="result" type="status_t" pass-as-pointer="true" action="error" success="B_OK" />
 			</constructor>
 			<constructor overload-name="Copy">
 				<param name="Messenger" type="BMessenger" action="input">
@@ -51,7 +46,7 @@
 			</method>
 			<method name="SendMessage" overload-name="SendMessageAndReplyToMessenger">
 				<param name="message" type="BMessage*" action="input" />
-				<param name="replyTo" type="BMessenger" action="input" default="NULL" />
+				<param name="replyTo" type="BMessenger" action="input" />
 				<param name="timeout" type="bigtime_t" action="input" default="B_INFINITE_TIMEOUT" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>

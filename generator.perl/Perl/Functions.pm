@@ -190,12 +190,13 @@ sub generate_xs {
 						push @xsargs, '...';
 						$has_defaults = 1;
 					}
-					my ($defs, $code) = $param->input_converter("ST($i)");
+					my ($defs, $code, $postcode) = $param->input_converter("ST($i)");
 					push @init, @$defs;
 					push @precode,
 						qq(if (items > $i) {),
 						map( {"\t$_" } @$code ),
 						qq(});
+					push @postcode, @$postcode;
 				}
 				elsif ($param->is_array_or_string) {
 					push @input, "SV* $param->{name}_sv;";
@@ -203,23 +204,14 @@ sub generate_xs {
 					my $options = {
 						suffix => '_sv'	# use a suffix on the variable name
 					};
-					if ($param->pass_as_pointer) {
-						$options->{need_malloc} = 1;
-						push @postcode, "free($param->{name});";
-					}
-					if ($param->has('count')) {
-						$options->{set_array_length} = 1;
-					}
-					if ($param->has('length')) {
-						$options->{set_string_length} = 1;
-					}
-					my ($defs, $code) = $param->input_converter($param->name, $options);
+					my ($defs, $code, $postcode) = $param->input_converter($param->name, $options);
 					push @init,
 						$param->as_cpp_def,
 						@$defs;
 					push @precode,
 						 "// item $i: $param->{name}",
 						 @$code;
+					push @postcode, @$postcode;
 				}
 				else {
 					push @precode, "// item $i: $param->{name}";
@@ -307,11 +299,13 @@ sub generate_xs {
 					suffix => '_sv'	# use a suffix on the variable name
 				};
 				
-				my ($defs, $code) = $output->output_converter($output->name, $options);
+				my ($defs, $code, $precode) = $output->output_converter($output->name, $options);
 				push @init,
 					@$defs;
 				push @postcode,
 					 @$code;
+				push @precode,
+					 @$precode;
 			}
 			elsif ($type->has('target')) {
 				my $retname = $output->name;
@@ -356,8 +350,11 @@ sub generate_xs {
 				my $type = $param->type;
 				
 				# if we're a target, we've already converted it
-				unless ($type->has('target')) {
-					push @postcode, @{ $param->output_converter("$svname") },
+				unless ($type->has('target') or $outputs[$i]->is_array_or_string) {
+					my ($defs, $code, $precode) = $param->output_converter("$svname");
+					push @init, @$defs;
+					push @code, @$code;
+					push @precode, @$precode;
 				}
 				push @postcode, qq(PUSHs(sv_2mortal($svname)););
 			}
@@ -378,8 +375,8 @@ sub generate_xs {
 					#"// it's already mortal, but RETVAL will mortalize it again",
 					#"SvREFCNT_inc($retname);";
 					"RETVAL = $retname;",
-"get_link_data($retname);",
-"get_link_data(RETVAL);",
+#"get_link_data($retname);",
+#"get_link_data(RETVAL);",
 #qq(DEBUGME(1, "refcount of $retname: %d", SvREFCNT($retname));),
 #qq(DEBUGME(1, "refcount of RETVAL: %d", SvREFCNT(RETVAL));),
 			}
@@ -398,6 +395,17 @@ sub generate_xs {
 		$retcount ||= 1;
 		push @code, 'RETVAL = true;';
 	}
+	
+#	my %ns;	# namespaces;
+#	for my $i (@input) {
+#		my @ns;
+#		while ($i=~s/([\w:]+):://) {
+#			$ns{$1}++;
+#		}
+#	}
+#	for my $ns (reverse sort keys %ns) {
+#		unshift @preinit, "using namespace $ns;	// else xsubpp converts '::' to '__' in INPUT";
+#	}
 	
 	# now we can finally write the thing
 	

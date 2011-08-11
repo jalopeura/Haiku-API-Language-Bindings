@@ -5,7 +5,7 @@
 		<functions>
 			<constructor />
 			<constructor overload-name="FromPicture">
-				<param name="Picture" type="BPicture*" action="input" />
+				<param name="picture" type="BPicture" action="input" />
 			</constructor>
 			<constructor overload-name="FromArchive">
 				<param name="archive" type="BMessage*" action="input" />
@@ -40,17 +40,5 @@
 			</method>
 -->
 		</functions>
-		<constants>
-			<constant name="B_Picture_CLEAR_TO_WHITE" type="int" group="flags" />
-			<constant name="B_Picture_ACCEPTS_VIEWS" type="int" group="flags" />
-			<constant name="B_Picture_IS_AREA" type="int" group="flags" />
-			<constant name="B_Picture_IS_LOCKED" type="int" group="flags" />
-			<constant name="B_Picture_IS_CONTIGUOUS" type="int" group="flags" />
-			<constant name="B_Picture_IS_OFFSCREEN" type="int" group="flags" />
-			<constant name="B_Picture_WILL_OVERLAY" type="int" group="flags" />
-			<constant name="B_Picture_RESERVE_OVERLAY_CHANNEL" type="int" group="flags" />
-			<constant name="B_Picture_NO_SERVER_LINK" type="int" group="flags" />
-			<constant name="B_ANY_BYTES_PER_ROW" type="int" group="" />
-		</constants>
 	</binding>
 </bindings>

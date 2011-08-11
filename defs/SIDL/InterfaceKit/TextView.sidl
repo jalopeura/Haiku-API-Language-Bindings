@@ -61,14 +61,12 @@
 				<param name="point" type="BPoint" action="input" />
 				<return type="void" />
 			</event>
-<!-- -->
 			<event name="MouseMoved">
 				<param name="point" type="BPoint" action="input" />
 				<param name="transit" type="uint32" action="input" />
 				<param name="message" type="BMessage*" action="input" />
 				<return type="void" />
 			</event>
-<!-- Events not yet implemented for this object -->
 			<event name="WindowActivated">
 				<param name="state" type="bool" action="input" />
 				<return type="void" />

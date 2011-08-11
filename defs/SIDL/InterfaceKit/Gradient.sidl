@@ -26,7 +26,7 @@
 				<return type="int32" action="output" />
 			</method>
 			<method name="AddColorStop">
-				<param name="colorStop" type="const ColorStop" action="input" />
+				<param name="colorStop" type="const BGradient::ColorStop" action="input" />
 				<param name="index" type="int32" action="input" />
 				<return type="bool" action="output" />
 			</method>
@@ -36,7 +36,7 @@
 			</method>
 			<method name="SetColorStop">
 				<param name="index" type="int32" action="input" />
-				<param name="colorStop" type="const ColorStop" action="input" />
+				<param name="colorStop" type="const BGradient::ColorStop" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="SetColor">
@@ -54,18 +54,18 @@
 			</method>
 			<method name="ColorStopAt">
 				<param name="index" type="int32" action="input" />
-				<return type="ColorStop*" action="output" />
+				<return type="BGradient::ColorStop*" action="output" />
 			</method>
 			<method name="ColorStopAtFast">
 				<param name="index" type="int32" action="input" />
-				<return type="ColorStop*" action="output" />
+				<return type="BGradient::ColorStop*" action="output" />
 			</method>
 			<method name="ColorStops">
-				<return type="ColorStop" pass-as-pointer="true" action="output" array-length="SELF.CountColorStops()" />
+				<return type="BGradient::ColorStop" pass-as-pointer="true" action="output" array-length="SELF.CountColorStops()" />
 			</method>
 			<method name="SortColorStopsByOffset" />
 			<method name="GetType">
-				<return type="Type" action="output" />
+				<return type="BGradient::Type" action="output" />
 			</method>
 			<method name="MakeEmpty" />
 		</functions>
@@ -74,15 +74,15 @@
 			<operator name="!=" />
 		</operators>
 		<constants>
-			<constant name="TYPE_LINEAR" type="int" group="Type" />
-			<constant name="TYPE_RADIAL" type="int" group="Type" />
-			<constant name="TYPE_RADIAL_FOCUS" type="int" group="Type" />
-			<constant name="TYPE_DIAMOND" type="int" group="Type" />
-			<constant name="TYPE_CONIC" type="int" group="Type" />
-			<constant name="TYPE_NONE" type="int" group="Type" />
+			<constant name="BGradient::TYPE_LINEAR" type="int" group="Type" />
+			<constant name="BGradient::TYPE_RADIAL" type="int" group="Type" />
+			<constant name="BGradient::TYPE_RADIAL_FOCUS" type="int" group="Type" />
+			<constant name="BGradient::TYPE_DIAMOND" type="int" group="Type" />
+			<constant name="BGradient::TYPE_CONIC" type="int" group="Type" />
+			<constant name="BGradient::TYPE_NONE" type="int" group="Type" />
 		</constants>
 	</binding>
-	<binding source="ColorStop" target="Haiku::ColorStop">
+	<binding source="BGradient::ColorStop" target="Haiku::Gradient::ColorStop">
 		<properties>
 			<property name="color" type="rgb_color" />
 			<property name="offset" type="float" />
@@ -96,10 +96,11 @@
 				<param name="red"   type="uint8" action="input" />
 				<param name="green" type="uint8" action="input" />
 				<param name="blue"  type="uint8" action="input" />
+				<param name="alpha" type="uint8" action="input" />
 				<param name="offset" type="float" action="input" />
 			</constructor>
-			<constructor overload-name="ColorStop">
-				<param name="other" type="ColorStop" action="input" />
+			<constructor overload-name="FromColorStop">
+				<param name="other" type="BGradient::ColorStop" action="input" />
 			</constructor>
 			<constructor overload-name="Empty" />
 			<destructor />

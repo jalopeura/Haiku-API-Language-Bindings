@@ -3,6 +3,11 @@
 	<binding source="BChannelControl" source-inherits="BControl" target="Haiku::ChannelControl" target-inherits="Haiku::Control">
 		<doc>Exposes the ChannelControl object</doc>
 		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
 			<constructor>
 				<doc>...</doc>
 				<param name="frame" type="BRect" action="input" />
@@ -26,6 +31,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+-->
 			<method name="Archive">
 				<param name="data" type="BMessage*" action="output" />
 				<param name="deep" type="bool" default="true" action="input" />
@@ -62,11 +68,12 @@
 			<event name="DetachedFromWindow" />
 -->
 			<method name="ResizeToPreferred" />
-			<method name="GetPreferredSize">
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled			<method name="GetPreferredSize">
 				<param name="width" type="float" pass-as-pointer="true" action="output" />
 				<param name="height" type="float" pass-as-pointer="true" action="output" />
 				<return type="void" />
 			</method>
+-->
 <!-- Events not yet implemented for this object
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
@@ -90,25 +97,25 @@
 				<return type="void" />
 			</method>
 			<method name="ModificationMessage">
-				<return type="BMessage*" action="input" />
+				<return type="BMessage*" action="output" />
 			</method>
 			<method name="Invoke">
 				<param name="message" type="BMessage*" default="NULL" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="InvokeChannels">
+			<method name="InvokeChannel">
 				<param name="message" type="BMessage*" default="NULL" action="output" />
 				<param name="fromChannel" type="int32" action="input" default="0" />
 				<param name="channelCount" type="int32" action="input" default="-1" />
-				<param name="fromChannel" type="const bool" pass-as-pointer="true" action="output" />
+				<param name="mask" type="bool" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="InvokeNotifyChannels">
+			<method name="InvokeNotifyChannel">
 				<param name="message" type="BMessage*" default="NULL" action="output" />
 				<param name="kind" type="uint32" action="input" default="B_CONTROL_INVOKED" />
 				<param name="fromChannel" type="int32" action="input" default="0" />
 				<param name="channelCount" type="int32" action="input" default="-1" />
-				<param name="fromChannel" type="const bool" pass-as-pointer="true" action="output" />
+				<param name="mask" type="bool" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetValue">
@@ -128,11 +135,20 @@
 			<method name="CountChannels">
 				<return type="int32" action="output" />
 			</method>
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
+			<method name="MaxChannelCount">
+				<return type="int32" action="output" />
+			</method>
+-->
+			<method name="SetChannelCount">
+				<param name="channelCount" type="int32" action="input" />
+				<return type="status_t" action="error" success="B_OK" />
+			</method>
 			<method name="ValueFor">
 				<param name="channel" type="int32" action="input" />
 				<return type="int32" action="output" />
 			</method>
-			<method name="GetValue">
+			<method name="GetValue" overload-name="GetValues">
 				<param name="values" type="int32" pass-as-pointer="true" action="output" array-length="channelCount" />
 				<param name="fromChannel" type="int32" action="input" />
 				<param name="channelCount" type="int32" action="count[values]" />
@@ -143,7 +159,7 @@
 				<param name="value" type="int32" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
-			<method name="SetValue">
+			<method name="SetValue" overload-name="SetValues">
 				<param name="fromChannel" type="int32" action="input" />
 				<param name="channelCount" type="int32" action="count[values]" />
 				<param name="values" type="int32" pass-as-pointer="true" action="input" array-length="channelCount" />
@@ -189,9 +205,11 @@
 				<param name="maximum" type="int32" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
 			<method name="SupportsIndividualLimits">
 				<return type="bool" />
 			</method>
+-->
 			<method name="SetLimitLabels">
 				<param name="minLabel" type="const char*" action="input" />
 				<param name="maxLabel" type="const char*" action="input" />
@@ -211,9 +229,9 @@
 			</method>
 			<method name="SetLimitLabelsFor" overload-name="SetLimitLabelsForMultiple">
 				<param name="fromChannel" type="int32" action="input" />
-				<param name="channelCount" type="int32" action="count[minLabel]" />
-				<param name="minLabel" type="const char*" action="input" array-length="channelCount" />
-				<param name="maxLabel" type="const char*" action="input" array-length="channelCount" />
+				<param name="channelCount" type="int32" action="input" />
+				<param name="minLabel" type="const char*" action="input" />
+				<param name="maxLabel" type="const char*" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="MinLimitLabelFor">

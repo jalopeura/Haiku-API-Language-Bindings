@@ -20,6 +20,12 @@ my $buffer_size = 5;
 my $horizontal_scroll = 0;
 my $vertical_scroll = 1;
 
+sub MouseMoved {
+	print "MouseMoved\n";
+	my $self = shift;
+	$self->SUPER::MouseMoved(@_);
+}
+
 sub new {
 	my ($class, @args) = @_;
 	my $self = $class->SUPER::new(@args);

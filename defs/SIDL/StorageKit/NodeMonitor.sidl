@@ -3,7 +3,7 @@
 	<binding source="BNodeMonitor" target="Haiku::NodeMonitor">
 		<doc>Exposes the NodeMonitor object</doc>
 		<functions>
-			<plain name="watch_volume" name="watch_volume_with_messenger">
+			<plain name="watch_volume" overload-name="watch_volume_with_messenger">
 				<param name="volume" type="dev_t" action="input" />
 				<param name="flags" type="uint32" action="input" />
 				<param name="target" type="BMessenger" action="input" />
@@ -16,7 +16,7 @@
 				<param name="looper" type="const BLooper*" action="input" default="NULL" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-			<plain name="watch_node" name="watch_node_with_messenger">
+			<plain name="watch_node" overload-name="watch_node_with_messenger">
 				<param name="node" type="const node_ref*" action="input" />
 				<param name="flags" type="uint32" action="input" />
 				<param name="target" type="BMessenger" action="input" />
@@ -29,7 +29,7 @@
 				<param name="looper" type="const BLooper*" action="input" default="NULL" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
-			<plain name="stop_watching" name="stop_watching_with_messenger">
+			<plain name="stop_watching" overload-name="stop_watching_with_messenger">
 				<param name="target" type="BMessenger" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</plain>
@@ -50,13 +50,13 @@
 			<constant name="B_WATCH_MOUNT" type="int" group="flags" />
 			<constant name="B_WATCH_INTERIM_STAT" type="int" group="flags" />
 <!-- The "opcode" field of the B_NODE_MONITOR notification message you get. -->
-			<constant name="B_ENTRY_CREATED" type="int" group="opcode" />
-			<constant name="B_ENTRY_REMOVED" type="int" group="opcode" />
-			<constant name="B_ENTRY_MOVED" type="int" group="opcode" />
-			<constant name="B_STAT_CHANGED" type="int" group="opcode" />
-			<constant name="B_ATTR_CHANGED" type="int" group="opcode cause" />
-			<constant name="B_DEVICE_MOUNTED" type="int" group="opcode" />
-			<constant name="B_DEVICE_UNMOUNTED" type="int" group="opcode" />
+			<constant name="B_ENTRY_CREATED" type="int" group="opcodes" />
+			<constant name="B_ENTRY_REMOVED" type="int" group="opcodes" />
+			<constant name="B_ENTRY_MOVED" type="int" group="opcodes" />
+			<constant name="B_STAT_CHANGED" type="int" group="opcodes" />
+			<constant name="B_ATTR_CHANGED" type="int" group="opcodes cause" />
+			<constant name="B_DEVICE_MOUNTED" type="int" group="opcodes" />
+			<constant name="B_DEVICE_UNMOUNTED" type="int" group="opcodes" />
 <!-- More specific info in the "cause" field of B_ATTR_CHANGED notification messages. (Haiku only) -->
 			<constant name="B_ATTR_CREATED" type="int" group="cause" />
 			<constant name="B_ATTR_REMOVED" type="int" group="cause" />

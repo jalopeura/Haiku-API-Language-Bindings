@@ -27,7 +27,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetStat">
-				<param name="stat" type="stat*" action="output" />
+				<param name="stat" type="struct stat*" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetTo" overload-name="SetToEntryRef">
@@ -71,8 +71,8 @@
 				<param name="name" type="const char*" action="input" />
 				<param name="type" type="type_code" action="input" />
 				<param name="offset" type="off_t" action="input" />
-				<param name="buffer" type="void*" action="input" string-length="len" />
-				<param name="len" type="size_t" action="length[buffer]" />
+				<param name="buffer" type="void" pass-as-pointer="true" action="output" string-length="len" />
+				<param name="len" type="size_t" action="input" />
 				<return type="ssize_t" action="output" />
 			</method>
 			<method name="RemoveAttr">
@@ -86,11 +86,11 @@
 			</method>
 			<method name="GetAttrInfo">
 				<param name="name" type="const char*" action="input" />
-				<param name="info" type="attr_info*" action="output" />
+				<param name="info" type="attr_info*" action="output" default="new attr_info()" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="GetNextAttrName">
-				<param name="buffer" type="char*" action="input" />
+				<param name="buffer" type="char" pass-as-pointer="true" action="output" max-string-length="B_ATTR_NAME_LENGTH" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="RewindAttrs">
@@ -130,10 +130,6 @@
 				<param name="ref" type="node_ref" action="input" />
 			</constructor>
 			<destructor />
-			<method name="set_name">
-				<param name="name" type="const char*" action="input" />
-				<return type="status_t" action="error" success="B_OK" />
-			</method>
 		</functions>
 		<operators>
 			<operator name="==" />

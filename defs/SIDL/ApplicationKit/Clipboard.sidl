@@ -29,14 +29,14 @@
 			</method>
 			<method name="StartWatching">
 				<doc>Begins watching for changes in the clipboard.</doc>
-				<param name="target" type="BMessenger*" action="input">
+				<param name="target" type="BMessenger" action="input">
 					<doc>The target; a [code]B_CLIPBOARD_CHANGED[/code] message will be sent to the target when the clipboard changes.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="StopWatching">
 				<doc>Begins watching for changes in the clipboard.</doc>
-				<param name="target" type="BMessenger*" action="input">
+				<param name="target" type="BMessenger" action="input">
 					<doc>The target; a [code]B_CLIPBOARD_CHANGED[/code] message will be sent to the target when the clipboard changes.</doc>
 				</param>
 				<return type="status_t" action="error" success="B_OK" />
@@ -67,7 +67,7 @@
 			</method>
 			<method name="DataSource">
 				<doc>Returns a BMessenger that targets the Application that last wrote to the Clipboard.</doc>
-				<return type="BMessenger*" action="output" />
+				<return type="BMessenger" action="output" />
 			</method>
 			<method name="Data">
 				<doc>Returns the Message object that holds the clipboard data, or NULL if the CLipboard object is not locked.</doc>

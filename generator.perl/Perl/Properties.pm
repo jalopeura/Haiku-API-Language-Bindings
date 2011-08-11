@@ -58,6 +58,7 @@ sub input_converter {
 	my $options = {
 		input_name => $target,
 		output_name => 'cpp_obj->' . $self->name,
+		self_name => 'cpp_obj',
 		must_not_delete => 1,	# never try to delete a property
 	};
 	for my $x (qw(array_length string_length max_array_length max_string_length)) {
@@ -78,6 +79,7 @@ sub output_converter {
 	my $options = {
 		input_name => 'cpp_obj->' . $self->name,
 		output_name => $target,
+		self_name => 'cpp_obj',
 		must_not_delete => 1,	# never try to delete a property
 	};
 	for my $x (qw(array_length string_length max_array_length max_string_length)) {
@@ -99,7 +101,6 @@ sub generate {
 	my $name = $self->name;
 	my ($fetch_defs, $fetch_code) = $self->output_converter('RETVAL');
 	my ($store_defs, $store_code) = $self->input_converter('value');
-	
 	my $fh = $self->package->xsh;
 	
 	print $fh <<PROP;
@@ -159,8 +160,17 @@ PROP
 
 MODULE = $perl_module_name	PACKAGE = $perl_class_name
 
+# Some structs must be prefaced with the keyword 'struct' or gcc 
+# complains. Unfortunately, if you put 'struct' in the XSub def,
+# xsubpp can't parse the type, and if you don't, xsubpp complains
+# about the non-'struct' version not being in the typemap. So we
+# get the THIS variable ourselves in the property XSub instead of
+# prefixing the XSub name as '$cpp_class_name\::$name'
+
 SV*
-${cpp_class_name}::$name()
+$name(THIS)
+	INPUT:
+		$cpp_class_name* THIS;
 	INIT:
 		SV* cpp_obj_sv;
 		SV* tie_obj;

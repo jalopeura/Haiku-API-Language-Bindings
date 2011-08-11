@@ -118,6 +118,7 @@
 				<param name="trailingText" type="const char*" action="input" default="NULL" />
 			</method>
 			<method name="SetTo">
+				<param name="value" type="float" action="input" />
 				<param name="text" type="const char*" action="input" default="NULL" />
 				<param name="trailingText" type="const char*" action="input" default="NULL" />
 			</method>
@@ -134,16 +135,16 @@
 				<return type="float" action="output" />
 			</method>
 			<method name="Text">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="TrailingText">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="Label">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="TrailingLabel">
-				<return type="const char*" action="input" />
+				<return type="const char*" action="output" />
 			</method>
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />

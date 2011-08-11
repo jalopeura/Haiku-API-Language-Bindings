@@ -3,6 +3,11 @@
 	<binding source="BOptionControl" source-inherits="BControl" target="Haiku::OptionControl" target-inherits="Haiku::Control">
 		<doc>Exposes the OptionControl object</doc>
 		<functions>
+<!--
+This is an abstract base class; we use it for inherited methods,
+so we do not need a constructor or destructor
+-->
+<!--
 			<constructor>
 				<doc>...</doc>
 				<param name="rect" type="BRect" action="input" />
@@ -24,6 +29,7 @@
 				<param name="archive" type="BMessage*" action="input" />
 			</constructor>
 			<destructor />
+-->
 <!-- Events not yet implemented for this object
 			<event name="MessageReceived">
 				<param name="message" type="BMessage*" action="input" must-not-delete="true" />
@@ -35,6 +41,7 @@
 				<param name="value" type="int32" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- TODO: These are abstract functions; re-enable after changing the way classes are handled
 			<method name="GetOptionAt">
 				<param name="index" type="int32" action="input" />
 				<param name="name" type="const char*" pass-as-pointer="true" action="output" />
@@ -58,7 +65,8 @@
 				<param name="value" type="int32" pass-as-pointer="true" action="output" />
 				<return type="int32" action="output" />
 			</method>
-			<method name="SelectOptionFor" name="SelectOptionForValue">
+-->
+			<method name="SelectOptionFor" overload-name="SelectOptionForValue">
 				<param name="value" type="int32" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>

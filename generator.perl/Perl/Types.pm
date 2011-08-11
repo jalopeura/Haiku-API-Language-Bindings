@@ -36,6 +36,7 @@ our %builtins = (
 #	'char**'  => 'CHARARRAY',
 	'void*'   => 'T_PV',
 	'constvoid*'   => 'T_PV',
+	'void'    => 'T_IV',	# should only be used with pass-as-pointer
 	
 	'responder' => 'RESP_OBJ',
 	'object'    => 'NORM_OBJ',
@@ -237,6 +238,20 @@ sub type {
 	die "Unrecognized type '$name'";
 }
 
+sub qualified_types {
+	my ($self) = @_;
+	
+	my %ret;
+	for my $type (@{ $self->{types} }) {
+		my $name = $type->name;
+		next unless $name=~/::/;
+		$name=~s/^const\s+//;
+		$name=~s/\*$//;
+		$ret{$name}++;
+	}
+	return sort keys %ret;
+}
+
 sub write_typemap_file {
 	my ($self, $filename) = @_;
 	
@@ -256,6 +271,12 @@ INTRO
 		my $name = $type->name;
 		(my $key = $type->builtin)=~s/\s//g;;
 		my $equiv = $builtins{$key};
+		
+		print OUT "$name\t\t$equiv\n";
+		
+		# namespaces need a qualified version and an unqualified version
+		next unless $name=~/::/;
+		$name=~s/\S+::([^:]+)$/$1/;
 		print OUT "$name\t\t$equiv\n";
 	}
 	# force override of char**
@@ -284,10 +305,10 @@ NORM_OBJ
 NORM_OBJ_PTR
 	$output_converters{NORM_OBJ_PTR}
 
-CHARARRAY
+xCHARARRAY
 	$output_converters{CHARARRAY}
 
-STRING
+xSTRING
 	$output_converters{STRING}
 
 INPUT
@@ -304,10 +325,10 @@ NORM_OBJ
 NORM_OBJ_PTR
 	$input_converters{NORM_OBJ_PTR}
 
-CHARARRAY
+xCHARARRAY
 	$input_converters{CHARARRAY}
 
-STRING
+xSTRING
 	$input_converters{STRING}
 
 OBJTYPES
@@ -328,7 +349,7 @@ sub input_converter {
 		return $self->array_input_converter($options);
 	}
 	
-	my (@defs, @code);
+	my (@defs, @code, @postcode);
 	my $arg = $options->{input_name};
 	my $var = $options->{output_name};
 	my ($pfx) = $arg=~/([^.>]+)$/;
@@ -346,8 +367,16 @@ sub input_converter {
 	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
+		$len=~s/SELF\./$options->{self_name}->/;
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+
+		# malloc if necessary
+		if ($options->{pass_as_pointer}) {
+#			push @code, "$var = ($base*)malloc($len);";
+			push @code, "$var = ($self->{name}*)malloc($len);";
+			push @postcode, "free((void*)$var);";
+		}
 		
 		if ($ptr) {
 #			if ($ptr and $base ne 'char') {
@@ -391,8 +420,16 @@ sub input_converter {
 	}
 	# maximum length (but can be null-terminated)
 	elsif ($maxlen) {
+		$maxlen=~s/SELF\./$options->{self_name}->/;
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
+
+		# malloc if necessary
+		if ($options->{pass_as_pointer}) {
+#			push @code, "$var = ($base*)malloc($maxlen);";
+			push @code, "$var = ($self->{name}*)malloc($maxlen);";
+			push @postcode, "free((void*)$var);";
+		}
 		
 		my $sv_length = "$pfx\_sv_length";
 		push @defs, "STRLEN $sv_length = SvCUR($arg);";
@@ -421,6 +458,12 @@ sub input_converter {
 			push @code, qq(\t$maxlen = $sv_length);
 		}	
 	}
+	elsif ($len eq 'null-terminated' and not $self->{name}=~/\*$/) {
+#		push @code, "$var = SvPV_nolen($arg);";
+		my $sv_length = "$pfx\_sv_length";
+		push @defs, "STRLEN $sv_length;";
+		push @code, "memcpy((void*)$var, (void*)SvPV($arg, $sv_length), $sv_length);";
+	}
 	else {
 		my $converter = $Perl::Types::input_converters{ $self->perltype };
 		
@@ -438,14 +481,14 @@ sub input_converter {
 		push @code, $ret;
 	}
 	
-	return (\@defs, \@code);
+	return (\@defs, \@code, \@postcode);
 }
 
 # convert Perl SV* containing an aref to C++ array of some type
 sub array_input_converter {
 	my ($self, $options) = @_;
 	
-	my (@defs, @code);
+	my (@defs, @code, @postcode);
 	my $arg = $options->{input_name};
 	my $var = $options->{output_name};
 	
@@ -462,7 +505,15 @@ sub array_input_converter {
 	
 	my $count = delete $options->{array_length};
 	# I should make these constants instead of hard-coding them here
-	$count=~s/SELF\./cpp_obj->/;
+	$count=~s/SELF\./$options->{self_name}->/;
+
+	# malloc if necessary
+	if ($options->{pass_as_pointer}) {
+		(my $base = $self->{name})=~s/const\s+//;
+#		push @code, "$var = ($base*)malloc($count * sizeof($base));";
+		push @code, "$var = ($self->{name}*)malloc($count * sizeof($base));";
+		push @postcode, "free((void*)$var);";
+	}
 	
 	$options->{input_name} = "*$perl_item";
 	$options->{output_name} = $cpp_item;
@@ -480,15 +531,6 @@ sub array_input_converter {
 	# non-constant lengths
 	if ($options->{set_array_length}) {
 		push @code, "$count = av_len($array) + 1;";
-	}
-
-	# malloc if necessary
-	if ($options->{need_malloc}) {
-		# calling code should not pass 'need_malloc' unless using a pointer (type*)
-		# if using an array (type[]), calling code shouldn't need malloc
-		(my $base = $self->{name})=~s/const\s+//;
-#		push @code, "$var = ($base*)malloc($count * sizeof($base));";
-		push @code, "$var = ($self->{name}*)malloc($count * sizeof($base));";
 	}
 
 	#
@@ -521,7 +563,7 @@ sub array_input_converter {
 		'}',
 	);
 	
-	return (\@defs, \@code);
+	return (\@defs, \@code, \@postcode);
 }
 
 # convert some C++ type to Perl SV*
@@ -533,7 +575,7 @@ sub output_converter {
 		return $self->array_output_converter($options);
 	}
 	
-	my (@defs, @code);
+	my (@defs, @code, @precode);
 	my $var = $options->{input_name};
 	my $arg = $options->{output_name};
 	my ($pfx) = $arg=~/(\w+)$/;
@@ -551,12 +593,13 @@ sub output_converter {
 	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
+		$len=~s/SELF\./$options->{self_name}->/;
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
-		if ($base ne 'char' and not $ptr) {
-			$len .= " * sizeof($base)";
-		}
+		#if ($base ne 'char' and not $ptr) {
+		#	$len .= " * sizeof($base)";
+		#}
 		
 		# special case: char
 		# (instead of char[] or char*)
@@ -575,9 +618,17 @@ sub output_converter {
 			"if (is_utf8_string((const U8*)$var, (STRLEN)$len)) {",
 			"\tSvUTF8_on($arg);",
 			'}';
+
+		# malloc if necessary
+		if ($options->{pass_as_pointer}) {
+#			push @code, "$var = ($base*)malloc($len);";
+			push @precode, "$var = ($self->{name}*)malloc($len);";
+			push @code, "free((void*)$var);";
+		}
 	}
 	# maximum length (but can be null-terminated)
 	elsif ($maxlen) {
+		$maxlen=~s/SELF\./$options->{self_name}->/;
 		my $ptr = $self->{perltype} eq 'T_PV';
 		(my $base = $self->{name})=~s/const\s+//; $base=~s/\*$//;
 		
@@ -616,6 +667,23 @@ sub output_converter {
 			"if (is_utf8_string((const U8*)$var, (STRLEN)$sv_length)) {",
 			"\tSvUTF8_on($arg);",
 			'}';
+
+		# malloc if necessary
+		if ($options->{pass_as_pointer}) {
+#			push @code, "$var = ($base*)malloc($maxlen);";
+			push @precode, "$var = ($self->{name}*)malloc($maxlen);";
+			push @code, "free((void*)$var);";
+		}
+	}
+	elsif ($len eq 'null-terminated' and not $self->{name}=~/\*$/) {
+		my $sv_length = "$pfx\_sv_length";
+		push @defs, "STRLEN $sv_length;";
+		push @code,
+			"$arg = newSVpv($var, 0);",
+			"$sv_length = SvCUR($arg);",
+			"if (is_utf8_string((const U8*)$var, (STRLEN)$sv_length)) {",
+			"\tSvUTF8_on($arg);",
+			'}';
 	}
 	# null-terminated strings and non-string types use default converters
 	else {
@@ -638,14 +706,14 @@ sub output_converter {
 		push @code, $ret;
 	}
 	
-	return (\@defs, \@code);
+	return (\@defs, \@code, \@precode);
 }
 
 # convert C++ array of some type to Perl SV* containing an aref
 sub array_output_converter {
 	my ($self, $options) = @_;
 	
-	my (@defs, @code);
+	my (@defs, @code, @precode);
 	my $var = $options->{input_name};
 	my $arg = $options->{output_name};
 	
@@ -655,7 +723,7 @@ sub array_output_converter {
 	
 	my $count = delete $options->{array_length};
 	# I should make these constants instead of hard-coding them here
-	$count=~s/SELF\./cpp_obj->/;
+	$count=~s/SELF\./$options->{self_name}->/;
 	
 	$options->{input_name} = $cpp_item;
 	$options->{output_name} = $perl_item;
@@ -678,7 +746,7 @@ sub array_output_converter {
 		qq($arg = newRV_noinc((SV*) $array);),
 	);
 	
-	return (\@defs, \@code);
+	return (\@defs, \@code, \@precode);
 }
 
 package Perl::BuiltinType;

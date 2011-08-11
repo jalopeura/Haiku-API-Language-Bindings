@@ -5,8 +5,9 @@ our @ISA = qw(Haiku::TextView);
 my $NonBreakingSpace = pack('U', 0xa0);
 my $ItemMarker = pack('U', 8226);
 
-use constant PLAIN_CURSOR => Haiku::Cursor->newFromID(Haiku::Cursor::B_CURSOR_ID_I_BEAM);
-use constant LINK_CURSOR  => Haiku::Cursor->newFromID(Haiku::Cursor::B_CURSOR_ID_FOLLOW_LINK);
+use constant DEFAULT_CURSOR => Haiku::Cursor->newFromID(Haiku::Cursor::B_CURSOR_ID_SYSTEM_DEFAULT);
+use constant TEXT_CURSOR    => Haiku::Cursor->newFromID(Haiku::Cursor::B_CURSOR_ID_I_BEAM);
+use constant LINK_CURSOR    => Haiku::Cursor->newFromID(Haiku::Cursor::B_CURSOR_ID_FOLLOW_LINK);
 
 sub make_color {
 	my $c = new Haiku::rgb_color;

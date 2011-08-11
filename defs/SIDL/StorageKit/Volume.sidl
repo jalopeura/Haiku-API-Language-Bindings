@@ -31,29 +31,31 @@
 			<method name="Capacity">
 				<return type="off_t" action="output" />
 			</method>
-			<method name="Freebytes">
+			<method name="FreeBytes">
 				<return type="off_t" action="output" />
 			</method>
 			<method name="BlockSize">
 				<return type="off_t" action="output" />
 			</method>
 			<method name="GetName">
-				<param name="name" type="char*" action="output" />
+				<param name="name" type="char" pass-as-pointer="true" action="output" max-string-length="B_FILE_NAME_LENGTH" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetName">
-				<param name="name" type="char*" action="input" />
+				<param name="name" type="char*" action="input" max-string-length="B_FILE_NAME_LENGTH" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+<!-- TODO: Resolve issues with Bitmap
 			<method name="GetIcon">
 				<param name="icon" type="BBitmap*" action="output" />
 				<param name="size" type="icon_size" action="input" default="B_LARGE_ICON" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
+-->
 			<method name="GetIcon" overload-name="GetIconData">
-				<param name="data" type="uint8" pass-as-pointer="true" action="output" string-length="size" />
+				<param name="data" type="uint8*" pass-as-pointer="true" action="output" string-length="size" />
 				<param name="size" type="size_t" pass-as-pointer="true" action="length[data]" />
-				<param name="type" type="type_code" action="output" />
+				<param name="type" type="type_code" pass-as-pointer="true" action="output" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="IsRemovable">

@@ -1,7 +1,7 @@
-<bindings name="Haiku::NodeMonitor">
-	<doc>Exposes the NodeMonitor object</doc>
-	<binding source="BNodeMonitor" target="Haiku::NodeMonitor">
-		<doc>Exposes the NodeMonitor object</doc>
+<bindings name="Haiku::Beep">
+	<doc>Exposes the Beep object</doc>
+	<binding source="BBeep" target="Haiku::Beep">
+		<doc>Exposes the Beep object</doc>
 		<functions>
 			<plain name="beep">
 				<return type="status_t" action="error" success="B_OK" />

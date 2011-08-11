@@ -28,6 +28,8 @@ our @ISA = qw(Constant Python::BaseObject);
 sub finalize_upgrade {
 	my ($self) = @_;
 	
+	$self->{qualified_name} = $self->{name};
+	
 	$self->{name}=~s/^.*::([^:]+)$/$1/;
 }
 
@@ -106,7 +108,7 @@ sub generate {
 	
 #	my ($fmt, $arg, $defs, $code) = $self->arg_builder;
 	my $options = {
-		input_name => $self->name,
+		input_name => $self->qualified_name,
 		output_name => $object_name,
 		must_not_delete => 1,
 		repeat => $self->has('repeat') ? $self->repeat : 0,

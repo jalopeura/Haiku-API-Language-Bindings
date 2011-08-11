@@ -12,7 +12,7 @@
 			<constructor overload-name="WithMessenger">
 				<doc>Creates an Invoker.</doc>
 				<param name="message" type="BMessage*" action="input" />
-				<param name="messenger" type="BMessenger*" action="input" />
+				<param name="messenger" type="BMessenger" action="input" />
 			</constructor>
 			<constructor overload-name="Empty">
 				<doc>Creates an empty Invoker.</doc>
@@ -34,7 +34,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="SetTarget" overload-name="SetTargetMessenger">
-				<param name="messenger" type="BMessenger*" action="input" />
+				<param name="messenger" type="BMessenger" action="input" />
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="IsTargetLocal">
@@ -45,7 +45,7 @@
 				<return type="BHandler*" action="output" />
 			</method>
 			<method name="Messenger">
-				<return type="BMessenger*" action="output" />
+				<return type="BMessenger" action="output" />
 			</method>
 			<method name="SetHandlerForReply">
 				<param name="handler" type="BHandler*" action="input" />

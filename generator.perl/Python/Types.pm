@@ -233,6 +233,7 @@ sub arg_builder {
 	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
+		$len=~s/SELF\./python_self->cpp_object->/;
 		(my $base = $self->{name})=~s/const\s+//;
 		
 		my $input = $options->{input_name};
@@ -253,6 +254,7 @@ sub arg_builder {
 	
 	# strings with maximum length (but can be null-terminated)
 	if ($maxlen) {
+		$maxlen=~s/SELF\./python_self->cpp_object->/;
 		(my $base = $self->{name})=~s/const\s+//;
 		
 		my $py_length = $options->{output_name} . '_length';
@@ -431,6 +433,7 @@ sub arg_parser {
 	
 	# strings with lengths need special processing
 	if ($len and $len ne 'null-terminated') {
+		$len=~s/SELF\./python_self->cpp_object->/;
 		if ($self->{name}=~/\*$/) {
 			if ($options->{set_string_length}) {
 				my $cast;
@@ -439,7 +442,7 @@ sub arg_parser {
 				}
 				return (
 					[],	# empty defs
-					[ qq(PyString_AsStringAndSize($options->{input_name}, $cast&$options->{output_name}, &$len);) ]
+					[ qq(PyString_AsStringAndSize($options->{input_name}, $cast&$options->{output_name}, (Py_ssize_t*)&$len);) ]
 				);
 			}
 			else {
@@ -452,10 +455,14 @@ sub arg_parser {
 		
 		if ($options->{set_string_length}) {
 			return (
-				[ "char buffer[$len];" ],	# defs
+#				[ "char buffer[$len];" ],	# defs
+				[ "char* buffer;" ],	# defs
 				[
-					qq(PyString_AsStringAndSize($options->{input_name}, &buffer, &$len);),
-					qq(memcpy((void*)&$options->{output_name}, (void*)buffer, $len);)
+					
+					qq(buffer = (char*)malloc(0xffff);	// should be big enough for most purposes),
+					qq(PyString_AsStringAndSize($options->{input_name}, &buffer, (Py_ssize_t*)&$len);),
+					qq(memcpy((void*)&$options->{output_name}, (void*)buffer, $len);),
+					qq(free(buffer);),
 				]
 			);
 		}
@@ -541,7 +548,8 @@ sub arg_parser {
 			
 			push @code, "if ($options->{input_name} != NULL) {";
 			if ($builtin eq 'object' or $builtin eq 'responder') {
-				push @code, qq(\t$options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
+#				push @code, qq(\t$options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
+				push @code, qq(\tmemcpy((void*)&$options->{output_name}, (void*)(($objtype*)$options->{input_name})->cpp_object, sizeof($self->{name})););
 			}
 			else {
 				push @code, qq(\t$options->{output_name} = (($objtype*)$options->{input_name})->cpp_object;);

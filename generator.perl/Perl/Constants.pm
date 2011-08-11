@@ -21,8 +21,11 @@ sub get_groups {
 	
 	if ($self->has('constants')) {
 		for my $c ($self->constants) {
-			$groups{ $c->{group} } ||= [];
-			push @{ $groups{ $c->{group} } }, $c->name;
+			my @g = split /\s+/, $c->{group};
+			for my $g (@g) {
+				$groups{ $g } ||= [];
+				push @{ $groups{$g} }, $c->name;
+			}
 		}
 	}
 	
@@ -80,6 +83,8 @@ our @ISA = qw(Constant Perl::BaseObject);
 sub finalize_upgrade {
 	my ($self) = @_;
 	
+	$self->{qualified_name} = $self->{name};
+	
 	$self->{name}=~s/^.*::([^:]+)$/$1/;
 }
 
@@ -120,8 +125,8 @@ sub input_converter {
 	my ($self, $target) = @_;
 	
 	my $options = {
-		input_name => $self->name,
-		output_name => $target,
+		input_name => $target,
+		output_name => $self->qualified_name,
 		must_not_delete => 1,	# never try to delete a constant
 	};
 	for my $x (qw(array_length string_length max_array_length max_string_length)) {
@@ -138,7 +143,7 @@ sub output_converter {
 	my ($self, $target) = @_;
 	
 	my $options = {
-		input_name => $self->name,
+		input_name => $self->qualified_name,
 		output_name => $target,
 		must_not_delete => 1,	# never try to delete a constant
 	};
@@ -159,7 +164,8 @@ sub generate {
 	my $perl_class_name = $self->package->perl_name;
 	my $perl_module_name = $self->module_name;
 	
-	my $ctype_to_sv = $self->output_converter('RETVAL');
+	my ($ctype_to_sv_defs, $ctype_to_sv_code, $ctype_to_sv_precode) 
+		= $self->output_converter('RETVAL');
 	
 	my $fh = $self->package->xsh;
 	
@@ -170,11 +176,12 @@ $name()
 		RETVAL = newSV(0);
 CONST
 	
-	for my $line (@$ctype_to_sv) {
+	for my $line (@$ctype_to_sv_defs, @$ctype_to_sv_code, @$ctype_to_sv_precode) {
 		print $fh "\t\t$line\n";
 	}
 	
 	print $fh <<CONST;
+		dualize(RETVAL, "$name");
 	OUTPUT:
 		RETVAL
 

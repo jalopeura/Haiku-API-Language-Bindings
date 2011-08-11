@@ -14,11 +14,13 @@ use Haiku::InterfaceKit;
 use Haiku::Window qw(B_TITLED_WINDOW B_QUIT_ON_WINDOW_CLOSE);
 use Haiku::View qw(B_FOLLOW_LEFT B_FOLLOW_TOP B_WILL_DRAW B_NAVIGABLE);
 
-use Test::Simple tests =>  17;
+use Test::Simple tests =>  18;
 use strict;
 
 $Haiku::ApplicationKit::DEBUG = 0;
 $Haiku::InterfaceKit::DEBUG = 0;
+$Haiku::StorageKit::DEBUG = 0;
+$Haiku::SupportKit::DEBUG = 0;
 
 ok(1, 'Modules loaded');
 
@@ -61,6 +63,9 @@ ok($char && $mod, "Multiple return values working: [$char] [$mod]");
 
 my $origin = Haiku::Point::B_ORIGIN;
 ok(ref($origin), "Non-integer constants working [$origin]");
+
+my $err = Haiku::Errors::B_OS_ERROR_BASE; my $num_err = $err+0;
+ok(($err eq 'B_OS_ERROR_BASE'), "Dual value constants working: $err, $num_err");
 
 my $be_app = Haiku::Application::be_app;
 ok(ref($be_app), "Globals working [$be_app]");
