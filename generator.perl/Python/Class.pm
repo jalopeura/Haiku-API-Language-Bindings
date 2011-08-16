@@ -70,6 +70,7 @@ sub finalize_upgrade {
 		$self->{python_parent}=~s/::/./g;
 	}
 	
+	$self->{initfunc_name} = join('_', 'init', @n, 'PyType');
 	$self->{pytype_name} = join('_', @n, 'PyType');
 	$self->{pyobject_name} = join('_', @n, 'PyObject');
 	$self->{method_table_name} = join('_', @n, 'PyMethods');
@@ -403,52 +404,82 @@ CMP
 	
 	# type object
 	print $fh <<TYPE;
-PyTypeObject $self->{pytype_name} = {
-	PyObject_HEAD_INIT(NULL)
-	0,                         /*ob_size*/
-	"$self->{python_name}",    /*tp_name*/
-	sizeof(${python_object_prefix}_Object), /*tp_basicsize*/
-	0,                         /*tp_itemsize*/
-	(destructor)$dealloc_function, /*tp_dealloc*/
-	0,                         /*tp_print*/
-	0,                         /*tp_getattr*/
-	0,                         /*tp_setattr*/
-	0,                         /*tp_compare*/
-	0,                         /*tp_repr*/
-	$as_number,                         /*tp_as_number*/
-	0,                         /*tp_as_sequence*/
-	0,                         /*tp_as_mapping*/
-	0,                         /*tp_hash */
-	0,                         /*tp_call*/
-	0,                         /*tp_str*/
-	0,                         /*tp_getattro*/
-	0,                         /*tp_setattro*/
-	0,                         /*tp_as_buffer*/
-	$flags,                    /*tp_flags*/
-	"...",                     /* tp_doc */
-	0,                         /* tp_traverse */
-	0,                         /* tp_clear */
-	$richcompare,              /* tp_richcompare */
-	0,                         /* tp_weaklistoffset */
-	0,                         /* tp_iter */
-	0,                         /* tp_iternext */
-	$method_table,             /* tp_methods */
-	0,                         /* tp_members */
-	$property_table,           /* tp_getset */
-	$parent,                   /* tp_base */
-	0,                         /* tp_dict */
-	0,                         /* tp_descr_get */
-	0,                         /* tp_descr_set */
-	0,                         /* tp_dictoffset */
-	(initproc)$init_function,  /* tp_init */
-	PyType_GenericAlloc,       /* tp_alloc */
-	PyType_GenericNew,         /* tp_new */
-	0,                         /* tp_free */
-	0,                         /* tp_is_gc */
-    $parents                   /* tp_bases */
-};
+static void $self->{initfunc_name}(PyTypeObject* type) {
+	type->tp_name        = "$self->{python_name}";
+	type->tp_basicsize   = sizeof(${python_object_prefix}_Object);
+	type->tp_dealloc     = (destructor)$dealloc_function;
+	type->tp_as_number   = $as_number;
+	type->tp_flags       = $flags;
+	type->tp_doc         = "...";
+	type->tp_richcompare = $richcompare;
+	type->tp_methods     = $method_table;
+	type->tp_getset      = $property_table;
+	type->tp_base        = $parent;
+	type->tp_init        = (initproc)$init_function;
+	type->tp_alloc       = PyType_GenericAlloc;
+	type->tp_new         = PyType_GenericNew;
+	type->tp_bases       = $parents;
+}
 
 TYPE
+
+=pod
+
+	# type object
+	print $fh <<TYPE;
+static int $self->{initfunc_name}() {
+	PyTypeObject $self->{pytype_name} = {
+		PyObject_HEAD_INIT(NULL)
+		0,                         /*ob_size*/
+		"$self->{python_name}",    /*tp_name*/
+		sizeof(${python_object_prefix}_Object), /*tp_basicsize*/
+		0,                         /*tp_itemsize*/
+		(destructor)$dealloc_function, /*tp_dealloc*/
+		0,                         /*tp_print*/
+		0,                         /*tp_getattr*/
+		0,                         /*tp_setattr*/
+		0,                         /*tp_compare*/
+		0,                         /*tp_repr*/
+		$as_number,                         /*tp_as_number*/
+		0,                         /*tp_as_sequence*/
+		0,                         /*tp_as_mapping*/
+		0,                         /*tp_hash */
+		0,                         /*tp_call*/
+		0,                         /*tp_str*/
+		0,                         /*tp_getattro*/
+		0,                         /*tp_setattro*/
+		0,                         /*tp_as_buffer*/
+		$flags,                    /*tp_flags*/
+		"...",                     /* tp_doc */
+		0,                         /* tp_traverse */
+		0,                         /* tp_clear */
+		$richcompare,              /* tp_richcompare */
+		0,                         /* tp_weaklistoffset */
+		0,                         /* tp_iter */
+		0,                         /* tp_iternext */
+		$method_table,             /* tp_methods */
+		0,                         /* tp_members */
+		$property_table,           /* tp_getset */
+		$parent,                   /* tp_base */
+		0,                         /* tp_dict */
+		0,                         /* tp_descr_get */
+		0,                         /* tp_descr_set */
+		0,                         /* tp_dictoffset */
+		(initproc)$init_function,  /* tp_init */
+		PyType_GenericAlloc,       /* tp_alloc */
+		PyType_GenericNew,         /* tp_new */
+		0,                         /* tp_free */
+		0,                         /* tp_is_gc */
+	    $parents                   /* tp_bases */
+	};
+	
+	return PyType_Ready(&$self->{pytype_name});
+}
+
+TYPE
+
+=cut
+
 }
 
 sub generate_default_operators {

@@ -71,7 +71,7 @@ sub generate_cpp {
 	my @postcode;	# any required post-call code
 	my $stack_count = 0;
 	
-	push @xspush, "XPUSHs(perl_link_data->perl_object);";
+	push @xspush, "XPUSHs(newRV_noinc((SV*)perl_link_data->perl_object));";
 	$stack_count++;
 	
 	if ($self->params->has('cpp_input')) {
@@ -201,6 +201,7 @@ $rettype ${cpp_class_name}::$name($inputs) {
 		return ${cpp_parent_name}::$name($parent_inputs);
 	}
 	else {
+DUMPME(1,perl_link_data->perl_object);
 EVENT
 	
 	if (@defs) {

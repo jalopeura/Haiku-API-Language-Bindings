@@ -5,7 +5,7 @@
 		<functions>
 			<constructor>
 				<param name="name" type="const char*" action="input" />
-				<param name="target" type="BView*" action="input" />
+				<param name="target" type="BView*" action="input" must-not-delete="true" />
 				<param name="resizingMode" type="uint32" action="input" default="B_FOLLOW_LEFT | B_FOLLOW_TOP" />
 				<param name="flags" type="uint32" action="input" default="0" />
 				<param name="horizontal" type="bool" action="input" default="false" />
@@ -14,7 +14,7 @@
 			</constructor>
 			<constructor overload-name="WithoutResize">
 				<param name="name" type="const char*" action="input" />
-				<param name="target" type="BView*" action="input" />
+				<param name="target" type="BView*" action="input" must-not-delete="true" />
 				<param name="flags" type="uint32" action="input" />
 				<param name="horizontal" type="bool" action="input" />
 				<param name="vertical" type="bool" action="input" />
@@ -119,10 +119,10 @@
 				<return type="bool" action="output" />
 			</method>
 			<method name="SetTarget">
-				<param name="target" type="BView*" action="input" />
+				<param name="target" type="BView*" action="input" must-not-delete="true" />
 			</method>
 			<method name="Target">
-				<return type="BView*" action="output" />
+				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
 			<method name="ResolveSpecifier">
 				<param name="message" type="BMessage*" action="input" />

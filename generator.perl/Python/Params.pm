@@ -315,6 +315,27 @@ sub type {
 	return $self->{type};
 }
 
+sub is_array_or_string {
+	my ($self) = @_;
+	
+	if ($self->has('array_length') or
+		$self->has('string_length') or
+		$self->has('max_array_length') or
+		$self->has('max_string_length')) {
+		return 1;
+	}
+	
+	my $type = $self->type;
+	if ($type->has('array_length') or
+		$type->has('string_length') or
+		$type->has('max_array_length') or
+		$type->has('max_string_length')) {
+		return 1;
+	}
+	
+	return undef;
+}
+
 #%options = (
 #	name
 #	default
@@ -366,7 +387,8 @@ sub repeat {
 sub as_cpp_def {
 	my ($self) = @_;
 	my $type = $self->type->name;
-	if ($self->has('array_length') and $self->pass_as_pointer) {
+	if ($self->pass_as_pointer and $self->is_array_or_string) {
+		# this might fail on null-terminated strings passed as pointers
 		$type .= '*'
 	}
 	my $arg = "$type $self->{name}";
@@ -411,10 +433,8 @@ sub python_error_code {
 sub as_cpp_arg {
 	my ($self) = @_;
 	my $arg = $self->name;
-	if (
-		$self->pass_as_pointer and
-		not $self->has('array_length')
-		) {
+	if ($self->pass_as_pointer and not $self->is_array_or_string) {
+		# this might fail on null-terminated strings passed as pointers
 		$arg = "&$arg";
 	}
 	return $arg;

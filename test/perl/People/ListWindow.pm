@@ -94,11 +94,13 @@ sub MessageReceived {
 
 sub QuitRequested {
 	my ($self) = @_;
-	while (@{ $self->{personwindows} }) {
-		my $win = shift @{ $self->{personwindows} };
-		$win->Lock;
-		$win->Quit;
-		
+	if ($self->{personwindows}) {
+		while (@{ $self->{personwindows} }) {
+			my $win = shift @{ $self->{personwindows} };
+			$win->Lock;
+			$win->Quit;
+			
+		}
 	}
 	return 1;
 }
@@ -115,8 +117,8 @@ sub remove_window {
 }
 
 sub add_person {
-	# seems to be a memory leak; Nodes or Entrys not getting destroyed, I think
-	return if $people_count++ >= 40;
+	# currently limited due to an unresolved refcount issue
+#	return if $people_count++ >= 40;
 	my ($self, $file) = @_;
 	my $maxlen = 100;	# maximum number of bytes to read
 	my $i = 0;
@@ -138,6 +140,7 @@ sub add_person {
 	my $item = new Haiku::StringItem($name);
 	$self->{listview}->AddItem($item);
 	$self->{item_map}{$name} = $file;
+	undef $node;
 	undef $node;
 }
 

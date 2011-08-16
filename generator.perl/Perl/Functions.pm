@@ -218,6 +218,10 @@ sub generate_xs {
 					push @input, $param->as_cpp_def;
 					push @xsargs, $param->name;
 				}
+				if ($param->type->has('target') and $param->must_not_delete) {
+					push @precode,
+						qq{must_not_delete_cpp_object(ST($i), true);};
+				}
 			}
 			elsif ($action eq 'output') {
 				push @init, $param->as_cpp_def;
@@ -327,7 +331,7 @@ sub generate_xs {
 				
 				if ($type_name=~/\*$/) {
 					push @postcode,
-						qq{$svname = newSVsv(create_perl_object((void*)$retname, $class, $mnd));};
+						qq{$svname = create_perl_object((void*)$retname, $class, $mnd);};
 						if ($options{custom_constructor}) {
 							push @postcode,
 								qq($retname->perl_link_data = get_link_data($svname););
@@ -335,8 +339,12 @@ sub generate_xs {
 				}
 				else {
 					push @postcode,
-						qq{$svname = newSVsv(create_perl_object((void*)&$retname, $class, $mnd));};
+						qq{$svname = create_perl_object((void*)&$retname, $class, $mnd);};
 				}
+				
+#				push @postcode,
+#					qq{SvREFCNT_inc($svname);	// to avoid 'Attempt to free unreferenced scalar'};
+push @postcode, qq(DUMPME(1,$svname););
 			}
 		}
 		
@@ -374,9 +382,10 @@ sub generate_xs {
 					#"RETVAL = newSVsv($retname);",
 					#"// it's already mortal, but RETVAL will mortalize it again",
 					#"SvREFCNT_inc($retname);";
-					"RETVAL = $retname;",
-#"get_link_data($retname);",
-#"get_link_data(RETVAL);",
+					"RETVAL = newSVsv($retname);",
+"DUMPME(1,$retname);",
+"DUMPME(1,RETVAL);",
+					"SvREFCNT_dec($retname);",
 #qq(DEBUGME(1, "refcount of $retname: %d", SvREFCNT($retname));),
 #qq(DEBUGME(1, "refcount of RETVAL: %d", SvREFCNT(RETVAL));),
 			}

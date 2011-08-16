@@ -32,6 +32,7 @@ our %builtins = (
 	'char**'  => 'O',
 	'void*'   => 'O',
 	'constvoid*'   => 's',
+	'void'    => 'O',	# should only be used with pass-as-pointer
 	
 	'responder' => 'O',
 	'object'    => 'O',
@@ -169,7 +170,7 @@ sub write_object_types {
 		print $fh <<OBJECT;
 // make a default version here so it's available early
 // we'll fill in the values in another file
-extern PyTypeObject ${python_type}_PyType;
+static PyTypeObject ${python_type}_PyType = { PyObject_HEAD_INIT(NULL) };
 typedef struct {
     PyObject_HEAD
     $cpp_type* cpp_object;

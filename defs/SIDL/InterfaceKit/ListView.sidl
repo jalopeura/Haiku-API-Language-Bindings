@@ -115,10 +115,10 @@
 				<param name="where" type="BPoint" action="input" />
 			</method>
 			<method name="AddItem">
-				<param name="item" type="BListItem*" action="input" />
+				<param name="item" type="BListItem*" action="input" must-not-delete="true" />
 			</method>
 			<method name="AddItem" overload-name="AddItemAtIndex">
-				<param name="item" type="BListItem*" action="input" />
+				<param name="item" type="BListItem*" action="input" must-not-delete="true" />
 				<param name="index" type="int32" action="input" />
 			</method>
 <!-- BList object not yet implemented

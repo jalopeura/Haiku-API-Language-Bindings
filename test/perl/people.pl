@@ -15,13 +15,13 @@ use Haiku::InterfaceKit;
 use Haiku::StorageKit;
 use strict;
 
-$SIG{__WARN__} = sub {
-	new Haiku::Alert(
-		"Warning",	# title
-		$_[0],	# text
-		'Ok',	# button 1 label
-	)->Go;
-};
+#$SIG{__WARN__} = sub {
+#	new Haiku::Alert(
+#		"Warning",	# title
+#		$_[0],	# text
+#		'Ok',	# button 1 label
+#	)->Go;
+#};
 
 $Haiku::ApplicationKit::DEBUG = 0;
 $Haiku::InterfaceKit::DEBUG = 0;
@@ -31,3 +31,5 @@ $Haiku::SupportKit::DEBUG = 0;
 my $podviewer = new People::Application;
 
 $podviewer->Run;
+
+undef $SIG{__WARN__};

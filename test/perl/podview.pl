@@ -12,13 +12,13 @@ use Haiku::ApplicationKit;
 use Haiku::InterfaceKit;
 use PodViewer::Application;
 
-$SIG{__WARN__} = sub {
-	new Haiku::Alert(
-		"Warning",	# title
-		$_[0],	# text
-		'Ok',	# button 1 label
-	)->Go;
-};
+#$SIG{__WARN__} = sub {
+#	new Haiku::Alert(
+#		"Warning",	# title
+#		$_[0],	# text
+#		'Ok',	# button 1 label
+#	)->Go;
+#};
 
 $Haiku::ApplicationKit::DEBUG = 4;
 $Haiku::InterfaceKit::DEBUG = 4;

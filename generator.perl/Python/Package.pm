@@ -26,6 +26,16 @@ sub new {
 		$self->{classes} = [];
 		$self->{constants} = [];
 		for my $class (@classes) {
+# having 'unresolved symbol' issues with these objects
+# why? they're generated exactly the same as the others
+#my $pn = $class->python_name;
+#next if (
+#	$pn eq 'Haiku.TabView' or
+#	$pn eq 'Haiku.EntryList' or
+#	$pn eq 'Haiku.Query' or	# depends on EntryList
+#	$pn eq 'Haiku.ColorControl' or
+#	$pn eq 'Haiku.StringView'
+#);
 			if ($class->has('functions') or $class->has('properties')) {
 				push @{ $self->{classes} }, $class;	
 				if ($class->has('functions') and $class->functions->had('events')) {
@@ -307,17 +317,6 @@ sub generate_cc_postamble {
 	(my $module_prefix = $self->name)=~s/\./_/g; $module_prefix .= '_';
 	
 	print $fh <<TOP;
-/*
- * Some of the base classes may be defined in other packages, which means we don't
- * have access to them here. We eval a Python string to get access to the base type.
- * This means any base types need to be added to their containing modules before
- * this function is called. This means the user must load modules containing base
- * classes before loading the modules in this package.
- *
- * For the sake of simplicity, even base classes that are defined in this package
- * are set using this function, so it must be called after all our own types have
- * been added to their containing modules.
- */
 PyMODINIT_FUNC
 init$filename()
 {
@@ -395,8 +394,12 @@ PARENT
 	# if there are constants, init the constant module
 	# and add the constants to it
 	if ($self->has('classes')) {
+		# do all the classes first, then iterate through them again
+		# to do the constants (a constant may require a type to be
+		# be defined, so we have to define all types first)
 		for my $class ($self->classes) {
 			my @n = split /\./, $class->python_name;
+			my $init = $class->initfunc_name;
 			my $type = $class->pytype_name;
 			print $fh "\t// $class->{python_name}: class\n";
 			
@@ -404,7 +407,7 @@ PARENT
 				my @p = split /\s+/, $class->{python_parent};
 				for my $p (@p) {
 					$p=~s/\./_/g;
-					print $fh "\tPy_INCREF(&$p\_PyType);	// base class\n";
+					print $fh "\t//Py_INCREF(&$p\_PyType);	// base class\n";
 				}
 			}
 		
@@ -420,14 +423,22 @@ PARENT
 			my $parent_module = join('_', @n, 'module');
 			
 			print $fh <<CLASS;
+	$init(&$type);
 	if (PyType_Ready(&$type) < 0)
 		return;
 	Py_INCREF(&$type);
 	PyModule_AddObject($parent_module, "$cn", (PyObject*)&$type);
 	
 CLASS
-			
+		}
+		
+		# now for the constants
+		for my $class ($self->classes) {
 			if ($class->has('constants') and $class->constants->has('constants')) {
+				my @n = split /\./, $class->python_name;
+				my $cn = pop @n;
+				my $parent_module = join('_', @n, 'module');
+				
 				print $fh "\t// $cn: constants (in their own module)\n";
 				my @n = split /\./, $class->python_name;
 				$n[-1] .= 'Constants';
@@ -454,7 +465,7 @@ MODULE
 #CONSTANT
 #				}
 	
-				# if the package module has constants, add them here
+				# if the class has constants, add them here
 				if ($class->has('constant_defs')) {
 					for my $def ($class->constant_defs) {
 						print $fh qq(\t$def\n)

@@ -14,11 +14,11 @@ sub new {
 	
 	my $self = $class->SUPER::new("application/x-people", @args);
 	
-	$self->{queries} = [];
+#	$self->{queries} = [];
 	$self->{people} = {};
 
 	$self->{listwindow} = new People::ListWindow(
-		new Haiku::Rect(50,50,250,550),	# frame
+		my $r = new Haiku::Rect(50,50,250,550),	# frame
 		"People",	# title
 		B_TITLED_WINDOW,	# type
 		B_QUIT_ON_WINDOW_CLOSE,	# flags
@@ -35,10 +35,15 @@ sub initialize_queries {
 	my ($self) = @_;
 
 	my $vr = new Haiku::VolumeRoster;
+print STDERR
+	\$vr,"\n",
+	\$vr+0,"\n",
+	$vr,"\n",
+	$vr+0,"\n";
 	while (my $vol = $vr->GetNextVolume) {
 		next unless $vol->KnowsQuery;
 		my $query = new Haiku::Query;
-		push @{ $self->{queries} }, $query;
+#		push @{ $self->{queries} }, $query;
 		
 		$query->SetVolume($vol);
 		$query->SetTarget(Haiku::Application::be_app_messenger);

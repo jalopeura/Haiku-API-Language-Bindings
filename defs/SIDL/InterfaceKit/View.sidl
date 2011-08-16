@@ -52,13 +52,13 @@
 -->
 			<method name="AddChild">
 				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
-				<param name="view" type="BView*" action="input" />
+				<param name="view" type="BView*" action="input" must-not-delete="true" />
 				<param name="sibling" type="BView*" action="input" default="NULL" />
 				<return type="void" />
 			</method>
 <!-- TODO: BLayoutItem object not yet implemented
 			<method name="AddChild" overload-name="AddLayoutItem">
-				<param name="child" type="BLayoutItem*" action="input" />
+				<param name="child" type="BLayoutItem*" action="input" must-not-delete="true" />
 				<return type="void" />
 			</method>
 -->
@@ -73,16 +73,16 @@
 			</method>
 			<method name="ChildAt">
 				<doc>Returns the [code]index[/code]th view from the Views's child view list.</doc>
-				<param name="index" type="int32" action="input" />
+				<param name="index" type="int32" action="input" must-not-delete="true" />
 				<return type="BView*" action="output" />
 			</method>
 			<method name="NextSibling">
 				<doc>Returns the next child View of the parent.</doc>
-				<return type="BView*" action="output" />
+				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
 			<method name="PreviousSibling">
 				<doc>Returns the previous child View of the parent.</doc>
-				<return type="BView*" action="output" />
+				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
 			<method name="RemoveSelf">
 				<doc>Removes the View from its parent's child View list. Returns true if successful, false if unsuccessful or if the View doesn't have a parent.</doc>
@@ -90,7 +90,7 @@
 			</method>
 			<method name="Window">
 				<doc>Gets the View's owning Window (which may or may not be its immediate parent).</doc>
-				<return type="BWindow*" />
+				<return type="BWindow*" must-not-delete="true" />
 			</method>
 <!-- Events not yet implemented for this object
 			<event name="Draw">

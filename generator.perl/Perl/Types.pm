@@ -112,10 +112,12 @@ our %output_converters = (
 	
 	'NORM_OBJ'     => 'sv_setsv($arg, create_perl_object((void*)&$var, CLASS));',
 	'NORM_OBJ_PTR' => 'sv_setsv($arg, create_perl_object((void*)$var, CLASS));',
-#	'RESP_OBJ'     => '$arg = $var.perl_link_data->perl_object;',
-#	'RESP_OBJ_PTR' => '$arg = $var->perl_link_data->perl_object;',
 	'RESP_OBJ'     => 'sv_setsv($arg, $var.perl_link_data->perl_object);',
 	'RESP_OBJ_PTR' => 'sv_setsv($arg, $var->perl_link_data->perl_object);',
+#	'NORM_OBJ'     => '$arg = create_perl_object((void*)&$var, CLASS);',
+#	'NORM_OBJ_PTR' => '$arg = create_perl_object((void*)$var, CLASS);',
+#	'RESP_OBJ'     => '$arg = $var.perl_link_data->perl_object;',
+#	'RESP_OBJ_PTR' => '$arg = $var->perl_link_data->perl_object;',
 );
 
 sub create_empty {

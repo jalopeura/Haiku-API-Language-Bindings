@@ -109,6 +109,8 @@ sub save_data {
 	my ($self) = @_;
 	
 	my $node = new Haiku::Node($self->{file});
+	
+	warn "Saving not yet implemented";
 }
 
 sub find_haiku_error {

@@ -58,13 +58,13 @@
 			</method>
 			<method name="AddChild">
 				<doc>Adds [code]view[/code] before [code]sibling[/code], or at the end of the window's view list.</doc>
-				<param name="view" type="BView*" action="input" />
+				<param name="view" type="BView*" action="input" must-not-delete="true" />
 				<param name="sibling" type="BView*" action="input" default="NULL" />
 				<return type="void" />
 			</method>
 <!-- TODO: BLayoutItem object not yet implemented
 			<method name="AddChild" overload-name="AddLayoutItem">
-				<param name="child" type="BLayoutItem*" action="input" />
+				<param name="child" type="BLayoutItem*" action="input" must-not-delete="true" />
 				<return type="void" />
 			</method>
 -->
@@ -79,7 +79,7 @@
 			</method>
 			<method name="ChildAt">
 				<doc>Returns the [code]index[/code]th view from the window's view list.</doc>
-				<param name="index" type="int32" action="input" />
+				<param name="index" type="int32" action="input" must-not-delete="true" />
 				<return type="BView*" action="output" must-not-delete="true" />
 			</method>
 			<method name="DispatchMessage">
