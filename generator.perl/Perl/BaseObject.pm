@@ -240,7 +240,6 @@ sub _upgrade {
 	for my $k (@c) {
 		my $c = delete $new->{$k};
 		next unless $c;
-#print "Translating $k ($c) in $new\n";
 		
 		if (ref($c) eq 'ARRAY') {
 			if (@$c) {
@@ -268,8 +267,6 @@ sub _upgrade {
 	}
 	
 	$new->finalize_upgrade;
-#print "Upgrading $object: \n", join("\n", map { "$_: $object->{$_}" } sort keys %$object), "\n\n";
-#print "to $new: \n", join("\n", map { "$_: $new->{$_}" } sort keys %$new), "\n\n\n";
 	
 	return $new;
 }
@@ -323,7 +320,6 @@ sub propagate_value {
 	my ($self, $key, $value, %options) = @_;
 	
 	for my $k (keys %{ $self }) {
-#		next if $options{$k} eq 'ignore';
 		next if $k=~/^_/;
 		my $c = $self->{$k};
 		next unless $c;
@@ -331,7 +327,6 @@ sub propagate_value {
 		
 		if (ref($c) eq 'ARRAY') {
 			for my $e (@$c) {
-#print "$e in $k ($c)\n";
 				unless ($e->{$key}) {
 					$e->{$key} = $value;
 					$e->propagate_value($key, $value, %options);
@@ -340,8 +335,6 @@ sub propagate_value {
 		}
 		else {
 			unless ($c->{$key}) {
-#				next if $c eq $self;
-#print "Attempting to propagate value to $k=$c in $self\n";
 				$c->{$key} = $value;
 				$c->propagate_value($key, $value, %options);
 			}

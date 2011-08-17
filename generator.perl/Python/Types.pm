@@ -69,7 +69,6 @@ sub finalize_upgrade {
 
 sub register_type {
 	my ($self, $name, $builtin, $target) = @_;
-#print "Registering type $name/$builtin/$target\n";
 	
 	# don't register an already registered type
 	if (my $type = $self->{_typemap}{$name}) {
@@ -209,16 +208,6 @@ sub finalize_upgrade {
 	$self->{target_inherits}=~s/::/./g;
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub arg_builder {
 	my ($self, $options) = @_;
 	
@@ -311,10 +300,6 @@ sub arg_builder {
 		if ($builtin eq 'char**') {
 			my $count_name = $options->{count}{name};
 			my @defs = ();
-#			if ($options->{count}->has('type_name')) {
-#				my $count_type = $options->{count}->type_name;
-#				push @defs, "$count_type $count_name = 0;";
-#			}
 			return (
 				\@defs,
 				[ qq($options->{output_name} = CharArray2PyList($options->{input_name}, (int)$count_name);) ]
@@ -330,8 +315,6 @@ sub arg_builder {
 			
 			my @defs = ();
 			my @code = ();
-			
-#			push @defs, "$objtype* $options->{input_name};";
 			
 			push @code,
 				qq($options->{output_name} = ($objtype*)$type_name.tp_alloc(&$type_name, 0););
@@ -382,7 +365,6 @@ sub array_arg_builder {
 	my $count = delete $options->{array_length};
 	# I should make these constants instead of hard-coding them here
 	$count=~s/SELF\./python_self->cpp_object->/;
-#	my @defs = ("PyObject* $arg;");
 	
 	$options->{input_name} .= '[i]';
 	$options->{output_name} .= '_element';
@@ -456,7 +438,6 @@ sub arg_parser {
 		
 		if ($options->{set_string_length}) {
 			return (
-#				[ "char buffer[$len];" ],	# defs
 				[ "char* buffer;" ],	# defs
 				[
 					
@@ -545,11 +526,8 @@ sub arg_parser {
 			my @defs = ();
 			my @code = ();
 			
-#			push @defs, "$objtype* $options->{input_name};";
-			
 			push @code, "if ($options->{input_name} != NULL) {";
 			if ($builtin eq 'object' or $builtin eq 'responder') {
-#				push @code, qq(\t$options->{output_name} = *((($objtype*)$options->{input_name})->cpp_object););
 				push @code, qq(\tmemcpy((void*)&$options->{output_name}, (void*)(($objtype*)$options->{input_name})->cpp_object, sizeof($self->{name})););
 			}
 			else {
@@ -578,7 +556,6 @@ sub array_arg_parser {
 	my $count = delete $options->{array_length};
 	# I should make these constants instead of hard-coding them here
 	$count=~s/SELF\./python_self->cpp_object->/;
-#my $repeat = $count;
 	
 	$options->{input_name} .= '_element';
 	$options->{output_name} .= '[i]';

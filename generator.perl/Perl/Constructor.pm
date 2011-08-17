@@ -59,62 +59,6 @@ COMMENT
 	$self->SUPER::generate_xs(%options);
 }
 
-sub Xgenerate_xs_function {
-	my ($self, $options) = @_;
-	my $cpp_class_name = $self->cpp_class_name;
-	
-	$options->{rettype} = 'SV*';
-	$options->{retcount} = 1;
-	
-	if ($self->has('overload_name')) {
-		$options->{input} ||= [];
-		unshift @{ $options->{args} }, "CLASS";
-		
-		$options->{input_defs} ||= [];
-		unshift @{ $options->{input} }, "char* CLASS;";
-		
-		$options->{comment} = <<COMMENT;
-# Note that this method is not prefixed by the class name.
-#
-# This is because for prefixed methods, xsubpp will turn the first perl
-# argument into the CLASS variable (a char*) if the method name is 'new',
-# and into the THIS variable (the object pointer) otherwise. So we need to
-# trick xsubbpp by leaving off the prefix and defining CLASS ourselves
-COMMENT
-	}
-	else {
-		$options->{name} = "${cpp_class_name}::$options->{name}";
-	}
-	
-	$options->{precode} ||= [];
-	# get defaults, with an offset of 1 for the CLASS variable
-	my $code = $self->params->default_var_code(1);
-	$code and unshift @{ $options->{precode} }, @$code;
-	
-	$options->{init} ||= [];
-	push @{ $options->{init} }, "$cpp_class_name* THIS;";
-	
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	
-	$options->{code} ||= [];
-	
-	my $mnd = $self->package->must_not_delete ? 'true' : 'false';
-	
-	push @{ $options->{code} }, 
-		qq{THIS = new $cpp_class_name($call_args);},
-		qq{RETVAL = newSV(0);},
-		qq{sv_setsv(RETVAL, create_perl_object((void*)THIS, CLASS, $mnd));};
-	
-	if ($self->package->is_responder) {
-		push @{ $options->{code} },
-			qq(if (THIS != NULL) {),
-			qq(\tTHIS->perl_link_data = get_link_data(RETVAL);),
-			qq(});
-	}
-	
-	$self->SUPER::generate_xs_function($options);
-}
-
 sub generate_h {
 	my ($self) = @_;
 	my $cpp_class_name = $self->cpp_class_name;

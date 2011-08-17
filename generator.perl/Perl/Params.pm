@@ -61,27 +61,6 @@ sub add {
 	}
 }
 
-sub Xdefault_var_code {
-	my ($self, $offset) = @_;
-	
-	$offset--;
-	my @code;
-	if ($self->has('cpp_input')) {
-		for my $param ($self->cpp_input) {
-			if ($param->action eq 'input') {
-				$offset++;
-				next unless $param->has('default');
-				push @code,
-					qq(if (items > $offset) {),
-					map { "\t$_" } @{ $param->input_converter("ST($offset)") },
-					qq(});
-			}
-		}
-	}
-	
-	return \@code;
-}
-
 # as_cpp_call gives the arguments as used in a function call
 sub as_cpp_call {
 	my ($self) = @_;
@@ -136,9 +115,6 @@ sub type {
 	my ($self) = @_;
 	unless ($self->{type}) {
 		my $t = $self->{type_name};
-#		if ($self->{needs_deref}) {
-#			$t=~s/\*$//;
-#		}
 		$self->{type} = $self->types->type($t);
 	}
 	return $self->{type};
@@ -188,10 +164,6 @@ sub input_converter {
 			$options->{$x} = $self->{$x};
 		}
 	}
-#					if ($self->pass_as_pointer) {
-#						$options->{need_malloc} = 1;
-#						push @postcode, "free((void*)$self->{name});";
-#					}
 	if ($self->has('count')) {
 		$options->{set_array_length} = 1;
 	}
@@ -233,8 +205,7 @@ sub output_converter {
 sub as_cpp_def {
 	my ($self) = @_;
 	my $type = $self->type->name;
-#	my $was_const;
-#	$type=~s/^const\s+// and $was_const = 1;
+	
 	if ($self->is_array_or_string and $self->pass_as_pointer) {
 		# this might fail on null-terminated strings passed as pointers
 		$type .= '*'
@@ -260,9 +231,7 @@ sub as_cpp_def {
 		$arg=~s/SELF\./THIS->/;
 	}
 	$arg .= ';';
-#	if ($was_const) {
-#		$arg .= "\t// should be const";
-#	}
+	
 	return $arg;
 }
 

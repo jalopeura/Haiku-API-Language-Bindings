@@ -141,10 +141,6 @@ sub generate_xs {
 	my $cpp_call = $options{cpp_call} || $self->name;
 	
 	my $perl_name = $options{perl_name};
-# || $self->name;
-#	if ($self->has('overload_name')) {
-#		$perl_name .= $self->overload_name;
-#	}
 	
 	my @xsargs;		# names as they will be passed to the XS call
 	my @cppargs;	# names as they will be passed to the C++ call
@@ -237,23 +233,6 @@ sub generate_xs {
 				push @init, $param->as_cpp_def;
 				push @postcode, $param->xs_error_code;
 			}
-			
-#			if ($param->has('length')) {
-#				my $name = $param->name;
-#				my $ltype = $param->length->type->name;
-#				my $lname = $param->length->name;
-#				push @preinit, "int length_$name;";
-#				push @init, "$ltype $lname = ($ltype)length_$name;";
-#				push @init, "$ltype $lname;";
-#
-#			}
-#			elsif ($param->has('count')) {
-#				my $name = $param->name;
-#				my $ctype = $param->count->type->name;
-#				my $cname = $param->count->name;
-#				push @preinit, "int count_$name;";
-#				push @init, "$ctype $cname = ($ctype)count_$name;";
-#			}
 		}
 	}
 	
@@ -282,9 +261,6 @@ sub generate_xs {
 		my $retname = $self->params->cpp_output->name;
 		my $type_name = $self->params->cpp_output->type_name;
 		my $cast;
-#		if ($type_name=~s/^const\s+//) {
-#			$cast = "($type_name)";	# cast to non-const
-#		}
 		push @code, qq($retname = $cast$cpp_call($call_args););
 	}
 	else {
@@ -314,7 +290,6 @@ sub generate_xs {
 			elsif ($type->has('target')) {
 				my $retname = $output->name;
 				my $svname = $retname . '_sv';
-#				push @init, "SV* $svname = newSV(0);	// iterating through outputs";
 				my $class;
 				if ($self->isa('Perl::Constructor')) {
 					$class = 'CLASS';
@@ -325,9 +300,6 @@ sub generate_xs {
 				
 				my $mnd = $output->must_not_delete ? 'true' : 'false';
 				my $type_name = $output->type->name;
-				#if ($output->needs_deref) {
-				#	$type_name=~s/\*$//;
-				#}
 				
 				if ($type_name=~/\*$/) {
 					push @postcode,
@@ -342,9 +314,8 @@ sub generate_xs {
 						qq{$svname = create_perl_object((void*)&$retname, $class, $mnd);};
 				}
 				
-#				push @postcode,
-#					qq{SvREFCNT_inc($svname);	// to avoid 'Attempt to free unreferenced scalar'};
-push @postcode, qq(DUMPME(1,$svname););
+				# for debugging
+				push @postcode, qq(DUMPME(1,$svname););
 			}
 		}
 		
@@ -379,15 +350,8 @@ push @postcode, qq(DUMPME(1,$svname););
 			}
 			if ($outputs[0]->type->has('target')) {
 				push @postcode,
-					#"RETVAL = newSVsv($retname);",
-					#"// it's already mortal, but RETVAL will mortalize it again",
-					#"SvREFCNT_inc($retname);";
 					"RETVAL = newSVsv($retname);",
-"DUMPME(1,$retname);",
-"DUMPME(1,RETVAL);",
 					"SvREFCNT_dec($retname);",
-#qq(DEBUGME(1, "refcount of $retname: %d", SvREFCNT($retname));),
-#qq(DEBUGME(1, "refcount of RETVAL: %d", SvREFCNT(RETVAL));),
 			}
 			else {
 				if ($outputs[0]->type->builtin eq 'char') {
@@ -405,17 +369,6 @@ push @postcode, qq(DUMPME(1,$svname););
 		push @code, 'RETVAL = true;';
 	}
 	
-#	my %ns;	# namespaces;
-#	for my $i (@input) {
-#		my @ns;
-#		while ($i=~s/([\w:]+):://) {
-#			$ns{$1}++;
-#		}
-#	}
-#	for my $ns (reverse sort keys %ns) {
-#		unshift @preinit, "using namespace $ns;	// else xsubpp converts '::' to '__' in INPUT";
-#	}
-	
 	# now we can finally write the thing
 	
 	my $fh = $self->package->xsh;
@@ -430,13 +383,6 @@ push @postcode, qq(DUMPME(1,$svname););
 $rettype
 $perl_name($input)
 DEF
-
-#print $fh <<DUMP;
-#PREINIT:
-#warn("Calling $rettype $perl_name($input)\\n");
-#Perl_sv_dump(ST(0));
-#warn("\\n");
-#DUMP
 	
 	if (@preinit) {
 		print $fh "\tPREINIT:\n";

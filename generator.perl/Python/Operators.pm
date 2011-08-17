@@ -31,16 +31,6 @@ sub type {
 	return $self->{type};
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub type_options {
 	my ($self) = @_;
 	my $options = {
@@ -154,14 +144,6 @@ sub generate {
 	
 	my $defs = [];
 	my $code = [];
-	
-#	my $type_obj = $self->types->type($rettype);
-#	my $options = {
-#		input_name => 'retval',
-#		output_name => 'py_retval',
-#	};
-#	my ($defs, $code) = $type_obj->arg_builder($options);
-#	push @$defs, "$rettype retval;";
 	
 	my $fh = $self->class->cch;
 	

@@ -70,12 +70,6 @@ sub generate_export_groups {
 	}
 }
 
-#    @EXPORT = qw(A1 A2 A3 A4 A5);
-#    @EXPORT_OK = qw(B1 B2 B3 B4 B5);
-#    %EXPORT_TAGS = (T1 => [qw(A1 A2 B1 B2)], T2 => [qw(A1 A2 B3 B4)]);
-#    Note that you cannot use tags in @EXPORT or @EXPORT_OK.
-#    Names in EXPORT_TAGS must also appear in @EXPORT or @EXPORT_OK.
-
 package Perl::Constant;
 use strict;
 our @ISA = qw(Constant Perl::BaseObject);

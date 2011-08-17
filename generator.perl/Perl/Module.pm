@@ -14,15 +14,11 @@ our @ISA = qw(Bindings Perl::Package);
 sub new {
 	my ($class, $bindings) = @_;
 	my $self = $class->upgrade($bindings->source_type_prefix, $bindings);
-#	my $self = $class->SUPER::new(@_);
-#print $self,"\n";
 	
 	if ($self->has('packages')) {
 		my @pkgs = $self->packages;
 		$self->{packages} = [];
 		for my $package (@pkgs) {
-#print join("\n", $package, %$package),"\n\n";
-#print join("\n", $package->{_upgraded_from}, %{ $package->{_upgraded_from} }),"\n\n";
 			if ($package->perl_name eq $self->name) {
 				# copy self into package and rebless package as self
 				# we MUST do this before anybody else has a reference
@@ -39,8 +35,6 @@ sub new {
 				push @{ $self->{packages} }, $package;
 			}
 			
-#print join("\n", $package, %$package),"\n\n";
-#print join("\n", $package->{_upgraded_from}, %{ $package->{_upgraded_from} }),"\n\n";
 			if ($package->has('functions') and $package->functions->had('events')) {
 				push @{ $self->{packages} },
 					Perl::ResponderPackage->upgrade($bindings->source_type_prefix, $package);
@@ -71,7 +65,6 @@ sub new {
 }
 
 sub generate {
-#return;
 	my ($self, $folder, $pm_prefix, $xs_prefix) = @_;
 	
 	# generate packages before self, so packages can report filenames
@@ -84,7 +77,6 @@ sub generate {
 	$self->SUPER::generate($folder, $pm_prefix, $xs_prefix);
 	
 	# create the typemap
-#	if ($self->types->has('types')) {
 	if ($self->types->registered_type_count) {
 		my $typemap_file = File::Spec->catfile($folder, 'typemap');
 		$self->{types}->write_typemap_file($typemap_file);

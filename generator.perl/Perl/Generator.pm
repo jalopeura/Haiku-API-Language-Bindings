@@ -25,7 +25,7 @@ sub generate {
 	mkpath($target);
 print "Generating $target\n";
 	
-#	File::Path->remove_tree($target);
+	File::Path->remove_tree($target);
 	
 	# if the binding has any bundles, generate them
 	my @bundledirs;
@@ -65,7 +65,6 @@ print "Generating $target\n";
 	my @libs;
 	if ($module->has('link')) {
 		my $libs = join(' ', map { $_->name } $module->link->libs);
-#		push @makefile_params, qq('BSLOADLIBS' => '$libs');
 		push @makefile_params, qq(dynamic_lib => { 'BSLOADLIBS' => '$libs' });
 	}
 	
@@ -87,7 +86,6 @@ MAKE
 
 =pod
 
-	
 	my $test_target_dir = File::Spec->catdir($target, 't');
 	my $test_source_dir = '../test/perl';
 	mkpath($test_target_dir);
@@ -102,7 +100,6 @@ MAKE
 
 =cut
 
-	
 	return $module;
 }
 

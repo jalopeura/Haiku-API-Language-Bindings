@@ -81,18 +81,6 @@ sub as_cpp_parent_input {
 	return \@args;
 }
 
-# as_cpp_call gives the arguments ase used in a functioncall
-sub Xas_cpp_call {
-	my ($self) = @_;
-	
-	my @args;
-	for my $param ($self->cpp_input) {
-		push @args, $param->as_cpp_call;
-	}
-	
-	return \@args;
-}
-
 sub cpp_rettype {
 	my ($self) = @_;
 	if ($self->has('cpp_output')) {
@@ -101,85 +89,11 @@ sub cpp_rettype {
 	return 'void';
 }
 
-sub Xas_cpp_return {
-	my ($self) = @_;
-	
-	my ($item, $arg, @defs, @code);
-	if ($self->has('cpp_output') and $self->cpp_output->type ne 'void') {
-		my $type = $self->types->type($self->cpp_output->type);
-		return $type->arg_builder($self->cpp_output);
-	}
-	return 'void';
-}
-
-sub Xas_input_from_python {
-	my ($self) = @_;
-	
-	my ($format, @args, @defs, @code);
-	my $seen_default;
-	for my $param ($self->python_input) {
-		my ($fmt, $arg, $defs, $code) = $param->as_input_from_python;
-		if ($param->has('default') and not $seen_default) {
-			$format .= '|';
-			$seen_default = 1;
-		}
-		$format .= "$fmt";
-		push @args, $arg;
-		push @defs, @$defs;
-		push @code, @$code;
-	}
-	
-	my $outargs;
-	if ($format) {
-		$outargs = join(', ', qq("$format"), @args);
-	}
-#	else {
-#		$outargs = 'NULL';
-#	}
-	
-	return ($outargs, \@defs, \@code);
-}
-
-sub Xas_python_error {
-	my ($self) = @_;
-	
-	my (@defs, @code);
-	for my $param ($self->python_error) {
-		my $errname = $param->name;
-		my $errtype = $param->type;
-		my $success = $param->success;
-		
-		if ($param->needs_deref) {
-			$errtype=~s/\*$//;
-		}
-		push @defs, "$errtype $errname;";
-		
-		my $type = $self->types->type($errtype);
-		my $erritem = $type->format_item;
-		
-		my @n =  split /\./, $self->package_name;
-		my $errvar = $n[-1] . 'Error';
-		
-		push @code,
-			qq(if ($errname != $success) {),
-			qq(	PyObject* errval = Py_BuildValue("$erritem", $errname);),
-			qq(	PyErr_SetObject($errvar, errval);),
-			qq(	return NULL;),
-			qq(});
-	}
-#	ApplicationKitError
-	
-	return (\@defs, \@code);
-}
-
 sub as_python_call {
 	my ($self) = @_;
 	
 	my ($format, @args, @defs, @code);
 	for my $param ($self->python_input) {
-#		my ($fmt, $arg, $def, $code) = $param->as_python_call;
-#		$format .= $fmt;
-#		push @args, $arg;
 		my $pyobj_name = 'py_' . $param->name;
 		my $options = {
 			input_name => $param->name,
@@ -191,23 +105,16 @@ sub as_python_call {
 				$options->{$_} = $param->{$_};
 			}
 		}
-#		for (qw(count length repeat)) {
-#			if ($param->has($_)) {
-#				$options->{$_} = $param->{$_};
-#			}
-#		}
 		my ($def, $code) = $param->arg_builder($options);
 		$format .= $param->type->format_item;
 		push @args, $pyobj_name;
 		push @code, @$code;
 		
-#		my $obj_return;
 		if ($param->type->has('target') and my $target = $param->type->target and
 			not $param->has('array_length')
 			) {
 			(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
 			push @defs, "$objtype* $pyobj_name; // from as_python_call()";
-#			$obj_return = 1;
 		}
 		else {
 			push @defs, "PyObject* $pyobj_name; // from as_python_call()",	# may need to fix this for C++ objects
@@ -336,16 +243,6 @@ sub is_array_or_string {
 	return undef;
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub type_options {
 	my ($self) = @_;
 	my $options = {
@@ -450,20 +347,6 @@ sub as_cpp_input {
 	return $arg;
 }
 
-sub Xas_input_from_python {
-	my ($self) = @_;
-	
-	my $type = $self->types->type($self->type);
-	
-	return $type->arg_parser($self);
-}
-
-sub Xas_python_call {
-	my ($self) = @_;
-	
-	return $self->arg_builder($self);
-}
-
 package Python::Param;
 use strict;
 our @ISA = qw(Param Python::Argument);
@@ -519,35 +402,6 @@ sub arg_builder {
 		[],	# empty defs
 		\@code
 	);
-}
-
-sub Xarg_builder {
-	my ($self) = @_;
-	
-	my ($fmt, $arg, $defs, $code) = $self->SUPER::arg_builder;
-	
-	my $fmt = $self->type->format_item;
-	my $arg = $self->base_name;
-	my $defs = [];	# we don't need to define it because it already exists
-	my $code = [];
-	
-	if ($self->is_responder) {
-		push @$code,
-			qq(python_self->cpp_object->python_object = python_self;);
-	}
-
-	if ($self->must_not_delete) {
-		push @$code,
-			qq(// we do not own this object, so we can't delete it),
-			qq(python_self->can_delete_cpp_object = false;);
-	}
-	else{
-		push @$code,
-			qq(// we own this object, so we can delete it),
-			qq(python_self->can_delete_cpp_object = true;);
-	}
-	
-	return ($fmt, $arg, $defs, $code)
 }
 
 1;

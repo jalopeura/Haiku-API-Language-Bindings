@@ -20,20 +20,4 @@ sub generate_xs {
 	);
 }
 
-sub Xgenerate_xs_function {
-	my ($self, $options) = @_;
-	my $cpp_class_name = $self->cpp_class_name;
-	$options->{cpp_call_name} = 'THIS->' . $self->name;
-	$options->{name} = "${cpp_class_name}::$options->{name}";
-	
-	$options->{precode} ||= [];
-	# get defaults, with an offset of 1 for the THIS variable
-	my $code = $self->params->default_var_code(1);
-	$code and unshift @{ $options->{precode} }, @$code;
-	
-	$self->generate_xs_body_code($options);
-		
-	$self->SUPER::generate_xs_function($options);
-}
-
 1;

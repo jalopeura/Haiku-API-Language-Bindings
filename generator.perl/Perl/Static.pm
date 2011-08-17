@@ -21,27 +21,4 @@ sub generate_xs {
 	);
 }
 
-sub Xgenerate_xs_function {
-	my ($self, $options) = @_;
-	
-	my $cpp_class_name = $self->cpp_class_name;
-	$options->{cpp_call_name} = "$cpp_class_name}::" . $self->name; 
-	
-	# first perl input will be class
-	$options->{input} ||= [];
-	unshift @{ $options->{args} }, "CLASS";
-	
-	$options->{input_defs} ||= [];
-	unshift @{ $options->{input} }, "char* CLASS;";
-	
-	$options->{precode} ||= [];
-	# get defaults, with an offset of 1 for the CLASS variable
-	my $code = $self->params->default_var_code(1);
-	$code and unshift @{ $options->{precode} }, @$code;
-	
-	$self->generate_xs_body_code($options);
-	
-	$self->SUPER::generate_xs_function($options);
-}
-
 1;

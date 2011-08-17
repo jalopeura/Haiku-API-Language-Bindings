@@ -1,6 +1,4 @@
-
-	
-	$class_name .= '_Object';package Python::Package;
+package Python::Package;
 use File::Spec;
 use File::Path;
 use Python::Bundle;
@@ -26,16 +24,6 @@ sub new {
 		$self->{classes} = [];
 		$self->{constants} = [];
 		for my $class (@classes) {
-# having 'unresolved symbol' issues with these objects
-# why? they're generated exactly the same as the others
-#my $pn = $class->python_name;
-#next if (
-#	$pn eq 'Haiku.TabView' or
-#	$pn eq 'Haiku.EntryList' or
-#	$pn eq 'Haiku.Query' or	# depends on EntryList
-#	$pn eq 'Haiku.ColorControl' or
-#	$pn eq 'Haiku.StringView'
-#);
 			if ($class->has('functions') or $class->has('properties')) {
 				push @{ $self->{classes} }, $class;	
 				if ($class->has('functions') and $class->functions->had('events')) {
@@ -101,7 +89,6 @@ sub add_method_table_entry {
 }
 
 sub generate {
-#return;
 	my ($self, $folder, $ext_prefix) = @_;
 	
 	# generate packages before self, so packages can report filenames
@@ -236,14 +223,6 @@ sub generate_h_postamble {
 	my ($self) = @_;
 	
 	if ($self->has('types')) {
-#		if (my @foreign = $self->types->foreign_objects) {
-#			for my $type (@foreign) {
-#				(my $type_name = $type->target)=~s/\./_/g; $type_name .= '_Type';
-#				print { $self->hh } "PyTypeObject $type_name;\n";
-#			}
-#			print { $self->hh } "\n";
-#		}
-		
 		$self->types->write_object_types($self->hh);
 	}
 }
@@ -347,11 +326,9 @@ GLOBALS
 	my $python_name = $self->name;
 	print $fh <<INIT;
 	// $python_name: package module
-//printf("About to init Haiku.ApplicationKit\\n");
 	$module_name = Py_InitModule("$python_name", ${module_prefix}methods);
 	if ($module_name == NULL)
 		return;
-//printf("Successfully init'ed Haiku.ApplicationKit\\n");
 	
 	// add us immediately (ordinarily we're not added until this
 	// function returns, but we need it before then
@@ -374,21 +351,6 @@ INIT
 	
 PARENT
 	}
-#	if ($self->has('constants')) {
-#		print $fh "\t// $python_name: constants\n";
-#		for my $constant ($self->constants) {
-#			my $cn = $constant->name;
-#			print $fh <<CONSTANT;
-#	PyObject* ${module_prefix}$cn = PyInt_FromLong((long)$cn);
-#	Py_INCREF(${module_prefix}$cn);
-#	PyModule_AddObject($module_name, "$cn", ${module_prefix}$cn);
-#	
-#CONSTANT
-#		}
-#	}
-	
-	# for each class, add the class to the package module
-	# if there are constants, add the constant module and add the constants to it
 	
 	# for each class, add the class to the module
 	# if there are constants, init the constant module
@@ -410,16 +372,9 @@ PARENT
 					print $fh "\t//Py_INCREF(&$p\_PyType);	// base class\n";
 				}
 			}
-		
+			
 			my $cn = pop @n;
 			
-#			if ($class->has('python_parent')) {
-#				my $pp = $class->python_parent;
-#				print $fh qq(\t$type.tp_base = (PyTypeObject*)PyRun_String("$pp", Py_eval_input, main_dict, main_dict);\n);
-#			}
-			
-#			my $base_name = pop @n;
-#			my $parent_name = join('.', @n);
 			my $parent_module = join('_', @n, 'module');
 			
 			print $fh <<CLASS;
@@ -455,16 +410,7 @@ CLASS
 	
 MODULE
 				my $module_object_prefix = join('_', @n, '');
-#				for my $constant ($class->constants->constants) {
-#					my $cn = $constant->name;
-#					print $fh <<CONSTANT;
-#	PyObject* ${module_object_prefix}$cn = PyInt_FromLong((long)$cn);
-#	Py_INCREF(${module_object_prefix}$cn);
-#	PyModule_AddObject($module_object_name, "$cn", ${module_object_prefix}$cn);
-#	
-#CONSTANT
-#				}
-	
+				
 				# if the class has constants, add them here
 				if ($class->has('constant_defs')) {
 					for my $def ($class->constant_defs) {
@@ -482,12 +428,10 @@ MODULE
 	}
 	
 	print $fh <<END;
-//printf("About to set up error object\\n");
 	// exception object
 	${filename}Error = PyErr_NewException((char*)"$self->{name}.error", NULL, NULL);
     Py_INCREF(${filename}Error);
     PyModule_AddObject($module_name, "error", ${filename}Error);
-//printf("Successfully set up error object\\n");
 } //init$filename
 
 END

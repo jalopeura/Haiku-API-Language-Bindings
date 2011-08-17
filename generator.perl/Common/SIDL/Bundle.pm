@@ -18,10 +18,6 @@ our @ISA = qw(SIDL::Bindings);
 sub new {
 	my ($class, $parent, $element) = @_;
 	
-#print <<INFO;
-#Creating bundle from $element->{attrs}{file}
-#INFO
-	
 	my $source = File::Spec->catfile($parent->_folder, $element->attr('name'));
 	
 	my $bindings = $parent;

@@ -91,53 +91,6 @@ COMMENT
 	$self->SUPER::generate_cc(%options);
 }
 
-=pod
-
-	$options{name} ||= $self->name;
-	$options{cpp_name} ||= 'CPP_NAME';
-	$options{comment} ||= 'COMMENT';
-	$options{python_input} ||= [qw(PY_OBJ_OR_CLS PY_ARGS PY_KWDS)];
-	$options{rettype} ||= 'RETTYPE';
-	
-	}
-	
-	if (@{ $options->{code} }) {
-		push @{ $options->{code} }, '';
-	}
-	
-	my $call_args = join(', ', @{ $self->params->as_cpp_call });
-	
-	push @{ $options->{code} },
-		qq{python_self->cpp_object = new $cpp_class_name($call_args);};
-	
-	if ($self->class->is_responder) {
-		push @{ $options->{code} },
-			qq{python_self->cpp_object->python_object = python_self;};
-	}
-	
-	if ($self->class->must_not_delete) {
-		push @{ $options->{code} },
-			qq{// we don't own this object, so we can't delete it},
-			qq{python_self->can_delete_cpp_object = false;};
-	}
-	else {
-		push @{ $options->{code} },
-			qq{// we own this object, so we can delete it},
-			qq{python_self->can_delete_cpp_object = true;};
-	}
-	
-	if ($self->has('overload_name')) {
-		push @{ $options->{return_code} }, qq(return Py_BuildValue("O", python_self););
-	}
-	else {
-		push @{ $options->{return_code} }, qq(return 0;);
-	}
-	
-	$self->SUPER::generate_cc_function($options);
-}
-
-=cut
-
 sub generate_h {
 	my ($self) = @_;
 	my $cpp_class_name = $self->cpp_class_name;

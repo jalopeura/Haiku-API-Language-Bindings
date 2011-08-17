@@ -21,8 +21,6 @@ sub finalize_upgrade {
 	$self->{cpp_name} = 'Custom_' . $self->cpp_name;
 	
 	my @n = split /::/, $self->{python_name};
-#	my @p = split /::/, $self->{_parent}{name};
-#	$self->{python_parent} = join('.', @p, $n[-1]);
 	$self->{python_parent} = join('.', @n);
 	
 	$n[-1] = "Custom$n[-1]";

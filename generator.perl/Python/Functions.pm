@@ -92,19 +92,10 @@ sub generate_py {}	# nothing to do
 sub generate_cc {
 	my ($self, %options) = @_;
 	
-#	my %options = (
-#		name    => "${python_object_prefix}_" . $self->name,
-#		rettype => 'PyObject*',
-#		code    => [],
-#		arg_input => 'PyObject* python_args',
-#	);
-	
 	$options{name} ||= $self->name;
 	$options{cpp_name} ||= 'CPP_NAME';
 	$options{python_input} ||= [qw(PY_OBJ_OR_CLS PY_ARGS PY_KWDS)];
 	$options{rettype} ||= 'PyObject*';
-	
-#	(my $python_object_prefix = $self->python_class_name)=~s/\./_/g;
 	
 	my @defs;
 	my $parse_format;
@@ -158,11 +149,6 @@ sub generate_cc {
 					if ($param->has('length')) {
 						$options->{set_string_length} = 1;
 					}
-#					for (qw(count length)) {
-#						if ($param->has($_)) {
-#							$options->{$_} = $param->{$_};
-#						}
-#					}
 					my ($arg_defs, $arg_code) = $param->arg_parser($options);
 		
 					if ($param->type->has('target') and my $target = $param->type->target and
@@ -390,93 +376,6 @@ DEF
 	if (@postcode) {
 		print $fh "\t\n";
 		print $fh map { "\t$_\n" } @postcode;
-	}
-	
-	print $fh "}\n\n";
-}
-
-=pod
-
-	# now handle inputs from python to c++
-	my ($self) = @_;
-	
-	my ($format, @args, @defs, @code);
-	my $seen_default;
-	
-	my $outargs;
-	if ($format) {
-		$outargs = join(', ', qq("$format"), @args);
-	}
-#	else {
-#		$outargs = 'NULL';
-#	}
-	
-	return ($outargs, \@defs, \@code);
-	
-	my ($args, $retname, $defs, $precode, $postcode) = $self->params->python_to_cpp;
-	
-	if ($args) {
-		push @code,
-			qq(PyArg_ParseTuple(python_args, $args););
-		
-		if (@$code) {
-			push @code, @$code, '';
-		}
-	}
-	if (@$defs) {
-		push @defs, @$defs;
-	}
-	
-	if ($self->params->has('python_error')) {
-		($options{error_defs}, $options{error_code}) = $self->params->as_python_error;
-	}
-	
-	# no code is generated; a descendant class is expected to implement
-	# its generate_cc_function to add code and make necessary changes to
-	# other options
-	
-	$self->generate_cc_function(\%options);
-}
-
-=cut
-
-sub Xgenerate_cc_function {
-	my ($self, $options) = @_;
-	
-	my $fh = $self->class->cch;
-	
-	if ($options->{comment}) {
-		print $fh $options->{comment};
-	}
-	
-	print $fh <<DEF;
-//static $options->{rettype} $options->{name}($options->{input});
-static $options->{rettype} $options->{name}($options->{input}) {
-DEF
-	
-	if ($options->{input_defs} and @{ $options->{input_defs} }) {
-		print $fh "\t// defs\n";
-		print $fh map { "\t$_\n" } @{ $options->{input_defs} };
-		print $fh "\t\n";
-	}
-	if ($options->{error_defs} and @{ $options->{error_defs} }) {
-		print $fh "\t// error defs\n";
-		print $fh map { "\t$_\n" } @{ $options->{error_defs} };
-		print $fh "\t\n";
-	}
-	
-	if ($options->{code} and @{ $options->{code} }) {
-		print $fh map { "\t$_\n" } @{ $options->{code} };
-	}
-	
-	if ($options->{error_code} and @{ $options->{code} }) {
-		print $fh "\t\n";
-		print $fh map { "\t$_\n" } @{ $options->{error_code} };
-	}
-	
-	if ($options->{return_code} and @{ $options->{return_code} }) {
-		print $fh "\t\n";
-		print $fh map { "\t$_\n" } @{ $options->{return_code} };
 	}
 	
 	print $fh "}\n\n";

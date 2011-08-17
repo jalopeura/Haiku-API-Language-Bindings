@@ -37,11 +37,6 @@ sub generate_cc {
 		$doc				# docs
 	);
 }
-#		$options{name} = "${python_object_prefix}_init";
-#		$options{python_input}[0] = "${python_object_prefix}_Object* python_self";
-#		$options{python_input}[2] = 'PyObject* python_kwds';	# __init__ always takes keywords, even though we don't do anything with them yet
-#		$options{rettype} = 'int';
-#		$options{comment} = <<COMMENT;
 
 sub generate_cc_function {
 	my ($self, $options, $funcname) = @_;

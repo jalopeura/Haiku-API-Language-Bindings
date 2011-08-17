@@ -33,22 +33,6 @@ sub generate_xs {
 	);
 }
 
-sub Xgenerate_xs_function {
-	my ($self, $options) = @_;
-	my $cpp_class_name = $self->cpp_class_name;
-	$options->{cpp_call_name} = "THIS->${cpp_class_name}::" . $self->name;
-	$options->{name} = "${cpp_class_name}::$options->{name}";
-	
-	$options->{precode} ||= [];
-	# get defaults, with an offset of 1 for the THIS variable
-	my $code = $self->params->default_var_code(1);
-	$code and unshift @{ $options->{precode} }, @$code;
-	
-	$self->generate_xs_body_code($options);
-		
-	$self->SUPER::generate_xs_function($options);
-}
-
 sub generate_h {
 	my ($self) = @_;
 	my $name = $self->name;
@@ -112,12 +96,10 @@ sub generate_cpp {
 			if ($param->has('length')) {
 				my $name = $param->name;
 				my $lname = $param->length->name;
-#				push @defs, qq(int length_$name = $lname;);
 			}
 			elsif ($param->has('count')) {
 				my $name = $param->name;
 				my $cname = $param->count->name;
-#				push @defs, qq(int count_$name = $cname;);
 			}
 		}
 	}
@@ -201,7 +183,7 @@ $rettype ${cpp_class_name}::$name($inputs) {
 		return ${cpp_parent_name}::$name($parent_inputs);
 	}
 	else {
-DUMPME(1,perl_link_data->perl_object);
+		DUMPME(1,perl_link_data->perl_object);
 EVENT
 	
 	if (@defs) {
@@ -218,7 +200,6 @@ EVENT
 		print $fh "\t\t\n";
 	}
 	
-#print $fh "lock_perl_interpreter(false);\n";
 	if ($rettype eq 'void') {
 		print $fh  <<CALL;
 		call_method("$name", G_DISCARD);
@@ -235,7 +216,6 @@ CALL
 			DEBUGME(4, "Got a bad number of returns from perl call: %d", perl_return_count);
 CALL
 	}
-#print $fh "lock_perl_interpreter(true);\n";
 	
 	if (@postcode) {
 		print $fh "\t\t\n";

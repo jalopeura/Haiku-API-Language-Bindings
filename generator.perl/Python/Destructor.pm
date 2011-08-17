@@ -58,9 +58,7 @@ sub generate_cpp {
 	my $cpp_class_name = $self->cpp_class_name;
 	
 	print { $self->class->cpph } <<DESTRUCTOR;
-${cpp_class_name}::~$cpp_class_name() {
-//	DEBUGME(4, "Deleting $cpp_class_name");
-	
+${cpp_class_name}::~$cpp_class_name() {	
 	// if we still have a python object,
 	// remove ourselves from it
 	if (python_object != NULL) {

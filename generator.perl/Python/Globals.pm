@@ -31,16 +31,6 @@ sub type {
 	return $self->{type};
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub type_options {
 	my ($self) = @_;
 	my $options = {

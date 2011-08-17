@@ -63,8 +63,6 @@ sub finalize_upgrade {
 	my ($self) = @_;
 	
 	my @n = split /::/, $self->{python_name};
-#	my @p = split /::/, $self->{_parent}{name};
-#	$self->{python_name} = join('.', @p, $n[-1]);
 	$self->{python_name} = join('.', @n);
 	if ($self->has('python_parent')) {
 		$self->{python_parent}=~s/::/./g;
@@ -375,21 +373,6 @@ CMP
 			$parent = $p[0];
 			$parents = 0;
 		}
-		
-#		$parent = "${python_object_prefix}_bases";
-		
-#		print $fh 
-#			sprintf("PyObject* $parent = PyTuple_Pack(%d, %s);\n\n", scalar(@p), join(', ', @p));
-		
-#		$parent = sprintf("PyTuple_Pack(%d, %s)", scalar(@p), join(', ', @p));
-
-#		$parent = sprintf("PyTuple_Pack(%d, %s)", 1, $p[0]);
-		
-		# Having some trouble with inheritance and garbage collection
-		# For now, inheritance is turned off except for responders
-#		unless ($self->is_responder) {
-#						$parent = 0;
-#		}
 	}
 	else {
 		$parent = 0;

@@ -106,14 +106,17 @@ CODE
 			print $fh "\t\t$line\n";
 		}
 		
+# The problem with '*result = -*THIS;' seems to have been
+# resolved; in the past I've used these as a workaround:
+#
+#		*result = -(*THIS);
+# OR
+#		$cpp_class_name holder;
+#		holder = *THIS;
+#		*result = -holder;
+		
 		print $fh <<CODE;
-//		why do these next two statements not work?
 		*result = -*THIS;
-//		*result = -(*THIS);
-//		but this workaround does
-//		$cpp_class_name holder;
-//		holder = *THIS;
-//		*result = -holder;
 		RETVAL = newSV(0);
 CODE
 		

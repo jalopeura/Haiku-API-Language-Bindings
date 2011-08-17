@@ -135,12 +135,9 @@ sub AUTOLOAD {
 	}
 	
 	if (exists $self->{$name}) {
-#print "Found $name\n";
 		if (ref($self->{$name}) eq 'ARRAY') {
-#print "..as array\n";
 			return @{ $self->{$name} };
 		}
-#print "..as scalar\n";
 		return $self->{$name};
 	}
 	
@@ -151,11 +148,5 @@ sub AUTOLOAD {
 1;
 
 __END__
-	
-	if (my %d = $self->_defaults) {
-		for my $k (keys %d) {
-			$self->{$k} ||= $d{$k};
-		}
-	}
 
 BaseObject's descendant classes are used as data holders. The parsers use them as base classes and fill the data slots. Then the generators rebless the underlying hashes into another class and use the data.

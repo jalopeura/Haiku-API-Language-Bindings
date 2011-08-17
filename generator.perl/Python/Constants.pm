@@ -45,16 +45,6 @@ sub type {
 	return $self->{type};
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub type_options {
 	my ($self) = @_;
 	my $options = {
@@ -100,13 +90,6 @@ sub generate {
 	my $object_name = "${class_name}_$constant_name";
 	my $module_name = $class_name . 'Constants_module';
 	
-#	print $fh qq(static PyObject* $getter_name($class_name* python_self, void* python_closure) {\n);
-#	print $fh map { "\t$_\n" } @$get_defs;
-#	print $fh map { "\t$_\n" } @$get_code;
-#	print $fh qq(\treturn Py_BuildValue("$get_fmt", $get_arg);\n);
-#	print $fh "}\n\n";
-	
-#	my ($fmt, $arg, $defs, $code) = $self->arg_builder;
 	my $options = {
 		input_name => $self->qualified_name,
 		output_name => $object_name,
@@ -114,33 +97,14 @@ sub generate {
 		repeat => $self->has('repeat') ? $self->repeat : 0,
 	};
 	my ($defs, $code) = $self->arg_builder($options);
-	
-#	if ($self->type->has('target')) {
-#		my @ret;
-#		while (@$code) {
-#			my $line = shift @$code;
-#			$line=~s/py\w+/$object_name/g;
-#			push @ret, $line;
-#		}
-#		$code = \@ret;
-#		pop @$defs;
-#	}
-#	else {
-#		push @$code, qq($object_name = Py_BuildValue("$fmt", $arg););
-#	}
-	
-#	shift @$defs;	# because constant is already defined
 
 	push @{ $class->{constant_code} },
 		@$code,
-#		qq($object_name = Py_BuildValue("$fmt", $arg);),
 		qq(Py_INCREF($object_name););
-		
-#	my $obj_return;
+	
 	if ($self->type->has('target') and my $target = $self->type->target) {
 		(my $objtype = $target)=~s/\./_/g; $objtype .= '_Object';
 		push @{ $class->{constant_defs} }, "$objtype* $object_name;";
-#		$obj_return = 1;
 		push @{ $class->{constant_code} },
 			qq(PyModule_AddObject($module_name, "$constant_name", (PyObject*)$object_name););
 	}

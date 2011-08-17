@@ -31,16 +31,6 @@ sub type {
 	return $self->{type};
 }
 
-#%options = (
-#	name
-#	default
-#	count/length = {
-#		name
-#		type
-#	}
-#	must_not_delete
-#)
-
 sub type_options {
 	my ($self) = @_;
 	my $options = {
@@ -91,7 +81,6 @@ sub generate {
 	
 	my $fh = $self->class->cch;
 	
-#	my ($get_fmt, $get_arg, $get_defs, $get_code) = $self->arg_builder;
 	my $get_fmt = $self->type->format_item;
 	my $get_arg = 'py_' . $self->name;
 	my $options = {
@@ -128,8 +117,7 @@ sub generate {
 		print $fh qq(\treturn $get_arg;\n);
 	}
 	print $fh "}\n\n";
-
-#	my ($set_fmt, $set_arg, $set_defs, $set_code) = $self->arg_parser('value');
+	
 	my $set_fmt = $self->type->format_item;
 	my $options = {
 		input_name => 'value',
@@ -143,14 +131,8 @@ sub generate {
 	}
 	my ($set_defs, $set_code) = $self->arg_parser($options);
 	print $fh qq(static int $setter_name($class_name* python_self, PyObject* value, void* closure) {\n);
-#	if (not $self->has('repeat') and not $self->type->has('repeat')) {
-#		print $fh "\tPyObject* tuple = PyTuple_Pack(1, value);\n";
-#	}
 	print $fh map { "\t$_\n" } @$set_defs;
 	print $fh map { "\t$_\n" } @$set_code;
-#	if (not $self->has('repeat') and not $self->type->has('repeat')) {
-#		print $fh qq(\tPyArg_ParseTuple(tuple, "$set_fmt", $set_arg);\n);
-#	}
 	print $fh "\treturn 0;\n";	# do we need error checks, or will Python raise an exception for us?
 	print $fh "}\n\n";
 	

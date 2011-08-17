@@ -69,7 +69,6 @@ sub _parse_children {
 		next if $child->isa('SGML::Comment') or $child->isa('SGML::Content');
 		
 		my $cn = $child->name;
-#print "Adding $cn to $self\n";
 		
 		# do we have docs?
 		if ($cn eq 'doc' and $self->_has_doc) {

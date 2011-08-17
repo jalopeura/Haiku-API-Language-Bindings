@@ -75,11 +75,6 @@ bool can_delete_cpp_object(SV* perl_obj);
 
 void dualize(SV* arg, const char* string);
 
-char** Aref2CharArray(SV* arg, int &count);
-SV* CharArray2Aref(char** var, int count);
-void Scalar2Char(SV* arg, void* var, int num_chars, int size);
-SV* Char2Scalar(const void* var, int num_chars, int size);
-
 UTIL
 	
 	close $fh;
@@ -145,15 +140,12 @@ SV* create_perl_object(void* cpp_obj, const char* perl_class_name, bool must_not
 		
 	// create the underlying hash and make a ref to it
 	underlying_hash = newHV();
-DUMPME(1,(SV*)underlying_hash);
 	perl_obj = newRV_noinc((SV*)underlying_hash);
-DUMPME(1,perl_obj);
 	//sv_2mortal(perl_obj);
 	
 	// get the stash and bless the ref (to the underlying hash) into it
 	perl_obj_stash = gv_stashpv(perl_class_name, TRUE);
 	sv_bless(perl_obj, perl_obj_stash);
-DUMPME(1,perl_obj);
 	
 	// fill in the data fields
 	link->cpp_object = cpp_obj;
@@ -164,10 +156,9 @@ DUMPME(1,perl_obj);
 	// link the data via '~' magic
 	// (we link to the underlying hash and not to the reference itself)
 	sv_magic((SV*)underlying_hash, NULL, PERL_MAGIC_ext, (const char*)link, 0);	// cheat by storing data instead of a string
-DUMPME(1,(SV*)underlying_hash);
-//DEBUGME(4, "Created perl object %d of class %s for cpp object %d with link %d", (IV)perl_obj, perl_class_name, (IV)cpp_obj, (IV)link);
-	link = get_link_data(perl_obj);
-//DEBUGME(4, "Verifying that setting magic worked: got link object: %d", (IV)link);
+	
+	// check this object
+	DUMPME(1,perl_obj);
 	
 	return perl_obj;
 }
@@ -175,7 +166,6 @@ DUMPME(1,(SV*)underlying_hash);
 object_link_data* get_link_data(SV* perl_obj) {
 	SV* underlying_hash;
 	MAGIC* mg;
-//DEBUGME(4, "Trying to find link data for Perl object: %d", (IV)perl_obj);
 
 	// get the underlying hash that the perl_obj is a reference to
 	// (we can leave it an SV* because we're just using it to find magic)
@@ -185,15 +175,9 @@ object_link_data* get_link_data(SV* perl_obj) {
 	mg = mg_find(underlying_hash, PERL_MAGIC_ext);
 	if (mg == NULL)
 		return NULL;
-//DEBUGME(4, "Found magic with pointer: %d, %d", (IV)mg, (IV)mg->mg_ptr);
 	
-
-DEBUGME(1, "The %s at %d has refcount of %d; the underlying hash at %d has a refcount of %d",
-	((object_link_data*)mg->mg_ptr)->perl_class_name,
-	int(perl_obj), SvREFCNT(perl_obj),
-	int(underlying_hash), SvREFCNT(underlying_hash)
-);
-
+	// check this object
+	DUMPME(1,perl_obj);
 	
 	return (object_link_data*)mg->mg_ptr;
 }
@@ -203,23 +187,18 @@ void unlink_perl_object(SV* perl_obj) {
 	object_link_data* link;
 	
 	// get the object linked to the perl_obj
-DEBUGME(4, "Getting the link to unlink");
 	link = get_link_data(perl_obj);
 	
 	if (link == NULL)
 		return;
 	
 	// remove the magical link
-DEBUGME(4, "Losing the magic");
 	underlying_hash = SvRV(perl_obj);
 	sv_unmagic((SV*)underlying_hash, PERL_MAGIC_ext);
 	
 	// this is only ever called from DESTROY, which means
 	// refcount should already be 0
-//DEBUGME(4, "Decrementing the refcount");
 	//SvREFCNT_dec(link->perl_object);	// decrement reference count
-	//sv_2mortal(link->perl_object);	// decrement reference count (postponed)
-DEBUGME(4, "Nullifying the object");
 	link->perl_object = NULL;
 	
 	if (link->perl_object == NULL && link->cpp_object == NULL)
@@ -244,18 +223,15 @@ void* get_cpp_object(SV* perl_obj) {
 	
 	// get the object linked to the perl_obj
 	link = get_link_data(perl_obj);
-//	DEBUGME(4, "Got object link data: %d", (IV)link);
 	
 	if (link == NULL)
 		return NULL;
-//	DEBUGME(4, "Got object: %d", (IV)link->cpp_object);
 	
 	return link->cpp_object;
 }
 
 bool can_delete_cpp_object(SV* perl_obj) {
 	object_link_data* link;
-//	DEBUGME(4, "Checking whether we can delete the cpp object");
 	
 	// get the object linked to the perl_obj
 	link = get_link_data(perl_obj);
@@ -292,72 +268,6 @@ void dualize(SV* arg, const char* string) {
 		default:
 			DEBUGME(2, "Got svtype of %d", sv_type);
 	}
-}
-
-char** Aref2CharArray(SV* arg, int &count) {
-	AV* av;
-	char** ret;
-	int i;
-	
-	if (!arg || !SvOK(arg) || !SvROK(arg) || (SvTYPE(SvRV(arg)) != SVt_PVAV)) {
-		croak("array reference expected");
-	}
-	
-	av = (AV*)SvRV(arg);
-	count = av_len(av) + 1;	// av_len returns highest index, not count
-	ret = (char**)malloc(av_len(av));
-	//will need to free this memory - but when?
-	
-	for (i = 0; i < count; i++) {
-		SV** elem = av_fetch(av, i, 0);
-		
-		if (!elem || !*elem) {
-			croak("foo");
-		}
-		
-		ret[i] = SvPV_nolen(*elem);
-	}
-	
-	return ret;
-}
-
-SV* CharArray2Aref(char** var, int count) {
-	AV* av = newAV();
-	int i;
-	
-	for (i = 0; i < count; i++) {
-		av_store(av, i, newSVpv(var[i], 0));
-	}
-	
-	return newRV_noinc((SV*) av);
-}
-
-void Scalar2Char(SV* arg, void* var, int num_chars, int size) {
-	size_t length;
-	char* sv_contents;
-	STRLEN sv_length;
-	
-	length = num_chars * size;
-	sv_contents = SvPV(arg, sv_length);
-	if (sv_length < length) {
-		length = sv_length;
-	}
-	
-	memcpy(var, (void*)sv_contents, length);
-}
-
-SV* Char2Scalar(const void* var, int num_chars, int size) {
-	SV* ret;
-	STRLEN sv_length;
-	
-	sv_length = num_chars * size;
-	ret = newSVpv((char*)var, sv_length);
-	
-	if (is_utf8_string((const U8*)var, sv_length)) {
-		SvUTF8_on(ret);
-	}
-	
-	return ret;
 }
 
 UTIL

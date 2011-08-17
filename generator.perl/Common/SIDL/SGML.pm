@@ -3,12 +3,10 @@ use strict;
 
 sub new {
 	my ($class, $tag) = @_;
-#print $tag,"\n";
 	my ($otag, $name, %attrs);
 	$otag = $tag;
 	$tag=~s:/$::;
 	$tag=~s/(\S+)\s*// and $name = $1;
-#print "\t$name\n";
 	
 	while (length $tag) {
 		my $key;
@@ -36,7 +34,6 @@ sub new {
 		}
 		
 		$attrs{$key} = $value;
-#print "\t$key => $value\n";
 	}
 	
 	my $self = bless {
@@ -174,20 +171,14 @@ sub parse {
 			my $cmt;
 			until ($self->{buffer}=~s/^<(!--.+--)>//ms and $cmt = $1) {
 				$self->extend_buffer or die "Unfinished comment";
-#print "Buffer: [$self->{buffer}]\n";
 			}
-#print "Found comment: [$cmt]\n";
 			my $c = new SGML::Comment($cmt);
 			$elements[-1]->addchild($c);
-#print "Buffer: [$self->{buffer}]\n";
 			next;
 		}
 		
 		# try to get a tag out of the buffer
-#print "Buffer was: $self->{buffer}\n";
 		$self->{buffer}=~s/^<([^>]+)>//;
-#print "Found tag: $1\n";
-#print "Buffer is now: $self->{buffer}\n";
 		if ($1) {
 			my $tag = $1;
 			$tag=~s/^\s+//; $tag=~s/\s+$//;
@@ -198,7 +189,6 @@ sub parse {
 				if ($current ne $tag) {
 					die "Bad SGML in $self->{current_filename}: current element is $current, but found closing tag for $tag";
 				}
-#print "Popping an element from the stack: $current ($tag)\n";
 				pop @elements;
 				next;
 			}
@@ -210,7 +200,6 @@ sub parse {
 			# if this tag needs a closer, push it on the stack
 			unless ($tag=~s:/$::) {
 				push @elements, $e;
-#print "Pushing an element onto the stack: ", $e->name, " ($tag)\n";
 			}
 			next;
 		}
