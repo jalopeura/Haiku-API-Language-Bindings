@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>Bindings Generator: Bindings</title>
+</head>
+<body>
+<h3>Bindings</h3>
+
+<p>A Bindings object represents a set of bindings that are to be generated together.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the name for this binding; it will be generated using this name.</li>
+<li><b>version</b>: (required) the version number for this binding.</li>
+<li><b>doc</b>: a documentation string.</li>
+</ul>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#import">import</a></b>: (zero or more) other bindings definitions to be absorbed into this one.</li>
+<li><b><a href="#bundle">bundle</a></b>: (zero or more) other bindings definitions to be bundled with this one.</li>
+<li><b><a href="#include">include</a></b>: (zero or more) header files to be included when generating the binding.</li>
+<li><b><a href="#link">link</a></b>: (zero or more) libraries to link against generating the binding.</li>
+<li><b><a href="types.html">types</a></b>: (zero or more) types used in the C++ code.</li>
+<li><b><a href="binding.html">binding</a></b>: (one or more) C++ objects/namespaces to bind.</li>
+</ul>
+
+<hr />
+
+<a name="import"></a><h3>Import</h3>
+
+<p>An Import object represents additional Bindings objects that are to be imported. The contents of the imported files are treated as though they were defined in the current file.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#file">file</a></b>: (zero or more) files to import.</li>
+</ul>
+
+<hr />
+
+<a name="bundle"></a><h3>Bundle</h3>
+
+<p>A Bundle object represents additional Bindings objects that are to be generated together with the current one.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#file">file</a></b>: (zero or more) files to import.</li>
+</ul>
+
+<hr />
+
+<a name="include"></a><h3>Include</h3>
+
+<p>An Include object represents header files to include when generating the bindings. Currently only the angle-bracket form (<code>#include &lt;...&gt;</code>) is supported, since the original target for the generator (the Haiku API) doesn't require the quoted form (<code>#include "..."</code>).</p>
+
+<p>Note: Even though this is intended for including headers files, once support for the quoted form is implemented, it would be possible to use it to include other file as well.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#lib">lib</a></b>: (zero or more) files to include.</li>
+</ul>
+
+<hr />
+
+<a name="link"></a><h3>Link</h3>
+
+<p>A Link object represents libraries to be linked against when generating the bindings. Currently only runtime-binding is supported, since the original target for the generator (the Haiku API) doesn't require static binding.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#lib">lib</a></b>: (zero or more) libraries to link against.</li>
+</ul>
+
+<hr />
+
+<a name="file"></a><h3>File</h3>
+
+<p>A File object represents a file on the file system. The precise interpretation of the filename depends on the parent object of the File.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the filename.</li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<hr />
+
+<a name="lib"></a><h3>Lib</h3>
+
+<p>A Lib object represents a library to link against. This should be in the form required by the linker.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the libname.</li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+</body>
+</html>

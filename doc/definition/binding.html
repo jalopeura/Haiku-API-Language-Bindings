@@ -1,0 +1,215 @@
+<html>
+<head>
+<title>Bindings Generator: Binding</title>
+</head>
+<body>
+<a name="binding"></a><h3>Binding</h3>
+
+<p>A Binding object represents a class or namespace.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>source</b>: (required) the C++ class/namespace name.</li>
+<li><b>target</b>: (required) the target language class/namespace/package/module name; this is specified in the format <code>Parent::Child</code>. Target languages may need to adjust this name; for example, Python changes it to <code>Parent.Child</code>.</li>
+<li><b>version</b>: (required) the version number for this binding.</li>
+<li><b>source-inherits</b>: a space-separated list of C++ base class names.</li>
+<li><b>target-inherits</b>: a space-separated list of target language base class names.</li>
+<li><b><a href="types.html#must-not-delete">must-not-delete</a></b></li>
+<li><b>doc</b>: a documentation string.</li>
+</ul>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#properties">properties</a></b>: object properties to expose.</li>
+<li><b><a href="functions.html">functions</a></b>: class/object methods or namespace functions to expose.</li>
+<li><b><a href="#operators">operators</a></b>: overridden operators to implement.</li>
+<li><b><a href="#constants">constants</a></b>: constants to expose.</li>
+<li><b><a href="#globals">globals</a></b>: globals to expose.</li>
+</ul>
+
+<hr />
+
+<a name="properties"></a><h3>Properties</h3>
+
+<p>A Properties object represents object properties to expose.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#property">property</a></b>: (zero or more) properties.</li>
+</ul>
+
+<hr />
+
+<a name="property"></a><h3>Property</h3>
+
+<p>A Property object represents an object property to expose.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the property name.</li>
+<li><b>doc</b>: a documentation string.</li>
+<li><b><a href="types.html#type_attr">type</a></b></li>
+<li><b><a href="types.html#string-length">string-length</a></b></li>
+<li><b><a href="types.html#max-string-length">max-string-length</a></b></li>
+<li><b><a href="types.html#array-length">array-length</a></b></li>
+<li><b><a href="types.html#max-array-length">max-array-length</a></b></li>
+<li><b><a href="types.html#pass-as-pointer">pass-as-pointer</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<hr />
+
+<a name="operators"></a><h3>Operators</h3>
+
+<p>An Operators object represents overridden operators to expose.</p>
+
+<p>Note: If they are not defined here, the <code>==</code> and <code>!=</code> operators are automatically defined by the generator to compare the pointers of the wrapped C++ objects. This allows different target language objects that wrap the same C++ object to be treated as equal.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#operator">operator</a></b>: (zero or more) operators.</li>
+</ul>
+
+<hr />
+
+<a name="operator"></a><h3>Operator</h3>
+
+<p>An Operator object represents an overridden operator.</p>
+
+<p>The following operators are currently supported:</p>
+
+<ul>
+<li><code>neg</code> (unary <code>-</code>)</li>
+<li><code>==</code></li>
+<li><code>!=</code></li>
+<li><code>+</code></li>
+<li><code>-</code> (binary <code>-</code>)</li>
+<li><code>&amp;</code></li>
+<li><code>|</code></li>
+<li><code>+=</code></li>
+<li><code>-=</code></li>
+</ul>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the operator name.</li>
+<li><b>doc</b>: a documentation string.</li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<hr />
+
+<a name="constants"></a><h3>Constants</h3>
+
+<p>A Constants object represents constants to expose.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#constant">constant</a></b>: (zero or more) constants.</li>
+</ul>
+
+<hr />
+
+<a name="constant"></a><h3>Constant</h3>
+
+<p>A Constant object represents a constant to expose.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the constant name.</li>
+<li><b>group</b>: a space-separated list of groups the constant belongs to; Perl, for example, uses this to export constants to the calling namespace in groups rather than singly or all at once.</li>
+<li><b>doc</b>: a documentation string.</li>
+<li><b><a href="types.html#type_attr">type</a></b></li>
+<li><b><a href="types.html#string-length">string-length</a></b></li>
+<li><b><a href="types.html#max-string-length">max-string-length</a></b></li>
+<li><b><a href="types.html#array-length">array-length</a></b></li>
+<li><b><a href="types.html#max-array-length">max-array-length</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<hr />
+
+<a name="globals"></a><h3>Globals</h3>
+
+<p>A Globals object represents globals to expose.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#global">global</a></b>: (zero or more) globals.</li>
+</ul>
+
+<hr />
+
+<a name="global"></a><h3>Global</h3>
+
+<p>A Globals object represents a global to expose.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the global name.</li>
+<li><b>doc</b>: a documentation string.</li>
+<li><b><a href="types.html#type_attr">type</a></b></li>
+<li><b><a href="types.html#string-length">string-length</a></b></li>
+<li><b><a href="types.html#max-string-length">max-string-length</a></b></li>
+<li><b><a href="types.html#array-length">array-length</a></b></li>
+<li><b><a href="types.html#max-array-length">max-array-length</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<!--
+	binding
+		functions
+			constructor
+			destructor
+			method
+			event
+			static
+			plain
+		constants
+			constant
+				:group
+				doc
+		globals
+			global
+				doc
+-->
+</body>
+</html>

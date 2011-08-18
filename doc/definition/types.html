@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Bindings Generator: Types</title>
+</head>
+<body>
+<h3>Types</h3>
+
+<p>A Types object represents a set of non-builtin types to be used.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#type">type</a></b>: a type.</li>
+</ul>
+
+<hr />
+
+<a name="type"></a><h3>Type</h3>
+
+<p>A Type object represents a non-builtin type. Each one must be defined as equivalent to a builtin type. The builtin types are:</p>
+
+<ul>
+<li>char</li>
+<li>unsigned char</li>
+<li>short</li>
+<li>unsigned short</li>
+<li>int</li>
+<li>unsigned int</li>
+<li>long</li>
+<li>unsigned long</li>
+<li>float</li>
+<li>double</li>
+<li>long double</li>
+<li>char*</li>
+<li>wchar_t</li>
+<li>wchar_t*</li>
+<li>void*</li>
+<li>void (only used with <a href="#pass-as-pointer">pass-as-pointer</a>)</li>
+<li>object (used for classes and structs)</li>
+<li>object_ptr (really should be renamed 'object*' to match the rest)</li>
+</ul>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the type name.</li>
+<li><b>builtin</b>: (required) the builtin equivalent.</li>
+<li><b>target</b>: for objects, the target language object type.</li>
+<li><b><a href="#string-length">string-length</a></b></li>
+<li><b><a href="#max-string-length">max-string-length</a></b></li>
+<li><b><a href="#array-length">array-length</a></b></li>
+<li><b><a href="#max-array-length">max-array-length</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+<hr />
+
+<h3>Common Attributes for Data and Types</h3>
+
+<p><a name="type_attr"></a><b>type</b>: The builtin or bindings-defined type.</p>
+
+<p><a name="must-not-delete"></a><b>must-not-delete</b>: Used only for object types; a boolean indicating that the C++ object should <b>not</b> be deleted when the target language object is deleted. Using the original target for the generator, the Haiku API, as an example:</p>
+
+<ul>
+<li>Binding: A BWindow object should never be deleted; the system will take care of it, so the Binding should have this attribute set to <code>true</code>.</li>
+<li>Param (1): Once you add a BView to a BWindow via BWindow::AddChild(), the BWindow takes ownership and you should not delete the BView, so the Param should have this attribute set to <code>true</code>.</li>
+<li>Param (2): When you remove a BView through BWindow::RemoveChild(), the Bwindow gives up ownership and you are responsible for the BView, so the Param should have this attribute set to <code>false</code>.</li>
+<li>Return: When you access a BView through BWindow::ChildAt(), the BWindow retains ownership and you should not delete the returned BView, so the Return should have this attribute set to <code>true</code>.</li>
+</ul>
+
+<p><a name="string-length"></a><b>string-length</b>: an integer for a fixed length string, or the value <code>null-terminated</code> for a null-terminated string. (It is also possible to use <code>char*</code> or a derived type for null-terminated strings.)</p>
+
+<p><a name="max-string-length"></a><b>max-string-length</b>: an integer, the maximum length for a null-terminated string. The value will be copied until either a terminating null is encountered or the maximum length is reached.</p>
+
+<p><a name="array-length"></a><b>array-length</b>: an integer for a fixed length array, or the value <code>null-terminated</code> for a null-terminated array.</p>
+
+<p><a name="max-array-length"></a><b>max-array-length</b>: an integer, the maximum length for a null-terminated array. The elements will be copied until either a terminating null is encountered or the maximum length is reached.</p>
+
+<p><a name="pass-as-pointer"></a><b>pass-as-pointer</b>: a boolean indicating that memory should be allocated for the given type, but that a pointer to the given variable should be passed, instead of the variable itself. For example, some functions in the Haiku API take a pointer to a new, empty object, but the caller needs to allocate the space before passing the pointer, because the function only fills in values for the object, it does not create the object. Using this attribute will cause the generator to create a variable of the appropriate type and then pass the address of that variable to the function.</p>
+
+</body>
+</html>

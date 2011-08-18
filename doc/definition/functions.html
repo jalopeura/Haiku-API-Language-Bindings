@@ -1,0 +1,97 @@
+<html>
+<head>
+<title>Bindings Generator: Functions</title>
+</head>
+<body>
+<h3>Functions</h3>
+
+<p>A Functions object represents a set of class/object methods or namespace functions to expose.</p>
+
+<h4>Attributes</h4>
+
+<p><i>none</i></p>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#function">constructor</a></b>: an object constructor.</li>
+<li><b><a href="#function">destructor</a></b>: an object destructor.</li>
+<li><b><a href="#function">method</a></b>: an object method.</li>
+<li><b><a href="#function">event</a></b>: an object method that will be called from C++, i.e., in response to a user event.</li>
+<li><b><a href="#function">static</a></b>: a class method.</li>
+<li><b><a href="#function">plain</a></b>: a plain function.</li>
+</ul>
+
+<hr />
+
+<a name="function"></a><h3>&lt;Function&gt;</h3>
+
+<p>&lt;Function&gt; is not a single type, but one of several types. A &lt;Function&gt; represents a function or method to expose. Supported function types are:</p>
+
+<ul>
+<li>constructor</li>
+<li>destructor</li>
+<li>method</li>
+<li>event</li>
+<li>static</li>
+<li>plain</li>
+</ul>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required) the function name (not used for constructors or destructors).</li>
+<li><b>overload-name</b>: when target language does not support overloaded functions, it will use this name to disambiguate (not used for destructors).</li>
+<li><b>doc</b>: a documentation string.</li>
+<li><b><a href="types.html#type_attr">type</a></b></li>
+<li><b><a href="types.html#string-length">string-length</a></b></li>
+<li><b><a href="types.html#max-string-length">max-string-length</a></b></li>
+<li><b><a href="types.html#array-length">array-length</a></b></li>
+<li><b><a href="types.html#max-array-length">max-array-length</a></b></li>
+<li><b><a href="types.html#pass-as-pointer">pass-as-pointer</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<ul>
+<li><b><a href="#param_return">param</a></b>: a function parameter.</li>
+<li><b><a href="#param_return">return</a></b>: a return value.</li>
+</ul>
+
+<hr />
+
+<a name="param_return"></a><h3>Param/Return</h3>
+
+<p>A Param object represents a function parameter; a Return object represents a return value. Since C++ and the target language do not have the same syntax, each Param and Return has an associated action. Supported actions are:</p>
+
+<ul>
+<li>input: should be treated as target-language input</li>
+<li>output: should be treated as an output if the target language handles multiple outputs; otherwise should be treated as input</li>
+<li>error: should be treated as an error; the target language should set an error value or raise an exception</li>
+<li>length[X]: should be generated from the length of X if the target language stores the length with the variable; otherwise should be treated as input</li>
+<li>count[X]: should be generated from the count of X if the target language stores the count with the variable; otherwise should be treated as input</li>
+</ul>
+
+<p>Note that <code>length[X]</code> and <code>count[X]</code> are simply indications that a C++ variable needs to be generated to hold the value. They do not need to be used if the C++ variable already exists (i.e., as a constant), since the <code>X</code> parameter itself also contains the necessary length and count information.</p>
+
+<h4>Attributes</h4>
+
+<ul>
+<li><b>name</b>: (required for Param) the parameter name (used for keyword-style entry).</li>
+<li><b>action</b>: defaults to <code>input</code> for Param and <code>output</code> for Return.</li>
+<li><b>success</b>: used with the <code>error</code> action to indicate the success value.</li>
+<li><b><a href="types.html#type_attr">type</a></b></li>
+<li><b><a href="types.html#must-not-delete">must-not-delete</a></b></li>
+<li><b><a href="types.html#string-length">string-length</a></b></li>
+<li><b><a href="types.html#max-string-length">max-string-length</a></b></li>
+<li><b><a href="types.html#array-length">array-length</a></b></li>
+<li><b><a href="types.html#max-array-length">max-array-length</a></b></li>
+<li><b><a href="types.html#pass-as-pointer">pass-as-pointer</a></b></li>
+</ul>
+
+<h4>Children</h4>
+
+<p><i>none</i></p>
+
+</body>
+</html>

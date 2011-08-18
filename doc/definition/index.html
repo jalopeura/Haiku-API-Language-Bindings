@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Defining Bindings</title>
+</head>
+<body>
+<h3>Defining Bindings</h3>
+
+<p>Currently, only one format is supported for bindings definitions: SIDL, an <b>S</b>GML-esque <b>I</b>nterface <b>D</b>efinition <b>L</b>anguage. However, the generator was designed to be flexible enough to support multiple formats, and there are plans to define a <b>T</b>ab-delimited <b>I</b>nterface <b>D</b>efinition <b>L</b>anguage as well.</p>
+
+<p>There are currently four pages in this section:</p>
+
+<ul>
+<li><a href="bindings.html">Bindings</a></li>
+<li><a href="binding.html">Binding</a></li>
+<li><a href="functions.html">Functions</a></li>
+<li><a href="types.html">Types</a></li>
+</ul>
+
+<p>Note: Many of the objects described here can take a <code>doc</code> attribute. This element is used to generate inline documentation for the object (but this feature is not fully implemented yet). Although conceptually <code>doc</code> is an attribute of the object, in the SIDL format it is implemented as a child element, that is:</p>
+
+<pre>
+&lt;object&gt;
+    &lt;doc&gt;...&lt;/doc&gt;
+    ...
+&lt;/object&gt;
+</pre>
+
+<p>and not:</p>
+
+<pre>
+&lt;object doc="..."&gt;
+    ...
+&lt;/object&gt;
+</pre>
+
+</body>
+</html>

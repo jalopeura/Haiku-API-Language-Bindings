@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>Bindings Generator</title>
+</head>
+<body>
+<h3>Bindings Generator</h3>
+
+<p>This bindings generator was created as part of Google Summer of Code 2011. It's purpose was to expose the Haiku API to target languages, but it was designed to be flexible so it could be used to make bindings for other objects as well.</p>
+
+<p>The generator is currently written in Perl; this made development faster. The plan is to eventually port it to C++, but since the focus of the GSoC project was the bindings and not the generator itself, speed in the development process was the most important factor for the generator.</p>
+
+<p>Generating bindings is simple. The usage messsage for the bindings speaks for itself:</p>
+
+<pre>
+Usage:
+
+generator.pl -t TARGET -l LANG -f FORMAT FILES
+TARGET is the folder you want the generated files to end up
+LANG is the language(s) to generated bindings for (one or more)
+FORMAT is the definition file format
+FILES is a whitespace-separated list if binding definition files
+
+Supported languages are
+	perl
+	python
+
+Supported formats are
+	SIDL - SGML-esque interface definition language
+	TIDL - Tab-delimited interface definiton language (coming soon)
+
+Example:
+generate.pl -d generated -t perl -t python binding.def
+</pre>
+
+<p>Next: <a href="definition/index.html">Defining Bindings</a></p>
+
+</body>
+</html>
