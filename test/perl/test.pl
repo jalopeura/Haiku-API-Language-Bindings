@@ -50,9 +50,9 @@ warn "\nAppActivated($self, $active)\n\n";
 sub QuitRequested {
 	my ($self) = @_;
 warn "\nQuitRequested ($self)\n\n";
-my $val = $self->SUPER::QuitRequested();
-warn "About to return [$val]\n";
-return 1;	# try to force a 1
+	# need to get rid of this explicitly now, or we'll
+	# have an unreferenced scalar issue later
+	undef $self->{window};
 	return $self->SUPER::QuitRequested();
 }
 
@@ -111,9 +111,11 @@ sub MessageReceived {
 package main;
 use strict;
 
-$Haiku::ApplicationKit::DEBUG = 1;
-$Haiku::InterfaceKit::DEBUG = 1;
+$Haiku::ApplicationKit::DEBUG = 0;
+$Haiku::InterfaceKit::DEBUG = 0;
 
 $TestApp = new MyApplication("application/language-binding") or die "Unable to create app: $Haiku::ApplicationKit::Error";
 
 $TestApp->Run;
+
+print $TestApp->{window},"\n";

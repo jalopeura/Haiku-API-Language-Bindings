@@ -99,7 +99,6 @@ sub QuitRequested {
 			my $win = shift @{ $self->{personwindows} };
 			$win->Lock;
 			$win->Quit;
-			
 		}
 	}
 	return 1;
@@ -111,7 +110,7 @@ sub remove_window {
 	my $i;
 	for my $w (@{ $self->{personwindows} }) {
 		last if $w == $win;
-		$$i++;
+		$i++;
 	}
 	splice @{ $self->{personwindows} }, $i, 1;
 }

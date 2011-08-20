@@ -131,7 +131,7 @@
 			</method>
 -->
 			<method name="RemoveItem">
-				<param name="item" type="BListItem*" action="input" />
+				<param name="item" type="BListItem*" action="input" must-not-delete="false" />
 			</method>
 			<method name="RemoveItem" overload-name="RemoveItemAtIndex">
 				<param name="index" type="int32" action="input" />
@@ -166,7 +166,7 @@
 			</method>
 			<method name="ItemAt">
 				<param name="index" type="int32" action="input" />
-				<return type="BListItem*" action="output" />
+				<return type="BListItem*" action="output" must-not-delete="true" />
 			</method>
 			<method name="IndexOf" overload-name="IndexAtPoint">
 				<param name="point" type="BPoint" action="input" />

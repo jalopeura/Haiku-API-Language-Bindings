@@ -164,10 +164,6 @@ CODE
 	}
 	elsif ($type eq 'mut') {
 		my $type_obj = $self->types->type("$cpp_class_name*");
-		my ($defs, $code) = $type_obj->output_converter({
-			input_name => 'THIS',
-			output_name => 'RETVAL',
-		});
 		print $fh <<CODE;
 	INPUT:
 		$cpp_class_name object;
@@ -175,19 +171,9 @@ CODE
 	OVERLOAD: $name
 	CODE:
 		*THIS $name object;
+		RETVAL = ST(0);
+		SvREFCNT_inc(RETVAL);	// so it can safely pass through the stack
 CODE
-		
-		for my $line (@$defs) {
-			print $fh "\t\t$line\n";
-		}
-		
-		print $fh <<CODE;
-		RETVAL = newSV(0);
-CODE
-		
-		for my $line (@$code) {
-			print $fh "\t\t$line\n";
-		}
 	}
 	
 	print $fh <<OPERATOR;

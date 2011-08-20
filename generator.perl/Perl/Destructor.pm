@@ -33,8 +33,11 @@ DESTROY(perl_obj)
 		$cpp_class_name* cpp_obj;
 		object_link_data* link;
 	CODE:
+		DEBUGME(2,"Deleting perl wrapper for $cpp_class_name");
+		DUMPME(1,perl_obj);
 		link = get_link_data(perl_obj);
 		if (link != NULL && ! PL_dirty && link->can_delete_cpp_object) {
+			DEBUGME(2,"-->Deleting the wrapped c++ object");
 			cpp_obj = ($cpp_class_name*)link->cpp_object;
 			delete cpp_obj;
 			link->cpp_object = NULL;
@@ -58,7 +61,8 @@ sub generate_cpp {
 	my $cpp_class_name = $self->cpp_class_name;
 	
 	print { $self->package->cpph } <<DESTRUCTOR;
-${cpp_class_name}::~$cpp_class_name() {	
+${cpp_class_name}::~$cpp_class_name() {
+	DEBUGME(2,"Deleting $cpp_class_name");
 	// if the perl object was previously unlinked,
 	// we no longer need to keep the data around
 	if (perl_link_data->perl_object == NULL)

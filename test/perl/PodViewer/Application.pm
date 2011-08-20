@@ -27,4 +27,14 @@ sub ArgvReceived {
 	$self->SUPER::ArgvReceived($args);
 }
 
+sub QuitRequested {
+	my ($self) = @_;
+#warn "\nQuitRequested ($self)\n\n";
+	# need to get rid of these explicitly now, or we'll
+	# have an unreferenced scalar issue later
+	$self->{window}{parser}->errorsub(undef);	# holds a reference to window
+	undef $self->{window};
+	return $self->SUPER::QuitRequested();
+}
+
 1;

@@ -20,8 +20,8 @@ use PodViewer::Application;
 #	)->Go;
 #};
 
-$Haiku::ApplicationKit::DEBUG = 4;
-$Haiku::InterfaceKit::DEBUG = 4;
+$Haiku::ApplicationKit::DEBUG = 0;
+$Haiku::InterfaceKit::DEBUG = 0;
 
 my $podviewer = new PodViewer::Application;
 

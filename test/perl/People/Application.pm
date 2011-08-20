@@ -35,11 +35,6 @@ sub initialize_queries {
 	my ($self) = @_;
 
 	my $vr = new Haiku::VolumeRoster;
-print STDERR
-	\$vr,"\n",
-	\$vr+0,"\n",
-	$vr,"\n",
-	$vr+0,"\n";
 	while (my $vol = $vr->GetNextVolume) {
 		next unless $vol->KnowsQuery;
 		my $query = new Haiku::Query;

@@ -23,7 +23,7 @@
 				<return type="status_t" action="error" success="B_OK" />
 			</method>
 			<method name="Message">
-				<return type="BMessage*" action="output" />
+				<return type="BMessage*" action="output" must-not-delete="true" />
 			</method>
 			<method name="Command">
 				<return type="uint32" action="output" />

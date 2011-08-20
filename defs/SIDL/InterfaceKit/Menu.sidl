@@ -85,35 +85,35 @@
 			</method>
 			<method name="AddItem">
 				<doc>Adds a MenuItem to the Menu.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenuItem*" action="input" must-not-delete="true" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="AddItem" overload-name="AddItemAtIndex">
 				<doc>Adds a MenuItem to the Menu at a specified index.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenuItem*" action="input" must-not-delete="true" />
 				<param name="index" type="int32" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="AddItem" overload-name="ToMatrix">
 				<doc>Adds a MenuItem to the Menu with a specified frame; for use with Menus arranged in a matrix.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenuItem*" action="input" must-not-delete="true" />
 				<param name="frame" type="BRect" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="AddItem" overload-name="AddSubmenu">
 				<doc>Adds a submenu to the Menu.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenuItem*" action="input" must-not-delete="true" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="AddItem" overload-name="AddSubmenuAtIndex">
 				<doc>Adds a submenu to the Menu at a specified index.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenu*" action="input" must-not-delete="true" />
 				<param name="index" type="int32" action="input" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="AddItem" overload-name="AddSubmenuToMatrix">
 				<doc>Adds a submenu to the Menu with a specified frame; for use with Menus arranged in a matrix.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenu*" action="input" must-not-delete="true" />
 				<param name="frame" type="BRect" action="input" />
 				<return type="bool" action="output" />
 			</method>
@@ -129,17 +129,17 @@
 			</method>
 			<method name="RemoveItem">
 				<doc>Removes the given MenuItem.</doc>
-				<param name="item" type="BMenuItem*" action="input" />
+				<param name="item" type="BMenuItem*" action="input" must-not-delete="false" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="RemoveItem" overload-name="RemoveSubmenu">
 				<doc>Removes the given submenu.</doc>
-				<param name="item" type="BMenu*" action="input" />
+				<param name="item" type="BMenu*" action="input" must-not-delete="false" />
 				<return type="bool" action="output" />
 			</method>
 			<method name="RemoveItem" overload-name="RemoveItemAtIndex">
 				<doc>Removes the MenuItem at the given index.</doc>
-				<param name="index" type="int32" action="input" />
+				<param name="index" type="int32" action="input" must-not-delete="false" />
 				<return type="BMenuItem*" action="output" />
 			</method>
 			<method name="RemoveItems">
@@ -151,12 +151,12 @@
 			<method name="ItemAt">
 				<doc>Finds the MenuItem at the given index.</doc>
 				<param name="index" type="int32" action="input" />
-				<return type="BMenuItem*" action="output" />
+				<return type="BMenuItem*" action="output" must-not-delete="true" />
 			</method>
 			<method name="SubmenuAt">
 				<doc>Finds the submenu at the given index.</doc>
 				<param name="index" type="int32" action="input" />
-				<return type="BMenu*" action="output" />
+				<return type="BMenu*" action="output" must-not-delete="true" />
 			</method>
 			<method name="CountItems">
 				<doc>Returns the number of MenuItems in the Menu.</doc>
@@ -175,12 +175,12 @@
 			<method name="FindItem">
 				<doc>Finds a MenuItem by label.</doc>
 				<param name="label" type="const char*" action="input" />
-				<return type="BMenuItem*" action="output" />
+				<return type="BMenuItem*" action="output" must-not-delete="true" />
 			</method>
 			<method name="FindItem" overload-name="FindItemByCommand">
 				<doc>Finds a MenuItem by command constant.</doc>
 				<param name="command" type="uint32" action="input" />
-				<return type="BMenuItem*" action="output" />
+				<return type="BMenuItem*" action="output" must-not-delete="true" />
 			</method>
 			<method name="SetTargetForItems">
 				<doc>Sets the target for the MenuItems to the given Handler.</doc>
